@@ -4,9 +4,9 @@ msgstr ""
 "PO-Revision-Date: 2015-11-30T10:29:33\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: en-US\n"
+"Language: is-IS\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: en-US\n"
+"targetLanguage: is-IS\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
@@ -17,7 +17,7 @@ msgid "%s test-taker(s) are excluded."
 msgstr ""
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "Villa kom upp í innsetningu"
 
 msgid "Assembly"
 msgstr ""
@@ -26,16 +26,16 @@ msgid "Assembly import"
 msgstr ""
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "Skilgreindir próftakar"
 
 msgid "Assigned to"
-msgstr ""
+msgstr "Úthlutað til"
 
 msgid "Attempts"
-msgstr ""
+msgstr "Tilraunir"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Hætta við"
 
 msgid "Create a new delivery"
 msgstr ""
@@ -45,15 +45,15 @@ msgstr ""
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Eyða"
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Úthlutanir"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "Úthlutanasafn"
 
 msgid "Delivery \"%s\" successfully imported"
 msgstr ""
@@ -83,28 +83,28 @@ msgstr ""
 
 #, tao-public
 msgid "Import"
-msgstr ""
+msgstr "Flytja inn"
 
 msgid "Manifest not found in assembly"
 msgstr ""
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Flytja"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Nýr flokkur"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "Ný úthlutun"
 
 msgid "No attempt has been started yet."
 msgstr ""
 
 msgid "No information available"
-msgstr ""
+msgstr "Upplýsingar ekki fáanlegar"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
