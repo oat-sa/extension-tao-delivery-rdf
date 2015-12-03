@@ -1,5 +1,5 @@
 <?php
-/**
+/**  
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
@@ -14,22 +14,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * 
- * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *               
+ * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  * 
  */
-namespace oat\taoDeliveryRdf\model;
+use oat\oatbox\service\ServiceManager;
+use oat\taoDelivery\model\AssignmentService;
+use oat\taoDeliveryRdf\model\GroupAssignment;
+$serviceManager = ServiceManager::getServiceManager();
 
-/**
- * Create a form from a  resource of your ontology. 
- * Each property will be a field, regarding it's widget.
- *
- * @access public
- * @author Bertrand Chevrier, <bertrand.chevrier@tudor.lu>
- * @package tao
- 
- */
-class NoTestsException
-    extends \common_Exception
-{
-}
+$assignmentService = new GroupAssignment();
+$serviceManager->register(\oat\taoDelivery\model\AssignmentService::CONFIG_ID, $assignmentService);
