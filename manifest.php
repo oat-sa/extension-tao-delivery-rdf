@@ -45,7 +45,7 @@ return array(
         )
     ),
     //'uninstall' => array(),
-    'update' => 'oat\\taoDeliveryRdf\\install\\Updater',
+    'update' => 'oat\\taoDeliveryRdf\\install\\update\\Updater',
     'routes' => array(
         '/taoDeliveryRdf' => 'oat\\taoDeliveryRdf\\controller'
     ),    
