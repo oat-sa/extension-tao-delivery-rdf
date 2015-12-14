@@ -62,7 +62,9 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         //$assignmentFactory = new AssignmentFactory();
         if ($this->isDeliveryGuestUser($user)) {
             foreach ($this->getGuestAccessDeliveries() as $id) {
-                $assignments[] = new AssignmentFactory(new \core_kernel_classes_Resource($id), $user, true);
+                $delivery = new \core_kernel_classes_Resource($id);
+                $startable = $this->verifyTime($delivery);
+                $assignments[] = new AssignmentFactory($delivery, $user, $startable);
             }
         } else {
             foreach ($this->getDeliveryIdsByUser($user) as $id) {
