@@ -24,6 +24,7 @@ use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\model\GroupAssignment;
+use oat\taoDelivery\model\AssignmentService;
 /**
  * 
  * @author Joel Bout <joel@taotesting.com>
@@ -56,8 +57,13 @@ class Updater extends \common_ext_ExtensionUpdater {
                 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole',
                 array('controller'=>'oat\\taoDeliveryRdf\\controller\\Guest')));
             
-            $assignmentService = new GroupAssignment();
-            $this->getServiceManager()->register(\oat\taoDelivery\model\AssignmentService::CONFIG_ID, $assignmentService);
+            $currentService = $this->safeLoadService(AssignmentService::CONFIG_ID);
+            if (class_exists('taoDelivery_models_classes_AssignmentService', false)
+                && $currentService instanceof \taoDelivery_models_classes_AssignmentService) {
+            
+                    $assignmentService = new GroupAssignment();
+                    $this->getServiceManager()->register(AssignmentService::CONFIG_ID, $assignmentService);
+            }
             
             $this->setVersion('1.0.0');
         }
