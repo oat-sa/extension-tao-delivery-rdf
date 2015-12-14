@@ -91,11 +91,6 @@ class AssignmentFactory
         return $this->startable;
     }
     
-    protected function getLaunchParameters()
-    {
-        return array();
-    }
-    
     public function getStartTime()
     {
         $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_START_PROP));
@@ -142,8 +137,7 @@ class AssignmentFactory
             $this->getUserId(),
             $this->getLabel(),
             $this->getDescription(),
-            $this->getStartable(),
-            $this->getLaunchParameters()
+            $this->getStartable()
         );
     }
     
