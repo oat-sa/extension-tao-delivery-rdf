@@ -16,7 +16,6 @@
  * 
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *               
- * 
  */
 namespace oat\taoDeliveryRdf\model\export;
 
