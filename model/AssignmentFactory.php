@@ -141,4 +141,8 @@ class AssignmentFactory
         );
     }
     
+    public function __equals(AssignmentFactory $factory)
+    {
+        return $this->getDeliveryId() == $factory->getDeliveryId();
+    }
 }
