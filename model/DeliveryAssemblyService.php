@@ -32,6 +32,7 @@ use tao_models_classes_service_ServiceCall;
  */
 class DeliveryAssemblyService extends \tao_models_classes_ClassService
 {
+    const PROPERTY_ORIGIN = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
     
     /**
      * (non-PHPdoc)
@@ -97,7 +98,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     }
     
     public function getOrigin( core_kernel_classes_Resource $assembly) {
-        return (string)$assembly->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_ORIGIN));
+        return (string)$assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_ORIGIN));
     }
 
 }

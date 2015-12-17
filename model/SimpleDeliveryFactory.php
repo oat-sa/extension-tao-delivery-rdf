@@ -56,7 +56,7 @@ class SimpleDeliveryFactory
             $properties = array(
                 RDFS_LABEL => $label,
                 PROPERTY_COMPILEDDELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
-                PROPERTY_ORIGIN => $test
+                DeliveryAssemblyService::PROPERTY_ORIGIN => $test
             );
         
             $compilationInstance = DeliveryAssemblyService::singleton()->createAssemblyFromServiceCall($deliveryClass, $serviceCall, $properties);
