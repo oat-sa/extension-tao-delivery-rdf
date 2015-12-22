@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint12\n"
-"PO-Revision-Date: 2015-11-30T10:29:33\n"
+"Project-Id-Version: TAO 3.1.0-sprint15\n"
+"PO-Revision-Date: 2015-12-22T16:02:09\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: is-IS\n"
@@ -41,7 +41,7 @@ msgid "Create a new delivery"
 msgstr ""
 
 msgid "Create a test"
-msgstr ""
+msgstr "Búa til próf"
 
 #, tao-public
 msgid "Delete"
@@ -62,16 +62,16 @@ msgid "Delivery is assigned to %s test-takers."
 msgstr ""
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "Úthlutun er ekki skráð á neinn próftaka."
 
 msgid "Delivery of %s"
 msgstr ""
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "Úthlutun vistuð"
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Útilokaðir próftakar"
 
 #, tao-public
 msgid "Export"
@@ -79,7 +79,7 @@ msgstr ""
 
 #, tao-public
 msgid "Filter"
-msgstr ""
+msgstr "Sía"
 
 #, tao-public
 msgid "Import"
@@ -101,7 +101,7 @@ msgid "New delivery"
 msgstr "Ný úthlutun"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "Engin tilraun hefur hafist."
 
 msgid "No information available"
 msgstr "Upplýsingar ekki fáanlegar"
@@ -118,23 +118,23 @@ msgid "Published on %2s"
 msgstr ""
 
 msgid "Save"
-msgstr ""
+msgstr "Vista"
 
 #, tao-public
 msgid "Search"
 msgstr ""
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "Tókst að vista valkost"
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Próftakar"
 
 msgid "There are currently %s attempts"
 msgstr ""
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "Nú eru engin próf tæk til útgáfu."
 
 msgid "There is currently 1 attempt"
 msgstr ""
@@ -143,5 +143,5 @@ msgid "Unable to export Archive"
 msgstr ""
 
 msgid "Unkown error during impoort"
-msgstr ""
+msgstr "Óþekkt villa varð við innflutning"
 
