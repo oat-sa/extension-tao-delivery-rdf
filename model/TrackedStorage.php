@@ -1,5 +1,5 @@
 <?php
-/**
+/**  
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
@@ -15,21 +15,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * 
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *               
  * 
  */
 namespace oat\taoDeliveryRdf\model;
 
+use tao_models_classes_service_FileStorage;
 /**
- * Create a form from a  resource of your ontology. 
- * Each property will be a field, regarding it's widget.
+ * A wrapper of the filestorage that tracks added directories
  *
  * @access public
- * @author Bertrand Chevrier, <bertrand.chevrier@tudor.lu>
- * @package tao
+ * @author Joel Bout, <joel@taotesting.com>
+ * @package taoDelivery
  
  */
-class NoTestsException
-    extends \common_Exception
+ class TrackedStorage extends tao_models_classes_service_FileStorage
 {
+    private $ids = array();
+
+    private $storage;
+    
+    public function __construct() {
+        $this->storage = tao_models_classes_service_FileStorage::singleton();
+    }
+    
+    /**
+     * @param boolean $public
+     * @return tao_models_classes_service_StorageDirectory
+     */
+    public function spawnDirectory($public = false) {
+        $directory = $this->storage->spawnDirectory($public);
+        $this->ids[] = $directory->getId();
+        return $directory;
+    }
+    
+    public function getSpawnedDirectoryIds() {
+        return $this->ids;
+    }
 }

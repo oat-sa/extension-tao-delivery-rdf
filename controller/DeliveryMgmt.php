@@ -26,6 +26,8 @@ use core_kernel_classes_Property;
 use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
 
 /**
  * Controller to managed assembled deliveries
@@ -48,7 +50,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         parent::__construct();
         
         // the service is initialized by default
-        $this->service = \taoDelivery_models_classes_DeliveryAssemblyService::singleton();
+        $this->service = DeliveryAssemblyService::singleton();
         $this->defaultData();
     }
 
@@ -97,7 +99,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $this->setData('label', $delivery->getLabel());
         
         // history
-        $this->setData('date', \taoDelivery_models_classes_DeliveryAssemblyService::singleton()->getCompilationDate($delivery));
+        $this->setData('date', $this->getClassService()->getCompilationDate($delivery));
         if (\taoDelivery_models_classes_execution_ServiceProxy::singleton()->implementsMonitoring()) {
             $execs = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
             $this->setData('exec', count($execs));
@@ -118,7 +120,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $excluded = $delivery->getPropertyValues($property);
         $this->setData('ttexcluded', count($excluded));
 
-        $users = $this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($delivery);
+        $users = $this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($delivery->getUri());
         $assigned = array_diff(array_unique($users), $excluded);
         $this->setData('ttassigned', count($assigned));
         
@@ -145,7 +147,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
         
         $assigned = array();
-        foreach ($this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($assembly) as $userId) {
+        foreach ($this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($assembly->getUri()) as $userId) {
             if (!in_array($userId, array_keys($excluded))) {
                 $user = new core_kernel_classes_Resource($userId);
                 $assigned[$userId] = $user->getLabel();
@@ -191,7 +193,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                 $label = __("Delivery of %s", $test->getLabel());
                 $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
-                $report = \taoDelivery_models_classes_SimpleDeliveryFactory::create($deliveryClass, $test, $label);
+                $report = SimpleDeliveryFactory::create($deliveryClass, $test, $label);
                 $this->returnReport($report);
             } else {
                 $this->setData('myForm', $myForm->render());
