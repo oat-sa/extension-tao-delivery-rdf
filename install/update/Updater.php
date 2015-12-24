@@ -67,6 +67,10 @@ class Updater extends \common_ext_ExtensionUpdater {
             
             $this->setVersion('1.0.0');
         }
+
+        if ($this->isVersion('1.0.0')){
+            $this->setVersion('1.0.1');
+        }
         
         return null;
     }
