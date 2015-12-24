@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint12\n"
-"PO-Revision-Date: 2015-11-30T10:29:33\n"
+"Project-Id-Version: TAO 3.1.0-sprint15\n"
+"PO-Revision-Date: 2015-12-22T16:41:41\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: is-IS\n"
@@ -14,6 +14,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s test-taker(s) are excluded."
+msgstr ""
+
+msgid "Access deliveries as a guest"
 msgstr ""
 
 msgid "An error occured during the import"
@@ -31,8 +34,23 @@ msgstr "Skilgreindir próftakar"
 msgid "Assigned to"
 msgstr "Úthlutað til"
 
+msgid "Attempt %1$s of %2$s"
+msgstr ""
+
 msgid "Attempts"
 msgstr "Tilraunir"
+
+msgid "Attempts %1$s of %2$s"
+msgstr ""
+
+msgid "Available from %1$s to %2$s"
+msgstr ""
+
+msgid "Available from %s"
+msgstr ""
+
+msgid "Available until %s"
+msgstr ""
 
 msgid "Cancel"
 msgstr "Hætta við"
@@ -41,7 +59,7 @@ msgid "Create a new delivery"
 msgstr ""
 
 msgid "Create a test"
-msgstr ""
+msgstr "Búa til próf"
 
 #, tao-public
 msgid "Delete"
@@ -58,27 +76,36 @@ msgstr "Úthlutanasafn"
 msgid "Delivery \"%s\" successfully imported"
 msgstr ""
 
+msgid "Delivery \'%s\' not found"
+msgstr ""
+
 msgid "Delivery is assigned to %s test-takers."
 msgstr ""
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "Úthlutun er ekki skráð á neinn próftaka."
 
 msgid "Delivery of %s"
 msgstr ""
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "Úthlutun vistuð"
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Útilokaðir próftakar"
 
 #, tao-public
 msgid "Export"
 msgstr ""
 
+msgid "Exported %1$s to %2$s"
+msgstr ""
+
 #, tao-public
 msgid "Filter"
+msgstr "Sía"
+
+msgid "Guest access"
 msgstr ""
 
 #, tao-public
@@ -101,7 +128,7 @@ msgid "New delivery"
 msgstr "Ný úthlutun"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "Engin tilraun hefur hafist."
 
 msgid "No information available"
 msgstr "Upplýsingar ekki fáanlegar"
@@ -118,30 +145,45 @@ msgid "Published on %2s"
 msgstr ""
 
 msgid "Save"
-msgstr ""
+msgstr "Vista"
 
 #, tao-public
 msgid "Search"
 msgstr ""
 
 msgid "Selection saved successfully"
+msgstr "Tókst að vista valkost"
+
+msgid "TAO Guest"
+msgstr ""
+
+msgid "TAO Guest Access"
 msgstr ""
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Próftakar"
 
 msgid "There are currently %s attempts"
 msgstr ""
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "Nú eru engin próf tæk til útgáfu."
 
 msgid "There is currently 1 attempt"
 msgstr ""
 
-msgid "Unable to export Archive"
+msgid "Unable to import Archive"
 msgstr ""
 
 msgid "Unkown error during impoort"
+msgstr "Óþekkt villa varð við innflutning"
+
+msgid "unlimited"
+msgstr ""
+
+msgid "Usage: %s ASSEMBLY_FILE"
+msgstr ""
+
+msgid "Usage: %s DELIVERY_URI OUTPUT_FILE"
 msgstr ""
 

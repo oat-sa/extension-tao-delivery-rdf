@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint12\n"
-"PO-Revision-Date: 2015-11-30T10:29:33\n"
+"Project-Id-Version: TAO 3.1.0-sprint15\n"
+"PO-Revision-Date: 2015-12-22T16:41:41\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: es-ES\n"
@@ -14,134 +14,176 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s test-taker(s) are excluded."
+msgstr "%s participante(s) son excluidos."
+
+msgid "Access deliveries as a guest"
 msgstr ""
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "Se produjo un error durante la importación"
 
 msgid "Assembly"
-msgstr ""
+msgstr "Ensamblar"
 
 msgid "Assembly import"
-msgstr ""
+msgstr "Emsamblar importación"
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "Participantes asiganados"
 
 msgid "Assigned to"
+msgstr "Asignado a"
+
+msgid "Attempt %1$s of %2$s"
 msgstr ""
 
 msgid "Attempts"
 msgstr "Intentos"
 
+msgid "Attempts %1$s of %2$s"
+msgstr ""
+
+msgid "Available from %1$s to %2$s"
+msgstr ""
+
+msgid "Available from %s"
+msgstr "Disponible de %s"
+
+msgid "Available until %s"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Cancelar"
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "Crear una nueva entrega"
 
 msgid "Create a test"
-msgstr ""
+msgstr "Crear una prueba"
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Entregas"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "Biblioteca de entregas"
 
 msgid "Delivery \"%s\" successfully imported"
+msgstr "Entrega \"%s\" importada correctamente"
+
+msgid "Delivery \'%s\' not found"
 msgstr ""
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr "Entrega asignada a %s paricipantes."
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "Entrega no asignada a ningún participante."
 
 msgid "Delivery of %s"
-msgstr ""
+msgstr "Entrega de %s"
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "Entrega guardada"
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Participantes excluidos"
 
 #, tao-public
 msgid "Export"
 msgstr ""
 
+msgid "Exported %1$s to %2$s"
+msgstr ""
+
 #, tao-public
 msgid "Filter"
+msgstr "Filtro"
+
+msgid "Guest access"
 msgstr ""
 
 #, tao-public
 msgid "Import"
-msgstr ""
+msgstr "Importar"
 
 msgid "Manifest not found in assembly"
-msgstr ""
+msgstr "Manifiesta no encontrar en reunión"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Mover"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Nueva clase"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "Nueva entrega"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "No se ha intentado comenzar todavía."
 
 msgid "No information available"
-msgstr ""
+msgstr "No existe información disponible"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr ""
+msgstr "Preparar, publicar sesiones de entregas."
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Propiedades"
 
 msgid "Published on %2s"
-msgstr ""
+msgstr "Publicado en %2s"
 
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
 #, tao-public
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 msgid "Selection saved successfully"
+msgstr "Selección guardada correctamente"
+
+msgid "TAO Guest"
+msgstr ""
+
+msgid "TAO Guest Access"
 msgstr ""
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Participantes"
 
 msgid "There are currently %s attempts"
-msgstr ""
+msgstr "Actuamente hay %s intentos"
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "Actualmente no hasy pruebas disponibles o publicadas."
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "Actualmente hay 1 intento"
 
-msgid "Unable to export Archive"
+msgid "Unable to import Archive"
 msgstr ""
 
 msgid "Unkown error during impoort"
+msgstr "Error desconocido durante la importación"
+
+msgid "unlimited"
+msgstr "ilimitado"
+
+msgid "Usage: %s ASSEMBLY_FILE"
+msgstr ""
+
+msgid "Usage: %s DELIVERY_URI OUTPUT_FILE"
 msgstr ""
 
