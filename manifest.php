@@ -24,20 +24,28 @@ return array(
 	'label' => 'Delivery Management',
 	'description' => 'Manages deliveries using the ontology',
     'license' => 'GPL-2.0',
-    'version' => '0.2',
+    'version' => '1.0.1',
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
         'taoGroups' => '>=2.7.1',
         'taoTests' => '>=2.7.1',
-        'taoDelivery' => '>=2.9.4'
+        'taoDelivery' => '>=3.0.0'
     ),
-	'managementRole' => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole',
+	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
-        array('grant', 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole', array('controller'=>'oat\taoDeliveryRdf\controller\DeliveryMgmt')),
+        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', array('controller'=>'oat\taoDeliveryRdf\controller\DeliveryMgmt')),
+        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole','oat\taoDeliveryRdf\controller\Guest@guest'),
     ),
-    'uninstall' => array(
+    'install' => array(
+        'rdf' => array(
+            __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'ontology'.DIRECTORY_SEPARATOR.'taodelivery.rdf'
+        ),
+        'php' => array(
+            __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php'
+        )
     ),
-    'update' => 'oat\\taoDeliveryRdf\\model\\update\\Updater',
+    //'uninstall' => array(),
+    'update' => 'oat\\taoDeliveryRdf\\install\\update\\Updater',
     'routes' => array(
         '/taoDeliveryRdf' => 'oat\\taoDeliveryRdf\\controller'
     ),    

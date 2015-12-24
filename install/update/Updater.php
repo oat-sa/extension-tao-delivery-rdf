@@ -18,8 +18,13 @@
  *
  *
  */
-namespace oat\taoDeliveryRdf\model\update;
+namespace oat\taoDeliveryRdf\install\update;
 
+use oat\tao\scripts\update\OntologyUpdater;
+use oat\tao\model\accessControl\func\AclProxy;
+use oat\tao\model\accessControl\func\AccessRule;
+use oat\taoDeliveryRdf\model\GroupAssignment;
+use oat\taoDelivery\model\AssignmentService;
 /**
  * 
  * @author Joel Bout <joel@taotesting.com>
@@ -42,8 +47,31 @@ class Updater extends \common_ext_ExtensionUpdater {
             $accessService = \funcAcl_models_classes_AccessService::singleton();
             $accessService->grantModuleAccess($MngrRole, 'taoDeliveryRdf', 'DeliveryMgmt');
             $currentVersion = '0.2';
+            $this->setVersion($currentVersion);
         }
         
-        return $currentVersion;
+        if ($this->isVersion('0.2')) {
+            OntologyUpdater::syncModels();
+            AclProxy::applyRule(new AccessRule(
+                'grant',
+                'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole',
+                array('controller'=>'oat\\taoDeliveryRdf\\controller\\Guest')));
+            
+            $currentService = $this->safeLoadService(AssignmentService::CONFIG_ID);
+            if (class_exists('taoDelivery_models_classes_AssignmentService', false)
+                && $currentService instanceof \taoDelivery_models_classes_AssignmentService) {
+            
+                    $assignmentService = new GroupAssignment();
+                    $this->getServiceManager()->register(AssignmentService::CONFIG_ID, $assignmentService);
+            }
+            
+            $this->setVersion('1.0.0');
+        }
+
+        if ($this->isVersion('1.0.0')){
+            $this->setVersion('1.0.1');
+        }
+        
+        return null;
     }
 }

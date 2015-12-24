@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint12\n"
-"PO-Revision-Date: 2015-11-30T10:29:33\n"
+"Project-Id-Version: TAO 3.1.0-sprint15\n"
+"PO-Revision-Date: 2015-12-22T16:41:41\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr-FR\n"
@@ -14,6 +14,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s test-taker(s) are excluded."
+msgstr ""
+
+msgid "Access deliveries as a guest"
 msgstr ""
 
 msgid "An error occured during the import"
@@ -31,8 +34,23 @@ msgstr "Participants assignés"
 msgid "Assigned to"
 msgstr "Assigné à "
 
+msgid "Attempt %1$s of %2$s"
+msgstr ""
+
 msgid "Attempts"
 msgstr "Tentatives"
+
+msgid "Attempts %1$s of %2$s"
+msgstr ""
+
+msgid "Available from %1$s to %2$s"
+msgstr ""
+
+msgid "Available from %s"
+msgstr ""
+
+msgid "Available until %s"
+msgstr ""
 
 msgid "Cancel"
 msgstr "Annuler"
@@ -58,6 +76,9 @@ msgstr "Bibliothèque de passations"
 msgid "Delivery \"%s\" successfully imported"
 msgstr ""
 
+msgid "Delivery \'%s\' not found"
+msgstr ""
+
 msgid "Delivery is assigned to %s test-takers."
 msgstr ""
 
@@ -77,9 +98,15 @@ msgstr "Participants exclus"
 msgid "Export"
 msgstr ""
 
+msgid "Exported %1$s to %2$s"
+msgstr ""
+
 #, tao-public
 msgid "Filter"
 msgstr "Filtre"
+
+msgid "Guest access"
+msgstr ""
 
 #, tao-public
 msgid "Import"
@@ -127,6 +154,12 @@ msgstr "Rechercher"
 msgid "Selection saved successfully"
 msgstr "Sélection enregistrée avec succès"
 
+msgid "TAO Guest"
+msgstr ""
+
+msgid "TAO Guest Access"
+msgstr ""
+
 msgid "Test-takers"
 msgstr "Participants"
 
@@ -139,9 +172,18 @@ msgstr "Il n'y a actuellement aucun test disponible pour publication."
 msgid "There is currently 1 attempt"
 msgstr "Il y a actuellement une tentative."
 
-msgid "Unable to export Archive"
+msgid "Unable to import Archive"
 msgstr ""
 
 msgid "Unkown error during impoort"
 msgstr "Erreur inconnue au cours de l'importation"
+
+msgid "unlimited"
+msgstr ""
+
+msgid "Usage: %s ASSEMBLY_FILE"
+msgstr ""
+
+msgid "Usage: %s DELIVERY_URI OUTPUT_FILE"
+msgstr ""
 

@@ -19,6 +19,7 @@
  * 
  */
 namespace oat\taoDeliveryRdf\model;
+
 /**
  * Create a form from a  resource of your ontology. 
  * Each property will be a field, regarding it's widget.

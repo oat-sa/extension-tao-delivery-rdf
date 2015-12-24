@@ -46,7 +46,7 @@ class Assembler
         $folder = \tao_helpers_File::createTempDir();
         $zip = new \ZipArchive();
         if ($zip->open($archiveFile) !== true) {
-            return  common_report_Report::createFailure(__('Unable to export Archive'));
+            return  common_report_Report::createFailure(__('Unable to import Archive'));
         }
         $zip->extractTo($folder);
         $zip->close();
