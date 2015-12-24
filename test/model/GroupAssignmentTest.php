@@ -17,19 +17,18 @@
  * Copyright (c) 2014 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
-namespace oat\taoDeliveryRdf\test;
+namespace oat\taoDeliveryRdf\test\model;
 
 use oat\tao\test\TaoPhpUnitTestRunner;
 use \common_ext_ExtensionsManager;
-use \taoDelivery_models_classes_DeliveryServerService;
-use \core_kernel_classes_Literal;
-use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 
 class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
 {
 
-    /** @var  taoDelivery_models_classes_DeliveryServerService */
+    /**
+     * @var GroupAssignment
+     */
     private $service;
 
     /**
