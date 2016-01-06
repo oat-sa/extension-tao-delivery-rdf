@@ -117,11 +117,31 @@
     <rdfs:comment xml:lang="en-US"><![CDATA[Status of a delivery execution]]></rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#SystemObject"/>
   </rdf:Description>    
-  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusActive">
-    <rdfs:label xml:lang="en-US"><![CDATA[Active]]></rdfs:label>
-    <rdfs:comment xml:lang="en-US"><![CDATA[Activ status of a delivery execution]]></rdfs:comment>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusInit">
+    <rdfs:label xml:lang="en-US"><![CDATA[Initial]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Initial status of a delivery execution]]></rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus"/>
   </rdf:Description>    
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusAwaiting">
+    <rdfs:label xml:lang="en-US"><![CDATA[Awaiting]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Awaiting status of a delivery execution]]></rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusAuthorized">
+    <rdfs:label xml:lang="en-US"><![CDATA[Authorized]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Authorized status of a delivery execution]]></rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusTerminated">
+    <rdfs:label xml:lang="en-US"><![CDATA[Terminated]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Terminated status of a delivery execution]]></rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusActive">
+    <rdfs:label xml:lang="en-US"><![CDATA[Active]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Active status of a delivery execution]]></rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus"/>
+  </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusFinished">
     <rdfs:label xml:lang="en-US"><![CDATA[Finished]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Finished status of a delivery execution]]></rdfs:comment>
