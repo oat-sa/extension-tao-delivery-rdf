@@ -24,7 +24,6 @@ use oat\oatbox\user\User;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\SimpleDelivery;
-use oat\taoDelivery\model\Assignment;
 use core_kernel_classes_Resource;
 use \core_kernel_classes_Property;
 use tao_helpers_Date;
