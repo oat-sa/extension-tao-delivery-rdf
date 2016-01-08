@@ -97,6 +97,12 @@ class AssignmentFactory
         return is_null($prop) ? null : (string)$prop;
     }
     
+    public function getDeliveryOrder()
+    {
+        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DELIVERY_DISPLAY_ORDER_PROP));
+        return is_null($prop) ? 0 : intval((string)$prop);
+    }
+    
     protected function buildDescriptionFromData($startTime, $endTime, $countExecs, $maxExecs)
     {
         $descriptions = array();
@@ -137,7 +143,8 @@ class AssignmentFactory
             $this->getUserId(),
             $this->getLabel(),
             $this->getDescription(),
-            $this->getStartable()
+            $this->getStartable(),
+            $this->getDeliveryOrder()
         );
     }
     

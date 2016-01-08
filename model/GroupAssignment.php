@@ -52,7 +52,8 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         foreach ($this->getAssignmentFactories($user) as $factory) {
             $assignments[] = $factory->toAssignment();
         }
-        return $assignments;
+        
+        return $this->orderAssignments($assignments);
     }
     
     public function getAssignmentFactories(User $user)
@@ -277,5 +278,24 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     protected function areWeInRange($startDate, $endDate){
         return (empty($startDate) || date_create() >= $startDate)
         && (empty($endDate) || date_create() <= $endDate);
+    }
+    
+    /**
+     * Order Assignments of a given user.
+     * 
+     * By default, this method relies on the taoDelivery:DisplayOrder property
+     * to order the assignments (Ascending order). However, implementers extending
+     * the GroupAssignment class are encouraged to override this method if they need
+     * another behaviour.
+     * 
+     * @param array $assignments An array of assignments.
+     * @return array The $assignments array ordered.
+     */
+    protected function orderAssignments(array $assignments) {
+        usort($assignments, function ($a, $b) {
+            return $a->getDisplayOrder() - $b->getDisplayOrder();
+        });
+        
+        return $assignments;
     }
 }
