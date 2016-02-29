@@ -36,16 +36,19 @@ class ImportAssembly extends ConfigurableService implements Action
      * @param unknown $params
      */
     public function __invoke($params) {
-        if (count($params) != 1) {
-            return new \common_report_Report(\common_report_Report::TYPE_ERROR, __('Usage: %s ASSEMBLY_FILE', __CLASS__));
+        if (count($params) < 1) {
+            return new \common_report_Report(\common_report_Report::TYPE_ERROR, __('Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ...', __CLASS__));
         }
 
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
         
-        $file = array_shift($params);
-        $deliveryClass = DeliveryAssemblyService::singleton()->getRootClass();
+        $deliveryClass = DeliveryAssemblyService::singleton()->getRootClass()->createSubClass('Import '.\tao_helpers_Date::displayeDate(time()));
         $importer = new Assembler();
-        $report = $importer->importDelivery($deliveryClass, $file);
+        $report = new \common_report_Report(\common_report_Report::TYPE_INFO, __('Importing %1$s files into \'%2$s\'', count($params), $deliveryClass->getLabel()));
+        while (!empty($params)) {
+            $file = array_shift($params);
+            $report->add($importer->importDelivery($deliveryClass, $file));
+        }
         return $report;
     }
 
