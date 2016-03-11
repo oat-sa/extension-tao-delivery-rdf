@@ -23,6 +23,7 @@ use common_report_Report;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use core_kernel_classes_Property;
+use oat\generis\model\kernel\persistence\file\FileIterator;
 /**
  * Im- and export a compiled delivery 
  *
@@ -34,6 +35,8 @@ use core_kernel_classes_Property;
 class Assembler
 {
     const MANIFEST_FILE = 'manifest.json';
+    
+    const RDF_FILE = 'delivery.rdf';
     
     public function __construct()
     {
@@ -61,7 +64,8 @@ class Assembler
             
             $this->importDeliveryFiles($deliveryClass, $manifest, $folder);
             
-            $delivery = $this->importDeliveryResource($deliveryClass, $manifest);
+            $properties = $this->getAdditionalProperties($folder);
+            $delivery = $this->importDeliveryResource($deliveryClass, $manifest, $properties);
             
             $report = common_report_Report::createSuccess(__('Delivery "%s" successfully imported',$delivery->getUri()), $delivery);
         } catch (Exception $e) {
@@ -74,20 +78,42 @@ class Assembler
         return $report;
     }
     
-    protected function importDeliveryResource(core_kernel_classes_Class $deliveryClass, $manifest)
+    protected function getAdditionalProperties($folder)
+    {
+        $rdfPath = $folder.self::RDF_FILE;
+        
+        $properties = array();
+        if (file_exists($rdfPath)) {
+            $blacklist = array(RDF_TYPE);
+            $rdfIterator = new FileIterator($rdfPath, 1);
+            foreach ($rdfIterator as $triple) {
+                if (!in_array($triple->predicate, $blacklist)) {
+                    if (!isset($properties[$triple->predicate])) {
+                        $properties[$triple->predicate] = array();
+                    }
+                    $properties[$triple->predicate][] = $triple->object;
+                }
+            }
+        }
+        return $properties;
+    }
+    
+    
+    protected function importDeliveryResource(core_kernel_classes_Class $deliveryClass, $manifest, $properties = array())
     {
         $label          = $manifest['label'];
         $dirs           = $manifest['dir'];
         $serviceCall    = \tao_models_classes_service_ServiceCall::fromString(base64_decode($manifest['runtime']));
         $resultServer   = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
         
-        $delivery = $deliveryClass->createInstanceWithProperties(array(
+        $properties = array_merge($properties, array(
             RDFS_LABEL                          => $label,
             PROPERTY_COMPILEDDELIVERY_DIRECTORY => array_keys($dirs),
             PROPERTY_COMPILEDDELIVERY_TIME      => time(),
             PROPERTY_COMPILEDDELIVERY_RUNTIME   => $serviceCall->toOntology(),
             TAO_DELIVERY_RESULTSERVER_PROP      => $resultServer
         ));
+        $delivery = $deliveryClass->createInstanceWithProperties($properties);
         
         return $delivery;
     }
