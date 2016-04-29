@@ -28,18 +28,9 @@ module.exports = function(grunt) {
             modules : [{
                 name: 'taoDeliveryRdf/controller/routes',
                 include : ext.getExtensionsControllers(['taoDeliveryRdf']),
-                exclude : ['mathJax', 'mediaElement'].concat(libs)
+                exclude : ['mathJax'].concat(libs)
             }]
         }
-    };
-
-    uglify.deliveryrdfloader = {
-        options : {
-            force : true
-        },
-        files : [
-            { dest : root + '/taoDeliveryRdf/views/js/loader/bootstrap.min.js', src : ['../js/lib/require.js', root + '/taoDeliveryRdf/views/js/loader/bootstrap.js'] }
-        ]
     };
 
     /**
@@ -58,5 +49,5 @@ module.exports = function(grunt) {
     grunt.config('copy', copy);
 
     // bundle task
-    grunt.registerTask('taodeliveryrdfbundle', ['clean:taodeliveryrdfbundle', 'requirejs:taodeliveryrdfbundle', 'uglify:deliveryrdfloader', 'copy:taodeliveryrdfbundle']);
+    grunt.registerTask('taodeliveryrdfbundle', ['clean:taodeliveryrdfbundle', 'requirejs:taodeliveryrdfbundle', 'copy:taodeliveryrdfbundle']);
 };
