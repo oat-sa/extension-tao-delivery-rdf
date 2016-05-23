@@ -77,6 +77,13 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.1.0');
         }
         
-        $this->skip('1.1.0', '1.3.0');
+        $this->skip('1.1.0', '1.2.0');
+
+        if ($this->isVersion('1.2.0')) {
+            $accessService = \funcAcl_models_classes_AccessService::singleton();
+            $deliveryRdfManager = new \core_kernel_classes_Resource('http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager');
+            $accessService->grantExtensionAccess($deliveryRdfManager, 'taoDeliveryRdf');
+            $this->setVersion('1.3.0');
+        }
     }
 }
