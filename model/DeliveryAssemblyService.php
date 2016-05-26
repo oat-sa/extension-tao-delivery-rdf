@@ -96,12 +96,10 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     {
         if ($this->deleteDeliveryRuntime($assembly)===false) {
             \common_Logger::i('Fail to delete runtimes assembly, process aborted');
-            return false;
         }
 
         if ($this->deleteDeliveryDirectory($assembly)===false) {
             \common_Logger::i('Fail to delete directories assembly, process aborted');
-            return false;
         }
 
         return $assembly->delete();
@@ -117,7 +115,9 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
      */
     protected function deleteDeliveryRuntime(core_kernel_classes_Resource $assembly)
     {
-        $this->getServiceManager()->get('taoDelivery/assignment')->onDelete($assembly);
+        /** @var GroupAssignment $deliveryAssignement */
+        $deliveryAssignement = $this->getServiceManager()->get('taoDelivery/assignment');
+        $deliveryAssignement->onDelete($assembly);
         /** @var core_kernel_classes_Resource $runtimeResource */
         $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
         return $runtimeResource->delete();
@@ -132,7 +132,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     public function deleteDeliveryDirectory(core_kernel_classes_Resource $assembly)
     {
         $success = true;
-        $fileDeleted = 0;
+        $deleted = 0;
         $directories = $assembly->getPropertyValues(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_DIRECTORY));
 
         foreach ($directories as $directory) {
@@ -140,10 +140,10 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
             unset($instances[$assembly->getUri()]);
             if (empty($instances)) {
                 $success = $this->getFileStorage()->deleteDirectoryById($directory) ? $success : false;
-                $fileDeleted++;
+                $deleted++;
             }
         }
-        \common_Logger::i('(' . (int) $fileDeleted. ') Files deleted for delivery assembly: ' . $assembly->getUri());
+        \common_Logger::i('(' . (int) $deleted. ') deletions for delivery assembly: ' . $assembly->getUri());
         return $success;
     }
     

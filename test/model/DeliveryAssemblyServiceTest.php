@@ -29,15 +29,23 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class DeliveryAssemblyServiceTest extends TaoPhpUnitTestRunner
 {
-    protected $adapterFixture;
     protected $sampleDir;
+    protected $directoryPath;
 
     public function setUp()
     {
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
-        $this->adapterFixture = 'adapterFixture';
-        $this->sampleDir = __DIR__ . '/../samples/';
+        $this->sampleDir = __DIR__ . '/samples/';
+        $this->directoryPath = $this->sampleDir . 'private/';
     }
+
+    public function tearDown()
+    {
+        if (file_exists($this->directoryPath)) {
+            \tao_helpers_File::delTree($this->directoryPath);
+        }
+    }
+
 
     /**
      * @dataProvider getResultsOfDeletion()
@@ -59,11 +67,13 @@ class DeliveryAssemblyServiceTest extends TaoPhpUnitTestRunner
             ->getMock();
 
         $deliveryAssemblyServiceMock
+            ->expects($this->once())
             ->method('deleteDeliveryRuntime')
             ->with($this->equalTo($delivery))
             ->will($this->returnValue($runtimeDelete));
 
         $deliveryAssemblyServiceMock
+            ->expects($this->once())
             ->method('deleteDeliveryDirectory')
             ->with($this->equalTo($delivery))
             ->will($this->returnValue($directoryDelete));
@@ -81,12 +91,12 @@ class DeliveryAssemblyServiceTest extends TaoPhpUnitTestRunner
         return [
             [false, false, false, false],
 
-            [false, false, true, false],
+            [false, false, true, true],
             [false, true, false, false],
-            [false, true, true, false],
+            [false, true, true, true],
 
             [true, true, false, false],
-            [true, false, true, false],
+            [true, false, true, true],
             [true, false, false, false],
 
             [true, true, true, true]
@@ -161,22 +171,54 @@ class DeliveryAssemblyServiceTest extends TaoPhpUnitTestRunner
     /**
      * Get file storage mock for testDeleteDeliveryDirectory()
      *
-     * @param $expectedDeleteCall
+     * @return object
+     */
+    protected function getFileSystemWithServiceLocator()
+    {
+        $fileStorage = \tao_models_classes_service_FileStorage::singleton();
+        $adapter = $fileStorage->getOption('private');
+
+        $adaptersFixture = array (
+            'filesPath' => $this->sampleDir,
+            'adapters' => array (
+                $adapter => array(
+                    'class' => 'Local',
+                    'options' => array(
+                        'root' => $this->directoryPath
+                    )
+                )
+            )
+        );
+
+        $reflectionClass = new \ReflectionClass(\tao_models_classes_service_FileStorage::class);
+        $reflectionProperty = $reflectionClass->getProperty('privateFs');
+        $reflectionProperty->setAccessible(true);
+
+        $reflectionProperty->setValue($fileStorage, $this->getFileSystemMock($adapter, $this->directoryPath));
+
+        $fileSystemService = new FileSystemService($adaptersFixture);
+
+        $smProphecy = $this->prophesize(ServiceLocatorInterface::class);
+        $smProphecy->get(FileSystemService::SERVICE_ID)->willReturn($fileSystemService);
+        $fileStorage->setServiceLocator($smProphecy->reveal());
+
+        return $fileStorage;
+    }
+
+    /**
+     * Create a mock of filesystem, getUri will return $path
+     * @param $path
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getFileSystem($expectedDeleteCall)
+    protected function getFileSystemMock($uri, $path)
     {
-        $deliveryAssemblyServiceMock = $this->getMockBuilder(\tao_models_classes_service_FileStorage::class)
+        $fsFixture = $this->getMockBuilder(\core_kernel_fileSystem_FileSystem::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('deleteDirectoryById'))
             ->getMock();
+        $fsFixture->method('getUri')->willReturn($uri);
+        $fsFixture->method('getPath')->willReturn($path);
 
-        $deliveryAssemblyServiceMock
-            ->expects($this->exactly($expectedDeleteCall))
-            ->method('deleteDirectoryById')
-            ->will($this->returnValue(true));
-
-        return $deliveryAssemblyServiceMock;
+        return $fsFixture;
     }
 
     /**
@@ -185,11 +227,16 @@ class DeliveryAssemblyServiceTest extends TaoPhpUnitTestRunner
      * @dataProvider getDeleteDeliveryDirectorySamples
      * @param $instanceToDelete
      * @param $existingInstances
-     * @param $expectedDeleteCall
+     * @param $expectedDeletion
      */
-    public function testDeleteDeliveryDirectory($instanceToDelete, $existingInstances, $expectedDeleteCall)
+    public function testDeleteDeliveryDirectory($instanceToDelete, $existingInstances, $expectedDeletion)
     {
+
         $deliveryAssemblyServiceMock = $this->getAssemblyServiceMock();
+        $fileStorage = $this->getFileSystemWithServiceLocator();
+
+        $directoryStorage = $fileStorage->getDirectoryById('sample-');
+        mkdir($directoryStorage->getPath(), 0700, true);
 
         $deliveryAssemblyServiceMock
             ->method('getRootClass')
@@ -199,12 +246,18 @@ class DeliveryAssemblyServiceTest extends TaoPhpUnitTestRunner
 
         $deliveryAssemblyServiceMock
             ->method('getFileStorage')
-            ->will($this->returnValue(
-                $this->getFileSystem($expectedDeleteCall)
-            ));
+            ->will($this->returnValue($fileStorage));
 
         $delivery = $this->getDelivery($instanceToDelete);
         $this->assertTrue($deliveryAssemblyServiceMock->deleteDeliveryDirectory($delivery));
+
+        foreach ($instanceToDelete as $sampleDirectory) {
+            if ($expectedDeletion) {
+                $this->assertFileNotExists($directoryStorage->getPath());
+            } else {
+                $this->assertTrue($fileStorage->deleteDirectoryById('sample-'));
+            }
+        }
     }
 
     /**
@@ -217,11 +270,11 @@ class DeliveryAssemblyServiceTest extends TaoPhpUnitTestRunner
         return [
             // One dir to delete, only one instance
             [
-                ['dir1' => ['sample1']], ['dir1' => ['sample1']], 1
+                ['dir1' => 'sample-'], ['dir1' => ['sample-']], true
             ],
             // No file to delete, two instances for a directory
             [
-                ['dir1' => ['sample1']], ['dir1' => ['sample1'], 'dir2' => ['sample1']], 0
+                ['dir1' => 'sample-'], ['dir1' => ['sample-'], 'dir2' => ['sample2-']], false
             ],
         ];
     }
