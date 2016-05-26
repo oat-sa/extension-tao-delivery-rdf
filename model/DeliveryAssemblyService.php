@@ -116,7 +116,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     protected function deleteDeliveryRuntime(core_kernel_classes_Resource $assembly)
     {
         /** @var GroupAssignment $deliveryAssignement */
-        $deliveryAssignement = $this->getServiceManager()->get('taoDelivery/assignment');
+        $deliveryAssignement = $this->getServiceManager()->get(GroupAssignment::CONFIG_ID);
         $deliveryAssignement->onDelete($assembly);
         /** @var core_kernel_classes_Resource $runtimeResource */
         $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
