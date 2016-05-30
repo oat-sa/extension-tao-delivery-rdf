@@ -44,12 +44,6 @@
                     <action id="delivery-new" name="New delivery" url="/taoDeliveryRdf/DeliveryMgmt/wizard" context="resource" group="tree">
                         <icon id="icon-delivery"/>
                     </action>
-                    <action id="delivery-import" name="Import" url="/taoDeliveryRdf/DeliveryImport/index" context="resource" group="tree" binding="loadClass">
-                        <icon id="icon-import"/>
-                    </action>
-                    <action id="delivery-export" name="Export" url="/taoDeliveryRdf/DeliveryExport/index" context="resource" group="tree">
-                        <icon id="icon-export"/>
-                    </action>
                     
                 </actions>
             </section>
