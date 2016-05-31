@@ -22,9 +22,12 @@ namespace oat\taoDeliveryRdf\scripts;
 
 use oat\oatbox\action\Action;
 use common_report_Report as Report;
-use oat\oatbox\service\ServiceManager;
 use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
 use oat\oatbox\action\ResolutionException;
+
+//Load extension to define necessary constants.
+\common_ext_ExtensionsManager::singleton()->getExtensionById('taoTests');
+\common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
 
 /**
  * Class RecompileDelivery
@@ -42,6 +45,16 @@ class RecompileDelivery implements Action
      * @var array Available script modes
      */
     static $modes = ['list', 'compile'];
+
+    /**
+     * List of properties to be copied from parent delivery
+     * @var array
+     */
+    static $propertiesToCopy = [
+        TAO_DELIVERY_END_PROP,
+        TAO_DELIVERY_START_PROP,
+        TAO_DELIVERY_MAXEXEC_PROP,
+    ];
 
     /**
      * @var \Report
@@ -64,9 +77,6 @@ class RecompileDelivery implements Action
      */
     public function __invoke($params)
     {
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoTests');
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
-
         $this->params = $params;
 
         try {
@@ -197,9 +207,30 @@ class RecompileDelivery implements Action
         $destinationClass = new \core_kernel_classes_Class($delivery->getOnePropertyValue($classProperty)->getUri());
 
         $deliveryCreationReport = SimpleDeliveryFactory::create($destinationClass, $test, $delivery->getLabel());
+        /** @var \core_kernel_classes_Resource $newDelivery */
         $newDelivery = $deliveryCreationReport->getData();
 
+        foreach (self::$propertiesToCopy as $propertyToCopy) {
+            $propertyToCopy = new \core_kernel_classes_Property($propertyToCopy);
+            $val = $delivery->getOnePropertyValue($propertyToCopy);
+            if ($val) {
+                $newDelivery->setPropertyValue($propertyToCopy, $val);
+            }
+        }
+
+        $this->addPrefixToLabel($delivery);
+
         return $newDelivery;
+    }
+
+    /**
+     * @param \core_kernel_classes_Resource $delivery
+     */
+    private function addPrefixToLabel(\core_kernel_classes_Resource $delivery)
+    {
+        $label = $delivery->getLabel();
+        $label .= " - old"; //todo: use an option instead of hardcoded value
+        $delivery->setLabel($label);
     }
 
     /**
