@@ -80,6 +80,11 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('1.1.0', '1.3.0');
 
         if ($this->isVersion('1.3.0')) {
+            AclProxy::applyRule(new AccessRule(
+                AccessRule::GRANT,
+                'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
+                array('ext' => 'taoDeliveryRdf')));
+
             $accessService = \funcAcl_models_classes_AccessService::singleton();
             $deliveryRdfManager = new \core_kernel_classes_Resource('http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager');
             $accessService->grantExtensionAccess($deliveryRdfManager, 'taoDeliveryRdf');
