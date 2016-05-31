@@ -76,7 +76,15 @@ class Updater extends \common_ext_ExtensionUpdater {
             OntologyUpdater::syncModels();
             $this->setVersion('1.1.0');
         }
-        
+
         $this->skip('1.1.0', '1.4.0');
+
+        if ($this->isVersion('1.4.0')) {
+            AclProxy::applyRule(new AccessRule(
+                AccessRule::GRANT,
+                'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
+                array('ext' => 'taoDeliveryRdf')));
+            $this->setVersion('1.5.0');
+        }
     }
 }
