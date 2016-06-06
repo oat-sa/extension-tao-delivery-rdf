@@ -34,9 +34,16 @@ use oat\oatbox\action\ResolutionException;
  * @package oat\taoDeliveryRdf\scripts
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  *
- * Run example:
+ * Run examples:
+ *
+ * - Show list of deliveries:
  * ```
- * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\RecompileDelivery'
+ * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\RecompileDelivery' list
+ * ```
+ *
+ * - Recompile delivery by identifier
+ * ```
+ * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\RecompileDelivery' compile 'http://sample/first.rdf#i1464967192451980'
  * ```
  */
 class RecompileDelivery implements Action
@@ -140,7 +147,14 @@ class RecompileDelivery implements Action
                 continue;
             }
 
-            $newDelivery = $this->compileDelivery($delivery);
+            try {
+                $newDelivery = $this->compileDelivery($delivery);
+            } catch (\common_Exception $e){
+                $this->report->add(new Report(
+                    Report::TYPE_ERROR,
+                    $e->getMessage()
+                ));
+            }
 
             $this->report->add(new Report(
                 Report::TYPE_SUCCESS,
@@ -197,6 +211,7 @@ class RecompileDelivery implements Action
 
     /**
      * @param \core_kernel_classes_Resource $delivery
+     * @throws \common_Exception
      * @return \core_kernel_classes_Resource new delivery resource
      */
     private function compileDelivery(\core_kernel_classes_Resource $delivery)
@@ -207,6 +222,10 @@ class RecompileDelivery implements Action
         $destinationClass = new \core_kernel_classes_Class($delivery->getOnePropertyValue($classProperty)->getUri());
 
         $deliveryCreationReport = SimpleDeliveryFactory::create($destinationClass, $test, $delivery->getLabel());
+        if ($deliveryCreationReport->getType() == \common_report_Report::TYPE_ERROR) {
+            \common_Logger::i('Unable to recompile delivery execution' . $delivery->getUri());
+            throw new \common_Exception($deliveryCreationReport->getMessage());
+        }
         /** @var \core_kernel_classes_Resource $newDelivery */
         $newDelivery = $deliveryCreationReport->getData();
 
