@@ -29,7 +29,7 @@ class RestDelivery extends \tao_actions_RestController
      * Test uri has to be set and existing
      */
     public function generate()
-    {
+    {   
         try {
             if (!$this->hasRequestParameter(self::REST_DELIVERY_TEST_ID)) {
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_TEST_ID, $this->getRequestURI());
