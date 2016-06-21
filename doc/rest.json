@@ -5,8 +5,8 @@
     "title": "QTI item creation API"
   },
   "schemes": [
-    "https",
-    "http"
+    "http",
+    "https"
   ],
   "tags": [
     {
@@ -29,7 +29,7 @@
         "parameters": [
           {
             "name": "test",
-            "in": "query",
+            "in": "formData",
             "description": "Test identifier, in URI format",
             "required": true,
             "type": "string"
