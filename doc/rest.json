@@ -1,0 +1,204 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "QTI item creation API"
+  },
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "tags": [
+    {
+      "name": "test",
+      "description": "Operations about test"
+    },
+    {
+      "name": "delivery",
+      "description": "Operations about delivery"
+    }
+  ],
+  "paths": {
+    "/taoDeliveryRdf/RestDelivery/generate": {
+      "post": {
+        "description": "Generate a delivery from a valid test uri",
+        "tags": [
+          "test",
+          "delivery"
+        ],
+        "parameters": [
+          {
+            "name": "test",
+            "in": "query",
+            "description": "Test identifier, in URI format",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "title": "response",
+              "format": "json",
+              "type": "object",
+              "required": [
+                "success",
+                "version"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "false on failure, true on success"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "tao version"
+                },
+                "data": {
+                  "$ref": "#/definitions/data"
+                },
+                "errorCode": {
+                  "type": "string",
+                  "description": "error code. it appear if success value is false"
+                },
+                "errorMsg": {
+                  "type": "string",
+                  "description": "error description. it appear if success value is false"
+                }
+              }
+            },
+            "examples": {
+              "application/json": {
+                "success": true,
+                "data": {
+                  "delivery": [
+                    "http://tao.local/mytao.rdf#xxxxxxxxxxxxx1"
+                  ]
+                },
+                "version": "3.1.0"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request if you send invalid parameters. Test uri is mandatory.",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "At least one mandatory parameter was required but found missing in your request",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "You don't have permission to access this resource.",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "404": {
+            "description": "Test uri is provided but not found.",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "Unable to find a test associated to the given uri.",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "500": {
+            "description": "Internal error (should not occur)",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "Exception error description",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "501": {
+            "description": "not implemented if you call this API with GET method",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 501,
+                "errorMsg": "Only post method is accepted to import Qti package.",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "errorModel": {
+      "type": "object",
+      "description": "contain error",
+      "required": [
+        "success",
+        "version",
+        "errorCode",
+        "errorMsg"
+      ],
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "false on failure",
+          "default": false
+        },
+        "version": {
+          "type": "string",
+          "description": "tao version"
+        },
+        "errorCode": {
+          "type": "integer",
+          "description": "error code"
+        },
+        "errorMsg": {
+          "type": "string",
+          "description": "error description"
+        }
+      }
+    },
+    "data": {
+      "type": "object",
+      "description": "Generated delivery URI , it appear if success value is true",
+      "properties": {
+        "delivery": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "taoDeliveryRdf on Github",
+    "url": "https://github.com/oat-sa/extension-tao-delivery-rdf"
+  }
+}
