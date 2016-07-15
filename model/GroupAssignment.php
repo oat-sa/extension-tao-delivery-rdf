@@ -84,6 +84,10 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     public function getRuntime($deliveryId)
     {
         $delivery = new \core_kernel_classes_Resource($deliveryId);
+        if (!$delivery->exists()) {
+            throw new \common_exception_NoContent('Unable to load runtime associated for delivery ' . $deliveryId .
+                ' Delivery probably deleted.');
+        }
         return DeliveryAssemblyService::singleton()->getRuntime($delivery);
     }
     
