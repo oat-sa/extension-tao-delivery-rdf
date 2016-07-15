@@ -30,7 +30,7 @@ return array(
         'taoGroups' => '>=2.7.1',
         'taoTests' => '>=2.7.1',
         'taoDelivery' => '>=3.0.0',
-        'taoEventLog' => '>=0.2.0'
+        'taoEventLog' => '>=0.3.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
