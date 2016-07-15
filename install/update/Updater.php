@@ -25,6 +25,7 @@ use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
+
 /**
  * 
  * @author Joel Bout <joel@taotesting.com>
@@ -86,7 +87,7 @@ class Updater extends \common_ext_ExtensionUpdater {
                 array('ext' => 'taoDeliveryRdf')));
             $this->setVersion('1.5.0');
         }
-        
-        $this->skip('1.5.0', '1.6.1');
+
+        $this->skip('1.5.0', '1.6.3');
     }
 }

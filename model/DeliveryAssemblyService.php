@@ -22,8 +22,8 @@ namespace oat\taoDeliveryRdf\model;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use \core_kernel_classes_Property;
-use oat\oatbox\filesystem\FileSystemService;
-use oat\oatbox\service\ServiceManager;
+use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
+use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
 /**
  * Service to manage the authoring of deliveries
@@ -74,7 +74,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
         }
         
         $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
-        
+        $this->getEventManager()->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
         return $compilationInstance;
     }
     
@@ -104,6 +104,16 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
 
         return $assembly->delete();
     }
+
+    public function deleteResource(core_kernel_classes_Resource $resource)
+    {
+        $result = parent::deleteResource($resource);
+
+        $this->getEventManager()->trigger(new DeliveryRemovedEvent($resource->getUri()));
+
+        return $result;
+    }
+
 
     /**
      * Delete a runtime of a delivery
