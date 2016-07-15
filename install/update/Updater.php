@@ -20,11 +20,17 @@
  */
 namespace oat\taoDeliveryRdf\install\update;
 
+use oat\oatbox\event\EventManager;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
+use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
+use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
+use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
+use oat\taoEventLog\model\LoggerService;
+
 /**
  * 
  * @author Joel Bout <joel@taotesting.com>
@@ -88,5 +94,19 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
         
         $this->skip('1.5.0', '1.6.2');
+
+        if ($this->isVersion('1.6.2')) {
+
+            /** @var EventManager $eventManager */
+            $eventManager = $this->getServiceManager()->get(EventManager::CONFIG_ID);
+
+            $eventManager->attach(DeliveryCreatedEvent::class, [LoggerService::class, 'logEvent']);
+            $eventManager->attach(DeliveryRemovedEvent::class, [LoggerService::class, 'logEvent']);
+            $eventManager->attach(DeliveryUpdatedEvent::class, [LoggerService::class, 'logEvent']);
+
+            $this->getServiceManager()->register(EventManager::CONFIG_ID, $eventManager);
+
+            $this->setVersion('1.7.0');
+        }
     }
 }
