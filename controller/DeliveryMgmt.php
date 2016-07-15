@@ -20,9 +20,11 @@
  */
 namespace oat\taoDeliveryRdf\controller;
 
+use oat\oatbox\event\EventManagerAwareTrait;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
+use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
 use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
@@ -37,6 +39,7 @@ use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
  */
 class DeliveryMgmt extends \tao_actions_SaSModule
 {
+    use EventManagerAwareTrait;
 
     /**
      * constructor: initialize the service and the default data
@@ -89,7 +92,9 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 // then save the property values as usual
                 $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($delivery);
                 $delivery = $binder->bind($propertyValues);
-                
+
+                $this->getEventManager()->trigger(new DeliveryUpdatedEvent($delivery->getUri(), $propertyValues));
+
                 $this->setData("selectNode", \tao_helpers_Uri::encode($delivery->getUri()));
                 $this->setData('message', __('Delivery saved'));
                 $this->setData('reload', true);
@@ -176,7 +181,9 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         
         $assembly = $this->getCurrentInstance();
         $success = $assembly->editPropertyValues(new core_kernel_classes_Property(TAO_DELIVERY_EXCLUDEDSUBJECTS_PROP),$jsonArray);
-        
+
+        $this->getEventManager()->trigger(new DeliveryUpdatedEvent($assembly->getUri(), [TAO_DELIVERY_EXCLUDEDSUBJECTS_PROP => $jsonArray]));
+
         $this->returnJson(array(
         	'saved' => $success
         ));
