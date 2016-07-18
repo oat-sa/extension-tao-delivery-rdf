@@ -159,7 +159,7 @@ class Assembler
             $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
             $files = $directory->getIterator();
             foreach ($files as $file) {
-                \tao_helpers_File::addFilesToZip($zipArchive, $directory->readStream($file), $directory->getRelativePath() . $file);
+                \tao_helpers_File::addFilesToZip($zipArchive, $directory->readPsrStream($file), $directory->getRelativePath() . $file);
             }
             $data['dir'][$id] = $directory->getRelativePath();
         }
