@@ -17,7 +17,7 @@
  * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
  */
 
-namespace oat\taoDelivery\model;
+namespace oat\taoDeliveryRdf\model;
 
 use common_ext_ExtensionManager as ExtensionsManager;
 use core_kernel_classes_Property;
@@ -37,17 +37,12 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 
     const DELIVERY_PLUGINS_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryPlugins';
 
-    private $pluginService;
 
-    public function __construct()
-    {
-        $this->pluginServie = $this->getServiceManager()->get(TestPluginService::CONFIG_ID);
-    }
-
-
-    public function getTestPlugins(DeliveryExecution $deliveryExecution)
+    public function getPlugins(DeliveryExecution $deliveryExecution)
     {
         $plugins = [];
+
+        $pluginServie = $this->getServiceManager()->get(TestPluginService::CONFIG_ID);
 
         $delivery = $deliveryExecution->getDelivery();
 
@@ -72,7 +67,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         return $plugins;
     }
 
-    public function getBoostrap(DeliveryExecution $deliveryExecution)
+    public function getBootstrap(DeliveryExecution $deliveryExecution)
     {
         //FIXME this config is misplaced.
         $config = ExtensionsManager::singleton()->getExtensionById('taoQtiTest')->getConfig('testRunner');
