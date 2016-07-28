@@ -24,12 +24,12 @@ return array(
 	'label' => 'Delivery Management',
 	'description' => 'Manages deliveries using the ontology',
     'license' => 'GPL-2.0',
-    'version' => '1.6.3',
+    'version' => '1.7.0',
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
         'taoGroups' => '>=2.7.1',
-        'taoTests' => '>=2.7.1',
-        'taoDelivery' => '>=3.0.0'
+        'taoTests' => '>=3.0.0',
+        'taoDelivery' => '>=4.3.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
@@ -41,7 +41,8 @@ return array(
             __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'ontology'.DIRECTORY_SEPARATOR.'taodelivery.rdf'
         ),
         'php' => array(
-            __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php'
+            __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php',
+            'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService'
         )
     ),
     //'uninstall' => array(),
