@@ -25,6 +25,9 @@ use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\oatbox\service\ServiceManager;
 
 /**
+ * Installation action that register the rdf implementation for the delivery container service
+ *
+ * @author Bertrand Chevrier <bertrand@taotesting.com>
  */
 class RegisterDeliveryContainerService extends \common_ext_action_InstallAction
 {

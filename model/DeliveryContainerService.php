@@ -30,14 +30,24 @@ use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoTests\models\runner\plugins\TestPluginService;
 
 /**
+ * RDF implementation for the Delivery container service.
+ * It means the container data are retrieved into the ontology.
  *
+ * TODO The actual implementation still uses serviceCall for the test definition and the test compilation
+ * and the config for the bootstrap. All those infos should be added during the assemble phase. 
+ *
+ * @author Bertrand Chevier <bertrand@taotesting.com>
  */
 class DeliveryContainerService  extends ConfigurableService implements DeliveryContainerServiceInterface
 {
 
     const DELIVERY_PLUGINS_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryPlugins';
 
-
+    /**
+     * Get the list of plugins for the current execution
+     * @param DeliveryExecution $execution
+     * @return array the list of plugins
+     */
     public function getPlugins(DeliveryExecution $deliveryExecution)
     {
         $plugins = [];
@@ -67,17 +77,26 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         return $plugins;
     }
 
+    /**
+     * Get the container bootstrap
+     * @param DeliveryExecution $execution
+     * @return string the bootstrap
+     */
     public function getBootstrap(DeliveryExecution $deliveryExecution)
     {
-        //FIXME this config is misplaced.
+        //FIXME this config is misplaced, this should be a delivery property
         $config = ExtensionsManager::singleton()->getExtensionById('taoQtiTest')->getConfig('testRunner');
         return $config['bootstrap'];
     }
 
-
+    /**
+     * Get the container testDefinition
+     * @param DeliveryExecution $execution
+     * @return string the testDefinition
+     */
     public function getTestDefinition(DeliveryExecution $deliveryExecution)
     {
-        //FIXME this shouldn't be a service call anymore
+        //FIXME this shouldn't be a service call anymore, a delivery property instead
         $delivery = $deliveryExecution->getDelivery();
         $runtime = ServiceManager::getServiceManager()->get(AssignmentService::CONFIG_ID)->getRuntime($delivery);
         $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, array());
@@ -85,10 +104,15 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         return $inputParameters['QtiTestDefinition'];
     }
 
+    /**
+     * Get the container test compilation
+     * @param DeliveryExecution $execution
+     * @return string the  testCompilation
+     */
     public function getTestCompilation(DeliveryExecution $deliveryExecution)
     {
 
-        //FIXME this shouldn't be a service call anymore
+        //FIXME this shouldn't be a service call anymore, a delivery property instead
         $delivery = $deliveryExecution->getDelivery();
         $runtime = ServiceManager::getServiceManager()->get(AssignmentService::CONFIG_ID)->getRuntime($delivery);
         $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, array());
