@@ -19,7 +19,7 @@
 
 namespace oat\taoDeliveryRdf\model;
 
-use common_ext_ExtensionManager as ExtensionsManager;
+use common_ext_ExtensionsManager as ExtensionsManager;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
@@ -27,7 +27,7 @@ use oat\oatbox\service\ServiceManager;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\DeliveryContainerService as DeliveryContainerServiceInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use oat\taoTests\model\runner\plugins\TestPluginService;
+use oat\taoTests\models\runner\plugins\TestPluginService;
 
 /**
  *
@@ -42,7 +42,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
     {
         $plugins = [];
 
-        $pluginServie = $this->getServiceManager()->get(TestPluginService::CONFIG_ID);
+        $pluginService = $this->getServiceManager()->get(TestPluginService::CONFIG_ID);
 
         $delivery = $deliveryExecution->getDelivery();
 
@@ -50,7 +50,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 
         if(is_null($pluginPropData) || empty($pluginPropData)) {
             //fallback to the default values
-            return $this->pluginService->getAllPlugins();
+            return $pluginService->getAllPlugins();
         }
 
         //otherwise decode the data from [ pluginId => active] to TestPlugins
@@ -75,7 +75,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
     }
 
 
-    public function getTestDefinition(DeliveryExecution $execution)
+    public function getTestDefinition(DeliveryExecution $deliveryExecution)
     {
         //FIXME this shouldn't be a service call anymore
         $delivery = $deliveryExecution->getDelivery();
@@ -85,7 +85,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         return $inputParameters['QtiTestDefinition'];
     }
 
-    public function getTestCompilation(DeliveryExecution $execution)
+    public function getTestCompilation(DeliveryExecution $deliveryExecution)
     {
 
         //FIXME this shouldn't be a service call anymore
