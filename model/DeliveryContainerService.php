@@ -60,7 +60,9 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 
         if(is_null($pluginPropData) || empty($pluginPropData)) {
             //fallback to the default values
-            return $pluginService->getAllPlugins();
+            return array_filter($pluginService->getAllPlugins(), function($plugin){
+                return !is_null($plugin) && $plugin->isActive(); 
+            });
         }
 
         //otherwise decode the data from [ pluginId => active] to TestPlugins
