@@ -157,10 +157,13 @@ class Assembler
         $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_DIRECTORY));
         foreach ($directories as $id) {
             $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
-            \tao_helpers_File::addFilesToZip($zipArchive, $directory->getPath(), $directory->getRelativePath());
+            $files = $directory->getIterator();
+            foreach ($files as $file) {
+                \tao_helpers_File::addFilesToZip($zipArchive, $directory->readPsrStream($file), $directory->getRelativePath() . $file);
+            }
             $data['dir'][$id] = $directory->getRelativePath();
         }
-        
+
         $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
         $serviceCall = \tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
