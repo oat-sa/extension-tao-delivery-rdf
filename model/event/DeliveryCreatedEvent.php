@@ -25,7 +25,7 @@ use oat\oatbox\event\Event;
 class DeliveryCreatedEvent implements Event, JsonSerializable
 {
 
-    /** @var  string */
+    /** @var string */
     protected $deliveryUri;
 
     /**
@@ -36,7 +36,6 @@ class DeliveryCreatedEvent implements Event, JsonSerializable
         $this->deliveryUri = $deliveryUri;
     }
 
-
     /**
      * Return a unique name for this event
      * @see \oat\oatbox\event\Event::getName()
@@ -44,6 +43,15 @@ class DeliveryCreatedEvent implements Event, JsonSerializable
     public function getName()
     {
         return get_class($this);
+    }
+
+    /**
+     * Get uri of created delivery
+     * @return string
+     */
+    public function getDeliveryUri()
+    {
+        return $this->deliveryUri;
     }
 
     /**
