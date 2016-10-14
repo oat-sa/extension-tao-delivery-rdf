@@ -38,26 +38,19 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
     protected $widget = 'http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature';
 
     /**
-     * xxxx
-     *
-     * @var array
-     */
-    private $activeFeatures = [];
-
-    /**
      * xxxxxx
      *
      */
     public function feed() {
-        $this->activeFeatures = [];
+        $activeFeatures = [];
 
         $expression = "/^".preg_quote($this->name, "/")."(.)*[0-9]+$/";
         foreach($_POST as $key => $value){
             if(preg_match($expression, $key)){
-                $this->activeFeatures[] = $value;
+                $activeFeatures[] = $value;
             }
         }
-        $this->setValue(implode(',', $this->activeFeatures));
+        $this->setValue(implode(',', $activeFeatures));
     }
 
     /**
@@ -87,16 +80,16 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
                 unset($this->attributes['noLabel']);
             }
 
-            // Options
+            // Options list
             $i = 0;
-            $this->activeFeatures = explode(',', $this->value);
+            $activeFeatures = explode(',', $this->value);
 
             $returnValue .= '<div class="form_radlst form_checklst">';
             foreach($allFeatures as $featureId => $feature){
                 $returnValue .= "<input type='checkbox' value='{$featureId}' name='{$this->name}_{$i}' id='{$this->name}_{$i}' ";
                 $returnValue .= $this->renderAttributes();
 
-                if(in_array($featureId, $this->activeFeatures)){
+                if(in_array($featureId, $activeFeatures)){
                     $returnValue .= " checked='checked' ";
                 }
                 $returnValue .= " />&nbsp;<label class='elt_desc' for='{$this->name}_{$i}'>"._dh($feature['label'])."</label><br />";
