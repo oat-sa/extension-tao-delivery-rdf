@@ -41,9 +41,6 @@ use oat\taoTests\models\runner\plugins\TestPluginService;
 class DeliveryContainerService  extends ConfigurableService implements DeliveryContainerServiceInterface
 {
 
-    //todo: is this property usefull ?
-//    const DELIVERY_PLUGINS_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryPlugins';
-
     const TEST_RUNNER_FEATURES_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures';
 
     /**
@@ -53,57 +50,42 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
      */
     public function getPlugins(DeliveryExecution $deliveryExecution)
     {
-//        $plugins = [];
-
-        $pluginService = $this->getServiceManager()->get(TestPluginService::CONFIG_ID);
-
         $delivery = $deliveryExecution->getDelivery();
 
-//        $pluginPropData = $delivery->getOnePropertyValue(new core_kernel_classes_Property(self::DELIVERY_PLUGINS_PROPERTY));
-
-        // filter according to active test runner features
-        $testRunnerFeaturesData = $delivery->getOnePropertyValue(new core_kernel_classes_Property(self::TEST_RUNNER_FEATURES_PROPERTY));
+        $pluginService = $this->getServiceManager()->get(TestPluginService::CONFIG_ID);
 
         $defaultActivePlugins = array_filter($pluginService->getAllPlugins(), function($plugin){
             return !is_null($plugin) && $plugin->isActive();
         });
 
-        // No features are defined, fallback to default values
-        if(is_null($testRunnerFeaturesData) || empty($testRunnerFeaturesData)) {
+        $testRunnerFeaturesData = $delivery->getOnePropertyValue(new core_kernel_classes_Property(self::TEST_RUNNER_FEATURES_PROPERTY));
+        //todo: rename this to getTestRunnerFeatures
+        $allTestRunnerFeatures = $pluginService->getToggableDeliveryFeatures();
+
+        // No test runner features are defined, we just return the default active plugins
+        if (count($allTestRunnerFeatures) == 0) {
             return $defaultActivePlugins;
         }
 
-        $inactiveTestRunnerFeatures = [];
-        foreach(json_decode($testRunnerFeaturesData, true) as $featureId => $active) {
-            if ($active === false) {
-                $inactiveTestRunnerFeatures[] = $featureId;
-            }
-        };
-//        var_export(json_encode($inactiveTestRunnerFeatures, true));
-//        echo '<br />====================================<br />';
+        // filter active plugin according to test runner features status
+        // todo: write a unit test for this
+        $activeTestRunnerFeaturesIds = explode(',', $testRunnerFeaturesData);
 
-        $allTestRunnerFeatures = $pluginService->getToggableDeliveryFeatures(); //todo: rename this to getTestFeatures
         $pluginsToDisable = [];
-        foreach($allTestRunnerFeatures as $featureId => $testRunnerFeature) {
-            if (in_array($featureId, $inactiveTestRunnerFeatures)) {
-                $pluginsToDisable = array_merge($pluginsToDisable, $testRunnerFeature['pluginsIds']);
+        foreach($allTestRunnerFeatures as $featureId => $feature) {
+            if (!in_array($featureId, $activeTestRunnerFeaturesIds)) {
+                $pluginsToDisable = array_merge($pluginsToDisable, $feature['pluginsIds']);
             }
         }
-//        var_export(json_encode($pluginsToDisable, true));
-//        echo '<br />====================================<br />';
 
-        $activePlugins = [];
+        $filteredPlugins = [];
         foreach($defaultActivePlugins as $plugin) {
             if (! in_array($plugin->getId(), $pluginsToDisable)) {
-                $activePlugins[$plugin->getModule()] = $plugin;
+                $filteredPlugins[$plugin->getModule()] = $plugin;
             }
         }
 
-//        var_export(json_encode($defaultActivePlugins, true));
-//        echo '<br />====================================<br />';
-//        var_export(json_encode($activePlugins, true));
-
-        return $activePlugins;
+        return $filteredPlugins;
         /*
 
         if(is_null($pluginPropData) || empty($pluginPropData)) {

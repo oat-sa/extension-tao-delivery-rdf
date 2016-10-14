@@ -14,6 +14,6 @@
         <rdf:type rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#WidgetRenderer"/>
         <widget:renderedWidget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature"/>
         <widget:renderMode><![CDATA[xhtml]]></widget:renderMode>
-        <widget:implementation><![CDATA[oat\taoDeliveryRdf\helper\TestRunnerFeatureWidgetXhtml]]></widget:implementation>
+        <widget:implementation><![CDATA[oat\taoDeliveryRdf\helper\TestRunnerFeatureWidget]]></widget:implementation>
     </rdf:Description>
 </rdf:RDF>

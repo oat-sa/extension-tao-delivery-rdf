@@ -16,17 +16,19 @@
  *
  * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2013-
- */
-
-/**
- * xxxxxxxxxxxxxx
- *
+ *               2013
  */
 namespace oat\taoDeliveryRdf\helper;
 
-abstract class TestRunnerFeatureWidget
-    extends \tao_helpers_form_FormElement
+use oat\oatbox\service\ServiceManager;
+use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoTests\models\runner\plugins\TestPluginService;
+
+/**
+ * xxxxxxxx
+ *
+ */
+class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
 {
     /**
      * A reference to the Widget Definition URI.
@@ -34,6 +36,75 @@ abstract class TestRunnerFeatureWidget
      * @var string
      */
     protected $widget = 'http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature';
-}
 
-?>
+    /**
+     * xxxx
+     *
+     * @var array
+     */
+    private $activeFeatures = [];
+
+    /**
+     * xxxxxx
+     *
+     */
+    public function feed() {
+        $this->activeFeatures = [];
+
+        $expression = "/^".preg_quote($this->name, "/")."(.)*[0-9]+$/";
+        foreach($_POST as $key => $value){
+            if(preg_match($expression, $key)){
+                $this->activeFeatures[] = $value;
+            }
+        }
+        $this->setValue(implode(',', $this->activeFeatures));
+    }
+
+    /**
+     * xxxxxx
+     *
+     * @return string
+     */
+    public function render()
+    {
+        //fixme: remove me
+        OntologyUpdater::syncModels();
+
+        $returnValue = (string) '';
+
+        $serviceManager = ServiceManager::getServiceManager();
+        $pluginService = $serviceManager->get(TestPluginService::CONFIG_ID);
+
+        $allFeatures = $pluginService->getToggableDeliveryFeatures();
+
+        if (count($allFeatures) > 0) {
+
+            // Label
+            if(!isset($this->attributes['noLabel'])){
+                $returnValue .= "<span class='form_desc'>"._dh($this->getDescription())."</span>";
+            }
+            else{
+                unset($this->attributes['noLabel']);
+            }
+
+            // Options
+            $i = 0;
+            $this->activeFeatures = explode(',', $this->value);
+
+            $returnValue .= '<div class="form_radlst form_checklst">';
+            foreach($allFeatures as $featureId => $feature){
+                $returnValue .= "<input type='checkbox' value='{$featureId}' name='{$this->name}_{$i}' id='{$this->name}_{$i}' ";
+                $returnValue .= $this->renderAttributes();
+
+                if(in_array($featureId, $this->activeFeatures)){
+                    $returnValue .= " checked='checked' ";
+                }
+                $returnValue .= " />&nbsp;<label class='elt_desc' for='{$this->name}_{$i}'>"._dh($feature['label'])."</label><br />";
+                $i++;
+            }
+            $returnValue .= "</div>";
+        }
+
+        return $returnValue;
+    }
+}
