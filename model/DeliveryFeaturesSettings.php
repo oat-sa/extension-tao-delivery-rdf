@@ -22,6 +22,7 @@ namespace oat\taoDeliveryRdf\model;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\oatbox\service\ServiceManager;
 use oat\taoTests\models\runner\plugins\TestPluginService;
+use oat\taoTests\models\runner\plugins\TestRunnerFeatureService;
 
 /**
  * xxxxxxx
@@ -37,9 +38,9 @@ class DeliveryFeaturesSettings
     public static function enableDefaultFeatures(DeliveryCreatedEvent $event)
     {
         $serviceManager = ServiceManager::getServiceManager();
-        $pluginService = $serviceManager->get(TestPluginService::CONFIG_ID);
+        $testRunnerFeatureService = $serviceManager->get(TestRunnerFeatureService::SERVICE_ID);
 
-        $allFeatures = $pluginService->getTestRunnerFeatures();
+        $allFeatures = $testRunnerFeatureService->getAll();
         $defaultFeatures = [];
 
         foreach($allFeatures as $feature) {

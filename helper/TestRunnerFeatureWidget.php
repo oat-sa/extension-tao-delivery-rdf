@@ -23,6 +23,7 @@ namespace oat\taoDeliveryRdf\helper;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoTests\models\runner\plugins\TestPluginService;
+use oat\taoTests\models\runner\plugins\TestRunnerFeatureService;
 
 /**
  * xxxxxxxx
@@ -66,9 +67,9 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
         $returnValue = (string) '';
 
         $serviceManager = ServiceManager::getServiceManager();
-        $pluginService = $serviceManager->get(TestPluginService::CONFIG_ID);
+        $testRunnerFeatureService = $serviceManager->get(TestRunnerFeatureService::SERVICE_ID);
 
-        $allFeatures = $pluginService->getTestRunnerFeatures();
+        $allFeatures = $testRunnerFeatureService->getAll();
 
         if (count($allFeatures) > 0) {
 

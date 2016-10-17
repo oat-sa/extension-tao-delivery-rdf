@@ -28,6 +28,7 @@ use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\DeliveryContainerService as DeliveryContainerServiceInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoTests\models\runner\plugins\TestPluginService;
+use oat\taoTests\models\runner\plugins\TestRunnerFeatureService;
 
 /**
  * RDF implementation for the Delivery container service.
@@ -52,14 +53,16 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
     {
         $delivery = $deliveryExecution->getDelivery();
 
-        $pluginService = $this->getServiceManager()->get(TestPluginService::CONFIG_ID);
+        $serviceManager = $this->getServiceManager();
+        $pluginService = $serviceManager->get(TestPluginService::CONFIG_ID);
+        $testRunnerFeatureService = $serviceManager->get(TestRunnerFeatureService::SERVICE_ID);
 
         $defaultActivePlugins = array_filter($pluginService->getAllPlugins(), function($plugin){
             return !is_null($plugin) && $plugin->isActive();
         });
 
         $testRunnerFeaturesData = $delivery->getOnePropertyValue(new core_kernel_classes_Property(self::TEST_RUNNER_FEATURES_PROPERTY));
-        $allTestRunnerFeatures = $pluginService->getTestRunnerFeatures();
+        $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
 
         // No test runner features are defined, we just return the default active plugins
         if (count($allTestRunnerFeatures) == 0) {
