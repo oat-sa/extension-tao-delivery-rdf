@@ -42,9 +42,9 @@ class DeliveryFeaturesSettings
         $allFeatures = $pluginService->getTestRunnerFeatures();
         $defaultFeatures = [];
 
-        foreach($allFeatures as $featureId => $feature) {
-            if ($feature['isEnabledByDefault'] === true) {
-                $defaultFeatures[] = $featureId;
+        foreach($allFeatures as $feature) {
+            if ($feature->isEnabledByDefault() === true) {
+                $defaultFeatures[] = $feature->getId();
             }
         }
 

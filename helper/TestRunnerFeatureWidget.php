@@ -85,14 +85,14 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
             $activeFeatures = explode(',', $this->value);
 
             $returnValue .= '<div class="form_radlst form_checklst">';
-            foreach($allFeatures as $featureId => $feature){
-                $returnValue .= "<input type='checkbox' value='{$featureId}' name='{$this->name}_{$i}' id='{$this->name}_{$i}' ";
+            foreach($allFeatures as $feature){
+                $returnValue .= "<input type='checkbox' value='{$feature->getId()}' name='{$this->name}_{$i}' id='{$this->name}_{$i}' ";
                 $returnValue .= $this->renderAttributes();
 
-                if(in_array($featureId, $activeFeatures)){
+                if(in_array($feature->getId(), $activeFeatures)){
                     $returnValue .= " checked='checked' ";
                 }
-                $returnValue .= " />&nbsp;<label class='elt_desc' for='{$this->name}_{$i}'>"._dh($feature['label'])."</label><br />";
+                $returnValue .= " />&nbsp;<label class='elt_desc' for='{$this->name}_{$i}'>"._dh($feature->getLabel())."</label><br />";
                 $i++;
             }
             $returnValue .= "</div>";

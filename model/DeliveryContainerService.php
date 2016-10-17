@@ -71,9 +71,9 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         $activeTestRunnerFeaturesIds = explode(',', $testRunnerFeaturesData);
 
         $pluginsToDisable = [];
-        foreach($allTestRunnerFeatures as $featureId => $feature) {
-            if (!in_array($featureId, $activeTestRunnerFeaturesIds)) {
-                $pluginsToDisable = array_merge($pluginsToDisable, $feature['pluginsIds']);
+        foreach($allTestRunnerFeatures as $feature) {
+            if (!in_array($feature->getId(), $activeTestRunnerFeaturesIds)) {
+                $pluginsToDisable = array_merge($pluginsToDisable, $feature->getPluginsIds());
             }
         }
 

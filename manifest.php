@@ -43,7 +43,8 @@ return array(
         ),
         'php' => array(
             __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php',
-            'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService'
+            'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
+            'oat\\taoDeliveryRdf\\scripts\\RegisterEvents'
         )
     ),
     //'uninstall' => array(),
