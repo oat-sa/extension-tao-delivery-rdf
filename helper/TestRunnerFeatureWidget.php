@@ -22,8 +22,7 @@ namespace oat\taoDeliveryRdf\helper;
 
 use oat\oatbox\service\ServiceManager;
 use oat\tao\scripts\update\OntologyUpdater;
-use oat\taoTests\models\runner\plugins\TestPluginService;
-use oat\taoTests\models\runner\plugins\TestRunnerFeatureService;
+use oat\taoTests\models\runner\features\TestRunnerFeatureService;
 
 /**
  * xxxxxxxx

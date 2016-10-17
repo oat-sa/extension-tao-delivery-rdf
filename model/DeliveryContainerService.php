@@ -28,7 +28,7 @@ use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\DeliveryContainerService as DeliveryContainerServiceInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoTests\models\runner\plugins\TestPluginService;
-use oat\taoTests\models\runner\plugins\TestRunnerFeatureService;
+use oat\taoTests\models\runner\features\TestRunnerFeatureService;
 
 /**
  * RDF implementation for the Delivery container service.

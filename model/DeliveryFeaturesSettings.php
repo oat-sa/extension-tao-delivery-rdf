@@ -21,8 +21,7 @@ namespace oat\taoDeliveryRdf\model;
 
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\oatbox\service\ServiceManager;
-use oat\taoTests\models\runner\plugins\TestPluginService;
-use oat\taoTests\models\runner\plugins\TestRunnerFeatureService;
+use oat\taoTests\models\runner\features\TestRunnerFeatureService;
 
 /**
  * xxxxxxx
