@@ -26,22 +26,23 @@ use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
+use oat\taoDeliveryRdf\scripts\RegisterEvents;
 
 /**
- * 
+ *
  * @author Joel Bout <joel@taotesting.com>
  */
 class Updater extends \common_ext_ExtensionUpdater {
-    
+
     /**
-     * 
+     *
      * @param string $currentVersion
      * @return string $versionUpdatedTo
      */
     public function update($initialVersion) {
-        
+
         $currentVersion = $initialVersion;
-        
+
         //migrate ACL
         if ($currentVersion == '0.1') {
 
@@ -51,29 +52,29 @@ class Updater extends \common_ext_ExtensionUpdater {
             $currentVersion = '0.2';
             $this->setVersion($currentVersion);
         }
-        
+
         if ($this->isVersion('0.2')) {
             OntologyUpdater::syncModels();
             AclProxy::applyRule(new AccessRule(
                 'grant',
                 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole',
                 array('controller'=>'oat\\taoDeliveryRdf\\controller\\Guest')));
-            
+
             $currentService = $this->safeLoadService(AssignmentService::CONFIG_ID);
             if (class_exists('taoDelivery_models_classes_AssignmentService', false)
                 && $currentService instanceof \taoDelivery_models_classes_AssignmentService) {
-            
+
                     $assignmentService = new GroupAssignment();
                     $this->getServiceManager()->register(AssignmentService::CONFIG_ID, $assignmentService);
             }
-            
+
             $this->setVersion('1.0.0');
         }
 
         if ($this->isVersion('1.0.0')){
             $this->setVersion('1.0.1');
         }
-        
+
         if ($this->isVersion('1.0.1')) {
             OntologyUpdater::syncModels();
             $this->setVersion('1.1.0');
@@ -103,5 +104,16 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('1.7.0', '1.8.1');
+
+        if ($this->isVersion('1.8.1')) {
+
+            OntologyUpdater::syncModels();
+
+            $registerEvents = new RegisterEvents();
+            $registerEvents->setServiceLocator($this->getServiceManager());
+            $registerEvents([]);
+
+            //$this->setVersion('1.9.0');
+        }
     }
 }

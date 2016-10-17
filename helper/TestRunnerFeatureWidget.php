@@ -68,7 +68,7 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
         $serviceManager = ServiceManager::getServiceManager();
         $pluginService = $serviceManager->get(TestPluginService::CONFIG_ID);
 
-        $allFeatures = $pluginService->getToggableDeliveryFeatures();
+        $allFeatures = $pluginService->getTestRunnerFeatures();
 
         if (count($allFeatures) > 0) {
 

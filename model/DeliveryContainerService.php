@@ -59,8 +59,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         });
 
         $testRunnerFeaturesData = $delivery->getOnePropertyValue(new core_kernel_classes_Property(self::TEST_RUNNER_FEATURES_PROPERTY));
-        //todo: rename this to getTestRunnerFeatures
-        $allTestRunnerFeatures = $pluginService->getToggableDeliveryFeatures();
+        $allTestRunnerFeatures = $pluginService->getTestRunnerFeatures();
 
         // No test runner features are defined, we just return the default active plugins
         if (count($allTestRunnerFeatures) == 0) {
