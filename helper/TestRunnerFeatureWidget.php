@@ -14,22 +14,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2013
+ * Copyright (c) 2016 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ *
+ * @author Christophe Noël <christophe@taotesting.com>
  */
 namespace oat\taoDeliveryRdf\helper;
 
 use oat\oatbox\service\ServiceManager;
-use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoTests\models\runner\features\TestRunnerFeatureService;
 
 /**
- * xxxxxxxx
- *
+ * Allow the selection of the Test Runner Features wanted for a specific delivery
  */
 class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
 {
+    const WIDGET_TPL = 'views/templates/widgets/testRunnerFeature.tpl.php';
+
     /**
      * A reference to the Widget Definition URI.
      *
@@ -38,8 +38,8 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
     protected $widget = 'http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature';
 
     /**
-     * xxxxxx
-     *
+     * Data is stored as a coma-separated list of active test runner features ids
+     * ex: progressBar,accessibility,security
      */
     public function feed() {
         $activeFeatures = [];
@@ -54,61 +54,39 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
     }
 
     /**
-     * xxxxxx
+     * Render the Widget to allow Test Runner Features selection
      *
      * @return string
      */
     public function render()
     {
-        //fixme: remove me
-        OntologyUpdater::syncModels();
-
-        $returnValue = (string) '';
-
         $serviceManager = ServiceManager::getServiceManager();
         $testRunnerFeatureService = $serviceManager->get(TestRunnerFeatureService::SERVICE_ID);
 
         $allFeatures = $testRunnerFeatureService->getAll();
 
-        if (count($allFeatures) > 0) {
+        $activeFeatures = explode(',', $this->value);
 
-            // Label
-            if(!isset($this->attributes['noLabel'])){
-                $returnValue .= "<span class='form_desc'>"._dh($this->getDescription())."</span>";
-            }
-            else{
-                unset($this->attributes['noLabel']);
-            }
+        $choicesList = [];
+        $i = 0;
 
-            // Options list
-            $i = 0;
-            $activeFeatures = explode(',', $this->value);
-
-            $returnValue .= '<div class="form_radlst form_checklst">';
-            foreach($allFeatures as $feature){
-                $returnValue .= "<input " .
-                    "type='checkbox' " .
-                    "title='" . _dh($feature->getDescription()) . "' " .
-                    "value='{$feature->getId()}' " .
-                    "name='{$this->name}_{$i}' " .
-                    "id='{$this->name}_{$i}' ";
-
-                $returnValue .= $this->renderAttributes();
-
-                if(in_array($feature->getId(), $activeFeatures)){
-                    $returnValue .= " checked='checked' ";
-                }
-                $returnValue .=
-                    " />&nbsp;" .
-                    "<label class='elt_desc' " .
-                    "for='{$this->name}_{$i}' " .
-                    "title='" . _dh($feature->getDescription()) . "' " .
-                    ">"._dh($feature->getLabel())."</label><br />";
-                $i++;
-            }
-            $returnValue .= "</div>";
+        foreach($allFeatures as $feature){
+            $choicesList[] = [
+                "title"     => $feature->getDescription(),
+                "value"     => $feature->getId(),
+                "id"        => $this->name . "_" . $i,
+                "checked"   => (in_array($feature->getId(), $activeFeatures)) ? ' checked="checked" ' : '',
+                "label"     => _dh($feature->getLabel())
+            ];
+            $i++;
         }
 
-        return $returnValue;
+        $tpl = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf')->getDir() . self::WIDGET_TPL ;
+        $templateRenderer = new \taoItems_models_classes_TemplateRenderer($tpl, array(
+            'propLabel'   => _dh($this->getDescription()),
+            'choicesList' => $choicesList
+        ));
+
+        return $templateRenderer->render();
     }
 }

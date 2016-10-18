@@ -27,6 +27,7 @@ use oat\oatbox\service\ServiceManager;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\DeliveryContainerService as DeliveryContainerServiceInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoTests\models\runner\plugins\TestPlugin;
 use oat\taoTests\models\runner\plugins\TestPluginService;
 use oat\taoTests\models\runner\features\TestRunnerFeatureService;
 
@@ -45,9 +46,9 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
     const TEST_RUNNER_FEATURES_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures';
 
     /**
-     * Get the list of plugins for the current execution
-     * @param DeliveryExecution $execution
-     * @return array the list of plugins
+     * Get the list of active plugins for the current execution
+     * @param DeliveryExecution $deliveryExecution
+     * @return TestPlugin[] the list of plugins
      */
     public function getPlugins(DeliveryExecution $deliveryExecution)
     {
@@ -57,59 +58,59 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         $pluginService = $serviceManager->get(TestPluginService::CONFIG_ID);
         $testRunnerFeatureService = $serviceManager->get(TestRunnerFeatureService::SERVICE_ID);
 
-        $defaultActivePlugins = array_filter($pluginService->getAllPlugins(), function($plugin){
+        $allPlugins = $pluginService->getAllPlugins();
+        $activePlugins = array_filter($allPlugins, function($plugin){
             return !is_null($plugin) && $plugin->isActive();
         });
 
-        $testRunnerFeaturesData = $delivery->getOnePropertyValue(new core_kernel_classes_Property(self::TEST_RUNNER_FEATURES_PROPERTY));
         $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
+        $activeTestRunnerFeaturesIds = explode(
+            ',',
+            $delivery->getOnePropertyValue(new core_kernel_classes_Property(self::TEST_RUNNER_FEATURES_PROPERTY))
+        );
 
-        // No test runner features are defined, we just return the default active plugins
+        // If no test runner features are defined, we just return the default active plugins
         if (count($allTestRunnerFeatures) == 0) {
-            return $defaultActivePlugins;
+            return $activePlugins;
         }
 
-        // filter active plugin according to test runner features status
-        // todo: write a unit test for this
-        $activeTestRunnerFeaturesIds = explode(',', $testRunnerFeaturesData);
-
+        // If not, we filter plugins according to test runner features status
         $pluginsToDisable = [];
+        $pluginsToEnable = [];
         foreach($allTestRunnerFeatures as $feature) {
-            if (!in_array($feature->getId(), $activeTestRunnerFeaturesIds)) {
+            if (in_array($feature->getId(), $activeTestRunnerFeaturesIds)) {
+                $pluginsToEnable = array_merge($pluginsToEnable, $feature->getPluginsIds());
+            } else {
                 $pluginsToDisable = array_merge($pluginsToDisable, $feature->getPluginsIds());
             }
         }
 
+        return $this->filterPlugins($allPlugins, $pluginsToEnable, $pluginsToDisable);
+    }
+
+    /**
+     * This is made protected for testing purposes
+     * @param TestPlugin[] $allPlugins
+     * @param string[] $pluginsToEnable
+     * @param string[] $pluginsToDisable
+     * @return TestPlugin[]
+     */
+    protected function filterPlugins($allPlugins, $pluginsToEnable, $pluginsToDisable) {
         $filteredPlugins = [];
-        foreach($defaultActivePlugins as $plugin) {
-            if (! in_array($plugin->getId(), $pluginsToDisable)) {
-                $filteredPlugins[$plugin->getModule()] = $plugin;
-            }
-        }
-
-        return $filteredPlugins;
-        /*
-
-        if(is_null($pluginPropData) || empty($pluginPropData)) {
-            //fallback to the default values
-            return array_filter($pluginService->getAllPlugins(), function($plugin){
-                return !is_null($plugin) && $plugin->isActive();
-            });
-        }
-
-        //otherwise decode the data from [ pluginId => active] to TestPlugins
-        $pluginList = json_decode($pluginPropData, true);
-        if(is_array($pluginList)){
-            foreach($pluginList as $id => $active){
-                $plugin = $this->pluginService->getPlugin($id);
-                if(!is_null($plugin)){
-                    $plugin->setActive((boolean) $active);
-                    $plugins[] = $plugin;
+        foreach($allPlugins as $plugin) {
+            $pluginId = $plugin->getId();
+            if (! in_array($pluginId, $pluginsToDisable)) {
+                // Including a plugin in a test runner feature takes precedence over plugin default status.
+                // Thus, we force-enable it here to make sure it ends up activated.
+                if (in_array($pluginId, $pluginsToEnable)) {
+                    $plugin->setActive(true);
+                }
+                if ($plugin->isActive()) {
+                    $filteredPlugins[$plugin->getModule()] = $plugin;
                 }
             }
         }
-        return $plugins;
-        */
+        return $filteredPlugins;
     }
 
     /**
