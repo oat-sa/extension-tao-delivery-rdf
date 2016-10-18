@@ -55,13 +55,11 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         $delivery = $deliveryExecution->getDelivery();
 
         $serviceManager = $this->getServiceManager();
+
         $pluginService = $serviceManager->get(TestPluginService::CONFIG_ID);
         $testRunnerFeatureService = $serviceManager->get(TestRunnerFeatureService::SERVICE_ID);
 
         $allPlugins = $pluginService->getAllPlugins();
-        $activePlugins = array_filter($allPlugins, function($plugin){
-            return !is_null($plugin) && $plugin->isActive();
-        });
 
         $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
         $activeTestRunnerFeaturesIds = explode(
@@ -69,48 +67,26 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
             $delivery->getOnePropertyValue(new core_kernel_classes_Property(self::TEST_RUNNER_FEATURES_PROPERTY))
         );
 
-        // If no test runner features are defined, we just return the default active plugins
-        if (count($allTestRunnerFeatures) == 0) {
-            return $activePlugins;
-        }
-
-        // If not, we filter plugins according to test runner features status
-        $pluginsToDisable = [];
-        $pluginsToEnable = [];
-        foreach($allTestRunnerFeatures as $feature) {
-            if (in_array($feature->getId(), $activeTestRunnerFeaturesIds)) {
-                $pluginsToEnable = array_merge($pluginsToEnable, $feature->getPluginsIds());
-            } else {
-                $pluginsToDisable = array_merge($pluginsToDisable, $feature->getPluginsIds());
-            }
-        }
-
-        return $this->filterPlugins($allPlugins, $pluginsToEnable, $pluginsToDisable);
-    }
-
-    /**
-     * This is made protected for testing purposes
-     * @param TestPlugin[] $allPlugins
-     * @param string[] $pluginsToEnable
-     * @param string[] $pluginsToDisable
-     * @return TestPlugin[]
-     */
-    protected function filterPlugins($allPlugins, $pluginsToEnable, $pluginsToDisable) {
-        $filteredPlugins = [];
-        foreach($allPlugins as $plugin) {
-            $pluginId = $plugin->getId();
-            if (! in_array($pluginId, $pluginsToDisable)) {
-                // Including a plugin in a test runner feature takes precedence over plugin default status.
-                // Thus, we force-enable it here to make sure it ends up activated.
-                if (in_array($pluginId, $pluginsToEnable)) {
-                    $plugin->setActive(true);
+        // If test runner features are defined, we check if we need to disable some plugins accordingly
+        if (count($allTestRunnerFeatures) > 0) {
+            $pluginsToDisable = [];
+            foreach ($allTestRunnerFeatures as $feature) {
+                if (!in_array($feature->getId(), $activeTestRunnerFeaturesIds)) {
+                    $pluginsToDisable = array_merge($pluginsToDisable, $feature->getPluginsIds());
                 }
-                if ($plugin->isActive()) {
-                    $filteredPlugins[$plugin->getModule()] = $plugin;
+            }
+
+            foreach ($allPlugins as $plugin) {
+                if (!is_null($plugin) && in_array($plugin->getId(), $pluginsToDisable)) {
+                    $plugin->setActive(false);
                 }
             }
         }
-        return $filteredPlugins;
+
+        // return the list of active plugins
+        return array_filter($allPlugins, function ($plugin) {
+            return !is_null($plugin) && $plugin->isActive();
+        });
     }
 
     /**
