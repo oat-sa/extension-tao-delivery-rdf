@@ -24,13 +24,15 @@ use oat\oatbox\service\ServiceManager;
 use oat\taoTests\models\runner\features\TestRunnerFeatureService;
 
 /**
- * xxxxxxx
+ * Event handler for Delivery Test Runner Features
+ *
+ * @author Christophe Noël <christophe@taotesting.com>
  */
-class DeliveryFeaturesSettings
+class TestRunnerFeatures
 {
 
     /**
-     * xxxxxxxx
+     * Set the default Test Runner Features for a newly created delivery
      * xx
      * @param DeliveryCreatedEvent $event
      */

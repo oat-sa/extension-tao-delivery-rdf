@@ -21,7 +21,6 @@ namespace oat\taoDeliveryRdf\model;
 
 use common_ext_ExtensionsManager as ExtensionsManager;
 use core_kernel_classes_Property;
-use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
 use oat\taoDelivery\model\AssignmentService;
@@ -130,16 +129,5 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, array());
 
         return $inputParameters['QtiTestCompilation'];
-    }
-
-    public function setTestPlugins(core_kernel_classes_Resource $delivery, $plugins = [])
-    {
-        $pluginList = [];
-        foreach($plugins as $plugin){
-            if($plugin instanceof TestPlugin){
-                $pluginList[$plugin->getId()] = $plugin->isActive();
-            }
-        }
-        $delivery->editPropertyValue(new core_kernel_classes_Property(self::DELIVERY_PLUGINS_PROPERTY), json_encode($pluginList));
     }
 }

@@ -113,7 +113,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $registerEvents->setServiceLocator($this->getServiceManager());
             $registerEvents([]);
 
-            //$this->setVersion('1.9.0');
+            $this->setVersion('1.9.0');
         }
     }
 }
