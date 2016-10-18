@@ -70,15 +70,17 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
         $choicesList = [];
         $i = 0;
 
-        foreach($allFeatures as $feature){
-            $choicesList[] = [
-                "title"     => $feature->getDescription(),
-                "value"     => $feature->getId(),
-                "id"        => $this->name . "_" . $i,
-                "checked"   => (in_array($feature->getId(), $activeFeatures)) ? ' checked="checked" ' : '',
-                "label"     => _dh($feature->getLabel())
-            ];
-            $i++;
+        if (count($allFeatures) > 0) {
+            foreach($allFeatures as $feature){
+                $choicesList[] = [
+                    "title"     => $feature->getDescription(),
+                    "value"     => $feature->getId(),
+                    "id"        => $this->name . "_" . $i,
+                    "checked"   => (in_array($feature->getId(), $activeFeatures)) ? ' checked="checked" ' : '',
+                    "label"     => _dh($feature->getLabel())
+                ];
+                $i++;
+            }
         }
 
         $tpl = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf')->getDir() . self::WIDGET_TPL ;
