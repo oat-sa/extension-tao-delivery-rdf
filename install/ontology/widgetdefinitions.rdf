@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:widget="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#" xml:base="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#">
+
+    <rdf:Description rdf:about="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature">
+        <rdf:type rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#WidgetClass"/>
+        <rdfs:label xml:lang="en-US"><![CDATA[Test Runner Feature]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[allow a user to toggle test runner features per delivery]]></rdfs:comment>
+        <widget:identifier><![CDATA[deliveryTestRunnerFeature]]></widget:identifier>
+        <widget:rangeConstraint rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#rangeConstraint-Literal"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeatureXhtmlRenderer">
+        <rdf:type rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#WidgetRenderer"/>
+        <widget:renderedWidget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature"/>
+        <widget:renderMode><![CDATA[xhtml]]></widget:renderMode>
+        <widget:implementation><![CDATA[oat\taoDeliveryRdf\helper\TestRunnerFeatureWidget]]></widget:implementation>
+    </rdf:Description>
+</rdf:RDF>
