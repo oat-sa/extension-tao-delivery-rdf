@@ -25,7 +25,7 @@ class RestDelivery extends \tao_actions_RestController
 	const REST_DELIVERY_TEST_ID = 'test';
 
     /**
-     * Generate a delivery from test uri
+     * Put task to generate a delivery from test uri to the task queue
      * Test uri has to be set and existing
      */
     public function generate()
@@ -40,7 +40,6 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
             }
             $task = CompileDelivery::createTask($test);
-
 
             $result = [
                 'reference_id' => $task->getId()

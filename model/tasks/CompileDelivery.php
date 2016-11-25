@@ -29,15 +29,14 @@ use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
 
 /**
  * Class CompileDelivery
+ *
+ * Action to compile delivery by test uri
+ *
  * @package oat\taoQtiTest\models\tasks
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
 class CompileDelivery implements Action, \JsonSerializable
 {
-    const FILE_DIR = 'CompileDeliveryTask';
-
-    protected $service;
-
     /**
      * @param $params
      * @throws \common_exception_MissingParameter
