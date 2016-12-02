@@ -18,14 +18,14 @@
 
 namespace oat\taoDeliveryRdf\controller;
 
-use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
+use \oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 
 class RestDelivery extends \tao_actions_RestController
 {
 	const REST_DELIVERY_TEST_ID = 'test';
 
     /**
-     * Generate a delivery from test uri
+     * Put task to generate a delivery from test uri to the task queue
      * Test uri has to be set and existing
      */
     public function generate()
@@ -39,20 +39,22 @@ class RestDelivery extends \tao_actions_RestController
             if (!$test->exists()) {
                 throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
             }
+            $task = CompileDelivery::createTask($test);
 
-            $label = 'Delivery of ' . $test->getLabel();
-            $deliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
-
-            /** @var \common_report_Report $report */
-            $report = SimpleDeliveryFactory::create($deliveryClass, $test, $label);
-
-            if ($report->getType() == \common_report_Report::TYPE_ERROR) {
-                \common_Logger::i('Unable to generate delivery execution ' .
-                    'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
-                throw new \common_Exception('Unable to generate delivery execution.');
+            $result = [
+                'reference_id' => $task->getId()
+            ];
+            $report = $task->getReport();
+            if (!empty($report)) {
+                if ($report instanceof \common_report_Report) {
+                    //serialize report to array
+                    $report = json_encode($report);
+                    $report = json_decode($report);
+                }
+                $result['report'] = $report;
             }
-            $delivery = $report->getData();
-            $this->returnSuccess(array('delivery' => $delivery->getUri()));
+            return $this->returnSuccess($result);
+
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
