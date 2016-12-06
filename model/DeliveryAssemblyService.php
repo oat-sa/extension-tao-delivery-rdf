@@ -25,6 +25,8 @@ use \core_kernel_classes_Property;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
+use oat\taoDelivery\model\DeliveryContainer;
+
 /**
  * Service to manage the authoring of deliveries
  *
@@ -84,7 +86,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
             ]
         ];
 
-        $properties[\taoDelivery_models_classes_DeliveryServerService::PROPERTY_DELIVERY_CONTAINER] = serialize($deliverContainer);
+        $properties[DeliveryContainer::PROPERTY_DELIVERY_CONTAINER] = serialize($deliverContainer);
 
         $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
         $this->getEventManager()->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
