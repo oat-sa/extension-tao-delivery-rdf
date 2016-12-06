@@ -35,6 +35,7 @@ use tao_models_classes_service_ServiceCall;
 class DeliveryAssemblyService extends \tao_models_classes_ClassService
 {
     const PROPERTY_ORIGIN = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
+    const PROPERTY_DELIVERY_CONTAINER  = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryСontainer';
 
     /**
      * @var \tao_models_classes_service_FileStorage
@@ -72,7 +73,12 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
         if (!isset($properties[TAO_DELIVERY_RESULTSERVER_PROP])) {
             $properties[TAO_DELIVERY_RESULTSERVER_PROP] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
         }
-        
+        if (!isset($properties[self::PROPERTY_DELIVERY_CONTAINER])) {
+            $deliveryContainer = $this->getServiceManager()->get(\taoDelivery_models_classes_DeliveryServerService::CONFIG_ID)
+                ->getOption('deliveryContainer');
+            $properties[self::PROPERTY_DELIVERY_CONTAINER] = $deliveryContainer;
+        }
+
         $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
         $this->getEventManager()->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
         return $compilationInstance;
