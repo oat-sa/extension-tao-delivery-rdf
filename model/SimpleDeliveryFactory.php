@@ -19,7 +19,6 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
-use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 /**
@@ -52,7 +51,7 @@ class SimpleDeliveryFactory
         $report = $compiler->compile();
         if ($report->getType() == \common_report_Report::TYPE_SUCCESS) {
             $serviceCall = $report->getData();
-        
+
             $properties = array(
                 RDFS_LABEL => $label,
                 PROPERTY_COMPILEDDELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),

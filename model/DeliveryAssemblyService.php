@@ -72,7 +72,20 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
         if (!isset($properties[TAO_DELIVERY_RESULTSERVER_PROP])) {
             $properties[TAO_DELIVERY_RESULTSERVER_PROP] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
         }
-        
+
+        $deliveryServerService = $this->getServiceManager()->get(\taoDelivery_models_classes_DeliveryServerService::CONFIG_ID);
+        $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($serviceCall, []);
+
+        $deliverContainer = [
+            'class' => $deliveryServerService->getOption('deliveryContainer'),
+            'options' => [
+                'testDefinition' => $inputParameters['QtiTestDefinition'],
+                'testCompilation' => $inputParameters['QtiTestCompilation'],
+            ]
+        ];
+
+        $properties[\taoDelivery_models_classes_DeliveryServerService::PROPERTY_DELIVERY_CONTAINER] = serialize($deliverContainer);
+
         $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
         $this->getEventManager()->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
         return $compilationInstance;
