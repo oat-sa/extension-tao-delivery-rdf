@@ -190,10 +190,18 @@
     <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#TAOObject"/>
     <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#False"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainer">
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainerClass">
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-    <rdfs:label xml:lang="en-US"><![CDATA[Delivery container]]></rdfs:label>
-    <rdfs:comment xml:lang="en-US"><![CDATA[The delivery container]]></rdfs:comment>
+    <rdfs:label xml:lang="en-US"><![CDATA[Delivery container class]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[The delivery container class name]]></rdfs:comment>
+    <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#False"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainerOptions">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Delivery container options]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Serialized delivery container options]]></rdfs:comment>
     <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery"/>
     <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
     <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#False"/>

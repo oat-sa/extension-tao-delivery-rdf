@@ -78,15 +78,11 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
         $deliveryServerService = $this->getServiceManager()->get(\taoDelivery_models_classes_DeliveryServerService::CONFIG_ID);
         $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($serviceCall, []);
 
-        $deliverContainer = [
-            'class' => $deliveryServerService->getOption('deliveryContainer'),
-            'options' => [
-                'testDefinition' => $inputParameters['QtiTestDefinition'],
-                'testCompilation' => $inputParameters['QtiTestCompilation'],
-            ]
-        ];
-
-        $properties[DeliveryContainer::PROPERTY_DELIVERY_CONTAINER] = serialize($deliverContainer);
+        $properties[DeliveryContainer::PROPERTY_DELIVERY_CONTAINER_CLASS] = $deliveryServerService->getOption('deliveryContainer');
+        $properties[DeliveryContainer::PROPERTY_DELIVERY_CONTAINER_OPTIONS] = json_encode([
+            'testDefinition' => $inputParameters['QtiTestDefinition'],
+            'testCompilation' => $inputParameters['QtiTestCompilation'],
+        ]);
 
         $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
         $this->getEventManager()->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
