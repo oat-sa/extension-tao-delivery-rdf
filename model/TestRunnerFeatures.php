@@ -30,6 +30,7 @@ use oat\taoTests\models\runner\features\TestRunnerFeatureService;
  */
 class TestRunnerFeatures
 {
+    const TEST_RUNNER_FEATURES_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures';
 
     /**
      * Set the default Test Runner Features for a newly created delivery
@@ -52,7 +53,7 @@ class TestRunnerFeatures
 
         $delivery = new \core_kernel_classes_Resource($event->getDeliveryUri());
         $delivery->setPropertiesValues([
-            DeliveryContainerService::TEST_RUNNER_FEATURES_PROPERTY => implode(',', $defaultFeatures)
+            self::TEST_RUNNER_FEATURES_PROPERTY => implode(',', $defaultFeatures)
         ]);
     }
 }

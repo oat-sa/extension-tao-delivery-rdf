@@ -25,7 +25,6 @@ use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
-use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 
 /**
@@ -97,8 +96,9 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             OntologyUpdater::syncModels();
 
-            $registerService = new RegisterDeliveryContainerService();
-            $registerService([]);
+            //Service removed
+            //$registerService = new RegisterDeliveryContainerService();
+            //$registerService([]);
 
             $this->setVersion('1.7.0');
         }
