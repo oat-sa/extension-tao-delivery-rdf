@@ -26,6 +26,10 @@ use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
+use oat\taoTests\models\runner\plugins\TestPluginService;
+use oat\taoDeliveryRdf\model\DeliveryPluginProvider;
+use oat\taoDelivery\model\DeliveryContainerRegistry;
+use oat\taoDelivery\helper\container\DeliveryClientContainer;
 
 /**
  *
@@ -122,5 +126,18 @@ class Updater extends \common_ext_ExtensionUpdater {
             OntologyUpdater::syncModels();
             $this->setVersion('1.11.0');
         }
+
+        if ($this->isVersion('1.11.0')) {
+            $deliveryContainerRegistry = DeliveryContainerRegistry::getRegistry();
+            $deliveryContainerRegistry->register(
+                DeliveryClientContainer::class,
+                [
+                    DeliveryClientContainer::OPTION_PLUGIN_PROVIDER => DeliveryPluginProvider::class,
+                ]
+            );
+
+            $this->setVersion('1.12.0');
+        }
+
     }
 }
