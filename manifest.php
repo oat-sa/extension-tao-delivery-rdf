@@ -28,7 +28,7 @@ return array(
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
         'taoGroups' => '>=2.7.1',
-        'taoTests' => '>=3.5.0',
+        'taoTests' => '>=3.8.0',
         'taoDelivery' => '>=4.7.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
