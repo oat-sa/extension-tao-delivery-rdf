@@ -10,10 +10,6 @@
   ],
   "tags": [
     {
-      "name": "test",
-      "description": "Operations about test"
-    },
-    {
       "name": "delivery",
       "description": "Operations about delivery"
     }
@@ -23,7 +19,6 @@
       "post": {
         "description": "Generate a delivery from a valid test uri",
         "tags": [
-          "test",
           "delivery"
         ],
         "parameters": [
@@ -143,7 +138,6 @@
       "post": {
         "description": "Generate a delivery from a valid test uri using task queue",
         "tags": [
-          "test",
           "delivery"
         ],
         "parameters": [
