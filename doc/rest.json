@@ -267,7 +267,6 @@
       "get": {
         "description": "Check status of generate delivery task. Available since Tao 3.1.",
         "tags": [
-          "test",
           "delivery"
         ],
         "parameters": [
