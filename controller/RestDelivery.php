@@ -128,10 +128,12 @@ class RestDelivery extends \tao_actions_RestController
         $data = $this->traitGetTaskData($taskId);
         $task = $this->getTask($taskId);
         $report = \common_report_Report::jsonUnserialize($task->getReport());
-        $plainReport = $this->getPlainReport($report);
-        //the second report is report of compilation test
-        if (isset($plainReport[1]) && isset($plainReport[1]->getData()['uriResource'])) {
-            $data['delivery'] = $plainReport[1]->getData()['uriResource'];
+        if ($report) {
+            $plainReport = $this->getPlainReport($report);
+            //the second report is report of compilation test
+            if (isset($plainReport[1]) && isset($plainReport[1]->getData()['uriResource'])) {
+                $data['delivery'] = $plainReport[1]->getData()['uriResource'];
+            }
         }
         return $data;
     }
