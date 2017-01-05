@@ -66,10 +66,12 @@ class ToggleGuestAccess extends InstallAction
         $mode = strtolower($mode);
         $report = Report::createFailure('Please enter a valid mode on/off');
         $this->entryPointService = $this->getServiceManager()->get(EntryPointService::SERVICE_ID);
-        if($mode === 'off'){
+        if ($mode === 'off') {
             $report = $this->deactivate();
-        } else if ($mode === 'on'){
-            $report = $this->activate();
+        } else {
+            if ($mode === 'on') {
+                $report = $this->activate();
+            }
         }
 
         $this->getServiceManager()->register(EntryPointService::SERVICE_ID, $this->entryPointService);
@@ -86,29 +88,38 @@ class ToggleGuestAccess extends InstallAction
     private function deactivate()
     {
         $guestAccess = new GuestAccess();
-        try{
-            if($this->entryPointService->deactivateEntryPoint($guestAccess->getId(), EntryPointService::OPTION_PRELOGIN))
-            {
+        try {
+            if ($this->entryPointService->deactivateEntryPoint(
+                $guestAccess->getId(),
+                EntryPointService::OPTION_PRELOGIN
+            )
+            ) {
                 $rule = new AccessRule('grant', TaoRoles::ANONYMOUS, 'oat\taoDeliveryRdf\controller\Guest@guest');
                 AclProxy::revokeRule($rule);
+
                 return Report::createSuccess('The guest entry point has been correctly deactivated');
             } else {
                 return Report::createInfo('The guest entry point was already deactivated');
             }
-        } catch(\common_exception_InconsistentData $e){
+        } catch (\common_exception_InconsistentData $e) {
             return Report::createFailure($e->getMessage());
         }
     }
 
+    /**
+     * Try to activate the guest entry point
+     * @return Report
+     */
     private function activate()
     {
         $guestAccess = new GuestAccess();
-        try{
+        try {
             $this->entryPointService->activateEntryPoint($guestAccess->getId(), EntryPointService::OPTION_PRELOGIN);
             $rule = new AccessRule('grant', TaoRoles::ANONYMOUS, 'oat\taoDeliveryRdf\controller\Guest@guest');
             AclProxy::applyRule($rule);
+
             return Report::createSuccess('The guest entry point has been correctly activated');
-        } catch(\common_exception_InconsistentData $e){
+        } catch (\common_exception_InconsistentData $e) {
             return Report::createFailure($e->getMessage());
         }
     }
