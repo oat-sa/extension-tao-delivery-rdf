@@ -21,6 +21,7 @@
 namespace oat\taoDeliveryRdf\scripts;
 
 use common_report_Report as Report;
+use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\extension\InstallAction;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\accessControl\func\AclProxy;
@@ -46,7 +47,7 @@ use oat\taoDeliveryRdf\model\guest\GuestAccess;
  * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\ToggleGuestAccess' off
  * ```
  */
-class ToggleGuestAccess extends InstallAction
+class ToggleGuestAccess extends AbstractAction
 {
 
 
