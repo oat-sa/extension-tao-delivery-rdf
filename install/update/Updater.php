@@ -120,9 +120,9 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.9.0');
         }
 
-        $this->skip('1.9.0', '1.11.0');
+        $this->skip('1.9.0', '1.13.0');
 
-        if ($this->isVersion('1.11.0')) {
+        if ($this->isVersion('1.13.0')) {
             OntologyUpdater::syncModels();
             $deliveryContainerRegistry = DeliveryContainerRegistry::getRegistry();
             $deliveryContainerRegistry->register(
@@ -132,7 +132,7 @@ class Updater extends \common_ext_ExtensionUpdater {
                 ]
             );
 
-            $this->setVersion('1.12.0');
+            $this->setVersion('1.14.0');
         }
     }
 }
