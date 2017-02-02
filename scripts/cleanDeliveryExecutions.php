@@ -164,8 +164,8 @@ class cleanDeliveryExecutions extends \common_ext_action_InstallAction
         // deliveryExecutions
         $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDelivery');
         $deliveryService = $extension->getConfig('execution_service');
-        if ($deliveryService instanceof \taoDelivery_models_classes_execution_KeyValueService) {
-            $persistenceOption = $deliveryService->getOption(\taoDelivery_models_classes_execution_KeyValueService::OPTION_PERSISTENCE);
+        if ($deliveryService instanceof \oat\taoDelivery\model\execution\KeyValueService) {
+            $persistenceOption = $deliveryService->getOption(\oat\taoDelivery\model\execution\KeyValueService::OPTION_PERSISTENCE);
             $persistence = \common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
             $count = 0;
             foreach ($persistence->keys('kve_*') as $key) {
