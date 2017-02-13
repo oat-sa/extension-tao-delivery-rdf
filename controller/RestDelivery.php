@@ -18,6 +18,7 @@
 
 namespace oat\taoDeliveryRdf\controller;
 
+use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\tao\model\TaskQueueActionTrait;
 use oat\oatbox\task\Task;
@@ -52,8 +53,10 @@ class RestDelivery extends \tao_actions_RestController
             $label = 'Delivery of ' . $test->getLabel();
             $deliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
 
+
+            $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
             /** @var \common_report_Report $report */
-            $report = SimpleDeliveryFactory::create($deliveryClass, $test, $label);
+            $report = $deliveryFactory->create($deliveryClass, $test, $label);
 
             if ($report->getType() == \common_report_Report::TYPE_ERROR) {
                 \common_Logger::i('Unable to generate delivery execution ' .

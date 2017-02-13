@@ -18,13 +18,13 @@
  *
  *
  */
-
+use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 return array(
     'name' => 'taoDeliveryRdf',
 	'label' => 'Delivery Management',
 	'description' => 'Manages deliveries using the ontology',
     'license' => 'GPL-2.0',
-    'version' => '1.13.1',
+    'version' => '1.14.0',
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
         'tao' => '>=7.45.8',
@@ -45,7 +45,8 @@ return array(
         'php' => array(
             __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php',
             'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
-            'oat\\taoDeliveryRdf\\scripts\\RegisterEvents'
+            'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
+            RegisterDeliveryFactoryService::class
         )
     ),
     //'uninstall' => array(),
