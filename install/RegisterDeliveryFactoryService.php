@@ -14,29 +14,35 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
+ *
+ *
  */
 
-namespace oat\taoDeliveryRdf\scripts;
+namespace oat\taoDeliveryRdf\install;
 
-use oat\oatbox\event\EventManager;
+use oat\oatbox\extension\InstallAction;
+use oat\taoDeliveryRdf\model\DeliveryFactory;
 
 /**
- * @author Antoine Robin <antoine@taotesting.com>
+ * Installation action that register the rdf implementation for the delivery container service
+ *
+ * @author Bertrand Chevrier <bertrand@taotesting.com>
  */
-class RegisterEvents extends \common_ext_action_InstallAction
+class RegisterDeliveryFactoryService extends InstallAction
 {
+    /**
+     * @param $params
+     */
     public function __invoke($params)
     {
-        $eventManager = $this->getServiceManager()->get(EventManager::CONFIG_ID);
+        $serviceManager = $this->getServiceManager();
 
-        $eventManager->attach(
-            'oat\\taoDeliveryRdf\\model\\event\\DeliveryCreatedEvent',
-            ['oat\\taoDeliveryRdf\\model\\TestRunnerFeatures', 'enableDefaultFeatures']
-        );
-
-        $this->getServiceManager()->register(EventManager::CONFIG_ID, $eventManager);
-
-        return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, 'Events attached');
+        $deliveryFactoryService = new DeliveryFactory([
+            DeliveryFactory::OPTION_PROPERTIES => []
+        ]);
+        $serviceManager->propagate($deliveryFactoryService);
+        $serviceManager->register(DeliveryFactory::SERVICE_ID, $deliveryFactoryService);
     }
 }
+

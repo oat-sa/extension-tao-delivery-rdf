@@ -24,12 +24,12 @@ use oat\oatbox\event\EventManagerAwareTrait;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
+use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
 use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
 
 /**
  * Controller to managed assembled deliveries
@@ -196,11 +196,11 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             $myForm = $formContainer->getForm();
              
             if ($myForm->isValid() && $myForm->isSubmited()) {
-                $label = $myForm->getValue('label');
                 $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                 $label = __("Delivery of %s", $test->getLabel());
                 $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
-                $report = SimpleDeliveryFactory::create($deliveryClass, $test, $label);
+                $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+                $report = $deliveryFactory->create($deliveryClass, $test, $label);
                 $this->returnReport($report);
             } else {
                 $this->setData('myForm', $myForm->render());

@@ -21,11 +21,11 @@
 
 namespace oat\taoDeliveryRdf\model\tasks;
 
-use oat\oatbox\action\Action;
+use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
-use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
+use oat\taoDeliveryRdf\model\DeliveryFactory;
 
 /**
  * Class CompileDelivery
@@ -35,7 +35,7 @@ use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
  * @package oat\taoQtiTest\models\tasks
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class CompileDelivery implements Action, \JsonSerializable
+class CompileDelivery extends AbstractAction implements \JsonSerializable
 {
     /**
      * @param $params
@@ -53,8 +53,9 @@ class CompileDelivery implements Action, \JsonSerializable
         $label = 'Delivery of ' . $test->getLabel();
         $deliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
 
+        $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
         /** @var \common_report_Report $report */
-        $report = SimpleDeliveryFactory::create($deliveryClass, $test, $label);
+        $report = $deliveryFactory->create($deliveryClass, $test, $label);
 
         if ($report->getType() == \common_report_Report::TYPE_ERROR) {
             \common_Logger::i('Unable to generate delivery execution ' .
