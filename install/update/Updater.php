@@ -23,6 +23,7 @@ namespace oat\taoDeliveryRdf\install\update;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
+use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
@@ -120,9 +121,18 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.9.0');
         }
 
-        $this->skip('1.9.0', '1.13.0');
+        $this->skip('1.9.0', '1.13.1');
 
-        if ($this->isVersion('1.13.0')) {
+        if ($this->isVersion('1.13.1')) {
+
+            $deliveryFactory = new RegisterDeliveryFactoryService();
+            $this->getServiceManager()->propagate($deliveryFactory);
+            $deliveryFactory([]);
+
+            $this->setVersion('1.14.0');
+        }
+
+        if ($this->isVersion('1.14.0')) {
             OntologyUpdater::syncModels();
             $deliveryContainerRegistry = DeliveryContainerRegistry::getRegistry();
             $deliveryContainerRegistry->register(
@@ -132,7 +142,7 @@ class Updater extends \common_ext_ExtensionUpdater {
                 ]
             );
 
-            $this->setVersion('1.14.0');
+            $this->setVersion('2.0.0');
         }
     }
 }
