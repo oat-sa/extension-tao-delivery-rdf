@@ -23,8 +23,9 @@ use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\tao\model\TaskQueueActionTrait;
 use oat\oatbox\task\Task;
 use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
+use oat\taoDeliveryRdf\model\CrudDeliveryService;
 
-class RestDelivery extends \tao_actions_RestController
+class RestDelivery extends \tao_actions_CommonRestModule
 {
     use TaskQueueActionTrait {
         getTask as traitGetTask;
@@ -33,6 +34,11 @@ class RestDelivery extends \tao_actions_RestController
 
     const REST_DELIVERY_TEST_ID = 'test';
     const TASK_ID_PARAM = 'id';
+
+    protected function getCrudService()
+    {
+        return CrudDeliveryService::singleton();
+    }
 
     /**
      * Generate a delivery from test uri

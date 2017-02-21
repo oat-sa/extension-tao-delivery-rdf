@@ -4,10 +4,6 @@
     "version": "1.0.0",
     "title": "Delivery compilation API"
   },
-  "schemes": [
-    "http",
-    "https"
-  ],
   "tags": [
     {
       "name": "delivery",
@@ -15,6 +11,18 @@
     }
   ],
   "paths": {
+    "/taoDeliveryRdf/RestDelivery": {
+      "get": {
+        "description": "Lists all deliveries, with all their properties",
+        "tags": [
+          "delivery"
+        ],
+        "parameters": [
+        ],
+        "responses": {
+        }
+      }
+    },
     "/taoDeliveryRdf/RestDelivery/generate": {
       "post": {
         "description": "Generate a delivery from a valid test uri",
