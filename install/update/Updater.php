@@ -26,11 +26,8 @@ use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
+use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
-use oat\taoTests\models\runner\plugins\TestPluginService;
-use oat\taoDeliveryRdf\model\DeliveryPluginProvider;
-use oat\taoDelivery\model\DeliveryContainerRegistry;
-use oat\taoDelivery\helper\container\DeliveryClientContainer;
 
 /**
  *
@@ -101,9 +98,8 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             OntologyUpdater::syncModels();
 
-            //Service removed
-            //$registerService = new RegisterDeliveryContainerService();
-            //$registerService([]);
+            $registerService = new RegisterDeliveryContainerService();
+            $registerService([]);
 
             $this->setVersion('1.7.0');
         }
@@ -132,7 +128,9 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.14.0');
         }
 
-        if ($this->isVersion('1.14.0')) {
+        $this->skip('1.14.0', '1.14.1');
+
+        if ($this->isVersion('1.14.1')) {
             OntologyUpdater::syncModels();
             $deliveryContainerRegistry = DeliveryContainerRegistry::getRegistry();
             $deliveryContainerRegistry->register(
@@ -141,7 +139,6 @@ class Updater extends \common_ext_ExtensionUpdater {
                     DeliveryClientContainer::OPTION_PLUGIN_PROVIDER => DeliveryPluginProvider::class,
                 ]
             );
-
             $this->setVersion('2.0.0');
         }
     }
