@@ -22,7 +22,6 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\tao\model\TaskQueueActionTrait;
 use oat\oatbox\task\Task;
-use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
 
 class RestDelivery extends \tao_actions_RestController
 {
@@ -33,6 +32,7 @@ class RestDelivery extends \tao_actions_RestController
 
     const REST_DELIVERY_TEST_ID = 'test';
     const TASK_ID_PARAM = 'id';
+    const REST_TEST_IMPORT_HANDLER = 'importHandler';
 
     /**
      * Generate a delivery from test uri
@@ -105,6 +105,23 @@ class RestDelivery extends \tao_actions_RestController
             $this->returnFailure($e);
         }
     }
+
+    /**
+     * Import test and compile it into delivery
+     */
+//    public function compileTestDeferred()
+//    {
+//        if ($this->getRequestMethod() !== \Request::HTTP_POST) {
+//            throw new \common_exception_NotImplemented('Only post method is accepted to compile test');
+//        }
+//
+//        $tesImportHandler = $this->getTestImporter();
+//
+//        $test = new \core_kernel_classes_Resource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
+//        if (!$test->exists()) {
+//            throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
+//        }
+//    }
 
     /**
      * Action to retrieve test compilation task status from queue
