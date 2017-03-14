@@ -20,7 +20,6 @@
 
 namespace oat\taoDeliveryRdf\controller;
 
-use oat\generisSmooth\Exception;
 use oat\tao\model\TaskQueueActionTrait;
 use oat\taoDeliveryRdf\model\tasks\ImportAndCompile;
 
@@ -55,7 +54,13 @@ class RestTest extends \tao_actions_RestController
         if (\tao_helpers_Http::hasUploadedFile(self::REST_FILE_NAME)) {
             $file = \tao_helpers_Http::getUploadedFile(self::REST_FILE_NAME);
             $importerId = $this->getRequestParameter(self::REST_IMPORTER_ID);
-            $task = ImportAndCompile::createTask($importerId, $file);
+
+            try {
+                $task = ImportAndCompile::createTask($importerId, $file);
+            } catch (\oat\tao\model\import\ImporterNotFound $e) {
+                $this->returnFailure(new \common_exception_NotFound($e->getMessage()));
+            }
+            
             $result = ['reference_id' => $task->getId()];
             $report = $task->getReport();
             if (!empty($report)) { //already executed
@@ -70,23 +75,5 @@ class RestTest extends \tao_actions_RestController
         } else {
             return $this->returnFailure(new \common_exception_BadRequest('Test package file was not given'));
         }
-    }
-
-    /**
-     * @return \tao_models_classes_import_ImportHandler[]
-     */
-    protected function getAvailableImportHandlers()
-    {
-        $returnValue = [];
-        $testModelClass = new \core_kernel_classes_Class(CLASS_TESTMODEL);
-        foreach ($testModelClass->getInstances() as $model) {
-            $impl = \taoTests_models_classes_TestsService::singleton()->getTestModelImplementation($model);
-            if (in_array('tao_models_classes_import_ImportProvider', class_implements($impl))) {
-                foreach ($impl->getImportHandlers() as $handler) {
-                    array_unshift($returnValue, $handler);
-                }
-            }
-        }
-        return $returnValue;
     }
 }
