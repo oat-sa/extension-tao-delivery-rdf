@@ -22,7 +22,6 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\tao\model\TaskQueueActionTrait;
 use oat\oatbox\task\Task;
-use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
 
 class RestDelivery extends \tao_actions_RestController
 {
