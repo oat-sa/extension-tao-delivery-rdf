@@ -22,6 +22,7 @@ namespace oat\taoDeliveryRdf\model;
 use oat\oatbox\service\ConfigurableService;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
+use oat\tao\helpers\form\ValidationRuleRegistry;
 
 /**
  * Services to manage Deliveries
@@ -66,7 +67,7 @@ class DeliveryFactory extends ConfigurableService
 
             foreach ($this->getOption(self::OPTION_PROPERTIES) as $deliveryProperty => $testProperty) {
                 $testPropretyInstance = new \core_kernel_classes_Property($testProperty);
-                $validationValue = (string) $testPropretyInstance->getOnePropertyValue(new \core_kernel_classes_Property('http://www.tao.lu/Ontologies/generis.rdf#validationRule'));
+                $validationValue = (string) $testPropretyInstance->getOnePropertyValue(new \core_kernel_classes_Property(ValidationRuleRegistry::PROPERTY_VALIDATION_RULE));
 
                 $propertyValues = $test->getPropertyValues(new \core_kernel_classes_Property($testProperty));
 
