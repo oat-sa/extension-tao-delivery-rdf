@@ -27,7 +27,7 @@ return array(
     'version' => '1.16.0',
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
-        'tao' => '>=7.45.8',
+        'tao' => '>=7.69.2',
         'taoGroups' => '>=2.7.1',
         'taoTests' => '>=3.5.0',
         'taoDelivery' => '>=4.3.0'
