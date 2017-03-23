@@ -73,7 +73,7 @@ class DeliveryFactory extends ConfigurableService
 
                 if ($validationValue == 'notEmpty' && empty($propertyValues)) {
                     $report->setType(\common_report_Report::TYPE_ERROR);
-                    $report->setMessage(__('Test publishing failed because '. $testPropretyInstance->getLabel() .' is empty.'));
+                    $report->setMessage(__('Test publishing failed because "%s" is empty.', $testPropretyInstance->getLabel()));
                     return $report;
                 }
 
