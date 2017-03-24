@@ -31,6 +31,7 @@ class RestDelivery extends \tao_actions_RestController
     }
 
     const REST_DELIVERY_TEST_ID = 'test';
+    const REST_DELIVERY_DELIVERY_CLASS = 'delivery-class';
     const TASK_ID_PARAM = 'id';
 
     /**
@@ -50,8 +51,11 @@ class RestDelivery extends \tao_actions_RestController
             }
 
             $label = 'Delivery of ' . $test->getLabel();
-            $deliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
 
+            $deliveryClassLabel = $this->hasRequestParameter(self::REST_DELIVERY_DELIVERY_CLASS)
+                ? $this->getRequestParameter(self::REST_DELIVERY_DELIVERY_CLASS)
+                : null;
+            $deliveryClass = $this->getDeliveryClassByLabel($deliveryClassLabel);
 
             $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
             /** @var \common_report_Report $report */
@@ -84,7 +88,13 @@ class RestDelivery extends \tao_actions_RestController
             if (!$test->exists()) {
                 throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
             }
-            $task = CompileDelivery::createTask($test);
+
+            $deliveryClassLabel = $this->hasRequestParameter(self::REST_DELIVERY_DELIVERY_CLASS)
+                ? $this->getRequestParameter(self::REST_DELIVERY_DELIVERY_CLASS)
+                : null;
+            $deliveryClass = $this->getDeliveryClassByLabel($deliveryClassLabel);
+
+            $task = CompileDelivery::createTask($test, $deliveryClass);
 
             $result = [
                 'reference_id' => $task->getId()
@@ -197,4 +207,41 @@ class RestDelivery extends \tao_actions_RestController
         }
         return $result;
     }
+
+    /**
+     * Get a delivery class associated to the given label
+     * If no label is provided, return root class
+     * If label is not found, create a new class
+     * If multiple classes are found for given label, throw notFoundException
+     *
+     * @param null $label
+     * @return \core_kernel_classes_Class
+     * @throws \common_exception_NotFound
+     */
+    protected function getDeliveryClassByLabel($label = null)
+    {
+        $rootDeliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+
+        if (is_null($label)) {
+            return $rootDeliveryClass;
+        }
+
+        $deliveryClasses = [];
+        /** @var \core_kernel_classes_Class $subClass */
+        foreach($rootDeliveryClass->getSubClasses(true) as $subClass) {
+            $deliveryClasses[$subClass->getUri()] = $subClass->getLabel();
+        }
+
+        $indexesFound = array_keys($deliveryClasses, $label);
+
+        switch (count($indexesFound)) {
+            case 0:
+                return $rootDeliveryClass->createSubClass($label);
+            case 1:
+                return new \core_kernel_classes_Class(current($indexesFound));
+            default:
+                throw new \common_exception_NotFound(__('Multiple delivery class found for label %s', $label));
+        }
+    }
+
 }
