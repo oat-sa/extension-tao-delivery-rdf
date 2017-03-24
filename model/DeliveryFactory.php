@@ -50,6 +50,19 @@ class DeliveryFactory extends ConfigurableService
 
         \common_Logger::i('Creating '.$label.' with '.$test->getLabel().' under '.$deliveryClass->getLabel());
 
+        // checking on properties
+        foreach ($this->getOption(self::OPTION_PROPERTIES) as $deliveryProperty => $testProperty) {
+            $testPropretyInstance = new \core_kernel_classes_Property($testProperty);
+            $validationValue = (string) $testPropretyInstance->getOnePropertyValue(new \core_kernel_classes_Property(ValidationRuleRegistry::PROPERTY_VALIDATION_RULE));
+
+            $propertyValues = $test->getPropertyValues($testPropretyInstance);
+
+            if ($validationValue == 'notEmpty' && empty($propertyValues)) {
+                $report = \common_report_Report::createFailure(__('Test publishing failed because "%s" is empty.', $testPropretyInstance->getLabel()));
+                return $report;
+            }
+        }
+
         $storage = new TrackedStorage();
 
         $testCompilerClass = \taoTests_models_classes_TestsService::singleton()->getCompilerClass($test);
@@ -66,18 +79,7 @@ class DeliveryFactory extends ConfigurableService
             );
 
             foreach ($this->getOption(self::OPTION_PROPERTIES) as $deliveryProperty => $testProperty) {
-                $testPropretyInstance = new \core_kernel_classes_Property($testProperty);
-                $validationValue = (string) $testPropretyInstance->getOnePropertyValue(new \core_kernel_classes_Property(ValidationRuleRegistry::PROPERTY_VALIDATION_RULE));
-
-                $propertyValues = $test->getPropertyValues(new \core_kernel_classes_Property($testProperty));
-
-                if ($validationValue == 'notEmpty' && empty($propertyValues)) {
-                    $report->setType(\common_report_Report::TYPE_ERROR);
-                    $report->setMessage(__('Test publishing failed because "%s" is empty.', $testPropretyInstance->getLabel()));
-                    return $report;
-                }
-
-                $properties[$deliveryProperty] = $propertyValues;
+                $properties[$deliveryProperty] = $test->getPropertyValues(new \core_kernel_classes_Property($testProperty));
             }
 
             $compilationInstance = DeliveryAssemblyService::singleton()->createAssemblyFromServiceCall($deliveryClass, $serviceCall, $properties);
