@@ -146,12 +146,10 @@ class RestDelivery extends \tao_actions_RestController
 
             $rootDeliveryClass = $this->getDeliveryRootClass();
             if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_PARENT)) {
-                $parentClass = new \core_kernel_classes_Class(self::REST_DELIVERY_CLASS_PARENT);
-                if ($parentClass == $rootDeliveryClass
-                    || ($parentClass->exists() && $parentClass->isSubClassOf($rootDeliveryClass))) {
-                    return $parentClass;
-                } else {
-                    throw new \common_exception_MissingParameter(self::REST_DELIVERY_CLASS_LABEL, $this->getRequestURI());
+                $parentClass = new \core_kernel_classes_Class($this->getRequestParameter(self::REST_DELIVERY_CLASS_PARENT));
+                if (! ($parentClass == $rootDeliveryClass
+                    || ($parentClass->exists() && $parentClass->isSubClassOf($rootDeliveryClass)))) {
+                    throw new \common_Exception(__('Delivery class uri provided is not a valid delivery class.'));
                 }
             } else {
                 $parentClass = $rootDeliveryClass;
