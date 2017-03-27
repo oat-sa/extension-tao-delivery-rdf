@@ -18,6 +18,7 @@
 
 namespace oat\taoDeliveryRdf\controller;
 
+use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\tao\model\TaskQueueActionTrait;
@@ -30,9 +31,12 @@ class RestDelivery extends \tao_actions_RestController
         getTaskData as traitGetTaskData;
     }
 
-    const REST_DELIVERY_TEST_ID = 'test';
-    const REST_DELIVERY_DELIVERY_CLASS = 'delivery-class';
-    const TASK_ID_PARAM = 'id';
+    const REST_DELIVERY_TEST_ID        = 'test';
+    const REST_DELIVERY_CLASS_URI      = 'delivery-uri';
+    const REST_DELIVERY_CLASS_LABEL    = 'delivery-label';
+    const REST_DELIVERY_CLASS_PARENT   = 'delivery-parent';
+    const REST_DELIVERY_CLASS_COMMENT  = 'delivery-comment';
+    const TASK_ID_PARAM                = 'id';
 
     /**
      * Generate a delivery from test uri
@@ -51,11 +55,7 @@ class RestDelivery extends \tao_actions_RestController
             }
 
             $label = 'Delivery of ' . $test->getLabel();
-
-            $deliveryClassLabel = $this->hasRequestParameter(self::REST_DELIVERY_DELIVERY_CLASS)
-                ? $this->getRequestParameter(self::REST_DELIVERY_DELIVERY_CLASS)
-                : null;
-            $deliveryClass = $this->getDeliveryClassByLabel($deliveryClassLabel);
+            $deliveryClass = $this->getDeliveryClassByParameters();
 
             $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
             /** @var \common_report_Report $report */
@@ -80,20 +80,16 @@ class RestDelivery extends \tao_actions_RestController
     public function generateDeferred()
     {   
         try {
-            if (!$this->hasRequestParameter(self::REST_DELIVERY_TEST_ID)) {
+            if (! $this->hasRequestParameter(self::REST_DELIVERY_TEST_ID)) {
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_TEST_ID, $this->getRequestURI());
             }
 
             $test = new \core_kernel_classes_Resource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
-            if (!$test->exists()) {
+            if (! $test->exists()) {
                 throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
             }
 
-            $deliveryClassLabel = $this->hasRequestParameter(self::REST_DELIVERY_DELIVERY_CLASS)
-                ? $this->getRequestParameter(self::REST_DELIVERY_DELIVERY_CLASS)
-                : null;
-            $deliveryClass = $this->getDeliveryClassByLabel($deliveryClassLabel);
-
+            $deliveryClass = $this->getDeliveryClassByParameters();
             $task = CompileDelivery::createTask($test, $deliveryClass);
 
             $result = [
@@ -103,7 +99,6 @@ class RestDelivery extends \tao_actions_RestController
             if (!empty($report)) {
                 if ($report instanceof \common_report_Report) {
                     //serialize report to array
-                    $report = json_encode($report);
                     $report = json_decode($report);
                 }
                 $result['report'] = $report;
@@ -126,6 +121,53 @@ class RestDelivery extends \tao_actions_RestController
             }
             $data = $this->getTaskData($this->getRequestParameter(self::TASK_ID_PARAM));
             $this->returnSuccess($data);
+        } catch (\Exception $e) {
+            $this->returnFailure($e);
+        }
+    }
+
+    /**
+     * Create a Delivery Class
+     *
+     * Label parameter is mandatory
+     * If parent class parameter is an uri of valid delivery class, new class will be created under it
+     * If not parent class parameter is provided, class will be created under root class
+     * Comment parameter is not mandatory, used to describe new created class
+     *
+     * @return \core_kernel_classes_Class
+     */
+    public function createClass()
+    {
+        try {
+            if (! $this->hasRequestParameter(self::REST_DELIVERY_CLASS_LABEL)) {
+                throw new \common_exception_MissingParameter(self::REST_DELIVERY_CLASS_LABEL, $this->getRequestURI());
+            }
+            $label = $this->getRequestParameter(self::REST_DELIVERY_CLASS_LABEL);
+
+            $rootDeliveryClass = $this->getDeliveryRootClass();
+            if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_PARENT)) {
+                $parentClass = new \core_kernel_classes_Class(self::REST_DELIVERY_CLASS_PARENT);
+                if ($parentClass == $rootDeliveryClass
+                    || ($parentClass->exists() && $parentClass->isSubClassOf($rootDeliveryClass))) {
+                    return $parentClass;
+                } else {
+                    throw new \common_exception_MissingParameter(self::REST_DELIVERY_CLASS_LABEL, $this->getRequestURI());
+                }
+            } else {
+                $parentClass = $rootDeliveryClass;
+            }
+
+            $comment = $this->hasRequestParameter(self::REST_DELIVERY_CLASS_COMMENT)
+                ? $this->getRequestParameter(self::REST_DELIVERY_CLASS_COMMENT) 
+                : '';
+
+            $deliveryClass = $parentClass->createSubClass($label, $comment);
+
+            $result = [
+                'delivery-uri' => $deliveryClass->getUri()
+            ];
+
+            $this->returnSuccess($result);
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
@@ -209,39 +251,75 @@ class RestDelivery extends \tao_actions_RestController
     }
 
     /**
-     * Get a delivery class associated to the given label
-     * If no label is provided, return root class
-     * If label is not found, create a new class
-     * If multiple classes are found for given label, throw notFoundException
+     * Get a delivery class based on parameters
      *
-     * @param null $label
+     * If an uri parameter is provided, and it is a delivery class, this delivery class is returned
+     * If a label parameter is provided, and only one delivery class has this label, this delivery class is returned
+     *
      * @return \core_kernel_classes_Class
+     * @throws \common_Exception
      * @throws \common_exception_NotFound
      */
-    protected function getDeliveryClassByLabel($label = null)
+    protected function getDeliveryClassByParameters()
     {
-        $rootDeliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+        $rootDeliveryClass = $this->getDeliveryRootClass();
 
-        if (is_null($label)) {
-            return $rootDeliveryClass;
+        // If an uri is provided, check if it's an existing delivery class
+        if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_URI)) {
+            $deliveryClass = new \core_kernel_classes_Class($this->getRequestParameter(self::REST_DELIVERY_CLASS_URI));
+            if ($deliveryClass == $rootDeliveryClass
+                || ($deliveryClass->exists() && $deliveryClass->isSubClassOf($rootDeliveryClass))) {
+                return $deliveryClass;
+            }
+            throw new \common_Exception(__('Delivery class uri provided is not a valid delivery class.'));
         }
 
-        $deliveryClasses = [];
-        /** @var \core_kernel_classes_Class $subClass */
-        foreach($rootDeliveryClass->getSubClasses(true) as $subClass) {
-            $deliveryClasses[$subClass->getUri()] = $subClass->getLabel();
+        if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_LABEL)) {
+            $label = $this->getRequestParameter(self::REST_DELIVERY_CLASS_LABEL);
+
+            $deliveryClasses = $rootDeliveryClass->getSubClasses(true);
+            $classes = [$rootDeliveryClass->getUri()];
+            foreach ($deliveryClasses as $class) {
+                $classes[] = $class->getUri();
+            }
+
+            /** @var ComplexSearchService $search */
+            $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
+            $queryBuilder = $search->query();
+            $criteria = $queryBuilder->newQuery()
+                ->add(RDFS_LABEL)->equals($label)
+                ->add(RDFS_SUBCLASSOF)->in($classes)
+            ;
+            $queryBuilder->setCriteria($criteria);
+            $result = $search->getGateway()->search($queryBuilder);
+
+            switch ($result->count()) {
+                case 0:
+                    throw new \common_exception_NotFound(__('Delivery with label "%s" not found', $label));
+                case 1:
+                    return new \core_kernel_classes_Class($result->current()->gtUri());
+                default:
+                    $availableClasses = [];
+                    foreach ($result as $raw) {
+                        $availableClasses[] = $raw->getUri();
+                    }
+                    throw new \common_exception_NotFound(__('Multiple delivery class found for label "%s": %s',
+                        $label, implode(',',$availableClasses)
+                    ));
+            }
         }
 
-        $indexesFound = array_keys($deliveryClasses, $label);
+        return $rootDeliveryClass;
+    }
 
-        switch (count($indexesFound)) {
-            case 0:
-                return $rootDeliveryClass->createSubClass($label);
-            case 1:
-                return new \core_kernel_classes_Class(current($indexesFound));
-            default:
-                throw new \common_exception_NotFound(__('Multiple delivery class found for label %s', $label));
-        }
+    /**
+     * Get the delivery root class
+     *
+     * @return \core_kernel_classes_Class
+     */
+    protected function getDeliveryRootClass()
+    {
+        return new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
     }
 
 }

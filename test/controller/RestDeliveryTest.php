@@ -42,7 +42,7 @@ class RestDeliveryTest extends RestTestRunner
      */
     protected function initDeliveryGeneration()
     {
-        $qtiModel     = new \core_kernel_classes_Class(INSTANCE_TEST_MODEL_QTI);
+        $qtiModel     = new \core_kernel_classes_Class(\taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI);
         $packagePath  = __DIR__ . '/../samples/package/package-basic.zip';
 
         $uri = '';
@@ -161,5 +161,59 @@ class RestDeliveryTest extends RestTestRunner
 
         $this->deliveryService->deleteInstance($delivery);
         $this->assertFalse($delivery->exists());
+    }
+
+    public function curlCreateClass($label = false, $comment = false, $parentUri = false)
+    {
+        $data = [];
+        if ($label !== false) {
+            $data['delivery-label'] = $label;
+        }
+
+        if ($comment !== false) {
+            $data['delivery-comment'] = $comment;
+        }
+
+        if ($parentUri !== false) {
+            $data['delivery-parent'] = $parentUri;
+        }
+
+        $url = $this->host . 'taoDeliveryRdf/RestDelivery/createClass';
+        $return = $this->curl($url, CURLOPT_POST, 'data', array(CURLOPT_POSTFIELDS => $data));
+
+        return json_decode($return, true);
+    }
+
+    public function createClass()
+    {
+        $label = 'fixture';
+        $comment = 'commentFixture';
+        $deliveryParent = (new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY))->createSubClass();
+
+        $data = $this->curlCreateClass($label, $comment, $deliveryParent->getUri());
+
+        $this->assertTrue(is_array($data));
+        $this->assertTrue(isset($data['success']));
+        $this->assertTrue($data['success']);
+
+        $this->assertTrue(isset($data['data']));
+        $this->assertTrue(isset($data['data']['delivery']));
+
+
+        $deliveryClass = new \core_kernel_classes_Class($data['data']['delivery']);
+        $this->assertTrue($deliveryClass->exists());
+        $this->assertEquals($label, $deliveryClass->getLabel());
+        $this->assertEquals($comment, $deliveryClass->getComment());
+
+        $classes = $deliveryParent->getSubClasses(true);
+        $subclasses = [];
+        foreach ($classes as $class) {
+            $subclasses[] = $class->getUri();
+        }
+        $parent = $deliveryClass->getParentClasses();
+        $this->assertEquals($deliveryParent->getUri(), $parent[0]->getUri());
+
+        $deliveryClass->delete();
+        $deliveryParent->delete();
     }
 }
