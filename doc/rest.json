@@ -28,6 +28,12 @@
             "description": "Test identifier, in URI format",
             "required": true,
             "type": "string"
+          },{
+            "name": "delivery-class",
+            "in": "formData",
+            "description": "Delivery class label. If label is not specified, root delivery class will be used. If label is specified but does not exist, a new class will be created, otherwise test is compiled into targeted class",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -118,7 +124,7 @@
             }
           },
           "500": {
-            "description": "Internal error (should not occur)",
+            "description": "Internal error, if delivery class label is found multiple times.",
             "examples": {
               "application/json": {
                 "success": false,
@@ -146,6 +152,12 @@
             "in": "formData",
             "description": "Test identifier, in URI format",
             "required": true,
+            "type": "string"
+          },{
+            "name": "delivery-class",
+            "in": "formData",
+            "description": "Delivery class label. If label is not specified, root delivery class will be used. If label is specified but does not exist, a new class will be created, otherwise test is compiled into targeted class",
+            "required": false,
             "type": "string"
           }
         ],
@@ -241,7 +253,7 @@
             }
           },
           "500": {
-            "description": "Internal error (should not occur)",
+            "description": "Internal error, if delivery class label is found multiple times.",
             "examples": {
               "application/json": {
                 "success": false,
