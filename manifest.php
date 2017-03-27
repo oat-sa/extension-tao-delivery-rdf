@@ -20,16 +20,17 @@
  */
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 return array(
-    'name' => 'taoDeliveryRdf',
-	'label' => 'Delivery Management',
+    'name'        => 'taoDeliveryRdf',
+	'label'       => 'Delivery Management',
 	'description' => 'Manages deliveries using the ontology',
-    'license' => 'GPL-2.0',
-    'version' => '1.16.0',
-	'author' => 'Open Assessment Technologies SA',
-	'requires' => array(
-        'tao' => '>=7.69.2',
-        'taoGroups' => '>=2.7.1',
-        'taoTests' => '>=3.5.0',
+    'license'     => 'GPL-2.0',
+    'version'     => '2.0.0',
+	'author'      => 'Open Assessment Technologies SA',
+	'requires'    => array(
+        'tao'         => '>=7.69.2',
+        'taoGroups'   => '>=2.7.1',
+        'taoTests'    => '>=3.5.0',
+        'taoQtiTest'  => '>=7.0.0',
         'taoDelivery' => '>=4.3.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
