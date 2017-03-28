@@ -44,14 +44,23 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
      */
     public function __invoke($params)
     {
-        if (!isset($params['test'])) {
+        if (! isset($params['test'])) {
             throw new \common_exception_MissingParameter('Missing parameter `test` in ' . self::class);
         }
+
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
+
+        if (isset($params['delivery'])) {
+            $deliveryClass = new \core_kernel_classes_Class($params['delivery']);
+            if (! $deliveryClass->exists()) {
+                $deliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+            }
+        } else {
+            $deliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+        }
 
         $test = new \core_kernel_classes_Resource($params['test']);
         $label = 'Delivery of ' . $test->getLabel();
-        $deliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
 
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
         /** @var \common_report_Report $report */
@@ -74,15 +83,23 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
     }
 
     /**
+     * Create a task to compile a delivery into a delviery class
+     *
      * @param \core_kernel_classes_Resource $test test resource to compile
+     * @param \core_kernel_classes_Class $delivery Optional delivery where to compile the test
      * @return Task created task id
      */
-    public static function createTask(\core_kernel_classes_Resource $test)
+    public static function createTask(\core_kernel_classes_Resource $test, \core_kernel_classes_Class $delivery = null)
     {
         $action = new self();
-        $queue = ServiceManager::getServiceManager()->get(Queue::CONFIG_ID);
-        //put task in queue with reference to the test resource
-        $task = $queue->createTask($action, ['test' => $test->getUri()]);
+        $queue = ServiceManager::getServiceManager()->get(Queue::SERVICE_ID);
+
+        $parameters = ['test'=> $test->getUri()];
+        if (! is_null($delivery)) {
+            $parameters['delivery'] = $delivery->getUri();
+        }
+        //put task in queue with reference to the test resource and delivery
+        $task = $queue->createTask($action, $parameters);
 
         return $task;
     }

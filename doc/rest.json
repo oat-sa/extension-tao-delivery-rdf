@@ -28,6 +28,18 @@
             "description": "Test identifier, in URI format",
             "required": true,
             "type": "string"
+          },{
+            "name": "delivery-uri",
+            "in": "formData",
+            "description": "Delivery class uri where to create test delivery",
+            "required": false,
+            "type": "string"
+          },{
+            "name": "delivery-label",
+            "in": "formData",
+            "description": "If delivery-uri is specified, this parameter will be ignored. Delivery class label where to create test delivery otherwise root class will be used",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -118,7 +130,7 @@
             }
           },
           "500": {
-            "description": "Internal error (should not occur)",
+            "description": "Internal error, if delivery class label is found multiple times.",
             "examples": {
               "application/json": {
                 "success": false,
@@ -146,6 +158,18 @@
             "in": "formData",
             "description": "Test identifier, in URI format",
             "required": true,
+            "type": "string"
+          },{
+            "name": "delivery-uri",
+            "in": "formData",
+            "description": "Delivery class uri where to create test delivery",
+            "required": false,
+            "type": "string"
+          },{
+            "name": "delivery-label",
+            "in": "formData",
+            "description": "If delivery-uri is specified, this parameter will be ignored. Delivery class label where to create test delivery otherwise root class will be used",
+            "required": false,
             "type": "string"
           }
         ],
@@ -241,7 +265,7 @@
             }
           },
           "500": {
-            "description": "Internal error (should not occur)",
+            "description": "Internal error, if delivery class label is found multiple times.",
             "examples": {
               "application/json": {
                 "success": false,
@@ -505,6 +529,127 @@
           },
           "500": {
             "description": "Internal error (should not occur)",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "Exception error description",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    },
+    "/taoDeliveryRdf/RestDelivery/createClass": {
+      "post": {
+        "description": "Create a delivery class",
+        "tags": [
+          "delivery"
+        ],
+        "parameters": [
+          {
+            "name": "delivery-label",
+            "in": "formData",
+            "description": "Delivery class label to create",
+            "required": true,
+            "type": "string"
+          },{
+            "name": "delivery-parent",
+            "in": "formData",
+            "description": "Parent delivery class uri. If not specified root delivery class will be used",
+            "required": false,
+            "type": "string"
+          },{
+            "name": "delivery-comment",
+            "in": "formData",
+            "description": "The comment of new created class",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "title": "response",
+              "format": "json",
+              "type": "object",
+              "required": [
+                "success",
+                "version"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "false on failure, true on success"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "tao version"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "delivery-uri" : {
+                      "type": "string",
+                      "description": "The uri of newly created delivery class"
+                    }
+                  }
+                },
+                "errorCode": {
+                  "type": "string",
+                  "description": "error code. it appear if success value is false"
+                },
+                "errorMsg": {
+                  "type": "string",
+                  "description": "error description. it appear if success value is false"
+                }
+              }
+            },
+            "examples": {
+              "application/json": {
+                "success": true,
+                "data": {
+                  "delivery-uri": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx"
+                },
+                "version": "3.1.0"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request if you send invalid parameters. delivery-label uri is mandatory.",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "At least one mandatory parameter was required but found missing in your request",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "You don't have permission to access this resource.",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "500": {
+            "description": "Internal error, if delivery-parent if not a valid delivery class.",
             "examples": {
               "application/json": {
                 "success": false,
