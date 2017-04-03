@@ -295,7 +295,7 @@ class RestDelivery extends \tao_actions_RestController
                 case 0:
                     throw new \common_exception_NotFound(__('Delivery with label "%s" not found', $label));
                 case 1:
-                    return new \core_kernel_classes_Class($result->current()->gtUri());
+                    return new \core_kernel_classes_Class($result->current()->getUri());
                 default:
                     $availableClasses = [];
                     foreach ($result as $raw) {
