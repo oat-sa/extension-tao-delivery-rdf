@@ -21,6 +21,9 @@ namespace oat\taoDeliveryRdf\model;
 
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
+use oat\oatbox\service\ServiceManager;
+use oat\taoDelivery\model\RuntimeService;
+use oat\taoDelivery\model\container\DeliveryContainer;
 /**
  * Services to manage simple Deliveries
  *
@@ -50,16 +53,25 @@ class SimpleDeliveryFactory
         
         $report = $compiler->compile();
         if ($report->getType() == \common_report_Report::TYPE_SUCCESS) {
-            $serviceCall = $report->getData();
+            $responeObject = $report->getData();
 
             $properties = array(
                 RDFS_LABEL => $label,
                 PROPERTY_COMPILEDDELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
                 DeliveryAssemblyService::PROPERTY_ORIGIN => $test
             );
+
+            if ($responeObject instanceof \tao_models_classes_service_ServiceCall) {
+                $delivery = DeliveryAssemblyService::singleton()->createAssemblyFromServiceCall($deliveryClass, $responeObject, $properties);
+                $report->setData($delivery);
+            } elseif ($responeObject instanceof DeliveryContainer) {
+                $runtimeService = ServiceManager::getServiceManager()->get(RuntimeService::SERVICE_ID);
+                $delivery = $runtimeService->createAssemblyFromContainer($deliveryClass, $responeObject, $properties);
+                $report->setData($delivery);
+            } else {
+                throw new \common_exception_InconsistentData('Unknown compilation response type: '.get_class($respone));
+            }
         
-            $compilationInstance = DeliveryAssemblyService::singleton()->createAssemblyFromServiceCall($deliveryClass, $serviceCall, $properties);
-            $report->setData($compilationInstance);
         }
         
         return $report;

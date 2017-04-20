@@ -26,6 +26,10 @@ use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
 use oat\taoDelivery\model\DeliveryContainer;
+use oat\taoDelivery\model\container\DeliveryServiceContainer;
+use oat\taoDelivery\model\RuntimeService;
+use oat\taoDelivery\model\container\ContainerService;
+use oat\oatbox\service\ServiceManager;
 
 /**
  * Service to manage the authoring of deliveries
@@ -37,6 +41,8 @@ use oat\taoDelivery\model\DeliveryContainer;
 class DeliveryAssemblyService extends \tao_models_classes_ClassService
 {
     const PROPERTY_ORIGIN = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
+
+    const PROPERTY_CONTAINER = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainer';
 
     /**
      * @var \tao_models_classes_service_FileStorage
@@ -66,24 +72,30 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
         return $this->storageService;
     }
 
-    public function createAssemblyFromServiceCall(core_kernel_classes_Class $deliveryClass, tao_models_classes_service_ServiceCall $serviceCall, $properties = array()) {
-
+    public function createAssemblyFromContainer(core_kernel_classes_Class $deliveryClass, $container, $properties = array()) {
         $properties[PROPERTY_COMPILEDDELIVERY_TIME]      = time();
-        $properties[PROPERTY_COMPILEDDELIVERY_RUNTIME]   = $serviceCall->toOntology();
         
         if (!isset($properties[TAO_DELIVERY_RESULTSERVER_PROP])) {
             $properties[TAO_DELIVERY_RESULTSERVER_PROP] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
         }
-
-        $deliveryServerService = $this->getServiceManager()->get(\taoDelivery_models_classes_DeliveryServerService::CONFIG_ID);
-        $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($serviceCall, []);
-
-        $properties[DeliveryContainer::PROPERTY_DELIVERY_CONTAINER_CLASS] = $deliveryServerService->getOption('deliveryContainer');
-        $properties[DeliveryContainer::PROPERTY_DELIVERY_CONTAINER_OPTIONS] = json_encode($inputParameters);
+        $properties[self::PROPERTY_CONTAINER] = json_encode($container);
 
         $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
         $this->getEventManager()->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
         return $compilationInstance;
+    }
+
+    public function createAssemblyFromServiceCall(core_kernel_classes_Class $deliveryClass, tao_models_classes_service_ServiceCall $serviceCall, $properties = array())
+    {
+        //$container = new DeliveryServiceContainer(DeliveryServiceContainer::CONTAINER_ID, $serviceCall->serializeToString());
+        $container = $this->getServiceManager()->get(ContainerService::SERVICE_ID)->getContainer(DeliveryServiceContainer::CONTAINER_ID);
+        $container->setRuntimeParams($serviceCall->serializeToString());
+
+        // backwards compatibility
+        $properties[PROPERTY_COMPILEDDELIVERY_RUNTIME] = $serviceCall->toOntology();
+
+        $runtimeService = $this->getServiceManager()->get(RuntimeService::SERVICE_ID);
+        return $runtimeService->createAssemblyFromContainer($deliveryClass, $container, $properties);
     }
     
     /**
@@ -166,14 +178,14 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     }
     
     /**
-     * Gets the service call to run this assembly
+     * Gets the service call to run this assembly, should be a black box
      *
+     * @deprecated
      * @param core_kernel_classes_Resource $assembly
      * @return tao_models_classes_service_ServiceCall
      */
     public function getRuntime( core_kernel_classes_Resource $assembly) {
-        $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
-        return tao_models_classes_service_ServiceCall::fromResource($runtimeResource);
+        return $this->getServiceManager()->get(RuntimeService::SERVICE_ID)->getRuntime($assembly->getUri());
     }
     
     /**
@@ -189,5 +201,4 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     public function getOrigin( core_kernel_classes_Resource $assembly) {
         return (string)$assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_ORIGIN));
     }
-
 }
