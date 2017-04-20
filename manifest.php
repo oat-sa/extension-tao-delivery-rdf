@@ -19,6 +19,9 @@
  *
  */
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\scripts\install\SetupRuntimeService;
+use oat\taoDeliveryRdf\scripts\install\SetupAssignmentService;
+
 return array(
     'name' => 'taoDeliveryRdf',
     'label' => 'Delivery Management',
@@ -43,9 +46,8 @@ return array(
             __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'ontology'.DIRECTORY_SEPARATOR.'widgetdefinitions.rdf'
         ),
         'php' => array(
-            __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php',
-            'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
-            'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
+            SetupAssignmentService::class,
+            SetupRuntimeService::class,
             RegisterDeliveryFactoryService::class
         )
     ),
