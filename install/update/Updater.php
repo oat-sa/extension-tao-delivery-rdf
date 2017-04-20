@@ -128,9 +128,14 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.14.0');
         }
 
-        $this->skip('1.14.0', '1.14.1');
+        $this->skip('1.14.0', '2.0.1');
 
-        if ($this->isVersion('1.14.1')) {
+        if ($this->isVersion('2.0.1')) {
+            OntologyUpdater::syncModels();
+            $this->setVersion('2.0.2');
+        }
+
+        if ($this->isVersion('2.0.2')) {
             OntologyUpdater::syncModels();
             $deliveryContainerRegistry = DeliveryContainerRegistry::getRegistry();
             $deliveryContainerRegistry->register(
@@ -139,7 +144,7 @@ class Updater extends \common_ext_ExtensionUpdater {
                     DeliveryClientContainer::OPTION_PLUGIN_PROVIDER => DeliveryPluginProvider::class,
                 ]
             );
-            $this->setVersion('2.0.0');
+            $this->setVersion('2.1.0');
         }
     }
 }

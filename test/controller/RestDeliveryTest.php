@@ -42,7 +42,7 @@ class RestDeliveryTest extends RestTestRunner
      */
     protected function initDeliveryGeneration()
     {
-        $qtiModel     = new \core_kernel_classes_Class(INSTANCE_TEST_MODEL_QTI);
+        $qtiModel     = new \core_kernel_classes_Class(\taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI);
         $packagePath  = __DIR__ . '/../samples/package/package-basic.zip';
 
         $uri = '';
@@ -162,4 +162,137 @@ class RestDeliveryTest extends RestTestRunner
         $this->deliveryService->deleteInstance($delivery);
         $this->assertFalse($delivery->exists());
     }
+
+    public function curlCreateClass($label = false, $comment = false, $parentUri = false)
+    {
+        $data = [];
+        if ($label !== false) {
+            $data['delivery-label'] = $label;
+        }
+
+        if ($comment !== false) {
+            $data['delivery-comment'] = $comment;
+        }
+
+        if ($parentUri !== false) {
+            $data['delivery-parent'] = $parentUri;
+        }
+
+        $url = $this->host . 'taoDeliveryRdf/RestDelivery/createClass';
+        $return = $this->curl($url, CURLOPT_POST, 'data', array(CURLOPT_POSTFIELDS => $data));
+
+        return json_decode($return, true);
+    }
+
+    public function testCreateClass()
+    {
+        $label = 'fixture';
+        $comment = 'commentFixture';
+        $deliveryParent = (new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY))->createSubClass();
+
+        $data = $this->curlCreateClass($label, $comment, $deliveryParent->getUri());
+
+        $this->assertTrue(is_array($data));
+        $this->assertTrue(isset($data['success']));
+        $this->assertTrue($data['success']);
+
+        $this->assertTrue(isset($data['data']));
+        $this->assertTrue(isset($data['data']['delivery-uri']));
+
+
+        $deliveryClass = new \core_kernel_classes_Class($data['data']['delivery-uri']);
+        $this->assertTrue($deliveryClass->exists());
+        $this->assertEquals($label, $deliveryClass->getLabel());
+        $this->assertEquals($comment, $deliveryClass->getComment());
+
+        $parent = $deliveryClass->getParentClasses();
+        $this->assertEquals($deliveryParent->getUri(), current($parent)->getUri());
+
+        $deliveryClass->delete();
+        $deliveryParent->delete();
+    }
+
+    public function testCreateSubClass()
+    {
+        $label = 'fixture';
+        $comment = 'commentFixture';
+        $deliveryParent1 = (new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY))->createSubClass();
+        $deliveryParent = $deliveryParent1->createSubClass();
+
+        $data = $this->curlCreateClass($label, $comment, $deliveryParent->getUri());
+
+        $this->assertTrue(is_array($data));
+        $this->assertTrue(isset($data['success']));
+        $this->assertTrue($data['success']);
+
+        $this->assertTrue(isset($data['data']));
+        $this->assertTrue(isset($data['data']['delivery-uri']));
+
+
+        $deliveryClass = new \core_kernel_classes_Class($data['data']['delivery-uri']);
+        $this->assertTrue($deliveryClass->exists());
+        $this->assertEquals($label, $deliveryClass->getLabel());
+        $this->assertEquals($comment, $deliveryClass->getComment());
+
+        $parent = $deliveryClass->getParentClasses();
+        $this->assertEquals($deliveryParent->getUri(), current($parent)->getUri());
+
+        $deliveryClass->delete();
+        $deliveryParent->delete();
+        $deliveryParent1->delete();
+    }
+
+    public function testCreateClassWithoutLabel()
+    {
+        $data = $this->curlCreateClass();
+
+        $this->assertTrue(is_array($data));
+        $this->assertTrue(isset($data['success']));
+        $this->assertFalse($data['success']);
+
+        $this->assertTrue(isset($data['errorMsg']));
+        $this->assertEquals('At least one mandatory parameter was required but found missing in your request', $data['errorMsg']);
+    }
+
+    public function testCreateClassWithoutComment()
+    {
+        $label = 'fixture';
+        $data = $this->curlCreateClass($label);
+
+        $this->assertTrue(is_array($data));
+        $this->assertTrue(isset($data['success']));
+        $this->assertTrue($data['success']);
+
+        $this->assertTrue(isset($data['data']));
+        $this->assertTrue(isset($data['data']['delivery-uri']));
+
+
+        $deliveryClass = new \core_kernel_classes_Class($data['data']['delivery-uri']);
+        $this->assertTrue($deliveryClass->exists());
+        $this->assertEquals($label, $deliveryClass->getLabel());
+        $this->assertEmpty($deliveryClass->getComment());
+
+        $deliveryClass->delete();
+    }
+
+    public function testCreateClassWithoutWrongParentUri()
+    {
+        $label = 'fixture';
+        $data = $this->curlCreateClass($label, false, 'wrongUri');
+
+        $this->assertTrue(is_array($data));
+        $this->assertTrue(isset($data['success']));
+        $this->assertFalse($data['success']);
+
+        $this->assertTrue(isset($data['errorMsg']));
+        $this->assertEquals('Delivery class uri provided is not a valid delivery class.', $data['errorMsg']);
+    }
+
+    protected function getUserData()
+    {
+        $data = parent::getUserData();
+        $data[PROPERTY_USER_PASSWORD] = '12345Admin@@@';
+        return $data;
+    }
+
 }

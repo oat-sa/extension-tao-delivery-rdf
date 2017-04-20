@@ -155,6 +155,11 @@
     <rdfs:comment xml:lang="en-US"><![CDATA[Finished status of a delivery execution]]></rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus"/>
   </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusPaused">
+    <rdfs:label xml:lang="en-US"><![CDATA[Paused]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Paused status of a delivery execution]]></rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus"/>
+  </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusAbandoned">
     <rdfs:label xml:lang="en-US"><![CDATA[Finished]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Abandoned status of a delivery execution]]></rdfs:comment>
