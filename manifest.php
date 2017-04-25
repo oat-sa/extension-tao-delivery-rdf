@@ -24,10 +24,10 @@ return array(
 	'label'       => 'Delivery Management',
 	'description' => 'Manages deliveries using the ontology',
     'license'     => 'GPL-2.0',
-    'version'     => '2.0.2',
+    'version'     => '3.0.0',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
-        'tao'         => '>=7.69.2',
+        'tao'         => '>=9.0.0',
         'taoGroups'   => '>=2.7.1',
         'taoTests'    => '>=3.5.0',
         'taoQtiTest'  => '>=7.0.0',
@@ -61,9 +61,6 @@ return array(
 
 		#BASE URL (usually the domain root)
 		'BASE_URL' => ROOT_URL.'taoDeliveryRdf/',
-
-	    #BASE WWW required by JS
-	    'BASE_WWW' => ROOT_URL.'taoDeliveryRdf/views/'
 	),
     'extra' => array(
         'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
