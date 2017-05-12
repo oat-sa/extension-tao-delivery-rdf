@@ -159,10 +159,24 @@ class RestDelivery extends \tao_actions_RestController
                 ? $this->getRequestParameter(self::REST_DELIVERY_CLASS_COMMENT) 
                 : '';
 
-            $deliveryClass = $parentClass->createSubClass($label, $comment);
+            $deliveryClass = false;
+            /** @var \core_kernel_classes_Class $subClass */
+            foreach ($parentClass->getSubClasses() as $subClass) {
+                if ($subClass->getLabel() == $label) {
+                    $message = __('Class already exists.');
+                    $deliveryClass = $subClass;
+                    break;
+                }
+            }
+    
+            if (! $deliveryClass) {
+                $message = __('Class successfully created.');
+                $deliveryClass = $parentClass->createSubClass($label, $comment);
+            }
 
             $result = [
-                'delivery-uri' => $deliveryClass->getUri()
+                'message'      => $message,
+                'delivery-uri' => $deliveryClass->getUri(),
             ];
 
             $this->returnSuccess($result);
