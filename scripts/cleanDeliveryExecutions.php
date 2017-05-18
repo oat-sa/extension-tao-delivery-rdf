@@ -23,10 +23,12 @@ namespace oat\taoDeliveryRdf\scripts;
 //Load extension to define necessary constants.
 \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
 
+use oat\oatbox\extension\AbstractAction;
+use oat\taoDelivery\model\execution\implementation\KeyValueService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoOutcomeRds\model\RdsResultStorage;
 
-class cleanDeliveryExecutions extends \common_ext_action_InstallAction
+class cleanDeliveryExecutions extends AbstractAction
 {
     /**
      * @var \core_kernel_classes_Class
@@ -164,8 +166,8 @@ class cleanDeliveryExecutions extends \common_ext_action_InstallAction
         // deliveryExecutions
         $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDelivery');
         $deliveryService = $extension->getConfig('execution_service');
-        if ($deliveryService instanceof \oat\taoDelivery\model\execution\KeyValueService) {
-            $persistenceOption = $deliveryService->getOption(\oat\taoDelivery\model\execution\KeyValueService::OPTION_PERSISTENCE);
+        if ($deliveryService instanceof KeyValueService) {
+            $persistenceOption = $deliveryService->getOption(KeyValueService::OPTION_PERSISTENCE);
             $persistence = \common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
             $count = 0;
             foreach ($persistence->keys('kve_*') as $key) {
