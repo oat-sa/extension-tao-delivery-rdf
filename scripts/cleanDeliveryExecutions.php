@@ -27,7 +27,7 @@ use oat\oatbox\extension\AbstractAction;
 use oat\taoDelivery\model\execution\implementation\KeyValueService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoOutcomeRds\model\RdsResultStorage;
-
+use taoAltResultStorage_models_classes_KeyValueResultStorage as KeyValueResultStorage;
 class cleanDeliveryExecutions extends AbstractAction
 {
     /**
@@ -100,7 +100,12 @@ class cleanDeliveryExecutions extends AbstractAction
 
             // results redis
             try{
-                $keyValuePersistence = \common_persistence_KeyValuePersistence::getPersistence('keyValueResult');
+                /** @var KeyValueResultStorage $kvResultService */
+                $kvResultService = $this->getServiceManager()->get(\KeyValueResultStorage::SERVICE_ID);
+                $keyValuePersistenceId = $kvResultService->hasOption(KeyValueResultStorage::OPTION_PERSISTENCE) ?
+                    $kvResultService->getOption(KeyValueResultStorage::OPTION_PERSISTENCE) : 'keyValueResult';
+                    
+                $keyValuePersistence = \common_persistence_KeyValuePersistence::getPersistence($keyValuePersistenceId);
             }
             catch(\common_Exception $e){
                 $keyValuePersistence = null;
