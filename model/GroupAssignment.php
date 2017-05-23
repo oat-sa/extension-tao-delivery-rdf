@@ -138,11 +138,13 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
             foreach ($group->getPropertyValues(new \core_kernel_classes_Property(PROPERTY_GROUP_DELVIERY)) as $deliveryUri) {
                 $candidate = new core_kernel_classes_Resource($deliveryUri);
                 if (!$this->isUserExcluded($candidate, $user) && $candidate->exists()) {
-                    $deliveryUris[] = $candidate->getUri();
+                    $deliveryUris[$candidate->getUri()] = $candidate->getUri();
                 }
             }
         }
-        return array_unique($deliveryUris);
+
+        ksort($deliveryUris);
+        return $deliveryUris;
     }
     
     /**
