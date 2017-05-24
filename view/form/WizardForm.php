@@ -20,6 +20,8 @@
  */
 namespace oat\taoDeliveryRdf\view\form;
 
+use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
+use oat\oatbox\service\ServiceManager;
 use oat\taoDeliveryRdf\model\NoTestsException;
 /**
  * Create a form from a  resource of your ontology. 
@@ -30,8 +32,7 @@ use oat\taoDeliveryRdf\model\NoTestsException;
  * @package tao
  
  */
-class WizardForm
-    extends \tao_helpers_form_FormContainer
+class WizardForm extends \tao_helpers_form_FormContainer
 {
 
     protected function initForm()
@@ -63,30 +64,33 @@ class WizardForm
         $classUriElt->setValue($class->getUri());
         $this->form->addElement($classUriElt);
         
-        //create the element to select the import format
+        /** @var \tao_helpers_form_elements_xhtml_Hidden $testElt */
+        $testElt = \tao_helpers_form_FormFactory::getElement('test', 'Hidden');
+        /** @var ComplexSearchService $search */
+        $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
+        $queryBuilder = $search->query();
+        $query = $search->searchType($queryBuilder , TAO_TEST_CLASS , true);
+        $queryBuilder->setCriteria($query);
 
-        $formatElt = \tao_helpers_form_FormFactory::getElement('test', 'Combobox');
-        $formatElt->setDescription(__('Select the test you want to publish to the test-takers'));
-        $testClass = new \core_kernel_classes_Class(TAO_TEST_CLASS);
-        $options = array();
-        $testService = \taoTests_models_classes_TestsService::singleton();
-        foreach ($testClass->getInstances(true) as $test) {
-            try {
-                $testItems = $testService->getTestItems($test);
-                //Filter tests which has no items
-                if (!empty($testItems)) { 
-                    $options[$test->getUri()] = $test->getLabel();
-                }
-            } catch (\Exception $e) {
-                \common_Logger::w('Unable to load items for test '.$test->getUri());
-            }
-        } 
-        
-        if (empty($options)) {
+        $count = $search->getGateway()->count($queryBuilder);
+
+        if (0 === $count) {
             throw new NoTestsException();
         }
-        $formatElt->setOptions($options);
-        $formatElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty'));
-        $this->form->addElement($formatElt);
+
+        $selectElt = \tao_helpers_form_FormFactory::getElement('selectelt', 'Free');
+        $selectElt->setValue('<div class="select2-container"></div>');
+        $this->form->addElement($selectElt);
+
+        $testElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty'));
+        $this->form->addElement($testElt);
+    }
+
+    /**
+     * @return ServiceManager
+     */
+    private function getServiceManager()
+    {
+        return ServiceManager::getServiceManager();
     }
 }
