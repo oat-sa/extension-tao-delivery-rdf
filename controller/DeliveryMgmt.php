@@ -20,6 +20,7 @@
  */
 namespace oat\taoDeliveryRdf\controller;
 
+use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManagerAwareTrait;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
@@ -46,7 +47,6 @@ class DeliveryMgmt extends \tao_actions_SaSModule
      *
      * @access public
      * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
-     * @return Delivery
      */
     public function __construct()
     {
@@ -211,5 +211,43 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         } catch (NoTestsException $e) {
             $this->setView('DeliveryMgmt/wizard_error.tpl');
         }
+    }
+
+    /**
+     * Prepare formatted for select2 component filtered list of available for compilation tests
+     * @throws \common_Exception
+     * @throws \oat\oatbox\service\ServiceNotFoundException
+     */
+    public function getAvailableTests()
+    {
+        $q = $this->getRequestParameter('q');
+        $tests = [];
+
+        $testService = \taoTests_models_classes_TestsService::singleton();
+        /** @var ComplexSearchService $search */
+        $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
+
+        $queryBuilder = $search->query();
+        $query = $search->searchType($queryBuilder , TAO_TEST_CLASS , true)
+            ->add(RDFS_LABEL)
+            ->contains($q);
+
+        $queryBuilder->setCriteria($query);
+
+        $result = $search->getGateway()->search($queryBuilder);
+
+        foreach ($result as $test) {
+            try {
+                $testItems = $testService->getTestItems($test);
+                //Filter tests which has no items
+                if (!empty($testItems)) {
+                    $testUri = $test->getUri();
+                    $tests[] = ['id' => $testUri, 'uri' => $testUri, 'text' => $test->getLabel()];
+                }
+            } catch (\Exception $e) {
+                \common_Logger::w('Unable to load items for test ' . $testUri);
+            }
+        }
+        $this->returnJson(['total' => count($tests), 'items' => $tests]);
     }
 }
