@@ -41,6 +41,9 @@ class WizardForm extends \tao_helpers_form_FormContainer
         
         $createElt = \tao_helpers_form_FormFactory::getElement('create', 'Free');
 		$createElt->setValue('<button class="form-submitter btn-success small" type="button"><span class="icon-publish"></span> ' .__('Publish').'</button>');
+        $this->form->setDecorators([
+            'actions-bottom' => new \tao_helpers_form_xhtml_TagWrapper(['tag' => 'div', 'cssClass' => 'form-toolbar']),
+        ]);
 		$this->form->setActions(array(), 'top');
 		$this->form->setActions(array($createElt), 'bottom');
 
@@ -79,7 +82,7 @@ class WizardForm extends \tao_helpers_form_FormContainer
         }
 
         $selectElt = \tao_helpers_form_FormFactory::getElement('selectelt', 'Free');
-        $selectElt->setValue('<div class="select2-container"></div>');
+        $selectElt->setValue('<div class="test-select-container"></div>');
         $this->form->addElement($selectElt);
 
         $testElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty'));

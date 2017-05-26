@@ -51,13 +51,14 @@ define(['jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'core/promise'
 
     return {
         start: function () {
-            var $filterContainer = $('.select2-container');
+            var $filterContainer = $('.test-select-container');
             var $formElement = $('#test');
 
             filterFactory($filterContainer, {
                 placeholder: __('Select the test you want to publish to the test-takers'),
-                width: '100%',
-                quietMillis: 1000
+                width: '64%',
+                quietMillis: 1000,
+                label: __('Select the test')
             }).on('change', function (test) {
                 $formElement.val(test);
             }).on('request', function (params) {
