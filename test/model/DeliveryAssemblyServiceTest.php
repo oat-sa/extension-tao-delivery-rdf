@@ -21,31 +21,20 @@
 namespace oat\taoDeliveryRdf\test\model;
 
 use oat\oatbox\filesystem\FileSystemService;
+use oat\tao\test\FileStorageTestCase;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
 use Prophecy\Argument;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class DeliveryAssemblyServiceTest extends TaoPhpUnitTestRunner
+class DeliveryAssemblyServiceTest extends FileStorageTestCase
 {
-    protected $sampleDir;
-    protected $directoryPath;
-
     public function setUp()
     {
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
-        $this->sampleDir = __DIR__ . '/samples/';
-        $this->directoryPath = $this->sampleDir . 'private/';
+        parent::setUp();
     }
-
-    public function tearDown()
-    {
-        if (file_exists($this->directoryPath)) {
-            \tao_helpers_File::delTree($this->directoryPath);
-        }
-    }
-
 
     /**
      * @dataProvider getResultsOfDeletion()
@@ -169,59 +158,6 @@ class DeliveryAssemblyServiceTest extends TaoPhpUnitTestRunner
     }
 
     /**
-     * Get file storage mock for testDeleteDeliveryDirectory()
-     *
-     * @return object
-     */
-    protected function getFileSystemWithServiceLocator()
-    {
-        $fileStorage = \tao_models_classes_service_FileStorage::singleton();
-        $adapter = $fileStorage->getOption('private');
-
-        $adaptersFixture = array (
-            'filesPath' => $this->sampleDir,
-            'adapters' => array (
-                $adapter => array(
-                    'class' => 'Local',
-                    'options' => array(
-                        'root' => $this->directoryPath
-                    )
-                )
-            )
-        );
-
-        $reflectionClass = new \ReflectionClass(\tao_models_classes_service_FileStorage::class);
-        $reflectionProperty = $reflectionClass->getProperty('privateFs');
-        $reflectionProperty->setAccessible(true);
-
-        $reflectionProperty->setValue($fileStorage, $this->getFileSystemMock($adapter, $this->directoryPath));
-
-        $fileSystemService = new FileSystemService($adaptersFixture);
-
-        $smProphecy = $this->prophesize(ServiceLocatorInterface::class);
-        $smProphecy->get(FileSystemService::SERVICE_ID)->willReturn($fileSystemService);
-        $fileStorage->setServiceLocator($smProphecy->reveal());
-
-        return $fileStorage;
-    }
-
-    /**
-     * Create a mock of filesystem, getUri will return $path
-     * @param $path
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function getFileSystemMock($uri, $path)
-    {
-        $fsFixture = $this->getMockBuilder(\core_kernel_fileSystem_FileSystem::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $fsFixture->method('getUri')->willReturn($uri);
-        $fsFixture->method('getPath')->willReturn($path);
-
-        return $fsFixture;
-    }
-
-    /**
      * Test DeleteDeliveryDirectory()
      *
      * @dataProvider getDeleteDeliveryDirectorySamples
@@ -233,7 +169,7 @@ class DeliveryAssemblyServiceTest extends TaoPhpUnitTestRunner
     {
 
         $deliveryAssemblyServiceMock = $this->getAssemblyServiceMock();
-        $fileStorage = $this->getFileSystemWithServiceLocator();
+        $fileStorage = $this->getFileStorage();
 
         $directoryStorage = $fileStorage->getDirectoryById('sample-');
         mkdir($directoryStorage->getPath(), 0700, true);
