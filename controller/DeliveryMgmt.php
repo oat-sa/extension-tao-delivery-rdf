@@ -31,6 +31,8 @@ use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\tao\model\search\SearchService;
+use oat\generis\model\OntologyAwareTrait;
 
 /**
  * Controller to managed assembled deliveries
@@ -41,6 +43,7 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 class DeliveryMgmt extends \tao_actions_SaSModule
 {
     use EventManagerAwareTrait;
+    use OntologyAwareTrait;
 
     /**
      * constructor: initialize the service and the default data
@@ -224,19 +227,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $tests = [];
 
         $testService = \taoTests_models_classes_TestsService::singleton();
-        /** @var ComplexSearchService $search */
-        $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
+        $results = SearchService::getSearchImplementation()->query($q, $testService->getRootclass());
 
-        $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder , TAO_TEST_CLASS , true)
-            ->add(RDFS_LABEL)
-            ->contains($q);
-
-        $queryBuilder->setCriteria($query);
-
-        $result = $search->getGateway()->search($queryBuilder);
-
-        foreach ($result as $test) {
+        foreach ($results as $testUri) {
+            $test = $this->getResource($testUri);
             try {
                 $testItems = $testService->getTestItems($test);
                 //Filter tests which has no items
