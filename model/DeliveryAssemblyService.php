@@ -69,10 +69,6 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
         $properties[PROPERTY_COMPILEDDELIVERY_TIME]      = time();
         $properties[PROPERTY_COMPILEDDELIVERY_RUNTIME]   = $serviceCall->toOntology();
         
-        if (!isset($properties[TAO_DELIVERY_RESULTSERVER_PROP])) {
-            $properties[TAO_DELIVERY_RESULTSERVER_PROP] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
-        }
-        
         $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
         $this->getEventManager()->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
         return $compilationInstance;

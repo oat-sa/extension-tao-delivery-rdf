@@ -66,14 +66,5 @@ class DeliveryForm
             ));
             $this->form->addElement($periodEndElt);
         }
-        
-        $resultServerElt = $this->form->getElement(tao_helpers_Uri::encode(TAO_DELIVERY_RESULTSERVER_PROP));
-        if (! is_null($resultServerElt)) {
-            $resultServerElt->addValidators(array(
-                tao_helpers_form_FormFactory::getValidator('NotEmpty')
-            ));
-            $this->form->addElement($resultServerElt);
-        }
-                        
     }
 }

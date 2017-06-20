@@ -24,7 +24,7 @@
 $todefine = array(
     
 	'TAO_DELIVERY_EXCLUDEDSUBJECTS_PROP'   => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects',
-    'TAO_DELIVERY_RESULTSERVER_PROP'	   => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer',
+    'TAO_DELIVERY_RESULTSERVER_PROP'	   => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer',//deprecated
     'TAO_DELIVERY_MAXEXEC_PROP'            => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec',
 	'TAO_DELIVERY_START_PROP'              => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart',
 	'TAO_DELIVERY_END_PROP'                => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd',

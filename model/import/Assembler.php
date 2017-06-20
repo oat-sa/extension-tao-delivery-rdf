@@ -111,7 +111,6 @@ class Assembler
             PROPERTY_COMPILEDDELIVERY_DIRECTORY => array_keys($dirs),
             PROPERTY_COMPILEDDELIVERY_TIME      => time(),
             PROPERTY_COMPILEDDELIVERY_RUNTIME   => $serviceCall->toOntology(),
-            TAO_DELIVERY_RESULTSERVER_PROP      => $resultServer
         ));
         $delivery = $deliveryClass->createInstanceWithProperties($properties);
         
