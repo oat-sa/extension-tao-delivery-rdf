@@ -104,8 +104,7 @@ class Assembler
         $label          = $manifest['label'];
         $dirs           = $manifest['dir'];
         $serviceCall    = \tao_models_classes_service_ServiceCall::fromString(base64_decode($manifest['runtime']));
-        $resultServer   = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
-        
+
         $properties = array_merge($properties, array(
             RDFS_LABEL                          => $label,
             PROPERTY_COMPILEDDELIVERY_DIRECTORY => array_keys($dirs),
