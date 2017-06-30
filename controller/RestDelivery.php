@@ -151,6 +151,12 @@ class RestDelivery extends \tao_actions_RestController
             ];
 
             $this->returnSuccess($result);
+        } catch (\common_exception_ClassAlreadyExists $e) {
+            $result = [
+                'message' => $e->getMessage(),
+                'delivery-uri' => $e->getClass()->getUri(),
+            ];
+            $this->returnSuccess($result);
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
