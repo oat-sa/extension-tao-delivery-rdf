@@ -23,11 +23,14 @@ namespace oat\taoDeliveryRdf\scripts;
 //Load extension to define necessary constants.
 \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
 
+use oat\oatbox\extension\AbstractAction;
+use oat\taoDelivery\model\execution\implementation\KeyValueService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoOutcomeRds\model\RdsResultStorage;
-use oat\taoDelivery\model\execution\implementation\KeyValueService;
+use taoAltResultStorage_models_classes_KeyValueResultStorage as KeyValueResultStorage;
+use oat\oatbox\service\ServiceNotFoundException;
 
-class cleanDeliveryExecutions extends \common_ext_action_InstallAction
+class cleanDeliveryExecutions extends AbstractAction
 {
     /**
      * @var \core_kernel_classes_Class
@@ -97,16 +100,11 @@ class cleanDeliveryExecutions extends \common_ext_action_InstallAction
             }
             $report->setMessage('Removed ' . $count . ' on ' . count($deliveryIds) . ' RDS results');
 
+
             // results redis
             try{
-                $keyValuePersistence = \common_persistence_KeyValuePersistence::getPersistence('keyValueResult');
-            }
-            catch(\common_Exception $e){
-                $keyValuePersistence = null;
-            }
-
-            if(!is_null($keyValuePersistence)){
-                $kvStorage = new \taoAltResultStorage_models_classes_KeyValueResultStorage();
+                /** @var KeyValueResultStorage $kvResultService */
+                $kvStorage = $this->getServiceManager()->get(KeyValueResultStorage::SERVICE_ID);
                 $deliveryIds = $kvStorage->getAllDeliveryIds();
                 $count = 0;
                 foreach ($deliveryIds as $deliveryId) {
@@ -119,6 +117,9 @@ class cleanDeliveryExecutions extends \common_ext_action_InstallAction
 
                 }
                 $report->setMessage('Removed ' . $count . ' on ' . count($deliveryIds) . ' Key Value results');
+            } catch(ServiceNotFoundException $e) {
+                $report->setType(\common_report_Report::TYPE_INFO);
+                $report->setMessage('KeyValue Storage not setup');
             }
         } catch (\common_Exception $e) {
             $report->setType(\common_report_Report::TYPE_ERROR);

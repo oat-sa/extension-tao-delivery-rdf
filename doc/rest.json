@@ -594,6 +594,10 @@
                 "data": {
                   "type": "object",
                   "properties": {
+                    "message" : {
+                      "type": "string",
+                      "description": "A message to explain if class is newly created or it already exists"
+                    },
                     "delivery-uri" : {
                       "type": "string",
                       "description": "The uri of newly created delivery class"

@@ -48,10 +48,11 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         //migrate ACL
         if ($currentVersion == '0.1') {
-
-            $MngrRole = new \core_kernel_classes_Resource('http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole');
-            $accessService = \funcAcl_models_classes_AccessService::singleton();
-            $accessService->grantModuleAccess($MngrRole, 'taoDeliveryRdf', 'DeliveryMgmt');
+            AclProxy::applyRule(new AccessRule(
+                AccessRule::GRANT,
+                'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole',
+                ['ext' => 'taoDeliveryRdf', 'mod' => 'DeliveryMgmt']
+            ));
             $currentVersion = '0.2';
             $this->setVersion($currentVersion);
         }
@@ -137,7 +138,9 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('2.0.2');
         }
 
-        if ($this->isVersion('2.0.2')) {
+        $this->skip('2.0.2', '3.3.1');
+
+        if ($this->isVersion('3.3.1')) {
             OntologyUpdater::syncModels();
             $this->getServiceManager()->register(RuntimeService::SERVICE_ID, new RuntimeAssemblyService());
             /*
@@ -149,7 +152,7 @@ class Updater extends \common_ext_ExtensionUpdater {
                 ]
             );
             */
-            $this->setVersion('2.1.0');
+            $this->setVersion('3.4.0');
         }
     }
 }
