@@ -136,11 +136,11 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('2.0.2');
         }
 
-        $this->skip('2.0.2', '3.2.0');
+        $this->skip('2.0.2', '3.3.1');
 
-        if ($this->isVersion('3.2.0')) {
+        if ($this->isVersion('3.3.1')) {
             OntologyUpdater::syncModels();
-            $this->setVersion('3.3.0');
+            $this->setVersion('3.4.0');
         }
     }
 }
