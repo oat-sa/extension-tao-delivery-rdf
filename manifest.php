@@ -1,4 +1,5 @@
 <?php
+use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,7 +45,8 @@ return array(
         'php' => array(
             __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php',
             'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
-            'oat\\taoDeliveryRdf\\scripts\\RegisterEvents'
+            'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
+            OverrideRuntime::class
         )
     ),
     //'uninstall' => array(),

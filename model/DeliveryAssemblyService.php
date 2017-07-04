@@ -26,6 +26,7 @@ use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
 use oat\taoDelivery\model\DeliveryContainer;
+use oat\taoDelivery\model\RuntimeService;
 
 /**
  * Service to manage the authoring of deliveries
@@ -37,6 +38,10 @@ use oat\taoDelivery\model\DeliveryContainer;
 class DeliveryAssemblyService extends \tao_models_classes_ClassService
 {
     const PROPERTY_ORIGIN = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
+
+    const PROPERTY_DELIVERY_CONTAINER_CLASS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainerClass';
+
+    const PROPERTY_DELIVERY_CONTAINER_OPTIONS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainerOptions';
 
     /**
      * @var \tao_models_classes_service_FileStorage
@@ -78,8 +83,8 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
         $deliveryServerService = $this->getServiceManager()->get(\taoDelivery_models_classes_DeliveryServerService::CONFIG_ID);
         $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($serviceCall, []);
 
-        $properties[DeliveryContainer::PROPERTY_DELIVERY_CONTAINER_CLASS] = $deliveryServerService->getOption('deliveryContainer');
-        $properties[DeliveryContainer::PROPERTY_DELIVERY_CONTAINER_OPTIONS] = json_encode([
+        $properties[self::PROPERTY_DELIVERY_CONTAINER_CLASS] = $deliveryServerService->getOption('deliveryContainer');
+        $properties[self::PROPERTY_DELIVERY_CONTAINER_OPTIONS] = json_encode([
             'testDefinition' => $inputParameters['QtiTestDefinition'],
             'testCompilation' => $inputParameters['QtiTestCompilation'],
         ]);
@@ -175,8 +180,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
      * @return tao_models_classes_service_ServiceCall
      */
     public function getRuntime( core_kernel_classes_Resource $assembly) {
-        $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
-        return tao_models_classes_service_ServiceCall::fromResource($runtimeResource);
+        return $this->getServiceLocator()->get(RuntimeService::SERVICE_ID)->getRuntime($assembly->getUri());
     }
     
     /**
