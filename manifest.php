@@ -1,5 +1,4 @@
 <?php
-use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,18 +18,23 @@ use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
  *
  *
  */
+use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
 
 return array(
-    'name' => 'taoDeliveryRdf',
-	'label' => 'Delivery Management',
-	'description' => 'Manages deliveries using the ontology',
-    'license' => 'GPL-2.0',
-    'version' => '1.10.0',
-	'author' => 'Open Assessment Technologies SA',
-	'requires' => array(
-        'taoGroups' => '>=2.7.1',
-        'taoTests' => '>=3.5.0',
-        'taoDelivery' => '>=4.3.0'
+    'name'        => 'taoDeliveryRdf',
+    'label'       => 'Delivery Management',
+    'description' => 'Manages deliveries using the ontology',
+    'license'     => 'GPL-2.0',
+    'version'     => '3.4.0',
+	'author'      => 'Open Assessment Technologies SA',
+	'requires'    => array(
+        'generis'     => '>=3.36.0',
+        'tao'         => '>=10.26.0',
+        'taoGroups'   => '>=2.7.1',
+        'taoTests'    => '>=3.5.0',
+        'taoQtiTest'  => '>=7.0.0',
+        'taoDelivery' => '>=6.2.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
@@ -46,6 +50,7 @@ return array(
             __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php',
             'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
             'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
+            RegisterDeliveryFactoryService::class,
             OverrideRuntime::class
         )
     ),
@@ -60,9 +65,6 @@ return array(
 
 		#BASE URL (usually the domain root)
 		'BASE_URL' => ROOT_URL.'taoDeliveryRdf/',
-
-	    #BASE WWW required by JS
-	    'BASE_WWW' => ROOT_URL.'taoDeliveryRdf/views/'
 	),
     'extra' => array(
         'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',

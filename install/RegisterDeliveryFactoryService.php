@@ -14,26 +14,35 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
  *
  *
  */
-namespace oat\taoDeliveryRdf\scripts\install;
+
+namespace oat\taoDeliveryRdf\install;
 
 use oat\oatbox\extension\InstallAction;
-use oat\taoDelivery\model\RuntimeService;
-use oat\taoDeliveryRdf\model\ContainerRuntime;
+use oat\taoDeliveryRdf\model\DeliveryFactory;
+
 /**
- * Override Runtimeservice
+ * Installation action that register the rdf implementation for the delivery container service
+ *
+ * @author Bertrand Chevrier <bertrand@taotesting.com>
  */
-class OverrideRuntime extends InstallAction
+class RegisterDeliveryFactoryService extends InstallAction
 {
     /**
-     * (non-PHPdoc)
-     * @see \oat\oatbox\action\Action::__invoke()
+     * @param $params
      */
     public function __invoke($params)
     {
-        $this->registerService(RuntimeService::SERVICE_ID, new ContainerRuntime());
+        $serviceManager = $this->getServiceManager();
+
+        $deliveryFactoryService = new DeliveryFactory([
+            DeliveryFactory::OPTION_PROPERTIES => []
+        ]);
+        $serviceManager->propagate($deliveryFactoryService);
+        $serviceManager->register(DeliveryFactory::SERVICE_ID, $deliveryFactoryService);
     }
 }
+

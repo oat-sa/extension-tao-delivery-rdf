@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint15\n"
-"PO-Revision-Date: 2015-12-22T16:41:41\n"
+"Project-Id-Version: TAO 3.2.0-sprint47\n"
+"PO-Revision-Date: 2017-03-24T13:59:15\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: en-US\n"
@@ -91,14 +91,16 @@ msgstr ""
 msgid "Delivery saved"
 msgstr ""
 
+msgid "Directory %s doesn\'t exist"
+msgstr ""
+
 msgid "Excluded test-takers"
 msgstr ""
 
-#, tao-public
-msgid "Export"
+msgid "Exported %1$s to %2$s"
 msgstr ""
 
-msgid "Exported %1$s to %2$s"
+msgid "Exporting %s"
 msgstr ""
 
 #, tao-public
@@ -108,8 +110,7 @@ msgstr ""
 msgid "Guest access"
 msgstr ""
 
-#, tao-public
-msgid "Import"
+msgid "Importing %1$s files into \'%2$s\"
 msgstr ""
 
 msgid "Manifest not found in assembly"
@@ -160,6 +161,9 @@ msgstr ""
 msgid "TAO Guest Access"
 msgstr ""
 
+msgid "Test publishing failed because \"%s\" is empty."
+msgstr ""
+
 msgid "Test-takers"
 msgstr ""
 
@@ -175,13 +179,16 @@ msgstr ""
 msgid "Unable to import Archive"
 msgstr ""
 
-msgid "Unkown error during impoort"
+msgid "Unknown error during import"
 msgstr ""
 
 msgid "unlimited"
 msgstr ""
 
-msgid "Usage: %s ASSEMBLY_FILE"
+msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr ""
+
+msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 msgstr ""
 
 msgid "Usage: %s DELIVERY_URI OUTPUT_FILE"
