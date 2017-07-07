@@ -21,47 +21,23 @@ namespace oat\taoDeliveryRdf\model;
 
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
+use oat\oatbox\service\ServiceManager;
 /**
  * Services to manage simple Deliveries
  *
  * @access public
  * @author Joel Bout, <joel@taotesting.com>
- * @package taoDelivery
+ * @deprecated
  */
 class SimpleDeliveryFactory
 {
     
     /**
-     * Creates a new simple delivery
-     * 
-     * @param core_kernel_classes_Class $deliveryClass
-     * @param core_kernel_classes_Resource $test
-     * @param string $label
-     * @return common_report_Report
+     * Please use DeliveryFactory service
+     * @deprecated
      */
     public static function create(core_kernel_classes_Class $deliveryClass, core_kernel_classes_Resource $test, $label) {
-        
-        \common_Logger::i('Creating '.$label.' with '.$test->getLabel().' under '.$deliveryClass->getLabel());
-        
-        $storage = new TrackedStorage();
-        
-        $testCompilerClass = \taoTests_models_classes_TestsService::singleton()->getCompilerClass($test);
-        $compiler = new $testCompilerClass($test, $storage);
-        
-        $report = $compiler->compile();
-        if ($report->getType() == \common_report_Report::TYPE_SUCCESS) {
-            $serviceCall = $report->getData();
-
-            $properties = array(
-                RDFS_LABEL => $label,
-                PROPERTY_COMPILEDDELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
-                DeliveryAssemblyService::PROPERTY_ORIGIN => $test
-            );
-        
-            $compilationInstance = DeliveryAssemblyService::singleton()->createAssemblyFromServiceCall($deliveryClass, $serviceCall, $properties);
-            $report->setData($compilationInstance);
-        }
-        
-        return $report;
+        $factory = ServiceManager::getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+        return $factory->create($deliveryClass, $test, $label);
     }
 }
