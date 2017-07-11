@@ -23,6 +23,7 @@ use oat\taoDelivery\model\container\LegacyRuntime;
 use oat\generis\model\OntologyAwareTrait;
 use oat\taoDelivery\model\container\delivery\DeliveryServiceContainer;
 use oat\taoDelivery\model\container\delivery\DeliveryClientContainer;
+use oat\taoDelivery\model\container\delivery\DeliveryContainerRegistry;
 /**
  * Service to select the correct container based on delivery
  *
@@ -36,29 +37,16 @@ class ContainerRuntime extends LegacyRuntime
     
     const PROPERTY_RUNTIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime';
     
+    const PROPERTY_CONTAINER = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainer';
+
     public function getDeliveryContainer($deliveryId)
     {
         $delivery = $this->getResource($deliveryId);
-        $values = $delivery->getPropertiesValues([
-            DeliveryAssemblyService::PROPERTY_DELIVERY_CONTAINER_CLASS
-            ,DeliveryAssemblyService::PROPERTY_DELIVERY_CONTAINER_OPTIONS
-        ]);
-        if (!empty($values[DeliveryAssemblyService::PROPERTY_DELIVERY_CONTAINER_CLASS])
-            && !empty($values[DeliveryAssemblyService::PROPERTY_DELIVERY_CONTAINER_OPTIONS])) {
-            $containerClass = reset($values[DeliveryAssemblyService::PROPERTY_DELIVERY_CONTAINER_CLASS]);
-            $params = reset($values[DeliveryAssemblyService::PROPERTY_DELIVERY_CONTAINER_OPTIONS]);
-            switch ($containerClass) {
-                case 'oat\\taoDelivery\\helper\\container\\DeliveryServiceContainer':
-                    $container = new DeliveryServiceContainer();
-                    $container->setServiceLocator($this->getServiceLocator());
-                    break;
-                case 'oat\\taoDelivery\\helper\\container\\DeliveryClientContainer':
-                    $container = new DeliveryClientContainer();
-                    $container->setServiceLocator($this->getServiceLocator());
-                    break;
-                default:
-                    throw new \common_exception_InconsistentData('Unknown container "'.$containerClass.'"');
-            }
+        $containerJson = (string)$delivery->getOnePropertyValue($this->getProperty(self::PROPERTY_CONTAINER));
+        if (!empty($containerJson)) {
+            $registry = DeliveryContainerRegistry::getRegistry();
+            $registry->setServiceLocator($this->getServiceLocator());
+            $container = $registry->fromJson($containerJson);
             return $container;
         } else {
             return parent::getDeliveryContainer($deliveryId);

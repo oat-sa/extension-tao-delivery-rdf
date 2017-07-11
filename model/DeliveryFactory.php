@@ -23,6 +23,10 @@ use oat\oatbox\service\ConfigurableService;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use oat\tao\helpers\form\ValidationRuleRegistry;
+use oat\oatbox\event\EventManager;
+use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
+use function GuzzleHttp\json_encode;
+use oat\taoDelivery\model\container\delivery\ContainerProvider;
 
 /**
  * Services to manage Deliveries
@@ -82,10 +86,41 @@ class DeliveryFactory extends ConfigurableService
                 $properties[$deliveryProperty] = $test->getPropertyValues(new \core_kernel_classes_Property($testProperty));
             }
 
-            $compilationInstance = DeliveryAssemblyService::singleton()->createAssemblyFromServiceCall($deliveryClass, $serviceCall, $properties);
+            $container = null;
+            if ($compiler instanceof ContainerProvider) {
+                $container = $compiler->getContainer();
+            }
+            $compilationInstance = $this->createDeliveryResource($deliveryClass, $serviceCall, $container, $properties);
             $report->setData($compilationInstance);
         }
 
         return $report;
+    }
+
+    /**
+     * Create a delivery resource based on a successfull compilation
+     *
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param \tao_models_classes_service_ServiceCall $serviceCall
+     * @param string $containerId
+     * @param string $containerParam
+     * @param array $properties
+     */
+    public function createDeliveryResource(core_kernel_classes_Class $deliveryClass, \tao_models_classes_service_ServiceCall $serviceCall,
+        $container, $properties = array()) {
+
+        $properties[PROPERTY_COMPILEDDELIVERY_TIME]      = time();
+        $properties[PROPERTY_COMPILEDDELIVERY_RUNTIME]   = $serviceCall->toOntology();
+        if (!isset($properties[TAO_DELIVERY_RESULTSERVER_PROP])) {
+            $properties[TAO_DELIVERY_RESULTSERVER_PROP] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
+        }
+        if (!is_null($container)) {
+            $properties[ContainerRuntime::PROPERTY_CONTAINER] = json_encode($container);
+        }
+
+        $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
+        $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+        $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
+        return $compilationInstance;
     }
 }

@@ -27,6 +27,7 @@ use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
 use oat\taoDelivery\model\DeliveryContainer;
 use oat\taoDelivery\model\RuntimeService;
+use function GuzzleHttp\json_encode;
 
 /**
  * Service to manage the authoring of deliveries
@@ -38,10 +39,6 @@ use oat\taoDelivery\model\RuntimeService;
 class DeliveryAssemblyService extends \tao_models_classes_ClassService
 {
     const PROPERTY_ORIGIN = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
-
-    const PROPERTY_DELIVERY_CONTAINER_CLASS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainerClass';
-
-    const PROPERTY_DELIVERY_CONTAINER_OPTIONS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainerOptions';
 
     /**
      * @var \tao_models_classes_service_FileStorage
@@ -71,27 +68,16 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
         return $this->storageService;
     }
 
+    /**
+     * @deprecated please use DeliveryFactory
+     * 
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param tao_models_classes_service_ServiceCall $serviceCall
+     * @param array $properties
+     * @return \core_kernel_classes_Resource
+     */
     public function createAssemblyFromServiceCall(core_kernel_classes_Class $deliveryClass, tao_models_classes_service_ServiceCall $serviceCall, $properties = array()) {
-
-        $properties[PROPERTY_COMPILEDDELIVERY_TIME]      = time();
-        $properties[PROPERTY_COMPILEDDELIVERY_RUNTIME]   = $serviceCall->toOntology();
-        
-        if (!isset($properties[TAO_DELIVERY_RESULTSERVER_PROP])) {
-            $properties[TAO_DELIVERY_RESULTSERVER_PROP] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
-        }
-
-        $deliveryServerService = $this->getServiceManager()->get(\taoDelivery_models_classes_DeliveryServerService::CONFIG_ID);
-        $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($serviceCall, []);
-
-        $properties[self::PROPERTY_DELIVERY_CONTAINER_CLASS] = $deliveryServerService->getOption('deliveryContainer');
-        $properties[self::PROPERTY_DELIVERY_CONTAINER_OPTIONS] = json_encode([
-            'testDefinition' => $inputParameters['QtiTestDefinition'],
-            'testCompilation' => $inputParameters['QtiTestCompilation'],
-        ]);
-
-        $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
-        $this->getEventManager()->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
-        return $compilationInstance;
+        throw new \common_exception_Error("Call to deprecated ".__FUNCTION__);
     }
     
     /**
