@@ -24,14 +24,14 @@ return array(
 	'label'       => 'Delivery Management',
 	'description' => 'Manages deliveries using the ontology',
     'license'     => 'GPL-2.0',
-    'version'     => '3.4.1',
+    'version'     => '3.4.2',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
         'generis'     => '>=3.36.0',
         'tao'         => '>=10.26.0',
         'taoGroups'   => '>=2.7.1',
         'taoTests'    => '>=3.5.0',
-        'taoQtiTest'  => '>=7.0.0',
+        'taoQtiTest'  => '>=9.11.0',
         'taoDelivery' => '>=4.9.2'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
