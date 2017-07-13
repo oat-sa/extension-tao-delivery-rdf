@@ -38,6 +38,10 @@ class RestDelivery extends \tao_actions_RestController
     const REST_DELIVERY_CLASS_COMMENT  = 'delivery-comment';
     const TASK_ID_PARAM                = 'id';
 
+    const CLASS_LABEL_PARAM            = 'delivery-label';
+    const CLASS_COMMENT_PARAM          = 'delivery-comment';
+    const PARENT_CLASS_URI_PARAM       = 'delivery-parent';
+
     /**
      * Generate a delivery from test uri
      * Test uri has to be set and existing
@@ -139,46 +143,19 @@ class RestDelivery extends \tao_actions_RestController
     public function createClass()
     {
         try {
-            if (! $this->hasRequestParameter(self::REST_DELIVERY_CLASS_LABEL)) {
-                throw new \common_exception_MissingParameter(self::REST_DELIVERY_CLASS_LABEL, $this->getRequestURI());
-            }
-            $label = $this->getRequestParameter(self::REST_DELIVERY_CLASS_LABEL);
-
-            $rootDeliveryClass = $this->getDeliveryRootClass();
-            if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_PARENT)) {
-                $parentClass = new \core_kernel_classes_Class($this->getRequestParameter(self::REST_DELIVERY_CLASS_PARENT));
-                if (! ($parentClass == $rootDeliveryClass
-                    || ($parentClass->exists() && $parentClass->isSubClassOf($rootDeliveryClass)))) {
-                    throw new \common_Exception(__('Delivery class uri provided is not a valid delivery class.'));
-                }
-            } else {
-                $parentClass = $rootDeliveryClass;
-            }
-
-            $comment = $this->hasRequestParameter(self::REST_DELIVERY_CLASS_COMMENT)
-                ? $this->getRequestParameter(self::REST_DELIVERY_CLASS_COMMENT) 
-                : '';
-
-            $deliveryClass = false;
-            /** @var \core_kernel_classes_Class $subClass */
-            foreach ($parentClass->getSubClasses() as $subClass) {
-                if ($subClass->getLabel() == $label) {
-                    $message = __('Class already exists.');
-                    $deliveryClass = $subClass;
-                    break;
-                }
-            }
-    
-            if (! $deliveryClass) {
-                $message = __('Class successfully created.');
-                $deliveryClass = $parentClass->createSubClass($label, $comment);
-            }
+            $class = $this->createSubClass($this->getDeliveryRootClass());
 
             $result = [
-                'message'      => $message,
-                'delivery-uri' => $deliveryClass->getUri(),
+                'message' => __('Class successfully created.'),
+                'delivery-uri' => $class->getUri(),
             ];
 
+            $this->returnSuccess($result);
+        } catch (\common_exception_ClassAlreadyExists $e) {
+            $result = [
+                'message' => $e->getMessage(),
+                'delivery-uri' => $e->getClass()->getUri(),
+            ];
             $this->returnSuccess($result);
         } catch (\Exception $e) {
             $this->returnFailure($e);

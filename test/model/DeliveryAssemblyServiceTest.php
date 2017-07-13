@@ -24,7 +24,6 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\test\FileStorageTestCase;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
 use Prophecy\Argument;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
