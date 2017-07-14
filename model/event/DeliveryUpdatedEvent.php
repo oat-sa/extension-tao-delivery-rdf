@@ -22,11 +22,9 @@ namespace oat\taoDeliveryRdf\model\event;
 use JsonSerializable;
 use oat\oatbox\event\Event;
 
-class DeliveryUpdatedEvent implements Event, JsonSerializable
+class DeliveryUpdatedEvent extends AbstractDeliveryEvent
 {
 
-    /** @var  string */
-    protected $deliveryUri;
     /**
      * @var
      */
