@@ -22,11 +22,8 @@ namespace oat\taoDeliveryRdf\model\event;
 use JsonSerializable;
 use oat\oatbox\event\Event;
 
-class DeliveryCreatedEvent implements Event, JsonSerializable
+class DeliveryCreatedEvent extends AbstractDeliveryEvent
 {
-
-    /** @var string */
-    protected $deliveryUri;
 
     /**
      * @param String $deliveryUri
@@ -43,15 +40,6 @@ class DeliveryCreatedEvent implements Event, JsonSerializable
     public function getName()
     {
         return get_class($this);
-    }
-
-    /**
-     * Get uri of created delivery
-     * @return string
-     */
-    public function getDeliveryUri()
-    {
-        return $this->deliveryUri;
     }
 
     /**
