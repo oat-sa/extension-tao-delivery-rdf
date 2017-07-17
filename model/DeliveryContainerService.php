@@ -55,7 +55,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 
         $serviceManager = $this->getServiceManager();
 
-        $pluginService = $serviceManager->get(TestPluginService::CONFIG_ID);
+        $pluginService = $serviceManager->get(TestPluginService::SERVICE_ID);
         $testRunnerFeatureService = $serviceManager->get(TestRunnerFeatureService::SERVICE_ID);
 
         $allPlugins = $pluginService->getAllPlugins();
@@ -90,7 +90,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 
     /**
      * Get the container bootstrap
-     * @param DeliveryExecution $execution
+     * @param DeliveryExecution $deliveryExecution
      * @return string the bootstrap
      */
     public function getBootstrap(DeliveryExecution $deliveryExecution)
@@ -102,14 +102,14 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 
     /**
      * Get the container testDefinition
-     * @param DeliveryExecution $execution
+     * @param DeliveryExecution $deliveryExecution
      * @return string the testDefinition
      */
     public function getTestDefinition(DeliveryExecution $deliveryExecution)
     {
         //FIXME this shouldn't be a service call anymore, a delivery property instead
         $delivery = $deliveryExecution->getDelivery();
-        $runtime = ServiceManager::getServiceManager()->get(AssignmentService::CONFIG_ID)->getRuntime($delivery);
+        $runtime = ServiceManager::getServiceManager()->get(AssignmentService::SERVICE_ID)->getRuntime($delivery);
         $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, array());
 
         return $inputParameters['QtiTestDefinition'];
@@ -117,7 +117,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 
     /**
      * Get the container test compilation
-     * @param DeliveryExecution $execution
+     * @param DeliveryExecution $deliveryExecution
      * @return string the  testCompilation
      */
     public function getTestCompilation(DeliveryExecution $deliveryExecution)
@@ -125,7 +125,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 
         //FIXME this shouldn't be a service call anymore, a delivery property instead
         $delivery = $deliveryExecution->getDelivery();
-        $runtime = ServiceManager::getServiceManager()->get(AssignmentService::CONFIG_ID)->getRuntime($delivery);
+        $runtime = ServiceManager::getServiceManager()->get(AssignmentService::SERVICE_ID)->getRuntime($delivery);
         $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, array());
 
         return $inputParameters['QtiTestCompilation'];

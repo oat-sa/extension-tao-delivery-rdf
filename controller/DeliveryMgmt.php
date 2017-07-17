@@ -25,6 +25,8 @@ use oat\oatbox\event\EventManagerAwareTrait;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
+use oat\taoDelivery\model\AssignmentService;
+use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
 use oat\taoDeliveryRdf\view\form\WizardForm;
@@ -69,13 +71,15 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     /*
      * controller actions
      */
-    
+
     /**
      * Edit a delivery instance
      *
      * @access public
      * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
      * @return void
+     * @throws \common_exception_NoImplementation
+     * @throws \common_exception_Error
      */
     public function editDelivery()
     {
@@ -105,8 +109,8 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         
         // history
         $this->setData('date', $this->getClassService()->getCompilationDate($delivery));
-        if (\taoDelivery_models_classes_execution_ServiceProxy::singleton()->implementsMonitoring()) {
-            $execs = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
+        if (ServiceProxy::singleton()->implementsMonitoring()) {
+            $execs = ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
             $this->setData('exec', count($execs));
         }
         
@@ -152,7 +156,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
         
         $assigned = array();
-        foreach ($this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($assembly->getUri()) as $userId) {
+        foreach ($this->getServiceManager()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($assembly->getUri()) as $userId) {
             if (!in_array($userId, array_keys($excluded))) {
                 $user = new core_kernel_classes_Resource($userId);
                 $assigned[$userId] = $user->getLabel();

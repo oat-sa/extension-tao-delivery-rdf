@@ -40,7 +40,7 @@ class RegisterDeliveryContainerService extends \common_ext_action_InstallAction
 
         $deliveryContainerService = new DeliveryContainerService();
         $deliveryContainerService->setServiceManager($serviceManager);
-        $serviceManager->register(DeliveryContainerService::CONFIG_ID, $deliveryContainerService);
+        $serviceManager->register(DeliveryContainerService::SERVICE_ID, $deliveryContainerService);
     }
 }
 
