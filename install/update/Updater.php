@@ -150,7 +150,7 @@ class Updater extends \common_ext_ExtensionUpdater {
         // add container properties
         if ($this->isVersion('3.5.1')) {
             OntologyUpdater::syncModels();
-            $this->getServiceManager()->registerService(RuntimeService::SERVICE_ID, new ContainerRuntime());
+            $this->getServiceManager()->register(RuntimeService::SERVICE_ID, new ContainerRuntime());
             $this->setVersion('3.6.0');
         }
     }
