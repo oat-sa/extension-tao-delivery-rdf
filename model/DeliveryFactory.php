@@ -25,7 +25,6 @@ use core_kernel_classes_Class;
 use oat\tao\helpers\form\ValidationRuleRegistry;
 use oat\oatbox\event\EventManager;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
-use function GuzzleHttp\json_encode;
 use oat\taoDelivery\model\container\delivery\ContainerProvider;
 
 /**

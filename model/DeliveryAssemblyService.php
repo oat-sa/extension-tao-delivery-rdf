@@ -25,9 +25,7 @@ use \core_kernel_classes_Property;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
-use oat\taoDelivery\model\DeliveryContainer;
 use oat\taoDelivery\model\RuntimeService;
-use function GuzzleHttp\json_encode;
 
 /**
  * Service to manage the authoring of deliveries

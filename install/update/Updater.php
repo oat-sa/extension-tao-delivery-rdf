@@ -28,6 +28,8 @@ use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
+use oat\taoDeliveryRdf\model\ContainerRuntime;
+use oat\taoDelivery\model\RuntimeService;
 
 /**
  *
@@ -148,6 +150,7 @@ class Updater extends \common_ext_ExtensionUpdater {
         // add container properties
         if ($this->isVersion('3.5.1')) {
             OntologyUpdater::syncModels();
+            $this->getServiceManager()->registerService(RuntimeService::SERVICE_ID, new ContainerRuntime());
             $this->setVersion('3.6.0');
         }
     }
