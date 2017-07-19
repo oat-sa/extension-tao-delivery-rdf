@@ -23,4 +23,4 @@ use oat\taoDeliveryRdf\model\GroupAssignment;
 $serviceManager = ServiceManager::getServiceManager();
 
 $assignmentService = new GroupAssignment();
-$serviceManager->register(\oat\taoDelivery\model\AssignmentService::CONFIG_ID, $assignmentService);
+$serviceManager->register(\oat\taoDelivery\model\AssignmentService::SERVICE_ID, $assignmentService);

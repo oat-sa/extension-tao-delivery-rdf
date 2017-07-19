@@ -19,11 +19,10 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
+use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoGroups\models\GroupsService;
 use oat\oatbox\user\User;
-use oat\oatbox\service\ServiceManager;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoDelivery\model\SimpleDelivery;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use \core_kernel_classes_Property;
@@ -55,7 +54,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         
         return $this->orderAssignments($assignments);
     }
-    
+
+    /**
+     * @param User $user
+     * @return array
+     */
     public function getAssignmentFactories(User $user)
     {
         $assignments = array();
@@ -116,7 +119,9 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     /**
      * Helpers
      */
-    
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     */
     public function onDelete(core_kernel_classes_Resource $delivery)
     {
         $groupClass = GroupsService::singleton()->getRootClass();
@@ -129,7 +134,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
             $groupInstance->removePropertyValue($assignationProperty, $delivery);
         }
     }
-    
+
+    /**
+     * @param User $user
+     * @return array
+     */
     public function getDeliveryIdsByUser(User $user)
     {
         $deliveryUris = array();
@@ -146,11 +155,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         ksort($deliveryUris);
         return $deliveryUris;
     }
-    
+
     /**
      * Check if a user is excluded from a delivery
      * @param core_kernel_classes_Resource $delivery
-     * @param string $userUri the URI of the user to check
+     * @param User $user the URI of the user to check
      * @return boolean true if excluded
      */
     protected function isUserExcluded(\core_kernel_classes_Resource $delivery, User $user){
@@ -186,6 +195,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         return ($user instanceof GuestTestUser);
     }
 
+    /**
+     * @param string $deliveryIdentifier
+     * @param User $user
+     * @return bool
+     */
     public function isDeliveryExecutionAllowed($deliveryIdentifier, User $user)
     {
         $delivery = new \core_kernel_classes_Resource($deliveryIdentifier);
@@ -193,7 +207,12 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
             && $this->verifyTime($delivery)
             && $this->verifyToken($delivery, $user);
     }
-    
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @param User $user
+     * @return bool
+     */
     protected function verifyUserAssigned(core_kernel_classes_Resource $delivery, User $user){
         $returnValue = false;
     
@@ -218,7 +237,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      *
      * @param core_kernel_classes_Resource $delivery
      * @return bool
-     * @throws common_exception_InvalidArgumentType
+     * @throws \common_exception_InvalidArgumentType
      */
     protected function hasDeliveryGuestAccess(core_kernel_classes_Resource $delivery )
     {
@@ -236,14 +255,19 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     
         return $returnValue;
     }
-    
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @param User $user
+     * @return bool
+     */
     protected function verifyToken(core_kernel_classes_Resource $delivery, User $user)
     {
         $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(TAO_DELIVERY_MAXEXEC_PROP));
         $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
         
         //check Tokens
-        $usedTokens = count(\taoDelivery_models_classes_execution_ServiceProxy::singleton()->getUserExecutions($delivery, $user->getIdentifier()));
+        $usedTokens = count(ServiceProxy::singleton()->getUserExecutions($delivery, $user->getIdentifier()));
     
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
             \common_Logger::d("Attempt to start the compiled delivery ".$delivery->getUri(). "without tokens");
@@ -251,7 +275,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         }
         return true;
     }
-    
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @return bool
+     */
     protected function verifyTime(core_kernel_classes_Resource $delivery)
     {
         $deliveryProps = $delivery->getPropertiesValues(array(
