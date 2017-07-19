@@ -28,6 +28,7 @@ use core_kernel_classes_Class;
 use \core_kernel_classes_Property;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\model\guest\GuestTestUser;
+use oat\taoDelivery\model\RuntimeService;
 /**
  * Service to manage the assignment of users to deliveries
  *
@@ -81,17 +82,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoDelivery\model\AssignmentService::getRuntime()
+     * @deprecated
      */
     public function getRuntime($deliveryId)
     {
-        $delivery = new \core_kernel_classes_Resource($deliveryId);
-        if (!$delivery->exists()) {
-            throw new \common_exception_NoContent('Unable to load runtime associated for delivery ' . $deliveryId .
-                ' Delivery probably deleted.');
-        }
-        return DeliveryAssemblyService::singleton()->getRuntime($delivery);
+        return $this->getServiceLocator()->get(RuntimeService::SERVICE_ID)->getRuntime($deliveryId);
     }
     
     
