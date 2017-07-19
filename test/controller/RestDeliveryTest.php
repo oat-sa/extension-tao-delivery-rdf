@@ -285,7 +285,7 @@ class RestDeliveryTest extends RestTestRunner
         $this->assertFalse($data['success']);
 
         $this->assertTrue(isset($data['errorMsg']));
-        $this->assertEquals('Delivery class uri provided is not a valid delivery class.', $data['errorMsg']);
+        $this->assertEquals('Class uri provided is not a valid class.', $data['errorMsg']);
     }
 
     protected function getUserData()
