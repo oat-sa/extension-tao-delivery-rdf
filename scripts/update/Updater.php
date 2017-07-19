@@ -18,7 +18,7 @@
  *
  *
  */
-namespace oat\taoDeliveryRdf\install\update;
+namespace oat\taoDeliveryRdf\scripts\update;
 
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
