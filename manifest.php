@@ -19,12 +19,14 @@
  *
  */
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
+
 return array(
     'name'        => 'taoDeliveryRdf',
-	'label'       => 'Delivery Management',
-	'description' => 'Manages deliveries using the ontology',
+    'label'       => 'Delivery Management',
+    'description' => 'Manages deliveries using the ontology',
     'license'     => 'GPL-2.0',
-    'version'     => '3.6.1',
+    'version'     => '3.7.0',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
         'generis'     => '>=3.36.0',
@@ -48,7 +50,8 @@ return array(
             __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php',
             'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
             'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
-            RegisterDeliveryFactoryService::class
+            RegisterDeliveryFactoryService::class,
+            OverrideRuntime::class
         )
     ),
     //'uninstall' => array(),
