@@ -19,13 +19,9 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
-use oat\taoGroups\models\GroupsService;
 use oat\oatbox\user\User;
-use oat\oatbox\service\ServiceManager;
-use oat\oatbox\service\ConfigurableService;
-use oat\taoDelivery\model\SimpleDelivery;
-use core_kernel_classes_Resource;
 use \core_kernel_classes_Property;
+use oat\taoDelivery\model\execution\ServiceProxy;
 use tao_helpers_Date;
 /**
  * Service to manage the assignment of users to deliveries
@@ -80,7 +76,7 @@ class AssignmentFactory
         $endTime = (!(is_object($propEndExec)) or ($propEndExec=="")) ? null : $propEndExec->literal;
         $maxExecs = (!(is_object($propMaxExec)) or ($propMaxExec=="")) ? 0 : $propMaxExec->literal;
         
-        $countExecs = count(\taoDelivery_models_classes_execution_ServiceProxy::singleton()->getUserExecutions($this->delivery, $this->getUserId()));
+        $countExecs = count(ServiceProxy::singleton()->getUserExecutions($this->delivery, $this->getUserId()));
         
         return $this->buildDescriptionFromData($startTime, $endTime, $countExecs, $maxExecs);
     }
