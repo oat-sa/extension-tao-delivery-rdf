@@ -25,6 +25,8 @@ use \core_kernel_classes_Property;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
+use oat\taoDelivery\model\RuntimeService;
+
 /**
  * Service to manage the authoring of deliveries
  *
@@ -64,18 +66,16 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
         return $this->storageService;
     }
 
+    /**
+     * @deprecated please use DeliveryFactory
+     * 
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param tao_models_classes_service_ServiceCall $serviceCall
+     * @param array $properties
+     * @return \core_kernel_classes_Resource
+     */
     public function createAssemblyFromServiceCall(core_kernel_classes_Class $deliveryClass, tao_models_classes_service_ServiceCall $serviceCall, $properties = array()) {
-
-        $properties[PROPERTY_COMPILEDDELIVERY_TIME]      = time();
-        $properties[PROPERTY_COMPILEDDELIVERY_RUNTIME]   = $serviceCall->toOntology();
-        
-        if (!isset($properties[TAO_DELIVERY_RESULTSERVER_PROP])) {
-            $properties[TAO_DELIVERY_RESULTSERVER_PROP] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
-        }
-        
-        $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
-        $this->getEventManager()->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
-        return $compilationInstance;
+        throw new \common_exception_Error("Call to deprecated ".__FUNCTION__);
     }
     
     /**
@@ -164,8 +164,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
      * @return tao_models_classes_service_ServiceCall
      */
     public function getRuntime( core_kernel_classes_Resource $assembly) {
-        $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
-        return tao_models_classes_service_ServiceCall::fromResource($runtimeResource);
+        return $this->getServiceLocator()->get(RuntimeService::SERVICE_ID)->getRuntime($assembly->getUri());
     }
     
     /**
