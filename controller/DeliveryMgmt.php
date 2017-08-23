@@ -224,27 +224,32 @@ class DeliveryMgmt extends \tao_actions_SaSModule
      */
     public function getAvailableTests()
     {
-        $q = $this->getRequestParameter('q');
-        $tests = [];
+        $limit = $this->getRequestParameter('limit') ?: 10;
+        $page = $this->getRequestParameter('page') ?: 1;
+        $q = $this->getRequestParameter('q') ?: '';
 
-        $testService = \taoTests_models_classes_TestsService::singleton();
-        /** @var ComplexSearchService $search */
+        // Search for tests
         $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
 
-        $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder , TAO_TEST_CLASS , true)
+        $queryBuilder = $search->query()
+            ->sort([ RDFS_LABEL => 'asc' ])
+            ->setLimit($limit)
+            ->setOffset(($page - 1) * $limit);
+
+        $query = $search->searchType($queryBuilder, TAO_TEST_CLASS, true)
             ->add(RDFS_LABEL)
             ->contains($q);
 
         $queryBuilder->setCriteria($query);
-
         $result = $search->getGateway()->search($queryBuilder);
 
+        // Format return
+        $tests = [];
+        $testService = \taoTests_models_classes_TestsService::singleton();
         foreach ($result as $test) {
             try {
                 $testItems = $testService->getTestItems($test);
-                //Filter tests which has no items
-                if (!empty($testItems)) {
+                if ( ! empty($testItems) ) {   // Filter tests which has no items
                     $testUri = $test->getUri();
                     $tests[] = ['id' => $testUri, 'uri' => $testUri, 'text' => $test->getLabel()];
                 }
@@ -252,6 +257,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 \common_Logger::w('Unable to load items for test ' . $testUri);
             }
         }
+
         $this->returnJson(['total' => count($tests), 'items' => $tests]);
     }
 }
