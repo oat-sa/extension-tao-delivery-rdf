@@ -23,6 +23,7 @@ use common_ext_ExtensionsManager as ExtensionsManager;
 use core_kernel_classes_Property;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\plugins\PluginModule;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\DeliveryContainerService as DeliveryContainerServiceInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
@@ -43,6 +44,8 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 {
 
     const TEST_RUNNER_FEATURES_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures';
+    const DELIVERY_SECURITY_PLUGINS_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliverySecurityPlugins';
+    const CHECK_MODE_ENABLED = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ComplyEnabled';
 
     /**
      * Get the list of active plugins for the current execution
@@ -83,9 +86,32 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         }
 
         // return the list of active plugins
-        return array_filter($allPlugins, function ($plugin) {
-            return !is_null($plugin) && $plugin->isActive();
+        $allActivePlugins = array_filter($allPlugins, function (PluginModule $plugin) {
+            return !is_null($plugin) && $plugin->isActive() ;
         });
+
+        if ($this->isSecureDelivery($delivery)) {
+            return $allActivePlugins;
+        }
+
+        //otherwise filter the security plugins
+        return array_filter($allActivePlugins, function(PluginModule $plugin) {
+            return $plugin->getCategory() != 'security';
+        });
+
+    }
+
+    /**
+     * Check whether secure plugins must be used.
+     * @param \core_kernel_classes_Resource $delivery
+     * @return bool
+     */
+    private function isSecureDelivery(\core_kernel_classes_Resource $delivery)
+    {
+        $hasSecurityPlugins = $delivery->getOnePropertyValue(new core_kernel_classes_Property(self::DELIVERY_SECURITY_PLUGINS_PROPERTY));
+        $result = $hasSecurityPlugins instanceof \core_kernel_classes_Resource &&
+            $hasSecurityPlugins->getUri() == self::CHECK_MODE_ENABLED;
+        return $result;
     }
 
     /**
