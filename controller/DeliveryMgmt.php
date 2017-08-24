@@ -224,7 +224,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
      */
     public function getAvailableTests()
     {
-        $limit = $this->getRequestParameter('limit') ?: 10;
+        $limit = $this->getRequestParameter('limit') ?: -1;
         $page = $this->getRequestParameter('page') ?: 1;
         $q = $this->getRequestParameter('q') ?: '';
 
@@ -250,14 +250,18 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             try {
                 $testItems = $testService->getTestItems($test);
                 if ( ! empty($testItems) ) {   // Filter tests which has no items
-                    $testUri = $test->getUri();
-                    $tests[] = ['id' => $testUri, 'uri' => $testUri, 'text' => $test->getLabel()];
+                    $tests[] = ['id' => $test->getUri(), 'text' => $test->getLabel()];
                 }
             } catch (\Exception $e) {
-                \common_Logger::w('Unable to load items for test ' . $testUri);
+                \common_Logger::w('Unable to load items for test ' . $test->getUri());
             }
         }
 
-        $this->returnJson(['total' => count($tests), 'items' => $tests]);
+        $this->returnJson([
+            'success' => true,
+            'data' => [
+                'total' => count($tests), 'tests' => $tests
+            ]
+        ]);
     }
 }
