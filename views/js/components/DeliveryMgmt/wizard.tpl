@@ -2,20 +2,23 @@
 
     <!-- input -->
     <div class="value">
-        <input name="delivery" placeholder="{{__ 'Select the test you would like to publish'}}" value="">
+        <input name="delivery" placeholder="{{__ 'Select the test you would like to publish'}}" value="" readonly="readonly">
         <span class="icon-down"></span>
     </div>
 
     <!-- dropdown -->
     <div class="dropdown">
         <div class="search">
-            <i class="search icon"></i>
             <input type="text" placeholder="{{__ 'Search tests...'}}">
+            <span class="icon-find"></span>
         </div>
         <div class="divider"></div>
         <div class="menu">
             {{#each tests}}
-            <div class="item" data-value="{{this.id}}">{{this.text}}</div>
+            <div class="item" data-value="{{this.id}}" data-text="{{this.text}}">
+                <span class="icon-test"></span>
+                {{this.text}}
+            </div>
             {{/each}}
         </div>
     </div>

@@ -35,6 +35,52 @@
         font-size: 18px;
         position: absolute;
         width: 98%;
+        z-index: 1;
+
+        > .search {
+            margin: 10px;
+            position: relative;
+
+            > input {
+                font-size: 14px;
+                height: 30px;
+                padding-right: 24px;
+                width: 100%;
+            }
+
+            > span {
+                font-size: 16px;
+                opacity: 0.5;
+                position: absolute;
+                right: 6px;
+                top: 6px;
+            }
+        }
+
+        > .divider {
+            border-top: 1px solid $uiGeneralContentBorder;
+            margin: 10px 2px;
+        }
+
+        > .menu {
+            max-height: 300px;
+            overflow: scroll;
+            padding: 2px;
+
+            > .item {
+                cursor: pointer;
+                font-size: 16px;
+                padding: 10px;
+
+                > span {
+                    margin-right: 8px;
+                }
+
+                &:hover {
+                    background-color: $uiClickableDefaultBg;
+                }
+            }
+        }
     }
 
 }
