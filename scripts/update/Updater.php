@@ -23,6 +23,7 @@ namespace oat\taoDeliveryRdf\scripts\update;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
+use oat\tao\test\plugins\PluginRegistry;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
@@ -30,6 +31,7 @@ use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
 use oat\taoDelivery\model\RuntimeService;
+use oat\taoTests\models\runner\plugins\TestPlugin;
 
 /**
  *
@@ -153,5 +155,84 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('3.7.0');
         }
 	$this->skip('3.7.0', '3.8.0');
+
+        if ($this->isVersion('3.8.0')) {
+            OntologyUpdater::syncModels();
+
+            $registry = PluginRegistry::getRegistry();
+            $registry->register(
+                TestPlugin::fromArray([
+                    'id' => 'autoPause',
+                    'name' => 'Auto Pause',
+                    'module' => 'taoTestRunnerPlugins/runner/plugins/security/autoPause',
+                    'description' => 'Persist the pause state',
+                    'category' => 'tools',
+                    'active' => true,
+                    'tags' => [ ]
+                ])
+            );
+
+            $registry->register(
+                TestPlugin::fromArray([
+                    'id' => 'blurWarning',
+                    'name' => 'Blur Warning',
+                    'module' => 'taoTestRunnerPlugins/runner/plugins/security/blurWarning',
+                    'bundle' => 'taoTestRunnerPlugins/loader/testPlugins.min',
+                    'description' => 'Warning message when leaving the test window',
+                    'category' => 'security',
+                    'active' => true,
+                    'tags' => []
+                ])
+            );
+
+            $registry->register(
+                TestPlugin::fromArray([
+                    'id' => 'disableCommands',
+                    'name' => 'Disable Commands',
+                    'module' => 'taoTestRunnerPlugins/runner/plugins/security/disableCommands',
+                    'description' => 'Disable and report some forbidden shortcuts',
+                    'category' => 'security',
+                    'active' => true,
+                    'tags' => [  ]
+                ])
+            );
+
+            $registry->register(
+                TestPlugin::fromArray([
+                    'id' => 'preventCopy',
+                    'name' => 'Prevent Copy',
+                    'module' => 'taoTestRunnerPlugins/runner/plugins/security/preventCopy',
+                    'description' => 'Prevent copying from CTRL-C/X/V shortcuts',
+                    'category' => 'security',
+                    'active' => true,
+                    'tags' => [  ]
+                ])
+            );
+
+            $registry->register(
+                TestPlugin::fromArray([
+                    'id' => 'fullscreen',
+                    'name' => 'Full Screen',
+                    'module' => 'taoTestRunnerPlugins/runner/plugins/security/fullScreen',
+                    'description' => 'Force the test in full screen mode',
+                    'category' => 'security',
+                    'active' => true,
+                    'tags' => [  ]
+                ])
+            );
+            $registry->register(
+                TestPlugin::fromArray([
+                    'id' => 'preventScreenshotWarning',
+                    'name' => 'Prevent Screenshot',
+                    'module' => 'taoTestRunnerPlugins/runner/plugins/security/preventScreenshotWarning',
+                    'bundle' => 'taoTestRunnerPlugins/loader/testPlugins.min',
+                    'description' => 'Prevent screenshot from Cmd+Shift (mac) and PrtScn (win) shortcuts',
+                    'category' => 'security',
+                    'active' => true,
+                    'tags' => []
+                ])
+            );
+            $this->setVersion('3.9.0');
+        }
     }
 }
