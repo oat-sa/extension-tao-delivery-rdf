@@ -1,4 +1,5 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
+    'use strict';
 
     var sass    = grunt.config('sass') || {};
     var watch   = grunt.config('watch') || {};
@@ -9,12 +10,21 @@ module.exports = function(grunt) {
     sass.taodeliveryrdf.files = { };
     sass.taodeliveryrdf.files[root + 'css/testtakers.css'] = root + 'scss/testtakers.scss';
 
+    sass.wizard = {};
+    sass.wizard.files = {};
+    sass.wizard.files[root + 'js/components/DeliveryMgmt/wizard.css'] = root + 'js/components/DeliveryMgmt/wizard.scss';
+
     watch.taodeliveryrdfsass = {
         files : [root + 'scss/**/*.scss'],
         tasks : ['sass:taodeliveryrdf', 'notify:taodeliveryrdfsass'],
         options : {
             debounceDelay : 1000
         }
+    };
+
+    watch.wizardsass = {
+        files: [root + 'js/components/DeliveryMgmt/wizard.scss'],
+        tasks: ['sass:wizard', 'notify:taodeliveryrdfsass']
     };
 
     notify.taodeliveryrdfsass = {
