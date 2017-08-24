@@ -34,16 +34,6 @@ class RegisterTestRunnerPlugins extends InstallAction
     public static $plugins = [
         'security' => [
             [
-                'id' => 'disableRightClick',
-                'name' => 'Disable right click',
-                'module' => 'taoQtiTest/runner/plugins/security/disableRightClick',
-                'bundle' => 'taoQtiTest/loader/testPlugins.min',
-                'description' => 'Disable right click context menu on items',
-                'category' => 'security',
-                'active' => true,
-                'tags' => [ 'core' ]
-            ],
-            [
                 'id' => 'blurWarning',
                 'name' => 'Blur Warning',
                 'module' => 'taoTestRunnerPlugins/runner/plugins/security/blurWarning',
@@ -98,35 +88,6 @@ class RegisterTestRunnerPlugins extends InstallAction
                 'category' => 'content',
                 'active' => true,
                 'tags' => [  ]
-            ],
-            [
-                'id'          => 'area-masking',
-                'name'        => 'Area Masking',
-                'module'      => 'taoQtiTest/runner/plugins/tools/areaMasking/areaMasking',
-                'bundle'      => 'taoQtiTest/loader/testPlugins.min',
-                'description' => 'Mask areas of the item',
-                'category'    => 'tools',
-                'active'      => true,
-                'tags'        => [  ]
-            ], [
-                'id'          => 'highlighter',
-                'name'        => 'Text Highlighter',
-                'module'      => 'taoQtiTest/runner/plugins/tools/highlighter/plugin',
-                'bundle'      => 'taoQtiTest/loader/testPlugins.min',
-                'description' => 'Allows the test taker to highlight text',
-                'category'    => 'tools',
-                'active'      => true,
-                'tags'        => [  ]
-            ],
-            [
-                'id' => 'sectionPause',
-                'name' => 'Section Pause',
-                'module' => 'taoTestRunnerPlugins/runner/plugins/security/sectionPause',
-                'bundle' => 'taoTestRunnerPlugins/loader/testPlugins.min',
-                'description' => 'Pause delivery execution when the section changed',
-                'category' => 'tools',
-                'active' => true,
-                'tags' => [ ]
             ]
         ]
     ];
