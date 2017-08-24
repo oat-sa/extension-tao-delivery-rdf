@@ -251,4 +251,27 @@
   	<rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessModel"/>
    </rdf:Description>
 
+    <!-- Security Plugins -->
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliverySecurityPlugins">
+       <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+       <rdfs:label xml:lang="en-US"><![CDATA[Security Restrictions]]></rdfs:label>
+       <rdfs:comment xml:lang="en-US"><![CDATA[Does the delivery has security plugins loaded]]></rdfs:comment>
+       <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#Delivery"/>
+       <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#CheckMode" />
+       <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#False"/>
+        <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#CheckBox"/>
+       <tao:TAOGUIOrder><![CDATA[80]]></tao:TAOGUIOrder>
+     </rdf:Description>
+
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#CheckMode">
+       <rdfs:label xml:lang="en-US"><![CDATA[Check Enable]]></rdfs:label>
+       <rdfs:comment xml:lang="en-US"><![CDATA[Check Enable]]></rdfs:comment>
+       <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#SystemObject"/>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#ComplyEnabled">
+       <rdfs:label xml:lang="en-US"><![CDATA[Enable]]></rdfs:label>
+       <rdfs:comment xml:lang="en-US"><![CDATA[Enable]]></rdfs:comment>
+       <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#CheckMode"/>
+     </rdf:Description>
 </rdf:RDF>
