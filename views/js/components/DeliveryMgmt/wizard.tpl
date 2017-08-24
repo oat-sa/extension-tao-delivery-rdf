@@ -1,8 +1,8 @@
 <div class="wizard">
 
     <!-- input -->
-    <div class="value">
-        <input name="delivery" placeholder="{{__ 'Select the test you would like to publish'}}" value="" readonly="readonly">
+    <div class="input">
+        <input name="delivery" placeholder="{{__ 'Select the test you would like to publish'}}" value="" data-value="" readonly="readonly">
         <span class="icon-down"></span>
     </div>
 

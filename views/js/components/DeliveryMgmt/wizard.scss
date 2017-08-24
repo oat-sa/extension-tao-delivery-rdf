@@ -3,7 +3,7 @@
 .wizard {
     position: relative;
 
-    > .value {
+    > .input {
         position: relative;
         width: 430px;
 
@@ -27,7 +27,7 @@
     }
 
     > .dropdown {
-        // display: none;
+        display: none;
         background-color: white;
         @include simple-border();
         color: $textColor;

@@ -42,9 +42,51 @@ define([
 
             request(route, {}, 'get', {})
             .then(function (data) {
-                $('.test-select-container')
-                .append(tpl(data))
-                .find('> .wizard');
+                var $document, $wizard, $input, $dropdown, $dropdownMenuItem;
+
+                $document = $(document);
+                $wizard = $('.test-select-container')
+                    .append(tpl(data))
+                    .find('> .wizard');
+                $input = $wizard.find('> .input');
+                $dropdown = $wizard.find('> .dropdown');
+                $dropdownMenuItem = $wizard.find('> .dropdown > .menu > .item');
+
+                // Document event handlers
+                function outsideWizardClickHandler(e) {
+                    if (!$(e.target).closest($wizard).length) {
+                        if ($dropdown.is(':visible')) {
+                            $dropdown.hide();
+                            $document.off('click', outsideWizardClickHandler);
+                        }
+                    }
+                }
+
+                // Wizard element events
+
+                // Input element events
+                $input
+                .on('click', function () {
+                    if (!$dropdown.is(':visible')) {
+                        $dropdown.show();
+                        $document.on('click', outsideWizardClickHandler);
+                    }
+                });
+
+                // Dropdown element events
+
+                // Dropdown menu item element events
+                $dropdownMenuItem
+                .on('click', function () {
+                    var $this = $(this);
+
+                    $input.find('input')
+                    .val($this.data('text'))
+                    .data('value', ($this.data('value')));
+
+                    $dropdown.hide();
+                });
+
             })
             .catch(function (err) {
                 feedback().error(err);
