@@ -1,0 +1,40 @@
+@import 'inc/bootstrap';
+
+.wizard {
+    position: relative;
+
+    > .value {
+        position: relative;
+        width: 430px;
+
+        > input {
+            background-color: white;
+            @include simple-border();
+            color: $textColor;
+            font-family: $regularFont;
+            font-size: 18px;
+            height: 36px;
+            padding: 8px;
+            width: 100%;
+        }
+
+        > span {
+            padding: 10px;
+            position: absolute;
+            right: 1px;
+            top: 1px;
+        }
+    }
+
+    > .dropdown {
+        // display: none;
+        background-color: white;
+        @include simple-border();
+        color: $textColor;
+        font-family: $regularFont;
+        font-size: 18px;
+        position: absolute;
+        width: 98%;
+    }
+
+}

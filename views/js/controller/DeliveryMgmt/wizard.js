@@ -18,76 +18,96 @@
 
 define([
     'jquery',
+    'lodash',
     'i18n',
-    'ui/filter',
+    'core/dataProvider/request',
     'ui/feedback',
     'util/url',
-    'core/promise'
+    'tpl!taoDeliveryRdf/components/DeliveryMgmt/wizard',
+    'css!taoDeliveryRdf/components/DeliveryMgmt/wizard'
 ], function (
     $,
+    _,
     __,
-    filterFactory,
+    request,
     feedback,
-    urlUtils,
-    Promise
+    url,
+    tpl
 ) {
     'use strict';
 
-    var provider = {
+    return {
+        start: function () {
+            var route = url.route('getAvailableTests', 'DeliveryMgmt', 'taoDeliveryRdf');
 
-        /**
-         * List available tests
-         * @returns {Promise}
-         */
-        list: function list(data) {
-            return new Promise(function (resolve, reject) {
-                $.ajax({
-                    url: urlUtils.route('getAvailableTests', 'DeliveryMgmt', 'taoDeliveryRdf'),
-                    data: {
-                        q: data.q,
-                        page: data.page
-                    },
-                    type: 'GET',
-                    dataType: 'JSON'
-                }).done(function (tests) {
-                    if (tests) {
-                        resolve(tests);
-                    } else {
-                        reject(new Error(__('Unable to load tests')));
-                    }
-                }).fail(function () {
-                    reject(new Error(__('Unable to load tests')));
-                });
+            request(route, {}, 'get', {})
+            .then(function (data) {
+                $('.test-select-container')
+                .append(tpl(data))
+                .find('> .wizard');
+            })
+            .catch(function (err) {
+                feedback().error(err);
             });
         }
     };
 
+    // var provider = {
 
-    return {
-        start: function () {
-            var $filterContainer = $('.test-select-container');
-            var $formElement = $('#test');
+    //     /**
+    //      * List available tests
+    //      * @returns {Promise}
+    //      */
+    //     list: function list(data) {
+    //         return new Promise(function (resolve, reject) {
+    //             $.ajax({
+    //                 url: urlUtils.route('getAvailableTests', 'DeliveryMgmt', 'taoDeliveryRdf'),
+    //                 data: {
+    //                     q: data.q,
+    //                     page: data.page
+    //                 },
+    //                 type: 'GET',
+    //                 dataType: 'JSON'
+    //             }).done(function (tests) {
+    //                 if (tests) {
+    //                     resolve(tests);
+    //                 } else {
+    //                     reject(new Error(__('Unable to load tests')));
+    //                 }
+    //             }).fail(function () {
+    //                 reject(new Error(__('Unable to load tests')));
+    //             });
+    //         });
+    //     }
+    // };
 
-            filterFactory($filterContainer, {
-                placeholder: __('Select the test you want to publish to the test-takers'),
-                width: '64%',
-                quietMillis: 1000,
-                label: __('Select the test')
-            }).on('change', function (test) {
-                $formElement.val(test);
-            }).on('request', function (params) {
-                provider
-                    .list(params.data)
-                    .then(function (tests) {
-                        params.success(tests);
-                    })
-                    .catch(function (err) {
-                        params.error(err);
-                        feedback().error(err);
-                    });
-            }).render('<%= text %>');
-        }
-    };
+
+    // return {
+    //     start: function () {
+    //         var $filterContainer = $('.test-select-container');
+    //         var $formElement = $('#test');
+
+    //         filterFactory($filterContainer, {
+    //             placeholder: __('Select the test you want to publish to the test-takers'),
+    //             width: '64%',
+    //             quietMillis: 1000,
+    //             label: __('Select the test'),
+    //             minimumInputLength: 0
+    //         }).on('change', function (test) {
+    //             $formElement.val(test);
+    //         }).on('request', function (params) {
+    //             provider
+    //                 .list(params.data)
+    //                 .then(function (tests) {
+    //                     params.success(tests);
+    //                 })
+    //                 .catch(function (err) {
+    //                     params.error(err);
+    //                     feedback().error(err);
+    //                 });
+    //         }).render('<%= text %>');
+    //     }
+    // };
 });
 
 
