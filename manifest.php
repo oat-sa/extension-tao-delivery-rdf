@@ -34,7 +34,8 @@ return array(
         'taoGroups'   => '>=2.7.1',
         'taoTests'    => '>=3.5.0',
         'taoQtiTest'  => '>=9.11.0',
-        'taoDelivery' => '>=7.0.0'
+        'taoDelivery' => '>=7.0.0',
+        'taoTestRunnerPlugins' => '>=1.5.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
@@ -51,7 +52,9 @@ return array(
             'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
             'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
             RegisterDeliveryFactoryService::class,
-            OverrideRuntime::class
+            OverrideRuntime::class,
+            \oat\taoDeliveryRdf\scripts\install\RegisterTestRunnerPlugins::class,
+            \oat\taoQtiTest\scripts\install\SetNewTestRunner::class,
         )
     ),
     //'uninstall' => array(),
