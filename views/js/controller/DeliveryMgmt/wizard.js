@@ -42,7 +42,7 @@ define([
 
             request(route, {}, 'get', {})
             .then(function (data) {
-                var $document, $wizard, $input, $dropdown, $dropdownMenuItem;
+                var $document, $wizard, $input, $dropdown, $dropdownSearch, $dropdownMenuItem;
 
                 $document = $(document);
                 $wizard = $('.test-select-container')
@@ -50,6 +50,7 @@ define([
                     .find('> .wizard');
                 $input = $wizard.find('> .input');
                 $dropdown = $wizard.find('> .dropdown');
+                $dropdownSearch = $wizard.find('> .dropdown > .search > input');
                 $dropdownMenuItem = $wizard.find('> .dropdown > .menu > .item');
 
                 // Document event handlers
@@ -69,11 +70,33 @@ define([
                 .on('click', function () {
                     if (!$dropdown.is(':visible')) {
                         $dropdown.show();
+                        $dropdownSearch.focus();
                         $document.on('click', outsideWizardClickHandler);
                     }
                 });
 
                 // Dropdown element events
+
+                // Dropdown search element events
+                $dropdownSearch
+                .on('keyup', _.debounce(function () {
+                    var $this = $(this);
+
+                    $dropdownMenuItem.each(function (i, item) {
+                        var $item = $(item);
+                        var haystack;
+                        var needle;
+
+                        haystack = $item.data('text').toUpperCase();
+                        needle = $this.val().trim().toUpperCase();
+
+                        if (!needle || haystack.includes(needle)) {
+                            $item.show();
+                        } else {
+                            $item.hide();
+                        }
+                    });
+                }, 100));
 
                 // Dropdown menu item element events
                 $dropdownMenuItem
