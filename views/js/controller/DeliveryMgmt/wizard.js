@@ -84,9 +84,7 @@ define([
                 .on('click', function () {
                     $dropdown.show();
                     $dropdownSearch.focus();
-                    if (!$dropdown.is(':visible')) {
-                        $document.on('click', outsideWizardClickHandler);
-                    }
+                    $document.on('click', outsideWizardClickHandler);
                 });
 
                 // Dropdown element events
@@ -153,63 +151,4 @@ define([
             });
         }
     };
-
-    // var provider = {
-
-    //     /**
-    //      * List available tests
-    //      * @returns {Promise}
-    //      */
-    //     list: function list(data) {
-    //         return new Promise(function (resolve, reject) {
-    //             $.ajax({
-    //                 url: urlUtils.route('getAvailableTests', 'DeliveryMgmt', 'taoDeliveryRdf'),
-    //                 data: {
-    //                     q: data.q,
-    //                     page: data.page
-    //                 },
-    //                 type: 'GET',
-    //                 dataType: 'JSON'
-    //             }).done(function (tests) {
-    //                 if (tests) {
-    //                     resolve(tests);
-    //                 } else {
-    //                     reject(new Error(__('Unable to load tests')));
-    //                 }
-    //             }).fail(function () {
-    //                 reject(new Error(__('Unable to load tests')));
-    //             });
-    //         });
-    //     }
-    // };
-
-
-    // return {
-    //     start: function () {
-    //         var $filterContainer = $('.test-select-container');
-    //         var $formElement = $('#test');
-
-    //         filterFactory($filterContainer, {
-    //             placeholder: __('Select the test you want to publish to the test-takers'),
-    //             width: '64%',
-    //             quietMillis: 1000,
-    //             label: __('Select the test'),
-    //             minimumInputLength: 0
-    //         }).on('change', function (test) {
-    //             $formElement.val(test);
-    //         }).on('request', function (params) {
-    //             provider
-    //                 .list(params.data)
-    //                 .then(function (tests) {
-    //                     params.success(tests);
-    //                 })
-    //                 .catch(function (err) {
-    //                     params.error(err);
-    //                     feedback().error(err);
-    //                 });
-    //         }).render('<%= text %>');
-    //     }
-    // };
 });
-
-
