@@ -59,7 +59,7 @@
 
         > .divider {
             border-top: 1px solid $uiGeneralContentBorder;
-            margin: 10px 2px;
+            margin: 10px 2px -2px;
         }
 
         > .menu {
@@ -71,6 +71,10 @@
                 cursor: pointer;
                 font-size: 16px;
                 padding: 10px;
+
+                &:not(:first-child) {
+                    border-top: 1px solid $uiGeneralContentBorder;
+                }
 
                 > span {
                     margin-right: 8px;
