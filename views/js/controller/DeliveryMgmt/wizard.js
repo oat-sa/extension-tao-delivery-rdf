@@ -42,9 +42,10 @@ define([
 
             request(route, {}, 'get', {})
             .then(function (data) {
-                var $document, $wizard, $input, $dropdown, $dropdownSearch, $dropdownMenuItem;
+                var $document, $form, $wizard, $input, $dropdown, $dropdownSearch, $dropdownMenuItem;
 
                 $document = $(document);
+                $form = $('#simpleWizard');
                 $wizard = $('.test-select-container')
                     .append(tpl(data))
                     .find('> .wizard');
@@ -62,6 +63,19 @@ define([
                         }
                     }
                 }
+
+                // Form element events
+                $form.on('submit', function (e) {
+                    var value = $input.find('input').data('value');
+
+                    if (!value) {
+                        e.preventDefault();
+                        feedback().error(__('Please select a test!'));
+                        return false;
+                    }
+
+                    $form.find('#test').val(value);
+                });
 
                 // Wizard element events
 
