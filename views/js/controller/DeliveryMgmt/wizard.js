@@ -68,9 +68,9 @@ define([
                 // Input element events
                 $input
                 .on('click', function () {
+                    $dropdown.show();
+                    $dropdownSearch.focus();
                     if (!$dropdown.is(':visible')) {
-                        $dropdown.show();
-                        $dropdownSearch.focus();
                         $document.on('click', outsideWizardClickHandler);
                     }
                 });
@@ -79,9 +79,24 @@ define([
 
                 // Dropdown search element events
                 $dropdownSearch
-                .on('keyup', _.debounce(function () {
+                .on('keyup', _.debounce(function (e) {
+                    var $focused = $dropdownMenuItem.filter('.focused');
                     var $this = $(this);
+                    var hasFocus = false;
 
+                    if (e.key === 'Escape') {
+                        $dropdown.hide();
+                    }
+
+                    if (e.key === 'Enter') {
+                        if ($focused.length) {
+                            $focused.first().trigger('click');
+                        } else {
+                            $dropdown.hide();
+                        }
+                    }
+
+                    $dropdownMenuItem.removeClass('focused');
                     $dropdownMenuItem.each(function (i, item) {
                         var $item = $(item);
                         var haystack;
@@ -91,6 +106,10 @@ define([
                         needle = $this.val().trim().toUpperCase();
 
                         if (!needle || haystack.includes(needle)) {
+                            if (!hasFocus) {
+                                hasFocus = true;
+                                $item.addClass('focused');
+                            }
                             $item.show();
                         } else {
                             $item.hide();
@@ -108,6 +127,10 @@ define([
                     .data('value', ($this.data('value')));
 
                     $dropdown.hide();
+                })
+                .on('hover', function () {
+                    $dropdownMenuItem.removeClass('focused');
+                    $(this).addClass('focused');
                 });
 
             })

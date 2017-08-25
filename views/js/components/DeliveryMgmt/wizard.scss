@@ -76,7 +76,7 @@
                     margin-right: 8px;
                 }
 
-                &:hover {
+                &.focused {
                     background-color: $uiClickableDefaultBg;
                 }
             }
