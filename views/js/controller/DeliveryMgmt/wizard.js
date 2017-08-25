@@ -127,6 +127,12 @@ define([
                             $item.hide();
                         }
                     });
+
+                    if ($dropdownMenuItem.is(':visible')) {
+                        $dropdown.find('> .menu > .no-results').hide();
+                    } else {
+                        $dropdown.find('> .menu > .no-results').show();
+                    }
                 }, 100));
 
                 // Dropdown menu item element events

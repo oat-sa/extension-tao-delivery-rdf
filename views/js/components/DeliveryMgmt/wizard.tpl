@@ -14,6 +14,7 @@
         </div>
         <div class="divider"></div>
         <div class="menu">
+            <div class="no-results">{{__ 'No results...'}}</div>
             {{#each tests}}
             <div class="item" data-value="{{this.id}}" data-text="{{this.text}}">
                 <span class="icon-test"></span>

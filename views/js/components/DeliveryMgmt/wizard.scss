@@ -67,16 +67,21 @@
             overflow: scroll;
             padding: 2px;
 
+            > .no-results {
+                cursor: default;
+                display: none;
+                padding: 10px;
+            }
+
             > .item {
                 cursor: pointer;
                 font-size: 16px;
                 padding: 10px;
 
-                &:not(:first-child) {
-                    border-top: 1px solid $uiGeneralContentBorder;
-                }
+                border-bottom: 1px solid $uiGeneralContentBorder;
 
                 > span {
+                    color: $uiClickableHoverBg;
                     margin-right: 8px;
                 }
 
