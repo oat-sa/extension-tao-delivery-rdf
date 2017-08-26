@@ -44,15 +44,16 @@ define([
             .then(function (data) {
                 var $document, $form, $wizard, $input, $dropdown, $dropdownSearch, $dropdownMenuItem;
 
-                $document = $(document);
-                $form = $('#simpleWizard');
                 $wizard = $('.test-select-container')
                     .append(tpl(data))
                     .find('> .wizard');
-                $input = $wizard.find('> .input');
+
+                $document = $(document);
                 $dropdown = $wizard.find('> .dropdown');
                 $dropdownSearch = $wizard.find('> .dropdown > .search > input');
                 $dropdownMenuItem = $wizard.find('> .dropdown > .menu > .item');
+                $form = $('#simpleWizard');
+                $input = $wizard.find('> .input');
 
                 // Document event handlers
                 function outsideWizardClickHandler(e) {
