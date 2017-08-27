@@ -18,7 +18,6 @@
 
 define([
     'jquery',
-    'lodash',
     'i18n',
     'core/dataProvider/request',
     'ui/feedback',
@@ -26,7 +25,6 @@ define([
     'ui/generis/widget/loader'
 ], function (
     $,
-    _,
     __,
     request,
     feedback,
