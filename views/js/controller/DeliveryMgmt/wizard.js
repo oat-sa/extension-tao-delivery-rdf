@@ -14,66 +14,61 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
  */
-define(['jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'core/promise'], function ($, __, filterFactory, feedback, urlUtils, Promise) {
+
+define([
+    'jquery',
+    'lodash',
+    'i18n',
+    'core/dataProvider/request',
+    'ui/feedback',
+    'util/url',
+    'ui/generis/widget/loader'
+], function (
+    $,
+    _,
+    __,
+    request,
+    feedback,
+    url,
+    generisWidgetLoader
+) {
     'use strict';
-
-    var provider = {
-
-        /**
-         * List available tests
-         * @returns {Promise}
-         */
-        list: function list(data) {
-            return new Promise(function (resolve, reject) {
-                $.ajax({
-                    url: urlUtils.route('getAvailableTests', 'DeliveryMgmt', 'taoDeliveryRdf'),
-                    data: {
-                        q: data.q,
-                        page: data.page
-                    },
-                    type: 'GET',
-                    dataType: 'JSON'
-                }).done(function (tests) {
-                    if (tests) {
-                        resolve(tests);
-                    } else {
-                        reject(new Error(__('Unable to load tests')));
-                    }
-                }).fail(function () {
-                    reject(new Error(__('Unable to load tests')));
-                });
-            });
-        }
-    };
-
 
     return {
         start: function () {
-            var $filterContainer = $('.test-select-container');
-            var $formElement = $('#test');
+            var route = url.route('getAvailableTests', 'DeliveryMgmt', 'taoDeliveryRdf');
 
-            filterFactory($filterContainer, {
-                placeholder: __('Select the test you want to publish to the test-takers'),
-                width: '64%',
-                quietMillis: 1000,
-                label: __('Select the test')
-            }).on('change', function (test) {
-                $formElement.val(test);
-            }).on('request', function (params) {
-                provider
-                    .list(params.data)
-                    .then(function (tests) {
-                        params.success(tests);
-                    })
-                    .catch(function (err) {
-                        params.error(err);
-                        feedback().error(err);
-                    });
-            }).render('<%= text %>');
+            request(route, {}, 'get', {})
+            .then(function (data) {
+                var $form = $('#simpleWizard');
+                var factory = generisWidgetLoader('http://www.tao.lu/datatypes/WidgetDefinitions.rdf#ComboSearchBox');
+                var widget;
+
+                // Widget creation
+                widget = factory({}, {
+                    placeholder: __('Select the test you would like to publish'),
+                    range: data.range,
+                    uri: 'delivery-selector'
+                })
+                .render('.test-select-container');
+
+                // Form element events
+                $form.on('submit', function (e) {
+                    var value = widget.get();
+
+                    if (!value) {
+                        e.preventDefault();
+                        feedback().error(__('Please select a test!'));
+                        return false;
+                    }
+
+                    $form.find('#test').val(value);
+                });
+            })
+            .catch(function (err) {
+                feedback().error(err);
+            });
         }
     };
 });
-
-
