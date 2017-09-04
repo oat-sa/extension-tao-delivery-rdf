@@ -35,19 +35,19 @@ msgid "Assigned to"
 msgstr ""
 
 msgid "Attempt %1$s of %2$s"
-msgstr ""
+msgstr "Tentativi %1$s di %2$s"
 
 msgid "Attempts"
-msgstr ""
+msgstr "Tentativi"
 
 msgid "Attempts %1$s of %2$s"
-msgstr ""
+msgstr "Tentativi %1$s di %2$s"
 
 msgid "Available from %1$s to %2$s"
-msgstr ""
+msgstr "Disponibile dal %1$s al %2$s"
 
 msgid "Available from %s"
-msgstr ""
+msgstr "Disponibile dal %s"
 
 msgid "Available until %s"
 msgstr ""
@@ -179,7 +179,7 @@ msgid "Unkown error during impoort"
 msgstr ""
 
 msgid "unlimited"
-msgstr ""
+msgstr "illimitati"
 
 msgid "Usage: %s ASSEMBLY_FILE"
 msgstr ""

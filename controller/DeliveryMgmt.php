@@ -20,16 +20,19 @@
  */
 namespace oat\taoDeliveryRdf\controller;
 
+use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManagerAwareTrait;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
+use oat\taoDelivery\model\AssignmentService;
+use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
 use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
 
 /**
  * Controller to managed assembled deliveries
@@ -46,7 +49,6 @@ class DeliveryMgmt extends \tao_actions_SaSModule
      *
      * @access public
      * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
-     * @return Delivery
      */
     public function __construct()
     {
@@ -69,13 +71,15 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     /*
      * controller actions
      */
-    
+
     /**
      * Edit a delivery instance
      *
      * @access public
      * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
      * @return void
+     * @throws \common_exception_NoImplementation
+     * @throws \common_exception_Error
      */
     public function editDelivery()
     {
@@ -105,8 +109,8 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         
         // history
         $this->setData('date', $this->getClassService()->getCompilationDate($delivery));
-        if (\taoDelivery_models_classes_execution_ServiceProxy::singleton()->implementsMonitoring()) {
-            $execs = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
+        if (ServiceProxy::singleton()->implementsMonitoring()) {
+            $execs = ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
             $this->setData('exec', count($execs));
         }
         
@@ -152,7 +156,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
         
         $assigned = array();
-        foreach ($this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($assembly->getUri()) as $userId) {
+        foreach ($this->getServiceManager()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($assembly->getUri()) as $userId) {
             if (!in_array($userId, array_keys($excluded))) {
                 $user = new core_kernel_classes_Resource($userId);
                 $assigned[$userId] = $user->getLabel();
@@ -196,11 +200,11 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             $myForm = $formContainer->getForm();
              
             if ($myForm->isValid() && $myForm->isSubmited()) {
-                $label = $myForm->getValue('label');
                 $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                 $label = __("Delivery of %s", $test->getLabel());
                 $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
-                $report = SimpleDeliveryFactory::create($deliveryClass, $test, $label);
+                $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+                $report = $deliveryFactory->create($deliveryClass, $test, $label);
                 $this->returnReport($report);
             } else {
                 $this->setData('myForm', $myForm->render());
@@ -211,5 +215,43 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         } catch (NoTestsException $e) {
             $this->setView('DeliveryMgmt/wizard_error.tpl');
         }
+    }
+
+    /**
+     * Prepare formatted for select2 component filtered list of available for compilation tests
+     * @throws \common_Exception
+     * @throws \oat\oatbox\service\ServiceNotFoundException
+     */
+    public function getAvailableTests()
+    {
+        $q = $this->getRequestParameter('q');
+        $tests = [];
+
+        $testService = \taoTests_models_classes_TestsService::singleton();
+        /** @var ComplexSearchService $search */
+        $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
+
+        $queryBuilder = $search->query();
+        $query = $search->searchType($queryBuilder , TAO_TEST_CLASS , true)
+            ->add(RDFS_LABEL)
+            ->contains($q);
+
+        $queryBuilder->setCriteria($query);
+
+        $result = $search->getGateway()->search($queryBuilder);
+
+        foreach ($result as $test) {
+            try {
+                $testItems = $testService->getTestItems($test);
+                //Filter tests which has no items
+                if (!empty($testItems)) {
+                    $testUri = $test->getUri();
+                    $tests[] = ['id' => $testUri, 'uri' => $testUri, 'text' => $test->getLabel()];
+                }
+            } catch (\Exception $e) {
+                \common_Logger::w('Unable to load items for test ' . $testUri);
+            }
+        }
+        $this->returnJson(['total' => count($tests), 'items' => $tests]);
     }
 }

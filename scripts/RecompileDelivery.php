@@ -20,9 +20,9 @@
  */
 namespace oat\taoDeliveryRdf\scripts;
 
-use oat\oatbox\action\Action;
 use common_report_Report as Report;
-use oat\taoDeliveryRdf\model\SimpleDeliveryFactory;
+use oat\oatbox\extension\AbstractAction;
+use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\oatbox\action\ResolutionException;
 
 //Load extension to define necessary constants.
@@ -46,25 +46,25 @@ use oat\oatbox\action\ResolutionException;
  * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\RecompileDelivery' compile 'http://sample/first.rdf#i1464967192451980'
  * ```
  */
-class RecompileDelivery implements Action
+class RecompileDelivery extends AbstractAction
 {
     /**
      * @var array Available script modes
      */
-    static $modes = ['list', 'compile'];
+    static public $modes = ['list', 'compile'];
 
     /**
      * List of properties to be copied from parent delivery
      * @var array
      */
-    static $propertiesToCopy = [
+    static public $propertiesToCopy = [
         TAO_DELIVERY_END_PROP,
         TAO_DELIVERY_START_PROP,
         TAO_DELIVERY_MAXEXEC_PROP,
     ];
 
     /**
-     * @var \Report
+     * @var Report
      */
     protected $report;
 
@@ -221,7 +221,8 @@ class RecompileDelivery implements Action
         $test = $delivery->getOnePropertyValue($testProperty);
         $destinationClass = new \core_kernel_classes_Class($delivery->getOnePropertyValue($classProperty)->getUri());
 
-        $deliveryCreationReport = SimpleDeliveryFactory::create($destinationClass, $test, $delivery->getLabel());
+        $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+        $deliveryCreationReport = $deliveryFactory->create($destinationClass, $test, $delivery->getLabel());
         if ($deliveryCreationReport->getType() == \common_report_Report::TYPE_ERROR) {
             \common_Logger::i('Unable to recompile delivery execution' . $delivery->getUri());
             throw new \common_Exception($deliveryCreationReport->getMessage());
@@ -254,7 +255,7 @@ class RecompileDelivery implements Action
 
     /**
      * @throws ResolutionException
-     * @return sting
+     * @return string
      */
     private function getMode()
     {

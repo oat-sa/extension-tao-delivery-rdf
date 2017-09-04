@@ -68,12 +68,12 @@ class Assembler
             $delivery = $this->importDeliveryResource($deliveryClass, $manifest, $properties);
             
             $report = common_report_Report::createSuccess(__('Delivery "%s" successfully imported',$delivery->getUri()), $delivery);
-        } catch (Exception $e) {
-            common_Logger::w($e->getMessage());
+        } catch (\Exception $e) {
+            \common_Logger::w($e->getMessage());
             if (isset($delivery) && $delivery instanceof core_kernel_classes_Resource) {
                 $delivery->delete();
             }
-            $report = common_report_Report::createFailure(__('Unkown error during impoort'));
+            $report = common_report_Report::createFailure(__('Unknown error during import'));
         }
         return $report;
     }
@@ -131,7 +131,7 @@ class Assembler
      * export a compiled delivery into an archive
      * 
      * @param core_kernel_classes_Resource $compiledDelivery
-     * @throws Exception
+     * @throws \Exception
      * @return string
      */
     public static function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery) {
@@ -157,10 +157,13 @@ class Assembler
         $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_DIRECTORY));
         foreach ($directories as $id) {
             $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
-            \tao_helpers_File::addFilesToZip($zipArchive, $directory->getPath(), $directory->getRelativePath());
+            $files = $directory->getIterator();
+            foreach ($files as $file) {
+                \tao_helpers_File::addFilesToZip($zipArchive, $directory->readPsrStream($file), $directory->getRelativePath() . $file);
+            }
             $data['dir'][$id] = $directory->getRelativePath();
         }
-        
+
         $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
         $serviceCall = \tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
@@ -168,7 +171,7 @@ class Assembler
         $rdfExporter = new \tao_models_classes_export_RdfExporter();
         $rdfdata = $rdfExporter->getRdfString(array($compiledDelivery));
         if (!$zipArchive->addFromString('delivery.rdf', $rdfdata)) {
-            throw common_Exception('Unable to add metadata to exported delivery assembly');
+            throw new \common_Exception('Unable to add metadata to exported delivery assembly');
         }
         $data['meta'] = 'delivery.rdf';
         
@@ -177,7 +180,7 @@ class Assembler
         if (!$zipArchive->addFromString(self::MANIFEST_FILE, $content)) {
             $zipArchive->close();
             unlink($path);
-            throw \common_Exception('Unable to add manifest to exported delivery assembly');
+            throw new \common_Exception('Unable to add manifest to exported delivery assembly');
         }
         $zipArchive->close();
         return $path;
