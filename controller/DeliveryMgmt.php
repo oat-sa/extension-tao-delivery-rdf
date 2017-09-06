@@ -246,12 +246,18 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 //Filter tests which has no items
                 if (!empty($testItems)) {
                     $testUri = $test->getUri();
-                    $tests[] = ['id' => $testUri, 'uri' => $testUri, 'text' => $test->getLabel()];
+                    $tests[] = ['uri' => $testUri, 'label' => $test->getLabel()];
                 }
             } catch (\Exception $e) {
                 \common_Logger::w('Unable to load items for test ' . $testUri);
             }
         }
-        $this->returnJson(['total' => count($tests), 'items' => $tests]);
+        $this->returnJson([
+            'success' => true,
+            'data' => [
+                'total' => count($tests),
+                'range' => $tests
+            ]
+        ]);
     }
 }
