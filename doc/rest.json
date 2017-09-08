@@ -4,10 +4,6 @@
     "version": "1.0.0",
     "title": "Delivery compilation API"
   },
-  "schemes": [
-    "http",
-    "https"
-  ],
   "tags": [
     {
       "name": "delivery",
@@ -290,7 +286,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "formData",
+            "in": "query",
             "description": "Task identifier",
             "required": true,
             "type": "string"
