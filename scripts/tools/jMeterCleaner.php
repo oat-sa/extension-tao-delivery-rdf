@@ -85,16 +85,23 @@ class jMeterCleaner extends AbstractAction
             $openDeliveriesForUser = \common_report_Report::createInfo('2. Detailed report about deliveries for user');
             $openDeliveriesForUser->add(\common_report_Report::createInfo('--detailed-report'));
             $openDeliveriesForUser->add(\common_report_Report::createInfo('--detailed-user=[userId]'));
-            $countDeliveriesForUsers->add(\common_report_Report::createInfo('--open-out   `show all deliveries and executions id`'));
+            $openDeliveriesForUser->add(\common_report_Report::createInfo('--open-out   `show all deliveries and executions id`'));
             $usageHelper->add($openDeliveriesForUser);
 
             $cleaner = \common_report_Report::createInfo('2. Clean test data that you want (The greater the force, the greater the responsibility)');
             $cleaner->add(\common_report_Report::createFailure('Note: everything will be deleted even user'));
-            $cleaner->add(\common_report_Report::createFailure('--run-cleaner'));
-            $cleaner->add(\common_report_Report::createFailure('--clean-user=[userId] `will be deleted user, executions and states`'));
-            $cleaner->add(\common_report_Report::createFailure('--clean-user-with-his-deliveries `will be deleted user, executions, states, DELIVERIES and RESULTS`'));
-            $cleaner->add(\common_report_Report::createFailure('--clean-delivery=[deliveryId] `not required. If provided, then will be deleted only that delivery and results`'));
+            $cleaner->add(\common_report_Report::createInfo('--run-cleaner'));
+            $cleaner->add(\common_report_Report::createInfo('--clean-user=[userId] `will be deleted user, executions and states`'));
+            $cleaner->add(\common_report_Report::createInfo('--clean-user-with-his-deliveries `will be deleted user, executions, states, DELIVERIES and RESULTS`'));
+            $cleaner->add(\common_report_Report::createInfo('--clean-delivery=[deliveryId] `not required. If provided, then will be deleted only that delivery and results`'));
             $usageHelper->add($cleaner);
+
+            $executionsCleaner = \common_report_Report::createInfo('3. Delete only executions and test results (The greater the force, the greater the responsibility)');
+            $executionsCleaner->add(\common_report_Report::createFailure('Note: will be deleted '));
+            $executionsCleaner->add(\common_report_Report::createInfo('--run-executions-cleaner'));
+            $executionsCleaner->add(\common_report_Report::createInfo('--clean-user=[userId] `will be deleted executions, results and states`'));
+            $executionsCleaner->add(\common_report_Report::createInfo('--clean-users-whose-label-begin-with=[string] `min length 3 symbols. Will be deleted executions, results and states only for the users whose labels begin with specified string.`'));
+            $usageHelper->add($executionsCleaner);
 
             $this->report->add($usageHelper);
         }
@@ -106,6 +113,7 @@ class jMeterCleaner extends AbstractAction
         $this->counter();
         $this->detailed();
         $this->cleaner();
+        $this->executionsCleaner();
     }
 
     /**
@@ -217,20 +225,30 @@ class jMeterCleaner extends AbstractAction
         $resource = null;
         $hasParameter = false;
 
-        foreach ($this->params as $param) {
-            if (mb_strpos($param, $prefix) !== false) {
-                $ttId = str_replace($prefix, '', $param);
-                $ttId = trim($ttId, '[]');
-                $resource = $this->getResource($ttId);
-                if (!$resource->exists()) {
-                    $resource = null;
-                }
-                $hasParameter = true;
-                break;
+        $val = $this->getParameterValue($prefix);
+        if ($val) {
+            $hasParameter = true;
+            $resource = $this->getResource($val);
+            if (!$resource->exists()) {
+                $resource = null;
             }
         }
 
         return $hasParameter ? $resource : false;
+    }
+
+    private function getParameterValue($prefix = '--unique-prefix')
+    {
+        $value = false;
+        foreach ($this->params as $param) {
+            if (mb_strpos($param, $prefix) !== false) {
+                $value = str_replace($prefix, '', $param);
+                $value = trim($value, '[]');
+                break;
+            }
+        }
+
+        return $value;
     }
 
     private function getDetailsForUser($counted = true)
@@ -305,6 +323,85 @@ class jMeterCleaner extends AbstractAction
                 $this->deleteTestTaker($testTaker, $ttData);
             }
         }
+        return true;
+    }
+
+    private function executionsCleaner()
+    {
+        if (!$this->done && in_array('--run-executions-cleaner', $this->params)) {
+            $this->done = true;
+
+            $testTaker = $this->getResourceFromParameter('--clean-user=');
+            $labelBeginWith = $this->getParameterValue('--clean-users-whose-label-begin-with=');
+
+            if (!$testTaker && !$labelBeginWith) {
+                $this->report->add(\common_report_Report::createFailure('You should use one of the --clean-user or --clean-users-whose-label-begin-with, not together'));
+                return false;
+            }
+
+            if ($testTaker && $labelBeginWith) {
+                $this->report->add(\common_report_Report::createFailure('You can use --clean-user or --clean-users-whose-label-begin-with, not together'));
+                return false;
+            }
+
+            if (mb_strlen($labelBeginWith) < 3) {
+                $this->report->add(\common_report_Report::createFailure('Value of the --clean-users-whose-label-begin-with can not be less then 3 symbols'));
+                return false;
+            }
+
+            if ($testTaker) {
+                // clean his data
+                $this->cleanTestTakersExecutions($testTaker);
+            }
+
+            if ($labelBeginWith) {
+                // clean all test takers according to this mask
+                $this->cleanExecutionsByMask($labelBeginWith);
+            }
+        }
+        return true;
+    }
+
+    private function cleanTestTakersExecutions($testTaker)
+    {
+        $ttData = $this->getDataByTestTaker($testTaker, false);
+        if (!count($ttData)) {
+            $this->report->add(\common_report_Report::createFailure('TestTaker with id [' . $testTaker->getUri() . '] has not been found'));
+            return false;
+        }
+
+        // delete deliveries results
+        $deliveries = [];
+        foreach ($ttData  as $row) {
+            if (isset($row[1])) {
+                $deliveries[] = $row[1];
+            }
+        }
+
+        $removeResultsReport = $this->removeResults($deliveries);
+        $this->report->add($removeResultsReport);
+
+        // delete executions
+        $executionRemovedReport = $this->removeDeliveryExecutions($testTaker->getUri());
+        $this->report->add($executionRemovedReport);
+
+        // delete states
+        $statesRemovedReport = $this->removeServiceState($testTaker->getUri());
+        $this->report->add($statesRemovedReport);
+
+        $this->report->add(\common_report_Report::createSuccess('TestTakers data about results and executions were cleaned'));
+    }
+
+    private function cleanExecutionsByMask($labelBeginWith = '')
+    {
+        $data = $this->getCountersByUsers();
+        foreach ($data as $row) {
+            if ( $pos = mb_strpos($row[0], '(' . $labelBeginWith) ) {
+                $uri = trim(mb_substr($row[0], 0, $pos));
+                $testTaker = $this->getResource($uri);
+                $this->cleanTestTakersExecutions($testTaker);
+            }
+        }
     }
 
     private function deleteDelivery($delivery)
@@ -338,7 +435,7 @@ class jMeterCleaner extends AbstractAction
         $this->report->add(\common_report_Report::createSuccess('TestTaker deleted'));
     }
 
-    protected function removeResults(array $deliveries){
+    private function removeResults(array $deliveries){
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
         try {
             // results rds
