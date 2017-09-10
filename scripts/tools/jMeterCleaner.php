@@ -97,7 +97,7 @@ class jMeterCleaner extends AbstractAction
             $usageHelper->add($cleaner);
 
             $executionsCleaner = \common_report_Report::createInfo('3. Delete only executions and test results (The greater the force, the greater the responsibility)');
-            $executionsCleaner->add(\common_report_Report::createFailure('Note: will be deleted '));
+            $executionsCleaner->add(\common_report_Report::createFailure('Note: will be deleted results, executions and services states'));
             $executionsCleaner->add(\common_report_Report::createInfo('--run-executions-cleaner'));
             $executionsCleaner->add(\common_report_Report::createInfo('--clean-user=[userId] `will be deleted executions, results and states`'));
             $executionsCleaner->add(\common_report_Report::createInfo('--clean-users-whose-label-begin-with=[string] `min length 3 symbols. Will be deleted executions, results and states only for the users whose labels begin with specified string.`'));
