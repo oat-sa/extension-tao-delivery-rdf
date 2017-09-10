@@ -152,6 +152,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->getServiceManager()->register(RuntimeService::SERVICE_ID, new ContainerRuntime());
             $this->setVersion('3.7.0');
         }
-	$this->skip('3.7.0', '3.9.0');
+
+        $this->skip('3.7.0', '3.9.1');
     }
 }
