@@ -22,6 +22,7 @@ namespace oat\taoDeliveryRdf\scripts;
 
 use common_report_Report as Report;
 use oat\oatbox\extension\AbstractAction;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\oatbox\action\ResolutionException;
 
@@ -58,9 +59,9 @@ class RecompileDelivery extends AbstractAction
      * @var array
      */
     static public $propertiesToCopy = [
-        TAO_DELIVERY_END_PROP,
-        TAO_DELIVERY_START_PROP,
-        TAO_DELIVERY_MAXEXEC_PROP,
+        DeliveryContainerService::END_PROP,
+        DeliveryContainerService::START_PROP,
+        DeliveryContainerService::MAX_EXEC_PROP,
     ];
 
     /**

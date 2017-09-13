@@ -41,7 +41,8 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     /**
      * Interface part
      */
-    
+    const GROUP_DELIVERY = 'http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries';
+
     /**
      * (non-PHPdoc)
      * @see \oat\taoDelivery\model\AssignmentService::getAssignments()
@@ -99,7 +100,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     {
         $groupClass = GroupsService::singleton()->getRootClass();
         $groups = $groupClass->searchInstances(array(
-            PROPERTY_GROUP_DELVIERY => $deliveryId
+            GroupAssignment::GROUP_DELIVERY => $deliveryId
         ), array('recursive' => true, 'like' => false));
         
         $users = array();
@@ -121,10 +122,10 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     {
         $groupClass = GroupsService::singleton()->getRootClass();
         $assigned = $groupClass->searchInstances(array(
-            PROPERTY_GROUP_DELVIERY => $delivery
+            GroupAssignment::GROUP_DELIVERY => $delivery
         ), array('like' => false, 'recursive' => true));
         
-        $assignationProperty = new core_kernel_classes_Property(PROPERTY_GROUP_DELVIERY);
+        $assignationProperty = new core_kernel_classes_Property(GroupAssignment::GROUP_DELIVERY);
         foreach ($assigned as $groupInstance) {
             $groupInstance->removePropertyValue($assignationProperty, $delivery);
         }
@@ -139,7 +140,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         $deliveryUris = array();
         // check if really available
         foreach (GroupsService::singleton()->getGroups($user) as $group) {
-            foreach ($group->getPropertyValues(new \core_kernel_classes_Property(PROPERTY_GROUP_DELVIERY)) as $deliveryUri) {
+            foreach ($group->getPropertyValues(new \core_kernel_classes_Property(GroupAssignment::GROUP_DELIVERY)) as $deliveryUri) {
                 $candidate = new core_kernel_classes_Resource($deliveryUri);
                 if (!$this->isUserExcluded($candidate, $user) && $candidate->exists()) {
                     $deliveryUris[$candidate->getUri()] = $candidate->getUri();
@@ -158,7 +159,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      * @return boolean true if excluded
      */
     protected function isUserExcluded(\core_kernel_classes_Resource $delivery, User $user){
-        $excludedUsers = $delivery->getPropertyValues(new \core_kernel_classes_Property(TAO_DELIVERY_EXCLUDEDSUBJECTS_PROP));
+        $excludedUsers = $delivery->getPropertyValues(new \core_kernel_classes_Property(DeliveryContainerService::EXCLUDED_SUBJECTS_PROP));
         return in_array($user->getIdentifier(), $excludedUsers);
     }
 
@@ -169,11 +170,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     public function getGuestAccessDeliveries()
     {
-        $class = new core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+        $class = new core_kernel_classes_Class(DeliveryAssemblyService::CLASS_ID);
 
         return $class->searchInstances(
             array(
-                TAO_DELIVERY_ACCESS_SETTINGS_PROP => DELIVERY_GUEST_ACCESS
+                DeliveryContainerService::ACCESS_SETTINGS_PROP => DeliveryAssemblyService::DELIVERY_GUEST_ACCESS
             ),
             array('recursive' => true)
         );
@@ -217,7 +218,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         } else {
             $userGroups = GroupsService::singleton()->getGroups($user);
             $deliveryGroups = GroupsService::singleton()->getRootClass()->searchInstances(array(
-                PROPERTY_GROUP_DELVIERY => $delivery->getUri()
+                GroupAssignment::GROUP_DELIVERY => $delivery->getUri()
             ), array(
                 'like'=>false, 'recursive' => true
             ));
@@ -239,13 +240,13 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         $returnValue = false;
     
         $properties = $delivery->getPropertiesValues(array(
-            new core_kernel_classes_Property(TAO_DELIVERY_ACCESS_SETTINGS_PROP),
+            new core_kernel_classes_Property(DeliveryContainerService::ACCESS_SETTINGS_PROP ),
         ));
-        $propAccessSettings = current($properties[TAO_DELIVERY_ACCESS_SETTINGS_PROP]);
+        $propAccessSettings = current($properties[DeliveryContainerService::ACCESS_SETTINGS_PROP ]);
         $accessSetting = (!(is_object($propAccessSettings)) or ($propAccessSettings=="")) ? null : $propAccessSettings->getUri();
     
         if( !is_null($accessSetting) ){
-            $returnValue = ($accessSetting === DELIVERY_GUEST_ACCESS);
+            $returnValue = ($accessSetting === DeliveryAssemblyService::DELIVERY_GUEST_ACCESS);
         }
     
         return $returnValue;
@@ -258,7 +259,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     protected function verifyToken(core_kernel_classes_Resource $delivery, User $user)
     {
-        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(TAO_DELIVERY_MAXEXEC_PROP));
+        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::MAX_EXEC_PROP));
         $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
         
         //check Tokens
@@ -278,16 +279,16 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     protected function verifyTime(core_kernel_classes_Resource $delivery)
     {
         $deliveryProps = $delivery->getPropertiesValues(array(
-            TAO_DELIVERY_START_PROP,
-            TAO_DELIVERY_END_PROP,
+            DeliveryContainerService::START_PROP,
+            DeliveryContainerService::END_PROP,
         ));
         
-        $startExec = empty($deliveryProps[TAO_DELIVERY_START_PROP])
+        $startExec = empty($deliveryProps[DeliveryContainerService::START_PROP])
             ? null
-            : (string)current($deliveryProps[TAO_DELIVERY_START_PROP]);
-        $stopExec = empty($deliveryProps[TAO_DELIVERY_END_PROP])
+            : (string)current($deliveryProps[DeliveryContainerService::START_PROP]);
+        $stopExec = empty($deliveryProps[DeliveryContainerService::END_PROP])
             ? null
-            : (string)current($deliveryProps[TAO_DELIVERY_END_PROP]);
+            : (string)current($deliveryProps[DeliveryContainerService::END_PROP]);
         
         $startDate  =    date_create('@'.$startExec);
         $endDate    =    date_create('@'.$stopExec);

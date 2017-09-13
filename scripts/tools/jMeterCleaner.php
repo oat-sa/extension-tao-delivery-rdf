@@ -10,6 +10,7 @@ namespace oat\taoDeliveryRdf\scripts\tools;
 
 use oat\oatbox\extension\AbstractAction;
 use oat\generis\model\OntologyAwareTrait;
+use oat\taoDelivery\model\execution\OntologyDeliveryExecution;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoOutcomeRds\model\RdsResultStorage;
@@ -478,10 +479,10 @@ class jMeterCleaner extends AbstractAction
                 }
             }
             $report->setMessage('Removed ' . $count . ' key-value delivery executions of '. $userUri);
-        } elseif ($deliveryService instanceof \taoDelivery_models_classes_execution_OntologyService) {
+        } elseif ($deliveryService instanceof OntologyDeliveryExecution) {
             $count = 0;
-            $deliveryExecutionClass = new \core_kernel_classes_Class(\taoDelivery_models_classes_execution_OntologyDeliveryExecution::CLASS_URI);
-            $deliveryExecutions = $deliveryExecutionClass->searchInstances( [PROPERTY_DELVIERYEXECUTION_SUBJECT => $userUri]);
+            $deliveryExecutionClass = new \core_kernel_classes_Class(OntologyDeliveryExecution::CLASS_URI);
+            $deliveryExecutions = $deliveryExecutionClass->searchInstances( [OntologyDeliveryExecution::PROPERTY_SUBJECT => $userUri]);
             /** @var  \core_kernel_classes_Class $deliveryExecution */
             foreach ($deliveryExecutions as $deliveryExecution) {
                 $deliveryExecution->delete(true);

@@ -19,6 +19,7 @@
  */
 namespace oat\taoDeliveryRdf\view\form;
 
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use tao_helpers_form_FormFactory;
 use tao_helpers_Uri;
 /**
@@ -45,7 +46,7 @@ class DeliveryForm
     protected function initElements()
     {
         parent::initElements();
-        $maxExecElt = $this->form->getElement(tao_helpers_Uri::encode(TAO_DELIVERY_MAXEXEC_PROP));
+        $maxExecElt = $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::MAX_EXEC_PROP));
         if (! is_null($maxExecElt)) {
             $maxExecElt->addValidators(array(
                 tao_helpers_form_FormFactory::getValidator('Integer', array(
@@ -55,19 +56,19 @@ class DeliveryForm
             $this->form->addElement($maxExecElt);
         }
         
-        $periodEndElt = $this->form->getElement(tao_helpers_Uri::encode(TAO_DELIVERY_END_PROP));
+        $periodEndElt = $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::END_PROP));
         if (! is_null($periodEndElt)) {
         
             $periodEndElt->addValidators(array(
                 tao_helpers_form_FormFactory::getValidator('DateTime', array(
                     'comparator' => '>=',
-                    'datetime2_ref' => $this->form->getElement(tao_helpers_Uri::encode(TAO_DELIVERY_START_PROP))
+                    'datetime2_ref' => $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::START_PROP))
                 ))
             ));
             $this->form->addElement($periodEndElt);
         }
         
-        $resultServerElt = $this->form->getElement(tao_helpers_Uri::encode(TAO_DELIVERY_RESULTSERVER_PROP));
+        $resultServerElt = $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::RESULT_SERVER_PROP));
         if (! is_null($resultServerElt)) {
             $resultServerElt->addValidators(array(
                 tao_helpers_form_FormFactory::getValidator('NotEmpty')

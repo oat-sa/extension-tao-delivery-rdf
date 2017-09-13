@@ -42,6 +42,13 @@ use oat\taoTests\models\runner\features\TestRunnerFeatureService;
 class DeliveryContainerService  extends ConfigurableService implements DeliveryContainerServiceInterface
 {
 
+    const EXCLUDED_SUBJECTS_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects';
+    const RESULT_SERVER_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer';
+    const MAX_EXEC_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec';
+    const START_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart';
+    const END_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
+    const ACCESS_SETTINGS_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings';
+
     const TEST_RUNNER_FEATURES_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures';
 
     /**

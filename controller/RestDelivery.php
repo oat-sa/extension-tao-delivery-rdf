@@ -19,6 +19,7 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\tao\model\TaskQueueActionTrait;
@@ -308,7 +309,7 @@ class RestDelivery extends \tao_actions_RestController
      */
     protected function getDeliveryRootClass()
     {
-        return new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+        return new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_ID);
     }
 
 }
