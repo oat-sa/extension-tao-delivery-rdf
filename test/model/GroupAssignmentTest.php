@@ -21,6 +21,8 @@ namespace oat\taoDeliveryRdf\test\model;
 
 use oat\tao\test\TaoPhpUnitTestRunner;
 use \common_ext_ExtensionsManager;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 
 class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
@@ -88,15 +90,15 @@ class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
         return array(
             'positive' => array(
                 array(
-                    TAO_DELIVERY_ACCESS_SETTINGS_PROP => array(
-                        new \core_kernel_classes_Resource(DELIVERY_GUEST_ACCESS)
+                    DeliveryContainerService::ACCESS_SETTINGS_PROP  => array(
+                        new \core_kernel_classes_Resource(DeliveryAssemblyService::DELIVERY_GUEST_ACCESS)
                     )
                 ),
                 true
             ),
             'negative' => array(
                 array(
-                    TAO_DELIVERY_ACCESS_SETTINGS_PROP => array()
+                    DeliveryContainerService::ACCESS_SETTINGS_PROP  => array()
                 ),
                 false
             )
