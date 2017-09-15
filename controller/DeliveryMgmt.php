@@ -83,10 +83,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
      */
     public function editDelivery()
     {
-        $clazz = $this->getCurrentClass();
+        $class = $this->getCurrentClass();
         $delivery = $this->getCurrentInstance();
         
-        $formContainer = new DeliveryForm($clazz, $delivery);
+        $formContainer = new DeliveryForm($class, $delivery);
         $myForm = $formContainer->getForm();
         
         if ($myForm->isSubmited()) {
@@ -132,7 +132,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $users = $this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($delivery->getUri());
         $assigned = array_diff(array_unique($users), $excluded);
         $this->setData('ttassigned', count($assigned));
-        
+
         $this->setData('formTitle', __('Properties'));
         $this->setData('myForm', $myForm->render());
         
