@@ -25,6 +25,7 @@ use oat\oatbox\event\EventManagerAwareTrait;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
+use oat\tao\model\TaoOntology;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
@@ -232,7 +233,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
 
         $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder , TAO_TEST_CLASS , true)
+        $query = $search->searchType($queryBuilder , TaoOntology::TEST_CLASS, true)
             ->add(RDFS_LABEL)
             ->contains($q);
 

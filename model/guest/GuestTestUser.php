@@ -20,6 +20,8 @@
 namespace oat\taoDeliveryRdf\model\guest;
 
 use oat\oatbox\user\User;
+use oat\tao\model\TaoOntology;
+
 /**
  * Virtual test-taker
  */
@@ -45,9 +47,9 @@ class GuestTestUser implements User
     public function getRoles()
     {
         return array(
-            INSTANCE_ROLE_DELIVERY => INSTANCE_ROLE_DELIVERY,
+			TaoOntology::INSTANCE_ROLE_DELIVERY => TaoOntology::INSTANCE_ROLE_DELIVERY,
             INSTANCE_ROLE_ANONYMOUS => INSTANCE_ROLE_ANONYMOUS,
-            INSTANCE_ROLE_BASEUSER => INSTANCE_ROLE_BASEUSER
+			TaoOntology::INSTANCE_ROLE_BASE_USER => TaoOntology::INSTANCE_ROLE_BASE_USER
         );
     }
 }

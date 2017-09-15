@@ -22,6 +22,7 @@ namespace oat\taoDeliveryRdf\view\form;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\TaoOntology;
 use oat\taoDeliveryRdf\model\NoTestsException;
 /**
  * Create a form from a  resource of your ontology. 
@@ -72,7 +73,7 @@ class WizardForm extends \tao_helpers_form_FormContainer
         /** @var ComplexSearchService $search */
         $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
         $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder , TAO_TEST_CLASS , true);
+        $query = $search->searchType($queryBuilder , TaoOntology::TEST_CLASS, true);
         $queryBuilder->setCriteria($query);
 
         $count = $search->getGateway()->count($queryBuilder);
