@@ -233,7 +233,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
 
         $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder , TaoOntology::TEST_CLASS, true)
+        $query = $search->searchType($queryBuilder , TaoOntology::TEST_CLASS_URI, true)
             ->add(RDFS_LABEL)
             ->contains($q);
 

@@ -73,7 +73,7 @@ class WizardForm extends \tao_helpers_form_FormContainer
         /** @var ComplexSearchService $search */
         $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
         $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder , TaoOntology::TEST_CLASS, true);
+        $query = $search->searchType($queryBuilder , TaoOntology::TEST_CLASS_URI, true);
         $queryBuilder->setCriteria($query);
 
         $count = $search->getGateway()->count($queryBuilder);

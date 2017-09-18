@@ -47,9 +47,9 @@ class GuestTestUser implements User
     public function getRoles()
     {
         return array(
-			TaoOntology::INSTANCE_ROLE_DELIVERY => TaoOntology::INSTANCE_ROLE_DELIVERY,
+			TaoOntology::PROPERTY_INSTANCE_ROLE_DELIVERY => TaoOntology::PROPERTY_INSTANCE_ROLE_DELIVERY,
             INSTANCE_ROLE_ANONYMOUS => INSTANCE_ROLE_ANONYMOUS,
-			TaoOntology::INSTANCE_ROLE_BASE_USER => TaoOntology::INSTANCE_ROLE_BASE_USER
+			TaoOntology::PROPERTY_INSTANCE_ROLE_BASE_USER => TaoOntology::PROPERTY_INSTANCE_ROLE_BASE_USER
         );
     }
 }
