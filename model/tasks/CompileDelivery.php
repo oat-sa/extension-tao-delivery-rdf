@@ -54,10 +54,10 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
         if (isset($params['delivery'])) {
             $deliveryClass = new \core_kernel_classes_Class($params['delivery']);
             if (! $deliveryClass->exists()) {
-                $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_ID);
+                $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
             }
         } else {
-            $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_ID);
+            $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
         }
 
         $test = new \core_kernel_classes_Resource($params['test']);

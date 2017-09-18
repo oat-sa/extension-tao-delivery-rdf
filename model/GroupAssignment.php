@@ -41,7 +41,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     /**
      * Interface part
      */
-    const GROUP_DELIVERY = 'http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries';
+    const PROPERTY_GROUP_DELIVERY = 'http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries';
 
     /**
      * (non-PHPdoc)
@@ -100,7 +100,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     {
         $groupClass = GroupsService::singleton()->getRootClass();
         $groups = $groupClass->searchInstances(array(
-            GroupAssignment::GROUP_DELIVERY => $deliveryId
+            self::PROPERTY_GROUP_DELIVERY => $deliveryId
         ), array('recursive' => true, 'like' => false));
         
         $users = array();
@@ -122,10 +122,10 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     {
         $groupClass = GroupsService::singleton()->getRootClass();
         $assigned = $groupClass->searchInstances(array(
-            GroupAssignment::GROUP_DELIVERY => $delivery
+			self::PROPERTY_GROUP_DELIVERY => $delivery
         ), array('like' => false, 'recursive' => true));
         
-        $assignationProperty = new core_kernel_classes_Property(GroupAssignment::GROUP_DELIVERY);
+        $assignationProperty = new core_kernel_classes_Property(self::PROPERTY_GROUP_DELIVERY);
         foreach ($assigned as $groupInstance) {
             $groupInstance->removePropertyValue($assignationProperty, $delivery);
         }
@@ -140,7 +140,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         $deliveryUris = array();
         // check if really available
         foreach (GroupsService::singleton()->getGroups($user) as $group) {
-            foreach ($group->getPropertyValues(new \core_kernel_classes_Property(GroupAssignment::GROUP_DELIVERY)) as $deliveryUri) {
+            foreach ($group->getPropertyValues(new \core_kernel_classes_Property(self::PROPERTY_GROUP_DELIVERY)) as $deliveryUri) {
                 $candidate = new core_kernel_classes_Resource($deliveryUri);
                 if (!$this->isUserExcluded($candidate, $user) && $candidate->exists()) {
                     $deliveryUris[$candidate->getUri()] = $candidate->getUri();
@@ -170,11 +170,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     public function getGuestAccessDeliveries()
     {
-        $class = new core_kernel_classes_Class(DeliveryAssemblyService::CLASS_ID);
+        $class = new core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
 
         return $class->searchInstances(
             array(
-                DeliveryContainerService::ACCESS_SETTINGS_PROP => DeliveryAssemblyService::DELIVERY_GUEST_ACCESS
+                DeliveryContainerService::ACCESS_SETTINGS_PROP => DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS
             ),
             array('recursive' => true)
         );
@@ -218,7 +218,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         } else {
             $userGroups = GroupsService::singleton()->getGroups($user);
             $deliveryGroups = GroupsService::singleton()->getRootClass()->searchInstances(array(
-                GroupAssignment::GROUP_DELIVERY => $delivery->getUri()
+				self::PROPERTY_GROUP_DELIVERY => $delivery->getUri()
             ), array(
                 'like'=>false, 'recursive' => true
             ));
@@ -246,7 +246,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         $accessSetting = (!(is_object($propAccessSettings)) or ($propAccessSettings=="")) ? null : $propAccessSettings->getUri();
     
         if( !is_null($accessSetting) ){
-            $returnValue = ($accessSetting === DeliveryAssemblyService::DELIVERY_GUEST_ACCESS);
+            $returnValue = ($accessSetting === DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS);
         }
     
         return $returnValue;

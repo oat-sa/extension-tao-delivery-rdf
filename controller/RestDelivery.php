@@ -309,7 +309,7 @@ class RestDelivery extends \tao_actions_RestController
      */
     protected function getDeliveryRootClass()
     {
-        return new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_ID);
+        return new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
     }
 
 }

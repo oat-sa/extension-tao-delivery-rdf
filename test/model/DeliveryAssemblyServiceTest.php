@@ -112,7 +112,7 @@ class DeliveryAssemblyServiceTest extends FileStorageTestCase
     {
         $assemblyService = DeliveryAssemblyService::singleton();
 
-        $class = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_ID);
+        $class = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
         $this->assertEquals($class, $assemblyService->getRootClass());
     }
 

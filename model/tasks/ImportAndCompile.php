@@ -71,7 +71,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         }
 
         $label = 'Delivery of ' . $test->getLabel();
-        $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_ID);
+        $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
         $compilationReport = $deliveryFactory->create($deliveryClass, $test, $label);
 

@@ -35,7 +35,7 @@ class DeliveryWidget
 		// ensure constant is known since this helper can be called out of context
 		\common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf')->load();
 		
-		$property = new \core_kernel_classes_Property(GroupAssignment::GROUP_DELIVERY);
+		$property = new \core_kernel_classes_Property(GroupAssignment::PROPERTY_GROUP_DELIVERY);
 		$tree = \tao_helpers_form_GenerisTreeForm::buildTree($group, $property);
 		$tree->setData('title', __('Deliveries'));
 		return $tree->render();

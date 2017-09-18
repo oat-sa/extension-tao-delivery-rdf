@@ -117,7 +117,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
         
         // define the groups related to the current delivery
-        $property = new core_kernel_classes_Property(GroupAssignment::GROUP_DELIVERY);
+        $property = new core_kernel_classes_Property(GroupAssignment::PROPERTY_GROUP_DELIVERY);
         $tree = \tao_helpers_form_GenerisTreeForm::buildReverseTree($delivery, $property);
         $tree->setTitle(__('Assigned to'));
         $tree->setTemplate(Template::getTemplate('widgets/assignGroup.tpl'));

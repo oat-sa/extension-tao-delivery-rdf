@@ -94,7 +94,7 @@ class AssignmentFactory
     
     public function getDeliveryOrder()
     {
-        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::DELIVERY_DISPLAY_ORDER_PROP));
+        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DISPLAY_ORDER_PROP));
         return is_null($prop) ? 0 : intval((string)$prop);
     }
     

@@ -91,7 +91,7 @@ class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
             'positive' => array(
                 array(
                     DeliveryContainerService::ACCESS_SETTINGS_PROP  => array(
-                        new \core_kernel_classes_Resource(DeliveryAssemblyService::DELIVERY_GUEST_ACCESS)
+                        new \core_kernel_classes_Resource(DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS)
                     )
                 ),
                 true
