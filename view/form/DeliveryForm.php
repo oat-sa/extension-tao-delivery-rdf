@@ -83,6 +83,11 @@ class DeliveryForm
 
     protected function setThemeNameSelectorOptions()
     {
+        $elementUri = tao_helpers_Uri::encode(DeliveryThemeDetailsProvider::DELIVERY_THEME_ID_URI);
+        if (!$this->form->hasElement($elementUri)) {
+            return false;
+        }
+
         /** @var ThemeService $themeService */
         $themeService = ServiceManager::getServiceManager()->get(ThemeService::SERVICE_ID);
         $allThemes    = $themeService->getAllThemes();
@@ -91,8 +96,6 @@ class DeliveryForm
             $options[$currentThemeId] = $currentThemeId;
         }
 
-        $this->form->getElement(tao_helpers_Uri::encode(DeliveryThemeDetailsProvider::DELIVERY_THEME_ID_URI))
-            ->setOptions($options)
-        ;
+        $this->form->getElement($elementUri)->setOptions($options);
     }
 }
