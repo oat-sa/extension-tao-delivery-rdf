@@ -23,6 +23,7 @@ namespace oat\taoDeliveryRdf\model\tasks;
 
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
+use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
@@ -35,7 +36,7 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
  * @package oat\taoQtiTest\models\tasks
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class CompileDelivery extends AbstractAction implements \JsonSerializable
+class CompileDelivery extends AbstractTaskAction implements \JsonSerializable
 {
     /**
      * @param $params
@@ -71,6 +72,18 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
                 'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
         }
 
+         if (isset($params['delivery'])) {
+             $taskResources = self::getTaskClass()->searchInstances([
+                 Task::PROPERTY_LINKED_RESOURCE => $deliveryClass->getUri()
+             ]);
+             foreach ($taskResources as $taskResource) {
+                 $taskResource->setPropertyValue(
+                     new \core_kernel_classes_Property(Task::PROPERTY_REPORT),
+                 json_encode($report)
+                 );
+             }
+         }
+
         return $report;
     }
 
@@ -89,7 +102,7 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
      * @param \core_kernel_classes_Class $delivery Optional delivery where to compile the test
      * @return Task created task id
      */
-    public static function createTask(\core_kernel_classes_Resource $test, \core_kernel_classes_Class $delivery = null)
+    public static function createTask(\core_kernel_classes_Resource $test, \core_kernel_classes_Class $delivery = null, \core_kernel_classes_Resource $deliveryResource)
     {
         $action = new self();
         $queue = ServiceManager::getServiceManager()->get(Queue::SERVICE_ID);
@@ -100,6 +113,7 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
         }
         //put task in queue with reference to the test resource and delivery
         $task = $queue->createTask($action, $parameters);
+        $queue->linkTask($task, $deliveryResource);
 
         return $task;
     }
