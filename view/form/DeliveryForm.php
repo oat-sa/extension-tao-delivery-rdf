@@ -19,6 +19,9 @@
  */
 namespace oat\taoDeliveryRdf\view\form;
 
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\theme\ThemeService;
+use oat\taoDelivery\models\classes\theme\DeliveryThemeDetailsProvider;
 use tao_helpers_form_FormFactory;
 use tao_helpers_Uri;
 /**
@@ -74,6 +77,25 @@ class DeliveryForm
             ));
             $this->form->addElement($resultServerElt);
         }
-                        
+
+        $this->setThemeNameSelectorOptions();
+    }
+
+    protected function setThemeNameSelectorOptions()
+    {
+        $elementUri = tao_helpers_Uri::encode(DeliveryThemeDetailsProvider::DELIVERY_THEME_ID_URI);
+        if (!$this->form->hasElement($elementUri)) {
+            return false;
+        }
+
+        /** @var ThemeService $themeService */
+        $themeService = ServiceManager::getServiceManager()->get(ThemeService::SERVICE_ID);
+        $allThemes    = $themeService->getAllThemes();
+        $options      = [];
+        foreach ($allThemes as $currentThemeId => $currentTheme) {
+            $options[$currentThemeId] = $currentThemeId;
+        }
+
+        $this->form->getElement($elementUri)->setOptions($options);
     }
 }
