@@ -91,11 +91,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $queueService = $this->getServiceManager()->get(Queue::SERVICE_ID);
 
         if ($taskResource = $queueService->getTaskResource($delivery)) {
-            $this->returnReport($queueService->getReportByLinkedResource($taskResource));
-
+            $this->returnReport($queueService->getReportByLinkedResource($delivery));
             /** @var Task $task */
             $task = $queueService->getTask($taskResource->getUri());
-            if ($task->getStatus()== \common_report_Report::TYPE_SUCCESS) {
+            if ($task->getStatus() == Task::STATUS_FINISHED) {
                 $delivery->delete();
             }
             return;
