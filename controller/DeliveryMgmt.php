@@ -89,7 +89,6 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $class = $this->getCurrentClass();
         $delivery = $this->getCurrentInstance();
         $queueService = $this->getServiceManager()->get(Queue::SERVICE_ID);
-
         if ($taskResource = $queueService->getTaskResource($delivery)) {
             $this->returnReport($queueService->getReportByLinkedResource($delivery));
             /** @var Task $task */
@@ -216,14 +215,22 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                 $label = __("Delivery of %s", $test->getLabel());
                 $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
-                $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
-                $deliveryResource->setLabel($label . __(' - Deferred delivery placeholder'));
-                $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
-                if ($task->getStatus() === Task::STATUS_FINISHED) {
-                    $report = $task->getReport();
+                $rdsQueue = $this->getServiceManager()->get(Queue::SERVICE_ID);
+                $config = $rdsQueue->getOption('config');
+                if (isset($config['persistence']) && $config['persistence']) {
+                    $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
+                    $deliveryResource->setLabel($label . __(' - Deferred delivery placeholder'));
+                    $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
+                    if ($task->getStatus() === Task::STATUS_FINISHED) {
+                        $report = $task->getReport();
+                    } else {
+                        $report = \common_report_Report::createInfo(__('Creating of delivery is successfully scheduled'));
+                    }
                 } else {
-                    $report = \common_report_Report::createInfo(__('Creating of delivery is successfully scheduled'));
+                    $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+                    $report = $deliveryFactory->create($deliveryClass, $test, $label);
                 }
+
                 $this->returnReport($report);
             } else {
                 $this->setData('myForm', $myForm->render());
