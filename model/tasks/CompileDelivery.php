@@ -61,11 +61,13 @@ class CompileDelivery extends AbstractTaskAction implements \JsonSerializable
         }
 
         $test = new \core_kernel_classes_Resource($params['test']);
+        $deliveryResource = new \core_kernel_classes_Resource($params['deliveryResourceUri']);
+
         $label = 'Delivery of ' . $test->getLabel();
 
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
         /** @var \common_report_Report $report */
-        $report = $deliveryFactory->create($deliveryClass, $test, $label);
+        $report = $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
 
         if ($report->getType() == \common_report_Report::TYPE_ERROR) {
             \common_Logger::i('Unable to generate delivery execution ' .
@@ -111,6 +113,7 @@ class CompileDelivery extends AbstractTaskAction implements \JsonSerializable
         if (! is_null($delivery)) {
             $parameters['delivery'] = $delivery->getUri();
         }
+        $parameters['deliveryResourceUri'] = $deliveryResource->getUri();
         //put task in queue with reference to the test resource and delivery
         $task = $queue->createTask($action, $parameters);
         $queue->linkTask($task, $deliveryResource);
