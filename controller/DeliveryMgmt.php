@@ -97,7 +97,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 || $task->getStatus() == Task::STATUS_RUNNING
                 || $task->getStatus() == Task::STATUS_STARTED)
             ) {
-                $report = Report::createInfo(__('Task for creating delivery in progress.'));
+                $report = Report::createInfo(__('Compilation of delivery is in progress.'));
                 $this->returnReport($report);
                 return;
             } else if ($task && $task->getStatus() == Task::STATUS_FINISHED) {
