@@ -42,12 +42,12 @@ use oat\taoTests\models\runner\features\TestRunnerFeatureService;
 class DeliveryContainerService  extends ConfigurableService implements DeliveryContainerServiceInterface
 {
 
-    const EXCLUDED_SUBJECTS_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects';
-    const RESULT_SERVER_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer';
-    const MAX_EXEC_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec';
-    const START_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart';
-    const END_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
-    const ACCESS_SETTINGS_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings';
+    const PROPERTY_EXCLUDED_SUBJECTS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects';
+    const PROPERTY_RESULT_SERVER = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer';
+    const PROPERTY_MAX_EXEC = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec';
+    const PROPERTY_START = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart';
+    const PROPERTY_END = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
+    const PROPERTY_ACCESS_SETTINGS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings';
 
     const TEST_RUNNER_FEATURES_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures';
 

@@ -127,7 +127,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $this->setData('assemblyUri', $delivery->getUri());
         
         // define the subjects excluded from the current delivery
-        $property = new core_kernel_classes_Property(DeliveryContainerService::EXCLUDED_SUBJECTS_PROP);
+        $property = new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
         $excluded = $delivery->getPropertyValues($property);
         $this->setData('ttexcluded', count($excluded));
 
@@ -150,7 +150,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $this->setData('assemblyUri', $assembly->getUri());
         
         // define the subjects excluded from the current delivery
-        $property = new core_kernel_classes_Property(DeliveryContainerService::EXCLUDED_SUBJECTS_PROP);
+        $property = new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
         $excluded = array(); 
         foreach ($assembly->getPropertyValues($property) as $uri) {
             $user = new core_kernel_classes_Resource($uri);
@@ -186,9 +186,9 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
         
         $assembly = $this->getCurrentInstance();
-        $success = $assembly->editPropertyValues(new core_kernel_classes_Property(DeliveryContainerService::EXCLUDED_SUBJECTS_PROP),$jsonArray);
+        $success = $assembly->editPropertyValues(new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS),$jsonArray);
 
-        $this->getEventManager()->trigger(new DeliveryUpdatedEvent($assembly->getUri(), [DeliveryContainerService::EXCLUDED_SUBJECTS_PROP => $jsonArray]));
+        $this->getEventManager()->trigger(new DeliveryUpdatedEvent($assembly->getUri(), [DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS => $jsonArray]));
 
         $this->returnJson(array(
         	'saved' => $success

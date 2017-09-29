@@ -59,9 +59,9 @@ class RecompileDelivery extends AbstractAction
      * @var array
      */
     static public $propertiesToCopy = [
-        DeliveryContainerService::END_PROP,
-        DeliveryContainerService::START_PROP,
-        DeliveryContainerService::MAX_EXEC_PROP,
+        DeliveryContainerService::PROPERTY_END,
+        DeliveryContainerService::PROPERTY_START,
+        DeliveryContainerService::PROPERTY_MAX_EXEC,
     ];
 
     /**

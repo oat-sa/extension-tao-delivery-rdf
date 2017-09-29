@@ -63,14 +63,14 @@ class AssignmentFactory
     protected function getDescription()
     {
         $deliveryProps = $this->delivery->getPropertiesValues(array(
-            new core_kernel_classes_Property(DeliveryContainerService::MAX_EXEC_PROP),
-            new core_kernel_classes_Property(DeliveryContainerService::START_PROP),
-            new core_kernel_classes_Property(DeliveryContainerService::END_PROP),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_MAX_EXEC),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_START),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_END),
         ));
         
-        $propMaxExec = current($deliveryProps[DeliveryContainerService::MAX_EXEC_PROP]);
-        $propStartExec = current($deliveryProps[DeliveryContainerService::START_PROP]);
-        $propEndExec = current($deliveryProps[DeliveryContainerService::END_PROP]);
+        $propMaxExec = current($deliveryProps[DeliveryContainerService::PROPERTY_MAX_EXEC]);
+        $propStartExec = current($deliveryProps[DeliveryContainerService::PROPERTY_START]);
+        $propEndExec = current($deliveryProps[DeliveryContainerService::PROPERTY_END]);
         
         $startTime = (!(is_object($propStartExec)) or ($propStartExec=="")) ? null : $propStartExec->literal;
         $endTime = (!(is_object($propEndExec)) or ($propEndExec=="")) ? null : $propEndExec->literal;
@@ -88,7 +88,7 @@ class AssignmentFactory
     
     public function getStartTime()
     {
-        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::START_PROP));
+        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_START));
         return is_null($prop) ? null : (string)$prop;
     }
     

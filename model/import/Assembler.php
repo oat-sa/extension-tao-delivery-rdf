@@ -114,7 +114,7 @@ class Assembler
             DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => array_keys($dirs),
             DeliveryAssemblyService::PROPERTY_DELIVERY_TIME      => time(),
             DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME   => $serviceCall->toOntology(),
-            DeliveryContainerService::RESULT_SERVER_PROP      => $resultServer
+            DeliveryContainerService::PROPERTY_RESULT_SERVER      => $resultServer
         ));
         $delivery = $deliveryClass->createInstanceWithProperties($properties);
         

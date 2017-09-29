@@ -159,7 +159,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      * @return boolean true if excluded
      */
     protected function isUserExcluded(\core_kernel_classes_Resource $delivery, User $user){
-        $excludedUsers = $delivery->getPropertyValues(new \core_kernel_classes_Property(DeliveryContainerService::EXCLUDED_SUBJECTS_PROP));
+        $excludedUsers = $delivery->getPropertyValues(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS));
         return in_array($user->getIdentifier(), $excludedUsers);
     }
 
@@ -174,7 +174,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
 
         return $class->searchInstances(
             array(
-                DeliveryContainerService::ACCESS_SETTINGS_PROP => DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS
+                DeliveryContainerService::PROPERTY_ACCESS_SETTINGS => DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS
             ),
             array('recursive' => true)
         );
@@ -240,9 +240,9 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         $returnValue = false;
     
         $properties = $delivery->getPropertiesValues(array(
-            new core_kernel_classes_Property(DeliveryContainerService::ACCESS_SETTINGS_PROP ),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_ACCESS_SETTINGS ),
         ));
-        $propAccessSettings = current($properties[DeliveryContainerService::ACCESS_SETTINGS_PROP ]);
+        $propAccessSettings = current($properties[DeliveryContainerService::PROPERTY_ACCESS_SETTINGS ]);
         $accessSetting = (!(is_object($propAccessSettings)) or ($propAccessSettings=="")) ? null : $propAccessSettings->getUri();
     
         if( !is_null($accessSetting) ){
@@ -259,7 +259,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     protected function verifyToken(core_kernel_classes_Resource $delivery, User $user)
     {
-        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::MAX_EXEC_PROP));
+        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_MAX_EXEC));
         $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
         
         //check Tokens
@@ -279,16 +279,16 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     protected function verifyTime(core_kernel_classes_Resource $delivery)
     {
         $deliveryProps = $delivery->getPropertiesValues(array(
-            DeliveryContainerService::START_PROP,
-            DeliveryContainerService::END_PROP,
+            DeliveryContainerService::PROPERTY_START,
+            DeliveryContainerService::PROPERTY_END,
         ));
         
-        $startExec = empty($deliveryProps[DeliveryContainerService::START_PROP])
+        $startExec = empty($deliveryProps[DeliveryContainerService::PROPERTY_START])
             ? null
-            : (string)current($deliveryProps[DeliveryContainerService::START_PROP]);
-        $stopExec = empty($deliveryProps[DeliveryContainerService::END_PROP])
+            : (string)current($deliveryProps[DeliveryContainerService::PROPERTY_START]);
+        $stopExec = empty($deliveryProps[DeliveryContainerService::PROPERTY_END])
             ? null
-            : (string)current($deliveryProps[DeliveryContainerService::END_PROP]);
+            : (string)current($deliveryProps[DeliveryContainerService::PROPERTY_END]);
         
         $startDate  =    date_create('@'.$startExec);
         $endDate    =    date_create('@'.$stopExec);
