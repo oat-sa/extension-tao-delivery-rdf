@@ -22,17 +22,20 @@ namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManagerAwareTrait;
+use oat\oatbox\task\Queue;
+use oat\oatbox\task\Task;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\execution\ServiceProxy;
-use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
+use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use common_report_Report as Report;
 
 /**
  * Controller to managed assembled deliveries
@@ -85,7 +88,27 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     {
         $class = $this->getCurrentClass();
         $delivery = $this->getCurrentInstance();
-        
+        $queueService = $this->getServiceManager()->get(Queue::SERVICE_ID);
+        if ($taskResource = $queueService->getTaskResource($delivery) ) {
+            /** @var Task $task */
+            $task = $queueService->getTask($taskResource->getUri());
+            if ($task
+                && ($task->getStatus() == Task::STATUS_CREATED
+                || $task->getStatus() == Task::STATUS_RUNNING
+                || $task->getStatus() == Task::STATUS_STARTED)
+            ) {
+                $report = Report::createInfo(__('Compilation of delivery is in progress.'));
+                $this->returnReport($report);
+                return;
+            } else if ($task && $task->getStatus() == Task::STATUS_FINISHED) {
+                /** @var \common_report_Report $report */
+                $report = $queueService->getReportByLinkedResource($delivery);
+                if ($report->getType() == Report::TYPE_ERROR) {
+                    $this->returnReport($report);
+                    return;
+                }
+            }
+        }
         $formContainer = new DeliveryForm($class, $delivery);
         $myForm = $formContainer->getForm();
         
@@ -203,8 +226,18 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                 $label = __("Delivery of %s", $test->getLabel());
                 $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
-                $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-                $report = $deliveryFactory->create($deliveryClass, $test, $label);
+                $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
+                $deliveryResource->setLabel($label);
+                $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
+                if ($task->getStatus() === Task::STATUS_FINISHED) {
+                    /** @var Report $report */
+                    $report = $task->getReport();
+                    if (!$report->getData()) {
+                        $report = empty($report->getSuccesses()) ? null : current($report->getSuccesses());
+                    }
+                } else {
+                    $report = Report::createInfo(__('Creating of delivery is successfully scheduled'));
+                }
                 $this->returnReport($report);
             } else {
                 $this->setData('myForm', $myForm->render());
