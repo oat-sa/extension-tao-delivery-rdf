@@ -29,13 +29,13 @@ use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\execution\ServiceProxy;
-use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use common_report_Report as Report;
 
 /**
  * Controller to managed assembled deliveries
@@ -92,9 +92,21 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         if ($taskResource = $queueService->getTaskResource($delivery) ) {
             /** @var Task $task */
             $task = $queueService->getTask($taskResource->getUri());
-            if ($task && $task->getStatus() != Task::STATUS_FINISHED) {
-                $this->returnReport($queueService->getReportByLinkedResource($delivery));
+            if ($task
+                && ($task->getStatus() == Task::STATUS_CREATED
+                || $task->getStatus() == Task::STATUS_RUNNING
+                || $task->getStatus() == Task::STATUS_STARTED)
+            ) {
+                $report = Report::createInfo(__('Task for creating delivery in progress.'));
+                $this->returnReport($report);
                 return;
+            } else if ($task && $task->getStatus() == Task::STATUS_FINISHED) {
+                /** @var \common_report_Report $report */
+                $report = $queueService->getReportByLinkedResource($delivery);
+                if ($report->getType() == Report::TYPE_ERROR) {
+                    $this->returnReport($report);
+                    return;
+                }
             }
         }
         $formContainer = new DeliveryForm($class, $delivery);
@@ -215,12 +227,16 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 $label = __("Delivery of %s", $test->getLabel());
                 $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
                 $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
-                $deliveryResource->setLabel($label . __(' - Deferred delivery placeholder'));
+                $deliveryResource->setLabel($label);
                 $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
                 if ($task->getStatus() === Task::STATUS_FINISHED) {
+                    /** @var Report $report */
                     $report = $task->getReport();
+                    if (!$report->getData()) {
+                        $report = empty($report->getSuccesses()) ? null : current($report->getSuccesses());
+                    }
                 } else {
-                    $report = \common_report_Report::createInfo(__('Creating of delivery is successfully scheduled'));
+                    $report = Report::createInfo(__('Creating of delivery is successfully scheduled'));
                 }
                 $this->returnReport($report);
             } else {
