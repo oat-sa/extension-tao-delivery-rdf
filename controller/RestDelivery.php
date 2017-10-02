@@ -95,7 +95,10 @@ class RestDelivery extends \tao_actions_RestController
             }
 
             $deliveryClass = $this->getDeliveryClassByParameters();
-            $task = CompileDelivery::createTask($test, $deliveryClass);
+            $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
+            $label = __("Delivery of %s", $test->getLabel());
+            $deliveryResource->setLabel($label);
+            $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
 
             $result = [
                 'reference_id' => $task->getId()

@@ -41,15 +41,18 @@ class DeliveryFactory extends ConfigurableService
 
     const OPTION_PROPERTIES = 'properties';
 
+    private $deliveryResource;
+
     /**
      * Creates a new simple delivery
      *
      * @param core_kernel_classes_Class $deliveryClass
      * @param core_kernel_classes_Resource $test
      * @param string $label
+     * @param core_kernel_classes_Resource $deliveryResource
      * @return \common_report_Report
      */
-    public function create(core_kernel_classes_Class $deliveryClass, core_kernel_classes_Resource $test, $label) {
+    public function create(core_kernel_classes_Class $deliveryClass, core_kernel_classes_Resource $test, $label = '', core_kernel_classes_Resource $deliveryResource = null) {
 
         \common_Logger::i('Creating '.$label.' with '.$test->getLabel().' under '.$deliveryClass->getLabel());
 
@@ -65,6 +68,12 @@ class DeliveryFactory extends ConfigurableService
                 return $report;
             }
         }
+
+        if (!$deliveryResource instanceof core_kernel_classes_Resource) {
+            $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass, $label);
+        }
+
+        $this->deliveryResource = $deliveryResource;
 
         $storage = new TrackedStorage();
 
@@ -105,7 +114,7 @@ class DeliveryFactory extends ConfigurableService
      * @param string $containerParam
      * @param array $properties
      */
-    public function createDeliveryResource(core_kernel_classes_Class $deliveryClass, \tao_models_classes_service_ServiceCall $serviceCall,
+    protected function createDeliveryResource(core_kernel_classes_Class $deliveryClass, \tao_models_classes_service_ServiceCall $serviceCall,
         $container, $properties = array()) {
 
         $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_TIME]      = time();
@@ -117,7 +126,13 @@ class DeliveryFactory extends ConfigurableService
             $properties[ContainerRuntime::PROPERTY_CONTAINER] = json_encode($container);
         }
 
-        $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
+        if ($this->deliveryResource instanceof core_kernel_classes_Resource) {
+            $compilationInstance = $this->deliveryResource;
+            $compilationInstance->setPropertiesValues($properties);
+        } else {
+            $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
+        }
+
         $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
         $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
         return $compilationInstance;
