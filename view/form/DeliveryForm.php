@@ -93,9 +93,30 @@ class DeliveryForm
         $allThemes    = $themeService->getAllThemes();
         $options      = [];
         foreach ($allThemes as $currentThemeId => $currentTheme) {
-            $options[$currentThemeId] = $currentThemeId;
+            $label = $this->getThemeLabel($currentTheme);
+            $options[$currentThemeId] = $label ? $label : $currentThemeId;
         }
 
         $this->form->getElement($elementUri)->setOptions($options);
+    }
+
+
+    /**
+     * Get theme label, which might be an empty string
+     * @param $theme
+     *
+     * @return string
+     */
+    function getThemeLabel($theme) {
+        if(is_array($theme) && !empty($theme['class'])) {
+            $options = !empty($theme['options']) ? $theme['options'] : [];
+            $theme = new $theme['class']($options);
+        }
+
+        if(method_exists($theme, 'getLabel')) {
+            return $theme->getLabel();
+        }
+
+        return '';
     }
 }
