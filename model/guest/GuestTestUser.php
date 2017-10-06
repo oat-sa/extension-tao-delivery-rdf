@@ -19,6 +19,7 @@
  */
 namespace oat\taoDeliveryRdf\model\guest;
 
+use oat\generis\model\GenerisRdf;
 use oat\oatbox\user\User;
 /**
  * Virtual test-taker
@@ -46,7 +47,7 @@ class GuestTestUser implements User
     {
         return array(
             INSTANCE_ROLE_DELIVERY => INSTANCE_ROLE_DELIVERY,
-            INSTANCE_ROLE_ANONYMOUS => INSTANCE_ROLE_ANONYMOUS,
+            GenerisRdf::INSTANCE_ROLE_ANONYMOUS => GenerisRdf::INSTANCE_ROLE_ANONYMOUS,
             INSTANCE_ROLE_BASEUSER => INSTANCE_ROLE_BASEUSER
         );
     }

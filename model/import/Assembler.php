@@ -24,6 +24,8 @@ use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\file\FileIterator;
+use oat\generis\model\OntologyRdf;
+
 /**
  * Im- and export a compiled delivery 
  *
@@ -84,7 +86,7 @@ class Assembler
         
         $properties = array();
         if (file_exists($rdfPath)) {
-            $blacklist = array(RDF_TYPE);
+            $blacklist = array(OntologyRdf::RDF_TYPE);
             $rdfIterator = new FileIterator($rdfPath, 1);
             foreach ($rdfIterator as $triple) {
                 if (!in_array($triple->predicate, $blacklist)) {

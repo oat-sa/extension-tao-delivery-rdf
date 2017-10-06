@@ -19,6 +19,7 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
+use oat\generis\model\OntologyRdfs;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\tao\model\TaskQueueActionTrait;
@@ -276,8 +277,8 @@ class RestDelivery extends \tao_actions_RestController
             $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
             $queryBuilder = $search->query();
             $criteria = $queryBuilder->newQuery()
-                ->add(RDFS_LABEL)->equals($label)
-                ->add(RDFS_SUBCLASSOF)->in($classes)
+                ->add(OntologyRdfs::RDFS_LABEL)->equals($label)
+                ->add(OntologyRdfs::RDFS_SUBCLASSOF)->in($classes)
             ;
             $queryBuilder->setCriteria($criteria);
             $result = $search->getGateway()->search($queryBuilder);
