@@ -43,7 +43,6 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 {
 
     const PROPERTY_EXCLUDED_SUBJECTS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects';
-    const PROPERTY_RESULT_SERVER = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer';
     const PROPERTY_MAX_EXEC = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec';
     const PROPERTY_START = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart';
     const PROPERTY_END = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
