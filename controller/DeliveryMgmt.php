@@ -237,7 +237,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                     /** @var Report $report */
                     $report = $task->getReport();
                     if (!$report->getData()) {
-                        $report = empty($report->getSuccesses()) ? null : current($report->getSuccesses());
+                        $report = $report->getIterator()->current();
                     }
                 } else {
                     $report = Report::createInfo(__('Creating of delivery is successfully scheduled'));
