@@ -19,10 +19,16 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
+use oat\oatbox\event\EventManagerAwareTrait;
+use oat\oatbox\task\Queue;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
+use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\tao\model\TaskQueueActionTrait;
 use oat\oatbox\task\Task;
+use common_report_Report as Report;
+use oat\taoDeliveryRdf\view\form\DeliveryForm;
 
 class RestDelivery extends \tao_actions_RestController
 {
@@ -30,8 +36,11 @@ class RestDelivery extends \tao_actions_RestController
         getTask as traitGetTask;
         getTaskData as traitGetTaskData;
     }
+    use EventManagerAwareTrait;
 
     const REST_DELIVERY_TEST_ID        = 'test';
+    const REST_DELIVERY_ID             = 'delivery';
+    const REST_DELIVERY_PARAMS         = 'delivery-params';
     const REST_DELIVERY_CLASS_URI      = 'delivery-uri';
     const REST_DELIVERY_CLASS_LABEL    = 'delivery-label';
     const REST_DELIVERY_CLASS_PARENT   = 'delivery-parent';
@@ -64,6 +73,16 @@ class RestDelivery extends \tao_actions_RestController
             $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
             /** @var \common_report_Report $report */
             $report = $deliveryFactory->create($deliveryClass, $test, $label);
+
+            if ($this->hasRequestParameter(self::REST_DELIVERY_PARAMS)) {
+                $customParams = $this->getRequestParameter(self::REST_DELIVERY_PARAMS);
+                $customParams = json_decode(html_entity_decode($customParams), true);
+                /** @var \core_kernel_classes_Resource $delivery */
+                $delivery = $report->getData();
+                if ($delivery instanceof \core_kernel_classes_Resource) {
+                    $delivery->setPropertiesValues($customParams);
+                }
+            }
 
             if ($report->getType() == \common_report_Report::TYPE_ERROR) {
                 \common_Logger::i('Unable to generate delivery execution ' .
@@ -116,6 +135,86 @@ class RestDelivery extends \tao_actions_RestController
             $this->returnFailure($e);
         }
     }
+
+    /**
+     * Update delivery by id
+     */
+    public function update()
+    {
+        try {
+            if ($this->getRequestMethod() !== \Request::HTTP_POST) {
+                throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
+            }
+            if (!$this->hasRequestParameter(self::REST_DELIVERY_ID)) {
+                throw new \common_exception_MissingParameter(self::REST_DELIVERY_ID, $this->getRequestURI());
+            }
+            $delivery = new \core_kernel_classes_Resource($this->getRequestParameter(self::REST_DELIVERY_ID));
+
+            $queueService = $this->getServiceManager()->get(Queue::SERVICE_ID);
+            if ($taskResource = $queueService->getTaskResource($delivery)) {
+                /** @var Task $task */
+                $task = $queueService->getTask($taskResource->getUri());
+                if ($task
+                    && ($task->getStatus() == Task::STATUS_CREATED
+                        || $task->getStatus() == Task::STATUS_RUNNING
+                        || $task->getStatus() == Task::STATUS_STARTED)
+                ) {
+                    $report = Report::createInfo(__('Compilation of delivery is in progress.'));
+                    $this->returnReport($report);
+                    return;
+                } else if ($task && $task->getStatus() == Task::STATUS_FINISHED) {
+                    /** @var \common_report_Report $report */
+                    $report = $queueService->getReportByLinkedResource($delivery);
+                    if ($report->getType() == Report::TYPE_ERROR) {
+                        $this->returnReport($report);
+                        return;
+                    }
+                }
+            }
+            if ($this->hasRequestParameter(self::REST_DELIVERY_PARAMS)) {
+                $propertyValues = $this->getRequestParameter(self::REST_DELIVERY_PARAMS);
+                $propertyValues = json_decode(html_entity_decode($propertyValues), true);
+                foreach ($propertyValues as $rdfKey => $rdfValue) {
+                    $property = $this->getProperty($rdfKey);
+                    $delivery->editPropertyValues($property, $rdfValue);
+                }
+            }
+            $this->returnSuccess(array('delivery' => $delivery->getUri()));
+        }catch (\Exception $e) {
+                $this->returnFailure($e);
+            }
+    }
+
+    /**
+     * Action to find delivery by parameters
+     */
+    public function search()
+    {
+        try {
+            if ($this->getRequestMethod() !== \Request::HTTP_GET) {
+                throw new \common_exception_NotImplemented('Only get method is accepted to searching delivery');
+            }
+            $params = $this->getRequestParameters();
+            $where = [];
+            if ($params) {
+                foreach ($params as $key => $value) {
+                    $rdfKey = \tao_helpers_Uri::decode($key);
+                    $value = \tao_helpers_Uri::decode($value);
+                    $where[$rdfKey] = $value;
+                }
+            }
+            $deliveryModelClass = $this->getDeliveryRootClass();
+            $delivery = current($deliveryModelClass->searchInstances($where));
+            if (!$delivery instanceof \core_kernel_classes_Resource) {
+                throw new \common_exception_NotFound('Unable to find a delivery');
+            }
+            $this->returnSuccess(array('delivery' => $delivery->getUri()));
+
+        }catch (\Exception $e) {
+            $this->returnFailure($e);
+        }
+    }
+
 
     /**
      * Action to retrieve test compilation task status from queue
