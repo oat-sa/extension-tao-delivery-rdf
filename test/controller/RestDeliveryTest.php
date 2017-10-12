@@ -188,7 +188,7 @@ class RestDeliveryTest extends RestTestRunner
     {
         $label = 'fixture';
         $comment = 'commentFixture';
-        $deliveryParent = (new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY))->createSubClass();
+        $deliveryParent = (new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI))->createSubClass();
 
         $data = $this->curlCreateClass($label, $comment, $deliveryParent->getUri());
 
@@ -216,7 +216,7 @@ class RestDeliveryTest extends RestTestRunner
     {
         $label = 'fixture';
         $comment = 'commentFixture';
-        $deliveryParent1 = (new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY))->createSubClass();
+        $deliveryParent1 = (new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI))->createSubClass();
         $deliveryParent = $deliveryParent1->createSubClass();
 
         $data = $this->curlCreateClass($label, $comment, $deliveryParent->getUri());
