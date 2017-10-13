@@ -26,6 +26,7 @@ use oat\oatbox\service\ServiceManager;
 use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 
 /**
@@ -54,10 +55,10 @@ class CompileDelivery extends AbstractTaskAction implements \JsonSerializable
         if (isset($params['delivery'])) {
             $deliveryClass = new \core_kernel_classes_Class($params['delivery']);
             if (! $deliveryClass->exists()) {
-                $deliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+                $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
             }
         } else {
-            $deliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+            $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
         }
 
         $test = new \core_kernel_classes_Resource($params['test']);
