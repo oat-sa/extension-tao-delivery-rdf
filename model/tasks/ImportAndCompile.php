@@ -27,6 +27,7 @@ use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\import\ImportersService;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoTests\models\import\AbstractTestImporter;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 
@@ -70,7 +71,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         }
 
         $label = 'Delivery of ' . $test->getLabel();
-        $deliveryClass = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+        $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
         $compilationReport = $deliveryFactory->create($deliveryClass, $test, $label);
 

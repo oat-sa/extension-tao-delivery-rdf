@@ -86,7 +86,7 @@ class DeliveryFactory extends ConfigurableService
 
             $properties = array(
                 RDFS_LABEL => $label,
-                PROPERTY_COMPILEDDELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
+                DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
                 DeliveryAssemblyService::PROPERTY_ORIGIN => $test,
             );
 
@@ -117,10 +117,10 @@ class DeliveryFactory extends ConfigurableService
     protected function createDeliveryResource(core_kernel_classes_Class $deliveryClass, \tao_models_classes_service_ServiceCall $serviceCall,
         $container, $properties = array()) {
 
-        $properties[PROPERTY_COMPILEDDELIVERY_TIME]      = time();
-        $properties[PROPERTY_COMPILEDDELIVERY_RUNTIME]   = $serviceCall->toOntology();
-        if (!isset($properties[TAO_DELIVERY_RESULTSERVER_PROP])) {
-            $properties[TAO_DELIVERY_RESULTSERVER_PROP] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
+        $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_TIME]      = time();
+        $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME]   = $serviceCall->toOntology();
+        if (!isset($properties[DeliveryContainerService::PROPERTY_RESULT_SERVER])) {
+            $properties[DeliveryContainerService::PROPERTY_RESULT_SERVER] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
         }
         if (!is_null($container)) {
             $properties[ContainerRuntime::PROPERTY_CONTAINER] = json_encode($container);
