@@ -63,14 +63,14 @@ class AssignmentFactory
     protected function getDescription()
     {
         $deliveryProps = $this->delivery->getPropertiesValues(array(
-            new core_kernel_classes_Property(TAO_DELIVERY_MAXEXEC_PROP),
-            new core_kernel_classes_Property(TAO_DELIVERY_START_PROP),
-            new core_kernel_classes_Property(TAO_DELIVERY_END_PROP),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_MAX_EXEC),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_START),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_END),
         ));
         
-        $propMaxExec = current($deliveryProps[TAO_DELIVERY_MAXEXEC_PROP]);
-        $propStartExec = current($deliveryProps[TAO_DELIVERY_START_PROP]);
-        $propEndExec = current($deliveryProps[TAO_DELIVERY_END_PROP]);
+        $propMaxExec = current($deliveryProps[DeliveryContainerService::PROPERTY_MAX_EXEC]);
+        $propStartExec = current($deliveryProps[DeliveryContainerService::PROPERTY_START]);
+        $propEndExec = current($deliveryProps[DeliveryContainerService::PROPERTY_END]);
         
         $startTime = (!(is_object($propStartExec)) or ($propStartExec=="")) ? null : $propStartExec->literal;
         $endTime = (!(is_object($propEndExec)) or ($propEndExec=="")) ? null : $propEndExec->literal;
@@ -88,13 +88,13 @@ class AssignmentFactory
     
     public function getStartTime()
     {
-        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_START_PROP));
+        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_START));
         return is_null($prop) ? null : (string)$prop;
     }
     
     public function getDeliveryOrder()
     {
-        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DELIVERY_DISPLAY_ORDER_PROP));
+        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DISPLAY_ORDER_PROP));
         return is_null($prop) ? 0 : intval((string)$prop);
     }
     
