@@ -137,7 +137,7 @@ class RestDelivery extends \tao_actions_RestController
     }
 
     /**
-     * Update delivery by id
+     * Update delivery by parameters
      */
     public function update()
     {
@@ -145,74 +145,58 @@ class RestDelivery extends \tao_actions_RestController
             if ($this->getRequestMethod() !== \Request::HTTP_POST) {
                 throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
             }
-            if (!$this->hasRequestParameter(self::REST_DELIVERY_ID)) {
-                throw new \common_exception_MissingParameter(self::REST_DELIVERY_ID, $this->getRequestURI());
-            }
-            $delivery = new \core_kernel_classes_Resource($this->getRequestParameter(self::REST_DELIVERY_ID));
 
-            $queueService = $this->getServiceManager()->get(Queue::SERVICE_ID);
-            if ($taskResource = $queueService->getTaskResource($delivery)) {
-                /** @var Task $task */
-                $task = $queueService->getTask($taskResource->getUri());
-                if ($task
-                    && ($task->getStatus() == Task::STATUS_CREATED
-                        || $task->getStatus() == Task::STATUS_RUNNING
-                        || $task->getStatus() == Task::STATUS_STARTED)
-                ) {
-                    $report = Report::createInfo(__('Compilation of delivery is in progress.'));
-                    $this->returnReport($report);
-                    return;
-                } else if ($task && $task->getStatus() == Task::STATUS_FINISHED) {
-                    /** @var \common_report_Report $report */
-                    $report = $queueService->getReportByLinkedResource($delivery);
-                    if ($report->getType() == Report::TYPE_ERROR) {
-                        $this->returnReport($report);
-                        return;
-                    }
-                }
-            }
-            if ($this->hasRequestParameter(self::REST_DELIVERY_PARAMS)) {
-                $propertyValues = $this->getRequestParameter(self::REST_DELIVERY_PARAMS);
-                $propertyValues = json_decode(html_entity_decode($propertyValues), true);
-                foreach ($propertyValues as $rdfKey => $rdfValue) {
-                    $property = $this->getProperty($rdfKey);
-                    $delivery->editPropertyValues($property, $rdfValue);
-                }
-            }
-            $this->returnSuccess(array('delivery' => $delivery->getUri()));
-        }catch (\Exception $e) {
-                $this->returnFailure($e);
-            }
-    }
-
-    /**
-     * Action to find delivery by parameters
-     */
-    public function search()
-    {
-        try {
-            if ($this->getRequestMethod() !== \Request::HTTP_GET) {
-                throw new \common_exception_NotImplemented('Only get method is accepted to searching delivery');
-            }
-            $params = $this->getRequestParameters();
+            $searchParams = $_GET;
             $where = [];
-            if ($params) {
-                foreach ($params as $key => $value) {
+            if ($searchParams) {
+                foreach ($searchParams as $key => $value) {
                     $rdfKey = \tao_helpers_Uri::decode($key);
                     $value = \tao_helpers_Uri::decode($value);
                     $where[$rdfKey] = $value;
                 }
             }
             $deliveryModelClass = $this->getDeliveryRootClass();
-            $delivery = current($deliveryModelClass->searchInstances($where));
-            if (!$delivery instanceof \core_kernel_classes_Resource) {
-                throw new \common_exception_NotFound('Unable to find a delivery');
-            }
-            $this->returnSuccess(array('delivery' => $delivery->getUri()));
+            $deliveries = $deliveryModelClass->searchInstances($where);
 
+            $propertyValues = $_POST;
+            $response = [];
+
+            /** @var \core_kernel_classes_Resource $delivery */
+            foreach ($deliveries as $key => $delivery) {
+                $queueService = $this->getServiceManager()->get(Queue::SERVICE_ID);
+                if ($taskResource = $queueService->getTaskResource($delivery)) {
+                    /** @var Task $task */
+                    $task = $queueService->getTask($taskResource->getUri());
+                    if ($task
+                        && ($task->getStatus() == Task::STATUS_CREATED
+                            || $task->getStatus() == Task::STATUS_RUNNING
+                            || $task->getStatus() == Task::STATUS_STARTED)
+                    ) {
+                        $report = Report::createInfo(__('Compilation of delivery is in progress.'));
+                        $this->returnReport($report);
+                        break;
+                    } else if ($task && $task->getStatus() == Task::STATUS_FINISHED) {
+                        /** @var \common_report_Report $report */
+                        $report = $queueService->getReportByLinkedResource($delivery);
+                        if ($report->getType() == Report::TYPE_ERROR) {
+                            $this->returnReport($report);
+                            break;
+                        }
+                    }
+                }
+
+                foreach ($propertyValues as $rdfKey => $rdfValue) {
+                    $rdfKey = \tao_helpers_Uri::decode($rdfKey);
+                    $property = $this->getProperty($rdfKey);
+                    $delivery->editPropertyValues($property, $rdfValue);
+                }
+
+                $response[] = ['delivery' => $delivery->getUri()];
+            }
+            $this->returnSuccess($response);
         }catch (\Exception $e) {
-            $this->returnFailure($e);
-        }
+                $this->returnFailure($e);
+            }
     }
 
 
