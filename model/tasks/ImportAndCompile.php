@@ -47,6 +47,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
     const FILE_DIR = 'ImportAndCompileTask';
     const OPTION_FILE = 'file';
     const OPTION_IMPORTER = 'importer';
+    const OPTION_CUSTOM = 'custom';
 
     /**
      * @param $params
@@ -73,11 +74,17 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         $label = 'Delivery of ' . $test->getLabel();
         $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+
         $compilationReport = $deliveryFactory->create($deliveryClass, $test, $label);
 
         if ($compilationReport->getType() == \common_report_Report::TYPE_ERROR) {
             \common_Logger::i('Unable to generate delivery execution ' .
                 'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
+        }
+        $delivery = $compilationReport->getData();
+        $customParams = $params[self::OPTION_CUSTOM];
+        if (($delivery instanceof \core_kernel_classes_Resource) && $customParams) {
+            $delivery->setPropertiesValues($customParams);
         }
         $report->add($compilationReport);
         return $report;
@@ -126,9 +133,10 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
      * Create task in queue
      * @param $importerId test importer identifier
      * @param array $file uploaded file @see \tao_helpers_Http::getUploadedFile()
+     * @param array $customParams
      * @return Task created task id
      */
-    public static function createTask($importerId, $file)
+    public static function createTask($importerId, $file, $customParams = [])
     {
         $serviceManager = ServiceManager::getServiceManager();
         $action = new self();
@@ -139,7 +147,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
 
         $fileUri = $action->saveFile($file['tmp_name'], $file['name']);
         $queue = ServiceManager::getServiceManager()->get(Queue::SERVICE_ID);
-        return $queue->createTask($action, [self::OPTION_FILE => $fileUri, self::OPTION_IMPORTER => $importerId]);
+        return $queue->createTask($action, [self::OPTION_FILE => $fileUri, self::OPTION_IMPORTER => $importerId, self::OPTION_CUSTOM => $customParams]);
     }
 
 

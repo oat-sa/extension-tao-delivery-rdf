@@ -23,12 +23,10 @@ use oat\oatbox\event\EventManagerAwareTrait;
 use oat\oatbox\task\Queue;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
-use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\tao\model\TaskQueueActionTrait;
 use oat\oatbox\task\Task;
 use common_report_Report as Report;
-use oat\taoDeliveryRdf\view\form\DeliveryForm;
 
 class RestDelivery extends \tao_actions_RestController
 {
@@ -40,7 +38,6 @@ class RestDelivery extends \tao_actions_RestController
 
     const REST_DELIVERY_TEST_ID        = 'test';
     const REST_DELIVERY_ID             = 'delivery';
-    const REST_DELIVERY_PARAMS         = 'delivery-params';
     const REST_DELIVERY_CLASS_URI      = 'delivery-uri';
     const REST_DELIVERY_CLASS_LABEL    = 'delivery-label';
     const REST_DELIVERY_CLASS_PARENT   = 'delivery-parent';
@@ -73,16 +70,6 @@ class RestDelivery extends \tao_actions_RestController
             $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
             /** @var \common_report_Report $report */
             $report = $deliveryFactory->create($deliveryClass, $test, $label);
-
-            if ($this->hasRequestParameter(self::REST_DELIVERY_PARAMS)) {
-                $customParams = $this->getRequestParameter(self::REST_DELIVERY_PARAMS);
-                $customParams = json_decode(html_entity_decode($customParams), true);
-                /** @var \core_kernel_classes_Resource $delivery */
-                $delivery = $report->getData();
-                if ($delivery instanceof \core_kernel_classes_Resource) {
-                    $delivery->setPropertiesValues($customParams);
-                }
-            }
 
             if ($report->getType() == \common_report_Report::TYPE_ERROR) {
                 \common_Logger::i('Unable to generate delivery execution ' .

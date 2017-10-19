@@ -37,6 +37,7 @@ class RestTest extends \tao_actions_RestController
 
     const REST_IMPORTER_ID = 'importerId';
     const REST_FILE_NAME = 'testPackage';
+    const REST_DELIVERY_PARAMS = 'delivery-params';
 
     /**
      * Import test and compile it into delivery
@@ -54,13 +55,17 @@ class RestTest extends \tao_actions_RestController
         if (\tao_helpers_Http::hasUploadedFile(self::REST_FILE_NAME)) {
             $file = \tao_helpers_Http::getUploadedFile(self::REST_FILE_NAME);
             $importerId = $this->getRequestParameter(self::REST_IMPORTER_ID);
-
             try {
-                $task = ImportAndCompile::createTask($importerId, $file);
+                $customParams = [];
+                if ($this->hasRequestParameter(self::REST_DELIVERY_PARAMS)) {
+                    $customParams = $this->getRequestParameter(self::REST_DELIVERY_PARAMS);
+                    $customParams = json_decode(html_entity_decode($customParams), true);
+                }
+                $task = ImportAndCompile::createTask($importerId, $file, $customParams);
             } catch (\oat\tao\model\import\ImporterNotFound $e) {
                 $this->returnFailure(new \common_exception_NotFound($e->getMessage()));
             }
-            
+
             $result = ['reference_id' => $task->getId()];
             $report = $task->getReport();
             if (!empty($report)) { //already executed
