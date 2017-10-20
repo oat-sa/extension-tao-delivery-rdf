@@ -41,7 +41,10 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     /**
      * Interface part
      */
-    
+    const PROPERTY_GROUP_DELIVERY = 'http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries';
+
+    const DISPLAY_ATTEMPTS_OPTION = 'display_attempts';
+
     /**
      * (non-PHPdoc)
      * @see \oat\taoDelivery\model\AssignmentService::getAssignments()
@@ -63,19 +66,20 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     public function getAssignmentFactories(User $user)
     {
         $assignments = array();
-        
-        //$assignmentFactory = new AssignmentFactory();
+
+        $displayAttempts = ($this->hasOption(self::DISPLAY_ATTEMPTS_OPTION)) ? $this->getOption(self::DISPLAY_ATTEMPTS_OPTION) : true;
+
         if ($this->isDeliveryGuestUser($user)) {
             foreach ($this->getGuestAccessDeliveries() as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
-                $startable = $this->verifyTime($delivery);
-                $assignments[] = new AssignmentFactory($delivery, $user, $startable);
+                $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
+                $assignments[] = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
             }
         } else {
             foreach ($this->getDeliveryIdsByUser($user) as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
                 $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
-                $assignments[] = new AssignmentFactory($delivery, $user, $startable);
+                $assignments[] = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
             }
         }
         return $assignments;
