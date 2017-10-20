@@ -21,6 +21,7 @@
 
 namespace oat\taoDeliveryRdf\model\tasks;
 
+use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\task\Queue;
@@ -48,6 +49,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
     const OPTION_FILE = 'file';
     const OPTION_IMPORTER = 'importer';
     const OPTION_CUSTOM = 'custom';
+    const OPTION_DELIVERY_LABEL= 'delivery-class-label';
 
     /**
      * @param $params
@@ -72,15 +74,15 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         }
 
         $label = 'Delivery of ' . $test->getLabel();
-        $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+        $parent = $this->checkSubClasses($params[self::OPTION_DELIVERY_LABEL]);
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-
-        $compilationReport = $deliveryFactory->create($deliveryClass, $test, $label);
+        $compilationReport = $deliveryFactory->create($parent, $test, $label);
 
         if ($compilationReport->getType() == \common_report_Report::TYPE_ERROR) {
             \common_Logger::i('Unable to generate delivery execution ' .
                 'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
         }
+        /** @var \core_kernel_classes_Resource $delivery */
         $delivery = $compilationReport->getData();
         $customParams = $params[self::OPTION_CUSTOM];
         if (($delivery instanceof \core_kernel_classes_Resource) && $customParams) {
@@ -120,6 +122,42 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
     }
 
     /**
+     * @param string $classLabel
+     * @return \core_kernel_classes_Class
+     */
+    protected function checkSubClasses($classLabel = '')
+    {
+        $parent = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+        if ($classLabel) {
+            $deliveryClasses = $parent->getSubClasses(true);
+            $classes = [$parent->getUri()];
+            foreach ($deliveryClasses as $class) {
+                $classes[] = $class->getUri();
+            }
+
+            /** @var ComplexSearchService $search */
+            $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
+            $queryBuilder = $search->query();
+            $criteria = $queryBuilder->newQuery()
+                ->add(RDFS_LABEL)->equals($classLabel)
+                ->add(RDFS_SUBCLASSOF)->in($classes)
+            ;
+            $queryBuilder->setCriteria($criteria);
+            $result = $search->getGateway()->search($queryBuilder);
+
+            switch ($result->count()) {
+                case 0:
+                    $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+                    $parent = $deliveryClass->createSubClass($classLabel);
+                    break;
+                default:
+                    $parent = new \core_kernel_classes_Class($result->current()->getUri());
+                    break;
+            }
+        }
+        return $parent;
+    }
+    /**
      * @param string $id
      * @return AbstractTestImporter
      */
@@ -134,9 +172,10 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
      * @param $importerId test importer identifier
      * @param array $file uploaded file @see \tao_helpers_Http::getUploadedFile()
      * @param array $customParams
+     * @param string $deliveryClassLabel
      * @return Task created task id
      */
-    public static function createTask($importerId, $file, $customParams = [])
+    public static function createTask($importerId, $file, $customParams = [], $deliveryClassLabel = '')
     {
         $serviceManager = ServiceManager::getServiceManager();
         $action = new self();
@@ -147,7 +186,12 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
 
         $fileUri = $action->saveFile($file['tmp_name'], $file['name']);
         $queue = ServiceManager::getServiceManager()->get(Queue::SERVICE_ID);
-        return $queue->createTask($action, [self::OPTION_FILE => $fileUri, self::OPTION_IMPORTER => $importerId, self::OPTION_CUSTOM => $customParams]);
+        return $queue->createTask($action, [
+            self::OPTION_FILE => $fileUri,
+            self::OPTION_IMPORTER => $importerId,
+            self::OPTION_CUSTOM => $customParams,
+            self::OPTION_DELIVERY_LABEL => $deliveryClassLabel
+        ]);
     }
 
 

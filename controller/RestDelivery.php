@@ -27,6 +27,7 @@ use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\tao\model\TaskQueueActionTrait;
 use oat\oatbox\task\Task;
 use common_report_Report as Report;
+use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
 
 class RestDelivery extends \tao_actions_RestController
 {
@@ -143,7 +144,7 @@ class RestDelivery extends \tao_actions_RestController
                 }
             }
             $deliveryModelClass = $this->getDeliveryRootClass();
-            $deliveries = $deliveryModelClass->searchInstances($where);
+            $deliveries = $deliveryModelClass->searchInstances($where, ['like' => false, 'recursive' => true]);
 
             $propertyValues = $_POST;
             $response = [];
@@ -159,14 +160,11 @@ class RestDelivery extends \tao_actions_RestController
                             || $task->getStatus() == Task::STATUS_RUNNING
                             || $task->getStatus() == Task::STATUS_STARTED)
                     ) {
-                        $report = Report::createInfo(__('Compilation of delivery is in progress.'));
-                        $this->returnReport($report);
                         break;
                     } else if ($task && $task->getStatus() == Task::STATUS_FINISHED) {
                         /** @var \common_report_Report $report */
                         $report = $queueService->getReportByLinkedResource($delivery);
                         if ($report->getType() == Report::TYPE_ERROR) {
-                            $this->returnReport($report);
                             break;
                         }
                     }
@@ -184,6 +182,45 @@ class RestDelivery extends \tao_actions_RestController
         }catch (\Exception $e) {
                 $this->returnFailure($e);
             }
+    }
+
+    /**
+     * Update delivery by parameters
+     */
+    public function updateDeferred()
+    {
+        try {
+            if ($this->getRequestMethod() !== \Request::HTTP_POST) {
+                throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
+            }
+
+            $searchParams = $_GET;
+            $where = [];
+            if ($searchParams) {
+                foreach ($searchParams as $key => $value) {
+                    $rdfKey = \tao_helpers_Uri::decode($key);
+                    $value = \tao_helpers_Uri::decode($value);
+                    $where[$rdfKey] = $value;
+                }
+            }
+            $propertyValues = $_POST;
+            $task = UpdateDelivery::createTask($where, $propertyValues);
+
+            $result = [
+                'reference_id' => $task->getId()
+            ];
+            $report = $task->getReport();
+            if (!empty($report)) {
+                if ($report instanceof \common_report_Report) {
+                    //serialize report to array
+                    $report = json_decode($report);
+                }
+                $result['report'] = $report;
+            }
+            return $this->returnSuccess($result);
+        }catch (\Exception $e) {
+            $this->returnFailure($e);
+        }
     }
 
 
