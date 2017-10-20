@@ -37,12 +37,15 @@ class AssignmentFactory
     private $user;
     
     private $startable;
-    
-    public function __construct(\core_kernel_classes_Resource $delivery, User $user, $startable)
+
+    private $displayAttempts;
+
+    public function __construct(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true)
     {
         $this->delivery = $delivery;
         $this->user = $user;
         $this->startable = $startable;
+        $this->displayAttempts = $displayAttempts;
     }
     
     public function getDeliveryId()
@@ -111,9 +114,9 @@ class AssignmentFactory
         } elseif (!empty($endTime)) {
             $descriptions[] = __('Available until %s', tao_helpers_Date::displayeDate($endTime));
         }
-         
-        if ($maxExecs !== 0) {
-            if ($maxExecs === 1) {
+        
+        if ($maxExecs != 0 && $this->displayAttempts) {
+            if ($maxExecs == 1) {
                 $descriptions[] = __('Attempt %1$s of %2$s'
                     ,$countExecs
                     ,!empty($maxExecs)
