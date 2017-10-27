@@ -21,6 +21,7 @@
 
 namespace oat\taoDeliveryRdf\model\tasks;
 
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\task\Queue;
@@ -38,6 +39,7 @@ use \common_report_Report as Report;
  */
 class UpdateDelivery extends AbstractTaskAction implements \JsonSerializable
 {
+    use OntologyAwareTrait;
     const OPTION_WHERE = 'where';
     const OPTION_PARAMETERS = 'parameters';
 
