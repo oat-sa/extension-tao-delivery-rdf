@@ -57,26 +57,6 @@ class UpdateDelivery extends AbstractTaskAction implements \JsonSerializable
 
         /** @var \core_kernel_classes_Resource $delivery */
         foreach ($deliveries as $key => $delivery) {
-            $queueService = $this->getServiceManager()->get(Queue::SERVICE_ID);
-            if ($taskResource = $queueService->getTaskResource($delivery)) {
-                /** @var Task $task */
-                $task = $queueService->getTask($taskResource->getUri());
-                if ($task
-                    && ($task->getStatus() == Task::STATUS_CREATED
-                        || $task->getStatus() == Task::STATUS_RUNNING
-                        || $task->getStatus() == Task::STATUS_STARTED)
-                ) {
-                    $report = Report::createInfo(__('Compilation of delivery is in progress.'));
-                    break;
-                } else if ($task && $task->getStatus() == Task::STATUS_FINISHED) {
-                    /** @var \common_report_Report $report */
-                    $report = $queueService->getReportByLinkedResource($delivery);
-                    if ($report->getType() == Report::TYPE_ERROR) {
-                        break;
-                    }
-                }
-            }
-
             foreach ($propertyValues as $rdfKey => $rdfValue) {
                 $rdfKey = \tao_helpers_Uri::decode($rdfKey);
                 $property = $this->getProperty($rdfKey);

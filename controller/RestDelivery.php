@@ -38,6 +38,7 @@ class RestDelivery extends \tao_actions_RestController
     use EventManagerAwareTrait;
 
     const REST_DELIVERY_TEST_ID        = 'test';
+    const REST_DELIVERY_SEARCH_PARAMS  = 'searchParams';
     const REST_DELIVERY_ID             = 'delivery';
     const REST_DELIVERY_CLASS_URI      = 'delivery-uri';
     const REST_DELIVERY_CLASS_LABEL    = 'delivery-label';
@@ -134,48 +135,27 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
             }
 
-            $searchParams = $_GET;
-            $where = [];
-            if ($searchParams) {
-                foreach ($searchParams as $key => $value) {
-                    $rdfKey = \tao_helpers_Uri::decode($key);
-                    $value = \tao_helpers_Uri::decode($value);
-                    $where[$rdfKey] = $value;
-                }
+            if (! $this->hasRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)) {
+                throw new \common_exception_MissingParameter(self::REST_DELIVERY_SEARCH_PARAMS, $this->getRequestURI());
             }
+
+            $searchParams = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
+            $where = $this->preparingQueryForSearchDeliveries($searchParams);
+            $propertyValues = $this->getRequestParameters();
+            unset($propertyValues[self::REST_DELIVERY_SEARCH_PARAMS]);
+
             $deliveryModelClass = $this->getDeliveryRootClass();
             $deliveries = $deliveryModelClass->searchInstances($where, ['like' => false, 'recursive' => true]);
 
-            $propertyValues = $_POST;
             $response = [];
 
             /** @var \core_kernel_classes_Resource $delivery */
             foreach ($deliveries as $key => $delivery) {
-                $queueService = $this->getServiceManager()->get(Queue::SERVICE_ID);
-                if ($taskResource = $queueService->getTaskResource($delivery)) {
-                    /** @var Task $task */
-                    $task = $queueService->getTask($taskResource->getUri());
-                    if ($task
-                        && ($task->getStatus() == Task::STATUS_CREATED
-                            || $task->getStatus() == Task::STATUS_RUNNING
-                            || $task->getStatus() == Task::STATUS_STARTED)
-                    ) {
-                        break;
-                    } else if ($task && $task->getStatus() == Task::STATUS_FINISHED) {
-                        /** @var \common_report_Report $report */
-                        $report = $queueService->getReportByLinkedResource($delivery);
-                        if ($report->getType() == Report::TYPE_ERROR) {
-                            break;
-                        }
-                    }
-                }
-
                 foreach ($propertyValues as $rdfKey => $rdfValue) {
                     $rdfKey = \tao_helpers_Uri::decode($rdfKey);
                     $property = $this->getProperty($rdfKey);
                     $delivery->editPropertyValues($property, $rdfValue);
                 }
-
                 $response[] = ['delivery' => $delivery->getUri()];
             }
             $this->returnSuccess($response);
@@ -193,17 +173,14 @@ class RestDelivery extends \tao_actions_RestController
             if ($this->getRequestMethod() !== \Request::HTTP_POST) {
                 throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
             }
-
-            $searchParams = $_GET;
-            $where = [];
-            if ($searchParams) {
-                foreach ($searchParams as $key => $value) {
-                    $rdfKey = \tao_helpers_Uri::decode($key);
-                    $value = \tao_helpers_Uri::decode($value);
-                    $where[$rdfKey] = $value;
-                }
+            if (! $this->hasRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)) {
+                throw new \common_exception_MissingParameter(self::REST_DELIVERY_SEARCH_PARAMS, $this->getRequestURI());
             }
-            $propertyValues = $_POST;
+            $searchParams = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
+            $where = $this->preparingQueryForSearchDeliveries($searchParams);
+            $propertyValues = $this->getRequestParameters();
+            unset($propertyValues[self::REST_DELIVERY_SEARCH_PARAMS]);
+
             $task = UpdateDelivery::createTask($where, $propertyValues);
 
             $result = [
@@ -421,4 +398,17 @@ class RestDelivery extends \tao_actions_RestController
         return new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
     }
 
+    protected function preparingQueryForSearchDeliveries($searchParams = [])
+    {
+        $where = [];
+        if ($searchParams) {
+            foreach ($searchParams as $key => $value) {
+                $rdfKey = \tao_helpers_Uri::decode($key);
+                $value = \tao_helpers_Uri::decode($value);
+                $where[$rdfKey] = $value;
+            }
+        }
+
+        return $where;
+    }
 }
