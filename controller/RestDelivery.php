@@ -190,13 +190,16 @@ class RestDelivery extends \tao_actions_RestController
             $result = [
                 'reference_id' => $task->getId()
             ];
-            $report = $task->getReport();
+
+            /** @var TaskLogInterface $taskLog */
+            $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+            $report = $taskLog->getReport($task->getId());
             if (!empty($report)) {
                 if ($report instanceof \common_report_Report) {
                     //serialize report to array
                     $report = json_decode($report);
                 }
-                $result['report'] = $report;
+                $result['common_report_Report'] = $report;
             }
             return $this->returnSuccess($result);
         }catch (\Exception $e) {
