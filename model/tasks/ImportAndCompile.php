@@ -24,11 +24,11 @@ namespace oat\taoDeliveryRdf\model\tasks;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\service\ServiceManager;
-use oat\oatbox\task\Queue;
-use oat\oatbox\task\Task;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\import\ImportersService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoTaskQueue\model\QueueDispatcher;
+use oat\taoTaskQueue\model\Task\TaskInterface;
 use oat\taoTests\models\import\AbstractTestImporter;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 
@@ -42,7 +42,6 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
  */
 class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
 {
-
     use OntologyAwareTrait;
 
     const FILE_DIR = 'ImportAndCompileTask';
@@ -173,7 +172,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
      * @param array $file uploaded file @see \tao_helpers_Http::getUploadedFile()
      * @param array $customParams
      * @param string $deliveryClassLabel
-     * @return Task created task id
+     * @return TaskInterface
      */
     public static function createTask($importerId, $file, $customParams = [], $deliveryClassLabel = '')
     {
@@ -185,8 +184,10 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         $importersService->getImporter($importerId);
 
         $fileUri = $action->saveFile($file['tmp_name'], $file['name']);
-        $queue = ServiceManager::getServiceManager()->get(Queue::SERVICE_ID);
-        return $queue->createTask($action, [
+        /** @var QueueDispatcher $queueDispatcher */
+        $queueDispatcher = ServiceManager::getServiceManager()->get(QueueDispatcher::SERVICE_ID);
+
+        return $queueDispatcher->createTask($action, [
             self::OPTION_FILE => $fileUri,
             self::OPTION_IMPORTER => $importerId,
             self::OPTION_CUSTOM => $customParams,
