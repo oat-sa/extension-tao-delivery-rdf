@@ -25,7 +25,6 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
 use oat\taoTaskQueue\model\Entity\TaskLogEntity;
-use oat\taoTaskQueue\model\QueueDispatcher;
 use oat\taoTaskQueue\model\TaskLogActionTrait;
 use oat\taoTaskQueue\model\TaskLogInterface;
 
@@ -353,13 +352,17 @@ class RestDelivery extends \tao_actions_RestController
         return new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
     }
 
+    /**
+     * @param array $searchParams
+     * @return array
+     */
     protected function preparingQueryForSearchDeliveries($searchParams = [])
     {
         $where = [];
         if ($searchParams) {
             foreach ($searchParams as $key => $value) {
-                $rdfKey = \tao_helpers_Uri::decode($key);
-                $value = \tao_helpers_Uri::decode($value);
+                $rdfKey = urldecode($key);
+                $value = urldecode($value);
                 $where[$rdfKey] = $value;
             }
         }
