@@ -132,19 +132,23 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
     protected function checkSubClasses($classLabel = '')
     {
         $parent = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+        if (!$classLabel) {
+            return $parent;
+        }
         $deliveryClasses = $parent->getSubClasses(true);
-        $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
-        $parentClass = $deliveryClass->createSubClass($classLabel);
+        $class = null;
         if ($classLabel) {
-            foreach ($deliveryClasses as $class) {
-                if ($classLabel != $class->getLabel()) {
+            foreach ($deliveryClasses as $deliveryClass) {
+                if ($classLabel === $deliveryClass->getLabel()) {
+                    $class = $deliveryClass;
                     break;
-                } else {
-                    $parentClass = new \core_kernel_classes_Class($class->getUri());
                 }
             }
         }
-        return $parentClass;
+        if (!$class) {
+            $class = $parent->createSubClass($classLabel);
+        }
+        return $class;
     }
     /**
      * @param string $id
