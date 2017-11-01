@@ -60,35 +60,40 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         $this->checkParams($params);
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
         $file = $this->getFileReferenceSerializer()->unserializeFile($params[self::OPTION_FILE]);
+        try {
+            $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
 
-        $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
-        $report = $importer->import($file);
+            /** @var \common_report_Report $report */
+            $report = $importer->import($file);
 
-        if ($report->getType() === \common_report_Report::TYPE_SUCCESS) {
-            foreach ($report as $r) {
-                $test = $r->getData()->rdfsResource;
+            if ($report->getType() === \common_report_Report::TYPE_SUCCESS) {
+                foreach ($report as $r) {
+                    $test = $r->getData()->rdfsResource;
+                }
+            } else {
+                throw new \common_Exception($file->getBasename() . 'Unable to import test with message '. $report->getMessage());
             }
-        } else {
-            \common_Logger::i('Unable to import test.');
-        }
 
-        $label = 'Delivery of ' . $test->getLabel();
-        $parent = $this->checkSubClasses($params[self::OPTION_DELIVERY_LABEL]);
-        $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-        $compilationReport = $deliveryFactory->create($parent, $test, $label);
+            $label = 'Delivery of ' . $test->getLabel();
+            $parent = $this->checkSubClasses($params[self::OPTION_DELIVERY_LABEL]);
+            $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+            $compilationReport = $deliveryFactory->create($parent, $test, $label);
 
-        if ($compilationReport->getType() == \common_report_Report::TYPE_ERROR) {
-            \common_Logger::i('Unable to generate delivery execution ' .
-                'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
+            if ($compilationReport->getType() == \common_report_Report::TYPE_ERROR) {
+                \common_Logger::i('Unable to generate delivery execution ' .
+                    'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
+            }
+            /** @var \core_kernel_classes_Resource $delivery */
+            $delivery = $compilationReport->getData();
+            $customParams = $params[self::OPTION_CUSTOM];
+            if (($delivery instanceof \core_kernel_classes_Resource) && $customParams) {
+                $delivery->setPropertiesValues($customParams);
+            }
+            $report->add($compilationReport);
+            return $report;
+        } catch (\Exception $e) {
+            return \common_report_Report::createFailure($e->getMessage());
         }
-        /** @var \core_kernel_classes_Resource $delivery */
-        $delivery = $compilationReport->getData();
-        $customParams = $params[self::OPTION_CUSTOM];
-        if (($delivery instanceof \core_kernel_classes_Resource) && $customParams) {
-            $delivery->setPropertiesValues($customParams);
-        }
-        $report->add($compilationReport);
-        return $report;
     }
 
     /**
@@ -127,34 +132,19 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
     protected function checkSubClasses($classLabel = '')
     {
         $parent = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+        $deliveryClasses = $parent->getSubClasses(true);
+        $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+        $parentClass = $deliveryClass->createSubClass($classLabel);
         if ($classLabel) {
-            $deliveryClasses = $parent->getSubClasses(true);
-            $classes = [$parent->getUri()];
             foreach ($deliveryClasses as $class) {
-                $classes[] = $class->getUri();
-            }
-
-            /** @var ComplexSearchService $search */
-            $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
-            $queryBuilder = $search->query();
-            $criteria = $queryBuilder->newQuery()
-                ->add(RDFS_LABEL)->equals($classLabel)
-                ->add(RDFS_SUBCLASSOF)->in($classes)
-            ;
-            $queryBuilder->setCriteria($criteria);
-            $result = $search->getGateway()->search($queryBuilder);
-
-            switch ($result->count()) {
-                case 0:
-                    $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
-                    $parent = $deliveryClass->createSubClass($classLabel);
+                if ($classLabel != $class->getLabel()) {
                     break;
-                default:
-                    $parent = new \core_kernel_classes_Class($result->current()->getUri());
-                    break;
+                } else {
+                    $parentClass = new \core_kernel_classes_Class($class->getUri());
+                }
             }
         }
-        return $parent;
+        return $parentClass;
     }
     /**
      * @param string $id

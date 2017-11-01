@@ -28,6 +28,7 @@ use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use \common_report_Report as Report;
+use oat\taoTaskQueue\model\QueueDispatcher;
 
 /**
  * Class UpdateDelivery
@@ -65,7 +66,7 @@ class UpdateDelivery extends AbstractTaskAction implements \JsonSerializable
                 $delivery->editPropertyValues($property, $rdfValue);
             }
 
-            $report->add($delivery->getUri());
+            $report->add(Report::createSuccess($delivery->getUri()));
         }
         return $report;
     }
@@ -86,14 +87,16 @@ class UpdateDelivery extends AbstractTaskAction implements \JsonSerializable
      */
     public static function createTask($where = [], $propertyValues = [])
     {
+        $serviceManager = ServiceManager::getServiceManager();
         $action = new self();
-        $queue = ServiceManager::getServiceManager()->get(Queue::SERVICE_ID);
+        $action->setServiceLocator($serviceManager);
 
         $parameters = [
             self::OPTION_WHERE => $where,
             self::OPTION_PARAMETERS => $propertyValues
         ];
-        $task = $queue->createTask($action, $parameters);
-        return $task;
+        /** @var QueueDispatcher $queueDispatcher */
+        $queueDispatcher = ServiceManager::getServiceManager()->get(QueueDispatcher::SERVICE_ID);
+        return $queueDispatcher->createTask($action, $parameters);
     }
 }
