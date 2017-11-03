@@ -22,6 +22,7 @@ use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManagerAwareTrait;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
+use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
 use oat\taoTaskQueue\model\Entity\TaskLogEntity;
@@ -75,6 +76,19 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_Exception('Unable to generate delivery execution.');
             }
             $delivery = $report->getData();
+
+            if ($this->hasRequestParameter(DeliveryPublishing::OPTION_PUBLISH_OPTIONS)) {
+                /** @var DeliveryPublishing $deliveryPublishing */
+                $deliveryPublishing = $this->getServiceManager()->get(DeliveryPublishing::SERVICE_ID);
+                /** @var array|string $publishOptions */
+                $publishOptions = $this->getRequestParameter(DeliveryPublishing::OPTION_PUBLISH_OPTIONS);
+                if ($publishOptions) {
+                    if (!is_array($publishOptions)) {
+                        $publishOptions = json_decode(html_entity_decode($publishOptions), true);
+                    }
+                    $delivery = $deliveryPublishing->setPublishOptions($publishOptions, $delivery);
+                }
+            }
             $this->returnSuccess(array('delivery' => $delivery->getUri()));
         } catch (\Exception $e) {
             $this->returnFailure($e);
@@ -101,6 +115,19 @@ class RestDelivery extends \tao_actions_RestController
             $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
             $label = __("Delivery of %s", $test->getLabel());
             $deliveryResource->setLabel($label);
+
+            if ($this->hasRequestParameter(DeliveryPublishing::OPTION_PUBLISH_OPTIONS)) {
+                /** @var DeliveryPublishing $deliveryPublishing */
+                $deliveryPublishing = $this->getServiceManager()->get(DeliveryPublishing::SERVICE_ID);
+                /** @var array|string $publishOptions */
+                $publishOptions = $this->getRequestParameter(DeliveryPublishing::OPTION_PUBLISH_OPTIONS);
+                if ($publishOptions) {
+                    if (!is_array($publishOptions)) {
+                        $publishOptions = json_decode(html_entity_decode($publishOptions), true);
+                    }
+                    $deliveryResource = $deliveryPublishing->setPublishOptions($publishOptions, $deliveryResource);
+                }
+            }
 
             $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
 
