@@ -40,6 +40,11 @@ class DeliveryPublishing extends ConfigurableService
     const OPTION_PUBLISH_OPTIONS_ELEMENTS = 'elements';
     const OPTION_PUBLISH_OPTIONS_DESCRIPTION = 'description';
 
+    public function checkRequestParameters(\Request $request, core_kernel_classes_Resource $delivery)
+    {
+        return $delivery;
+    }
+
     public function setPublishOptions(array $publishOptions, core_kernel_classes_Resource $deliveryResource)
     {
         if ($publishOptions) {

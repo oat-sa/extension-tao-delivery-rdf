@@ -77,18 +77,10 @@ class RestDelivery extends \tao_actions_RestController
             }
             $delivery = $report->getData();
 
-            if ($this->hasRequestParameter(DeliveryPublishing::OPTION_PUBLISH_OPTIONS)) {
-                /** @var DeliveryPublishing $deliveryPublishing */
-                $deliveryPublishing = $this->getServiceManager()->get(DeliveryPublishing::SERVICE_ID);
-                /** @var array|string $publishOptions */
-                $publishOptions = $this->getRequestParameter(DeliveryPublishing::OPTION_PUBLISH_OPTIONS);
-                if ($publishOptions) {
-                    if (!is_array($publishOptions)) {
-                        $publishOptions = json_decode(html_entity_decode($publishOptions), true);
-                    }
-                    $delivery = $deliveryPublishing->setPublishOptions($publishOptions, $delivery);
-                }
-            }
+            /** @var DeliveryPublishing $deliveryPublishing */
+            $deliveryPublishing = $this->getServiceManager()->get(DeliveryPublishing::SERVICE_ID);
+            $deliveryPublishing->checkRequestParameters($this->getRequest(), $delivery);
+
             $this->returnSuccess(array('delivery' => $delivery->getUri()));
         } catch (\Exception $e) {
             $this->returnFailure($e);
@@ -116,18 +108,9 @@ class RestDelivery extends \tao_actions_RestController
             $label = __("Delivery of %s", $test->getLabel());
             $deliveryResource->setLabel($label);
 
-            if ($this->hasRequestParameter(DeliveryPublishing::OPTION_PUBLISH_OPTIONS)) {
-                /** @var DeliveryPublishing $deliveryPublishing */
-                $deliveryPublishing = $this->getServiceManager()->get(DeliveryPublishing::SERVICE_ID);
-                /** @var array|string $publishOptions */
-                $publishOptions = $this->getRequestParameter(DeliveryPublishing::OPTION_PUBLISH_OPTIONS);
-                if ($publishOptions) {
-                    if (!is_array($publishOptions)) {
-                        $publishOptions = json_decode(html_entity_decode($publishOptions), true);
-                    }
-                    $deliveryResource = $deliveryPublishing->setPublishOptions($publishOptions, $deliveryResource);
-                }
-            }
+            /** @var DeliveryPublishing $deliveryPublishing */
+            $deliveryPublishing = $this->getServiceManager()->get(DeliveryPublishing::SERVICE_ID);
+            $deliveryPublishing->checkRequestParameters($this->getRequest(), $deliveryResource);
 
             $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
 
@@ -169,8 +152,7 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_SEARCH_PARAMS, $this->getRequestURI());
             }
 
-            $searchParams = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
-            $where = $this->preparingQueryForSearchDeliveries($searchParams);
+            $where = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
             $propertyValues = $this->getRequestParameters();
             unset($propertyValues[self::REST_DELIVERY_SEARCH_PARAMS]);
 
