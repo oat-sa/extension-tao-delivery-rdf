@@ -36,6 +36,13 @@
             "description": "If delivery-uri is specified, this parameter will be ignored. Delivery class label where to create test delivery otherwise root class will be used",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "remote-publish",
+            "in": "formData",
+            "description": "Publish delivery to remote env.",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -165,6 +172,13 @@
             "name": "delivery-label",
             "in": "formData",
             "description": "If delivery-uri is specified, this parameter will be ignored. Delivery class label where to create test delivery otherwise root class will be used",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "remote-publish",
+            "in": "formData",
+            "description": "Publish delivery to remote env.",
             "required": false,
             "type": "string"
           }
