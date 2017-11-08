@@ -163,7 +163,7 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('3.9.2', '3.16.0');
 
         if ($this->isVersion('3.16.0')) {
-            $this->getServiceManager()->register(RuntimeService::SERVICE_ID, new DeliveryPublishing([
+            $this->getServiceManager()->register(DeliveryPublishing::SERVICE_ID, new DeliveryPublishing([
                 DeliveryPublishing::OPTION_PUBLISH_OPTIONS => [
                     DeliveryPublishing::OPTION_PUBLISH_OPTIONS_ELEMENTS => [],
                     DeliveryPublishing::OPTION_PUBLISH_OPTIONS_DESCRIPTION => _('Publish options')
