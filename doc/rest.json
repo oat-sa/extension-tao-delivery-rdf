@@ -42,7 +42,7 @@
             "in": "formData",
             "description": "Publish delivery to remote env. Require taoPublishing extension.",
             "required": false,
-            "type": "string"
+            "type": "boolean"
           }
         ],
         "responses": {
@@ -180,7 +180,7 @@
             "in": "formData",
             "description": "Publish delivery to remote env. Require taoPublishing extension.",
             "required": false,
-            "type": "string"
+            "type": "boolean"
           }
         ],
         "responses": {
