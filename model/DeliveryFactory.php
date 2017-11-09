@@ -19,6 +19,7 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
@@ -36,10 +37,32 @@ use oat\taoDelivery\model\container\delivery\ContainerProvider;
  */
 class DeliveryFactory extends ConfigurableService
 {
+    use OntologyAwareTrait;
 
     const SERVICE_ID = 'taoDeliveryRdf/DeliveryFactory';
 
     const OPTION_PROPERTIES = 'properties';
+
+    /**
+     * 'initialProperties' => array(
+     *      'uri_of_property'
+     * )
+     */
+    const OPTION_INITIAL_PROPERTIES = 'initialProperties';
+
+    /**
+     * initialPropertiesMap' => array(
+     *      'name_of_rest_parameter' => array(
+     *          'uri' => 'uri_of_property',
+     *          'values' => array(
+     *              'true' => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ComplyEnabled'
+     *              )
+     *          )
+     *      )
+     */
+    const OPTION_INITIAL_PROPERTIES_MAP = 'initialPropertiesMap';
+    const OPTION_INITIAL_PROPERTIES_MAP_VALUES = 'values';
+    const OPTION_INITIAL_PROPERTIES_MAP_URI = 'uri';
 
     private $deliveryResource;
 
@@ -103,6 +126,46 @@ class DeliveryFactory extends ConfigurableService
         }
 
         return $report;
+    }
+
+    /**
+     * @param $values
+     * @param core_kernel_classes_Resource $delivery
+     * @return core_kernel_classes_Resource
+     */
+    public function setInitialProperties($values, core_kernel_classes_Resource $delivery)
+    {
+        $initialProperties = $this->getOption(self::OPTION_INITIAL_PROPERTIES);
+
+        foreach ($values as $uri => $value) {
+            if (in_array($uri, $initialProperties) && $value) {
+                $property = $this->getProperty($uri);
+                $value = is_array($value) ? current($value) : $value;
+                $delivery->setPropertyValue($property, $value);
+            }
+        }
+        return $delivery;
+    }
+
+    /**
+     * @param \Request $request
+     * @return array
+     */
+    public function getInitialPropertiesFromRequest(\Request $request)
+    {
+        $initialPropertiesMap = $this->getOption(self::OPTION_INITIAL_PROPERTIES_MAP);
+        $requestParameters = $request->getParameters();
+        $initialProperties = [];
+        foreach ($requestParameters as $parameter => $value) {
+            if (isset($initialPropertiesMap[$parameter]) && $value) {
+                $config = $initialPropertiesMap[$parameter];
+                $values = $config[self::OPTION_INITIAL_PROPERTIES_MAP_VALUES];
+                if(isset($values[$value])) {
+                    $initialProperties[$config[self::OPTION_INITIAL_PROPERTIES_MAP_URI]] = $values[$value];
+                }
+            }
+        }
+        return $initialProperties;
     }
 
     /**

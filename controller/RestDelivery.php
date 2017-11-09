@@ -75,6 +75,11 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_Exception('Unable to generate delivery execution.');
             }
             $delivery = $report->getData();
+
+            /** @var DeliveryFactory $deliveryFactoryService */
+            $deliveryFactoryService = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+            $initialProperties = $deliveryFactoryService->getInitialPropertiesFromRequest($this->getRequest());
+            $delivery = $deliveryFactoryService->setInitialProperties($initialProperties, $delivery);
             $this->returnSuccess(array('delivery' => $delivery->getUri()));
         } catch (\Exception $e) {
             $this->returnFailure($e);
@@ -101,6 +106,11 @@ class RestDelivery extends \tao_actions_RestController
             $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
             $label = __("Delivery of %s", $test->getLabel());
             $deliveryResource->setLabel($label);
+
+            /** @var DeliveryFactory $deliveryFactoryService */
+            $deliveryFactoryService = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+            $initialProperties = $deliveryFactoryService->getInitialPropertiesFromRequest($this->getRequest());
+            $deliveryResource = $deliveryFactoryService->setInitialProperties($initialProperties, $deliveryResource);
 
             $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
 
@@ -142,8 +152,7 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_SEARCH_PARAMS, $this->getRequestURI());
             }
 
-            $searchParams = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
-            $where = $this->preparingQueryForSearchDeliveries($searchParams);
+            $where = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
             $propertyValues = $this->getRequestParameters();
             unset($propertyValues[self::REST_DELIVERY_SEARCH_PARAMS]);
 
