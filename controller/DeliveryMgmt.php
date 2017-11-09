@@ -29,7 +29,6 @@ use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
-use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
@@ -234,13 +233,11 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
                 $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
                 $deliveryResource->setLabel($label);
-                /** @var array $publishOptions */
-                $publishOptions = $myForm->getValue(DeliveryPublishing::OPTION_PUBLISH_OPTIONS);
-                if ($publishOptions) {
-                    /** @var DeliveryPublishing $deliveryPublishing */
-                    $deliveryPublishing = $this->getServiceManager()->get(DeliveryPublishing::SERVICE_ID);
-                    $deliveryResource = $deliveryPublishing->setPublishOptions($publishOptions, $deliveryResource);
-                }
+                $values = $myForm->getValues();
+
+                /** @var DeliveryFactory $deliveryFactoryResources */
+                $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+                $deliveryResource = $deliveryFactoryResources->setInitialProperties($values, $deliveryResource);
 
                 $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
 

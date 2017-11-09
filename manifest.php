@@ -53,7 +53,6 @@ return array(
             'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
             'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
             RegisterDeliveryFactoryService::class,
-            RegisterDeliveryPublishingService::class,
             OverrideRuntime::class
         )
     ),

@@ -22,7 +22,6 @@ use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManagerAwareTrait;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
-use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
 use oat\taoTaskQueue\model\Entity\TaskLogEntity;
@@ -77,10 +76,10 @@ class RestDelivery extends \tao_actions_RestController
             }
             $delivery = $report->getData();
 
-            /** @var DeliveryPublishing $deliveryPublishing */
-            $deliveryPublishing = $this->getServiceManager()->get(DeliveryPublishing::SERVICE_ID);
-            $deliveryPublishing->checkRequestParameters($this->getRequest(), $delivery);
-
+            /** @var DeliveryFactory $deliveryFactoryService */
+            $deliveryFactoryService = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+            $initialProperties = $deliveryFactoryService->getInitialPropertiesFromRequest($this->getRequest());
+            $delivery = $deliveryFactoryService->setInitialProperties($initialProperties, $delivery);
             $this->returnSuccess(array('delivery' => $delivery->getUri()));
         } catch (\Exception $e) {
             $this->returnFailure($e);
@@ -108,9 +107,10 @@ class RestDelivery extends \tao_actions_RestController
             $label = __("Delivery of %s", $test->getLabel());
             $deliveryResource->setLabel($label);
 
-            /** @var DeliveryPublishing $deliveryPublishing */
-            $deliveryPublishing = $this->getServiceManager()->get(DeliveryPublishing::SERVICE_ID);
-            $deliveryPublishing->checkRequestParameters($this->getRequest(), $deliveryResource);
+            /** @var DeliveryFactory $deliveryFactoryService */
+            $deliveryFactoryService = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+            $initialProperties = $deliveryFactoryService->getInitialPropertiesFromRequest($this->getRequest());
+            $deliveryResource = $deliveryFactoryService->setInitialProperties($initialProperties, $deliveryResource);
 
             $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
 

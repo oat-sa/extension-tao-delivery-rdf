@@ -22,6 +22,8 @@ namespace oat\taoDeliveryRdf\view\form;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\helpers\form\WidgetRegistry;
+use oat\tao\model\WidgetDefinitions;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\NoTestsException;
@@ -93,22 +95,17 @@ class WizardForm extends \tao_helpers_form_FormContainer
         $this->initCustomElements();
     }
 
-    /**
-     *
-     */
+
     public function initCustomElements()
     {
-        $deliveryPublishingService = $this->getServiceManager()->get(DeliveryPublishing::SERVICE_ID);
-        if ($deliveryPublishingService->hasOption(DeliveryPublishing::OPTION_PUBLISH_OPTIONS)) {
-            $customProperties = $deliveryPublishingService->getOption(DeliveryPublishing::OPTION_PUBLISH_OPTIONS);
-            $element =  \tao_helpers_form_FormFactory::getElement(DeliveryPublishing::OPTION_PUBLISH_OPTIONS, 'Checkbox');
-            $element->setDescription($customProperties[DeliveryPublishing::OPTION_PUBLISH_OPTIONS_DESCRIPTION]);
-            $options = [];
-            foreach ($customProperties[DeliveryPublishing::OPTION_PUBLISH_OPTIONS_ELEMENTS] as $name => $customProperty) {
-                $options[$name] = $customProperty['description'];
+        $deliveryPublishingService = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+        if ($deliveryPublishingService->hasOption(DeliveryFactory::OPTION_INITIAL_PROPERTIES)) {
+            $initialProperties  = $deliveryPublishingService->getOption(DeliveryFactory::OPTION_INITIAL_PROPERTIES);
+            foreach ($initialProperties as $uri) {
+                $property = new \core_kernel_classes_Property($uri);
+                $element = \tao_helpers_form_GenerisFormFactory::elementMap($property);
+                $this->form->addElement($element);
             }
-            $element->setOptions($options);
-            $this->form->addElement($element);
         }
 
     }
