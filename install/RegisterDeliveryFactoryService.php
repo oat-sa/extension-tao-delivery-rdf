@@ -39,7 +39,9 @@ class RegisterDeliveryFactoryService extends InstallAction
         $serviceManager = $this->getServiceManager();
 
         $deliveryFactoryService = new DeliveryFactory([
-            DeliveryFactory::OPTION_PROPERTIES => []
+            DeliveryFactory::OPTION_PROPERTIES => [],
+            DeliveryFactory::OPTION_INITIAL_PROPERTIES => [],
+            DeliveryFactory::OPTION_INITIAL_PROPERTIES_MAP => []
         ]);
         $serviceManager->propagate($deliveryFactoryService);
         $serviceManager->register(DeliveryFactory::SERVICE_ID, $deliveryFactoryService);

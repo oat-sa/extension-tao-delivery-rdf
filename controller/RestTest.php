@@ -33,6 +33,8 @@ class RestTest extends \tao_actions_RestController
 {
     const REST_IMPORTER_ID = 'importerId';
     const REST_FILE_NAME = 'testPackage';
+    const REST_DELIVERY_PARAMS = 'delivery-params';
+    const REST_DELIVERY_CLASS_LABEL = 'delivery-class-label';
 
     /**
      * Import test and compile it into delivery
@@ -50,9 +52,17 @@ class RestTest extends \tao_actions_RestController
         if (\tao_helpers_Http::hasUploadedFile(self::REST_FILE_NAME)) {
             $file = \tao_helpers_Http::getUploadedFile(self::REST_FILE_NAME);
             $importerId = $this->getRequestParameter(self::REST_IMPORTER_ID);
-
             try {
-                $task = ImportAndCompile::createTask($importerId, $file);
+                $customParams = [];
+                if ($this->hasRequestParameter(self::REST_DELIVERY_PARAMS)) {
+                    $customParams = $this->getRequestParameter(self::REST_DELIVERY_PARAMS);
+                    $customParams = json_decode(html_entity_decode($customParams), true);
+                }
+                $deliveryClassLabel = '';
+                if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_LABEL)) {
+                    $deliveryClassLabel = $this->getRequestParameter(self::REST_DELIVERY_CLASS_LABEL);
+                }
+                $task = ImportAndCompile::createTask($importerId, $file, $customParams, $deliveryClassLabel);
             } catch (ImporterNotFound $e) {
                 $this->returnFailure(new \common_exception_NotFound($e->getMessage()));
             }
