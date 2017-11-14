@@ -36,6 +36,13 @@
             "description": "If delivery-uri is specified, this parameter will be ignored. Delivery class label where to create test delivery otherwise root class will be used",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "remote-publish",
+            "in": "formData",
+            "description": "Publish delivery to remote env. Require taoPublishing extension.",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "responses": {
@@ -167,6 +174,13 @@
             "description": "If delivery-uri is specified, this parameter will be ignored. Delivery class label where to create test delivery otherwise root class will be used",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "remote-publish",
+            "in": "formData",
+            "description": "Publish delivery to remote env. Require taoPublishing extension.",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "responses": {
@@ -279,22 +293,23 @@
     },
     "/taoDeliveryRdf/RestDelivery/update": {
       "post": {
-        "description": "Update a delivery from a valid delivery uri",
+        "description": "Update parameters of all the deliveries found by criteria given from url query",
         "tags": [
           "delivery"
         ],
         "parameters": [
           {
-            "name": "delivery",
-            "in": "formData",
-            "description": "Delivery identifier, in URI format",
+            "name": "searchParams",
+            "in": "query",
+            "description": "A valid json with search params for finding deliveries",
             "required": true,
             "type": "string"
-          },{
-            "name": "delivery-params",
+          },
+          {
+            "name": "http_2_www_0_w3_0_org_1_2000_1_01_1_rdf-schema_3_label",
             "in": "formData",
-            "description": "Delivery params for updating in json format",
-            "required": false,
+            "description": "Delivery label, or any other parameter for updating",
+            "required": true,
             "type": "string"
           }
         ],
@@ -348,7 +363,7 @@
             }
           },
           "400": {
-            "description": "Bad request if you send invalid parameters. Delivery uri is mandatory.",
+            "description": "Bad request if you send invalid parameters.",
             "examples": {
               "application/json": {
                 "success": false,
@@ -376,7 +391,7 @@
             }
           },
           "404": {
-            "description": "Delivery uri is provided but not found.",
+            "description": "Delivery not found.",
             "examples": {
               "application/json": {
                 "success": false,
@@ -406,17 +421,24 @@
         }
       }
     },
-    "/taoDeliveryRdf/RestDelivery/search": {
-      "get": {
-        "description": "Search delivery by parameters.",
+    "/taoDeliveryRdf/RestDelivery/updateDeferred": {
+      "post": {
+        "description": "Update parameters of all the deliveries found by criteria given from url query using task queue",
         "tags": [
           "delivery"
         ],
         "parameters": [
           {
-            "name": "query",
+            "name": "searchParams",
             "in": "query",
-            "description": "Query for search delivery.",
+            "description": "A valid json with search params for finding deliveries",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "http_2_www_0_w3_0_org_1_2000_1_01_1_rdf-schema_3_label",
+            "in": "formData",
+            "description": "Delivery label, or any other parameter for updating",
             "required": true,
             "type": "string"
           }
@@ -442,7 +464,13 @@
                   "description": "tao version"
                 },
                 "data": {
-                  "$ref": "#/definitions/data"
+                  "type": "object",
+                  "properties": {
+                    "reference_id" : {
+                      "type": "string",
+                      "description": "Identifier of the task in the task queue"
+                    }
+                  }
                 },
                 "errorCode": {
                   "type": "string",
@@ -458,16 +486,14 @@
               "application/json": {
                 "success": true,
                 "data": {
-                  "delivery": [
-                    "http://tao.local/mytao.rdf#xxxxxxxxxxxxx1"
-                  ]
+                  "reference_id": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx"
                 },
                 "version": "3.1.0"
               }
             }
           },
           "400": {
-            "description": "Bad request if you send invalid parameters",
+            "description": "Bad request if you send invalid parameters.",
             "examples": {
               "application/json": {
                 "success": false,
@@ -495,12 +521,12 @@
             }
           },
           "404": {
-            "description": "Unable to find a delivery.",
+            "description": "Delivery not found.",
             "examples": {
               "application/json": {
                 "success": false,
                 "errorCode": 0,
-                "errorMsg": "Unable to find a delivery.",
+                "errorMsg": "Unable to find a test associated to the given uri.",
                 "version": "3.1.0"
               }
             },
@@ -509,7 +535,7 @@
             }
           },
           "500": {
-            "description": "Internal error (should not occur)",
+            "description": "Internal error.",
             "examples": {
               "application/json": {
                 "success": false,

@@ -19,6 +19,7 @@
  *
  */
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\install\RegisterDeliveryPublishingService;
 use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
 
 return array(
@@ -26,7 +27,7 @@ return array(
   'label'       => 'Delivery Management',
   'description' => 'Manages deliveries using the ontology',
   'license'     => 'GPL-2.0',
-  'version'     => '3.15.1',
+  'version'     => '3.17.1',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
         'generis'     => '>=3.36.0',

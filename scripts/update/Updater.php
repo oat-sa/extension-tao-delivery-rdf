@@ -24,6 +24,8 @@ use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\model\DeliveryFactory;
+use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
@@ -159,6 +161,18 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('3.9.2');
         }
 
-        $this->skip('3.9.2', '3.15.1');
+        $this->skip('3.9.2', '3.16.0');
+
+        if ($this->isVersion('3.16.0')) {
+            $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+            $options = $deliveryFactory->getOptions();
+            $options[DeliveryFactory::OPTION_INITIAL_PROPERTIES] = [];
+            $options[DeliveryFactory::OPTION_INITIAL_PROPERTIES_MAP] = [];
+            $deliveryFactory->setOptions($options);
+            $this->getServiceManager()->register(DeliveryFactory::SERVICE_ID, $deliveryFactory);
+            $this->setVersion('3.17.0');
+        }
+        
+        $this->skip('3.17.0', '3.17.1');
     }
 }
