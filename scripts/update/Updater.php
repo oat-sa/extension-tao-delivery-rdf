@@ -172,7 +172,10 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->getServiceManager()->register(DeliveryFactory::SERVICE_ID, $deliveryFactory);
             $this->setVersion('3.17.0');
         }
-        
-        $this->skip('3.17.0', '3.17.1');
+
+        if ($this->isVersion('3.17.0')) {
+            OntologyUpdater::syncModels();
+            $this->setVersion('3.18.0');
+        }
     }
 }
