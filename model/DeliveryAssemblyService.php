@@ -138,7 +138,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     protected function deleteDeliveryRuntime(core_kernel_classes_Resource $assembly)
     {
         /** @var GroupAssignment $deliveryAssignement */
-        $deliveryAssignement = $this->getServiceManager()->get(GroupAssignment::CONFIG_ID);
+        $deliveryAssignement = $this->getServiceManager()->get(GroupAssignment::SERVICE_ID);
         $deliveryAssignement->onDelete($assembly);
         /** @var core_kernel_classes_Resource $runtimeResource */
         $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_RUNTIME));
@@ -188,9 +188,15 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     public function getCompilationDate( core_kernel_classes_Resource $assembly) {
         return (string)$assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_TIME));
     }
-    
+
+    /**
+     * @param core_kernel_classes_Resource $assembly
+     * @return core_kernel_classes_Resource
+     * @throws \common_Exception
+     * @throws \core_kernel_classes_EmptyProperty
+     */
     public function getOrigin( core_kernel_classes_Resource $assembly) {
-        return (string)$assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_ORIGIN));
+        return $assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_ORIGIN));
     }
 
 }
