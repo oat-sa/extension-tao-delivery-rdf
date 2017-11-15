@@ -182,9 +182,6 @@ class DeliveryFactory extends ConfigurableService
 
         $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_TIME]      = time();
         $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME]   = $serviceCall->toOntology();
-        if (!isset($properties[DeliveryContainerService::PROPERTY_RESULT_SERVER])) {
-            $properties[DeliveryContainerService::PROPERTY_RESULT_SERVER] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
-        }
         if (!is_null($container)) {
             $properties[ContainerRuntime::PROPERTY_CONTAINER] = json_encode($container);
         }
