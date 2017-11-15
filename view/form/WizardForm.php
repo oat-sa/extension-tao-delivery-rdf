@@ -22,6 +22,10 @@ namespace oat\taoDeliveryRdf\view\form;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\helpers\form\WidgetRegistry;
+use oat\tao\model\WidgetDefinitions;
+use oat\taoDeliveryRdf\model\DeliveryFactory;
+use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\NoTestsException;
 /**
  * Create a form from a  resource of your ontology. 
@@ -87,9 +91,25 @@ class WizardForm extends \tao_helpers_form_FormContainer
 
         $testElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty'));
         $this->form->addElement($testElt);
+
+        $this->initCustomElements();
     }
 
-    /**
+
+    public function initCustomElements()
+    {
+        $deliveryPublishingService = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+        if ($deliveryPublishingService->hasOption(DeliveryFactory::OPTION_INITIAL_PROPERTIES)) {
+            $initialProperties  = $deliveryPublishingService->getOption(DeliveryFactory::OPTION_INITIAL_PROPERTIES);
+            foreach ($initialProperties as $uri) {
+                $property = new \core_kernel_classes_Property($uri);
+                $element = \tao_helpers_form_GenerisFormFactory::elementMap($property);
+                $this->form->addElement($element);
+            }
+        }
+
+    }
+    /**r
      * @return ServiceManager
      */
     private function getServiceManager()

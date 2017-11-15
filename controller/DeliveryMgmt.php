@@ -25,12 +25,20 @@ use oat\oatbox\event\EventManagerAwareTrait;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
+use oat\taoDelivery\model\AssignmentService;
+use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
+use oat\taoDeliveryRdf\model\GroupAssignment;
+use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use common_report_Report as Report;
+use oat\taoTaskQueue\model\QueueDispatcher;
+use oat\taoTaskQueue\model\TaskLogInterface;
 
 /**
  * Controller to managed assembled deliveries
@@ -69,20 +77,44 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     /*
      * controller actions
      */
-    
+
     /**
      * Edit a delivery instance
      *
      * @access public
      * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
      * @return void
+     * @throws \common_exception_NoImplementation
+     * @throws \common_exception_Error
      */
     public function editDelivery()
     {
-        $clazz = $this->getCurrentClass();
+        $class = $this->getCurrentClass();
         $delivery = $this->getCurrentInstance();
-        
-        $formContainer = new DeliveryForm($clazz, $delivery);
+
+        /** @var QueueDispatcher $queueDispatcher */
+        $queueDispatcher = $this->getServiceManager()->get(QueueDispatcher::SERVICE_ID);
+
+        if ($taskResource = $queueDispatcher->getTaskResource($delivery) ) {
+            /** @var TaskLogInterface $taskLog */
+            $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+
+            $status = $taskLog->getStatus($taskResource->getUri());
+
+            if (in_array($status, [TaskLogInterface::STATUS_ENQUEUED, TaskLogInterface::STATUS_DEQUEUED, TaskLogInterface::STATUS_RUNNING])) {
+                $report = Report::createInfo(__('Compilation of delivery is in progress.'));
+                $this->returnReport($report);
+                return;
+            } else if (in_array($status, [TaskLogInterface::STATUS_COMPLETED, TaskLogInterface::STATUS_FAILED])) {
+                $report = $queueDispatcher->getReportByLinkedResource($delivery);
+
+                if ($report->getType() == Report::TYPE_ERROR) {
+                    $this->returnReport($report);
+                    return;
+                }
+            }
+        }
+        $formContainer = new DeliveryForm($class, $delivery);
         $myForm = $formContainer->getForm();
         
         if ($myForm->isSubmited()) {
@@ -105,13 +137,13 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         
         // history
         $this->setData('date', $this->getClassService()->getCompilationDate($delivery));
-        if (\taoDelivery_models_classes_execution_ServiceProxy::singleton()->implementsMonitoring()) {
-            $execs = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
+        if (ServiceProxy::singleton()->implementsMonitoring()) {
+            $execs = ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
             $this->setData('exec', count($execs));
         }
         
         // define the groups related to the current delivery
-        $property = new core_kernel_classes_Property(PROPERTY_GROUP_DELVIERY);
+        $property = new core_kernel_classes_Property(GroupAssignment::PROPERTY_GROUP_DELIVERY);
         $tree = \tao_helpers_form_GenerisTreeForm::buildReverseTree($delivery, $property);
         $tree->setTitle(__('Assigned to'));
         $tree->setTemplate(Template::getTemplate('widgets/assignGroup.tpl'));
@@ -121,14 +153,14 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $this->setData('assemblyUri', $delivery->getUri());
         
         // define the subjects excluded from the current delivery
-        $property = new core_kernel_classes_Property(TAO_DELIVERY_EXCLUDEDSUBJECTS_PROP);
+        $property = new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
         $excluded = $delivery->getPropertyValues($property);
         $this->setData('ttexcluded', count($excluded));
 
         $users = $this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($delivery->getUri());
         $assigned = array_diff(array_unique($users), $excluded);
         $this->setData('ttassigned', count($assigned));
-        
+
         $this->setData('formTitle', __('Properties'));
         $this->setData('myForm', $myForm->render());
         
@@ -144,7 +176,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $this->setData('assemblyUri', $assembly->getUri());
         
         // define the subjects excluded from the current delivery
-        $property = new core_kernel_classes_Property(TAO_DELIVERY_EXCLUDEDSUBJECTS_PROP);
+        $property = new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
         $excluded = array(); 
         foreach ($assembly->getPropertyValues($property) as $uri) {
             $user = new core_kernel_classes_Resource($uri);
@@ -152,7 +184,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
         
         $assigned = array();
-        foreach ($this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($assembly->getUri()) as $userId) {
+        foreach ($this->getServiceManager()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($assembly->getUri()) as $userId) {
             if (!in_array($userId, array_keys($excluded))) {
                 $user = new core_kernel_classes_Resource($userId);
                 $assigned[$userId] = $user->getLabel();
@@ -180,9 +212,9 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
         
         $assembly = $this->getCurrentInstance();
-        $success = $assembly->editPropertyValues(new core_kernel_classes_Property(TAO_DELIVERY_EXCLUDEDSUBJECTS_PROP),$jsonArray);
+        $success = $assembly->editPropertyValues(new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS),$jsonArray);
 
-        $this->getEventManager()->trigger(new DeliveryUpdatedEvent($assembly->getUri(), [TAO_DELIVERY_EXCLUDEDSUBJECTS_PROP => $jsonArray]));
+        $this->getEventManager()->trigger(new DeliveryUpdatedEvent($assembly->getUri(), [DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS => $jsonArray]));
 
         $this->returnJson(array(
         	'saved' => $success
@@ -199,8 +231,29 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                 $label = __("Delivery of %s", $test->getLabel());
                 $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
-                $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-                $report = $deliveryFactory->create($deliveryClass, $test, $label);
+                $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
+                $deliveryResource->setLabel($label);
+                $values = $myForm->getValues();
+
+                /** @var DeliveryFactory $deliveryFactoryResources */
+                $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+                $deliveryResource = $deliveryFactoryResources->setInitialProperties($values, $deliveryResource);
+
+                $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
+
+                /** @var TaskLogInterface $taskLog */
+                $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+
+                if (in_array($taskLog->getStatus($task->getId()), [TaskLogInterface::STATUS_FAILED, TaskLogInterface::STATUS_COMPLETED])) {
+                    $report = $taskLog->getReport($task->getId());
+
+                    if (!$report->getData()) {
+                        $report = $report->getIterator()->current();
+                    }
+                } else {
+                    $report = Report::createInfo(__('Creating of delivery is successfully scheduled'));
+                }
+
                 $this->returnReport($report);
             } else {
                 $this->setData('myForm', $myForm->render());

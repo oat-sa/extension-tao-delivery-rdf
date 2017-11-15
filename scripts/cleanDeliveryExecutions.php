@@ -25,6 +25,8 @@ namespace oat\taoDeliveryRdf\scripts;
 
 use oat\oatbox\extension\AbstractAction;
 use oat\taoDelivery\model\execution\implementation\KeyValueService;
+use oat\taoDelivery\model\execution\OntologyDeliveryExecution;
+use oat\taoDelivery\model\execution\OntologyService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoOutcomeRds\model\RdsResultStorage;
 use taoAltResultStorage_models_classes_KeyValueResultStorage as KeyValueResultStorage;
@@ -177,9 +179,9 @@ class cleanDeliveryExecutions extends AbstractAction
                 }
             }
             $report->setMessage('Removed ' . $count . ' key-value delivery executions');
-        } elseif ($deliveryService instanceof \taoDelivery_models_classes_execution_OntologyService) {
+        } elseif ($deliveryService instanceof OntologyService) {
             $count = 0;
-            $deliveryExecutionClass = new \core_kernel_classes_Class(\taoDelivery_models_classes_execution_OntologyDeliveryExecution::CLASS_URI);
+            $deliveryExecutionClass = new \core_kernel_classes_Class(OntologyDeliveryExecution::CLASS_URI);
             $deliveryExecutions = $deliveryExecutionClass->getInstances();
             /** @var  \core_kernel_classes_Class $deliveryExecution */
             foreach ($deliveryExecutions as $deliveryExecution) {

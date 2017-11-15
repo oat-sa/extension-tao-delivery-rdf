@@ -19,13 +19,9 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
-use oat\taoGroups\models\GroupsService;
 use oat\oatbox\user\User;
-use oat\oatbox\service\ServiceManager;
-use oat\oatbox\service\ConfigurableService;
-use oat\taoDelivery\model\SimpleDelivery;
-use core_kernel_classes_Resource;
 use \core_kernel_classes_Property;
+use oat\taoDelivery\model\execution\ServiceProxy;
 use tao_helpers_Date;
 /**
  * Service to manage the assignment of users to deliveries
@@ -41,12 +37,15 @@ class AssignmentFactory
     private $user;
     
     private $startable;
-    
-    public function __construct(\core_kernel_classes_Resource $delivery, User $user, $startable)
+
+    private $displayAttempts;
+
+    public function __construct(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true)
     {
         $this->delivery = $delivery;
         $this->user = $user;
         $this->startable = $startable;
+        $this->displayAttempts = $displayAttempts;
     }
     
     public function getDeliveryId()
@@ -67,20 +66,20 @@ class AssignmentFactory
     protected function getDescription()
     {
         $deliveryProps = $this->delivery->getPropertiesValues(array(
-            new core_kernel_classes_Property(TAO_DELIVERY_MAXEXEC_PROP),
-            new core_kernel_classes_Property(TAO_DELIVERY_START_PROP),
-            new core_kernel_classes_Property(TAO_DELIVERY_END_PROP),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_MAX_EXEC),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_START),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_END),
         ));
         
-        $propMaxExec = current($deliveryProps[TAO_DELIVERY_MAXEXEC_PROP]);
-        $propStartExec = current($deliveryProps[TAO_DELIVERY_START_PROP]);
-        $propEndExec = current($deliveryProps[TAO_DELIVERY_END_PROP]);
+        $propMaxExec = current($deliveryProps[DeliveryContainerService::PROPERTY_MAX_EXEC]);
+        $propStartExec = current($deliveryProps[DeliveryContainerService::PROPERTY_START]);
+        $propEndExec = current($deliveryProps[DeliveryContainerService::PROPERTY_END]);
         
         $startTime = (!(is_object($propStartExec)) or ($propStartExec=="")) ? null : $propStartExec->literal;
         $endTime = (!(is_object($propEndExec)) or ($propEndExec=="")) ? null : $propEndExec->literal;
         $maxExecs = (!(is_object($propMaxExec)) or ($propMaxExec=="")) ? 0 : $propMaxExec->literal;
         
-        $countExecs = count(\taoDelivery_models_classes_execution_ServiceProxy::singleton()->getUserExecutions($this->delivery, $this->getUserId()));
+        $countExecs = count(ServiceProxy::singleton()->getUserExecutions($this->delivery, $this->getUserId()));
         
         return $this->buildDescriptionFromData($startTime, $endTime, $countExecs, $maxExecs);
     }
@@ -92,13 +91,13 @@ class AssignmentFactory
     
     public function getStartTime()
     {
-        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_START_PROP));
+        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_START));
         return is_null($prop) ? null : (string)$prop;
     }
     
     public function getDeliveryOrder()
     {
-        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DELIVERY_DISPLAY_ORDER_PROP));
+        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DISPLAY_ORDER_PROP));
         return is_null($prop) ? 0 : intval((string)$prop);
     }
     
@@ -115,9 +114,9 @@ class AssignmentFactory
         } elseif (!empty($endTime)) {
             $descriptions[] = __('Available until %s', tao_helpers_Date::displayeDate($endTime));
         }
-         
-        if ($maxExecs !== 0) {
-            if ($maxExecs === 1) {
+        
+        if ($maxExecs != 0 && $this->displayAttempts) {
+            if ($maxExecs == 1) {
                 $descriptions[] = __('Attempt %1$s of %2$s'
                     ,$countExecs
                     ,!empty($maxExecs)

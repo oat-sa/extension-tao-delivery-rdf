@@ -22,6 +22,7 @@ namespace oat\taoDeliveryRdf\scripts;
 
 use common_report_Report as Report;
 use oat\oatbox\extension\AbstractAction;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\oatbox\action\ResolutionException;
 
@@ -51,20 +52,20 @@ class RecompileDelivery extends AbstractAction
     /**
      * @var array Available script modes
      */
-    static $modes = ['list', 'compile'];
+    static public $modes = ['list', 'compile'];
 
     /**
      * List of properties to be copied from parent delivery
      * @var array
      */
-    static $propertiesToCopy = [
-        TAO_DELIVERY_END_PROP,
-        TAO_DELIVERY_START_PROP,
-        TAO_DELIVERY_MAXEXEC_PROP,
+    static public $propertiesToCopy = [
+        DeliveryContainerService::PROPERTY_END,
+        DeliveryContainerService::PROPERTY_START,
+        DeliveryContainerService::PROPERTY_MAX_EXEC,
     ];
 
     /**
-     * @var \Report
+     * @var Report
      */
     protected $report;
 
@@ -255,7 +256,7 @@ class RecompileDelivery extends AbstractAction
 
     /**
      * @throws ResolutionException
-     * @return sting
+     * @return string
      */
     private function getMode()
     {

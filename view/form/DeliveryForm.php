@@ -19,6 +19,10 @@
  */
 namespace oat\taoDeliveryRdf\view\form;
 
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\theme\ThemeService;
+use oat\taoDelivery\models\classes\theme\DeliveryThemeDetailsProvider;
 use tao_helpers_form_FormFactory;
 use tao_helpers_Uri;
 /**
@@ -45,7 +49,7 @@ class DeliveryForm
     protected function initElements()
     {
         parent::initElements();
-        $maxExecElt = $this->form->getElement(tao_helpers_Uri::encode(TAO_DELIVERY_MAXEXEC_PROP));
+        $maxExecElt = $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::PROPERTY_MAX_EXEC));
         if (! is_null($maxExecElt)) {
             $maxExecElt->addValidators(array(
                 tao_helpers_form_FormFactory::getValidator('Integer', array(
@@ -55,16 +59,64 @@ class DeliveryForm
             $this->form->addElement($maxExecElt);
         }
         
-        $periodEndElt = $this->form->getElement(tao_helpers_Uri::encode(TAO_DELIVERY_END_PROP));
+        $periodEndElt = $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::PROPERTY_END));
         if (! is_null($periodEndElt)) {
         
             $periodEndElt->addValidators(array(
                 tao_helpers_form_FormFactory::getValidator('DateTime', array(
                     'comparator' => '>=',
-                    'datetime2_ref' => $this->form->getElement(tao_helpers_Uri::encode(TAO_DELIVERY_START_PROP))
+                    'datetime2_ref' => $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::PROPERTY_START))
                 ))
             ));
             $this->form->addElement($periodEndElt);
         }
+        
+        $this->setThemeNameSelectorOptions();
+    }
+
+    /**
+     * Sets the theme name selector options.
+     *
+     * @return bool
+     */
+    protected function setThemeNameSelectorOptions()
+    {
+        $elementUri = tao_helpers_Uri::encode(DeliveryThemeDetailsProvider::DELIVERY_THEME_ID_URI);
+        if (!$this->form->hasElement($elementUri)) {
+            return false;
+        }
+
+        /** @var ThemeService $themeService */
+        $themeService = ServiceManager::getServiceManager()->get(ThemeService::SERVICE_ID);
+        $allThemes    = $themeService->getAllThemes();
+        $options      = [];
+        foreach ($allThemes as $currentThemeId => $currentTheme) {
+            $label = $this->getThemeLabel($currentTheme);
+            $options[$currentThemeId] = $label ? $label : $currentThemeId;
+        }
+
+        $this->form->getElement($elementUri)->setOptions($options);
+
+        return true;
+    }
+
+    /**
+     * Get theme label, which might be an empty string
+     * @param $theme
+     *
+     * @return string
+     */
+    protected function getThemeLabel($theme)
+    {
+        if(is_array($theme) && !empty($theme['class'])) {
+            $options = !empty($theme['options']) ? $theme['options'] : [];
+            $theme = new $theme['class']($options);
+        }
+
+        if(method_exists($theme, 'getLabel')) {
+            return $theme->getLabel();
+        }
+
+        return '';
     }
 }

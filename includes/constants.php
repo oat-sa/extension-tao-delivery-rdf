@@ -21,6 +21,9 @@
  */
 
 //define specific constants to delivery extension:
+/**
+ * @deprecated
+ */
 $todefine = array(
     
 	'TAO_DELIVERY_EXCLUDEDSUBJECTS_PROP'   => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects',
@@ -30,7 +33,6 @@ $todefine = array(
 	'TAO_DELIVERY_END_PROP'                => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd',
 	'TAO_DELIVERY_ACCESS_SETTINGS_PROP'    => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings',
 
-    //
     'CLASS_COMPILEDDELIVERY'               => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery',
     'PROPERTY_COMPILEDDELIVERY_DELIVERY'   => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryDelivery',
     'PROPERTY_COMPILEDDELIVERY_TIME'       => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime',

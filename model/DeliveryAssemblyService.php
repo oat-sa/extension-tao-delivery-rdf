@@ -25,6 +25,8 @@ use \core_kernel_classes_Property;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
+use oat\taoDelivery\model\RuntimeService;
+
 /**
  * Service to manage the authoring of deliveries
  *
@@ -35,6 +37,18 @@ use tao_models_classes_service_ServiceCall;
 class DeliveryAssemblyService extends \tao_models_classes_ClassService
 {
     const PROPERTY_ORIGIN = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
+
+    const CLASS_URI = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery';
+
+    const PROPERTY_DELIVERY_TIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime';
+
+    const PROPERTY_DELIVERY_RUNTIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime';
+
+    const PROPERTY_DELIVERY_DIRECTORY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationDirectory';
+
+    const PROPERTY_DELIVERY_GUEST_ACCESS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#GuestAccess';
+
+    const PROPERTY_DELIVERY_DISPLAY_ORDER_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DisplayOrder';
 
     /**
      * @var \tao_models_classes_service_FileStorage
@@ -48,7 +62,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
      */
     public function getRootClass()
     {
-        return new core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+        return new core_kernel_classes_Class(self::CLASS_URI);
     }
 
     /**
@@ -64,14 +78,16 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
         return $this->storageService;
     }
 
+    /**
+     * @deprecated please use DeliveryFactory
+     *
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param tao_models_classes_service_ServiceCall $serviceCall
+     * @param array $properties
+     * @return \core_kernel_classes_Resource
+     */
     public function createAssemblyFromServiceCall(core_kernel_classes_Class $deliveryClass, tao_models_classes_service_ServiceCall $serviceCall, $properties = array()) {
-
-        $properties[PROPERTY_COMPILEDDELIVERY_TIME]      = time();
-        $properties[PROPERTY_COMPILEDDELIVERY_RUNTIME]   = $serviceCall->toOntology();
-        
-        $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
-        $this->getEventManager()->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
-        return $compilationInstance;
+        throw new \common_exception_Error("Call to deprecated ".__FUNCTION__);
     }
     
     /**
@@ -122,10 +138,10 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     protected function deleteDeliveryRuntime(core_kernel_classes_Resource $assembly)
     {
         /** @var GroupAssignment $deliveryAssignement */
-        $deliveryAssignement = $this->getServiceManager()->get(GroupAssignment::CONFIG_ID);
+        $deliveryAssignement = $this->getServiceManager()->get(GroupAssignment::SERVICE_ID);
         $deliveryAssignement->onDelete($assembly);
         /** @var core_kernel_classes_Resource $runtimeResource */
-        $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
+        $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_RUNTIME));
         return $runtimeResource->delete();
     }
 
@@ -139,10 +155,10 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     {
         $success = true;
         $deleted = 0;
-        $directories = $assembly->getPropertyValues(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_DIRECTORY));
+        $directories = $assembly->getPropertyValues(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_DIRECTORY));
 
         foreach ($directories as $directory) {
-            $instances = $this->getRootClass()->getInstances(true, array(PROPERTY_COMPILEDDELIVERY_DIRECTORY => $directory));
+            $instances = $this->getRootClass()->getInstances(true, array(self::PROPERTY_DELIVERY_DIRECTORY => $directory));
             unset($instances[$assembly->getUri()]);
             if (empty($instances)) {
                 $success = $this->getFileStorage()->deleteDirectoryById($directory) ? $success : false;
@@ -160,8 +176,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
      * @return tao_models_classes_service_ServiceCall
      */
     public function getRuntime( core_kernel_classes_Resource $assembly) {
-        $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
-        return tao_models_classes_service_ServiceCall::fromResource($runtimeResource);
+        return $this->getServiceLocator()->get(RuntimeService::SERVICE_ID)->getRuntime($assembly->getUri());
     }
     
     /**
@@ -171,11 +186,17 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
      * @return string
      */
     public function getCompilationDate( core_kernel_classes_Resource $assembly) {
-        return (string)$assembly->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_TIME));
+        return (string)$assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_TIME));
     }
-    
+
+    /**
+     * @param core_kernel_classes_Resource $assembly
+     * @return core_kernel_classes_Resource
+     * @throws \common_Exception
+     * @throws \core_kernel_classes_EmptyProperty
+     */
     public function getOrigin( core_kernel_classes_Resource $assembly) {
-        return (string)$assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_ORIGIN));
+        return $assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_ORIGIN));
     }
 
 }

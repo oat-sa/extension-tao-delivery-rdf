@@ -22,6 +22,8 @@ namespace oat\taoDeliveryRdf\controller;
 use common_session_SessionManager;
 use oat\taoDelivery\controller\DeliveryServer;
 use oat\taoDeliveryRdf\model\guest\GuestTestTakerSession;
+use oat\taoDelivery\models\classes\ReturnUrlService;
+
 /**
  * DeliveryServer Controller
  *
@@ -40,6 +42,7 @@ class Guest extends DeliveryServer
 		$session = new GuestTestTakerSession();
 		common_session_SessionManager::startSession($session);
 
-		$this->redirect($this->getReturnUrl());
+        $returnUrl = $this->getServiceManager()->get(ReturnUrlService::SERVICE_ID)->getReturnUrl();
+		$this->redirect($returnUrl);
 	}
 }

@@ -19,16 +19,16 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
+use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoGroups\models\GroupsService;
 use oat\oatbox\user\User;
-use oat\oatbox\service\ServiceManager;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoDelivery\model\SimpleDelivery;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use \core_kernel_classes_Property;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\model\guest\GuestTestUser;
+use oat\taoDelivery\model\RuntimeService;
 /**
  * Service to manage the assignment of users to deliveries
  *
@@ -41,7 +41,10 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     /**
      * Interface part
      */
-    
+    const PROPERTY_GROUP_DELIVERY = 'http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries';
+
+    const DISPLAY_ATTEMPTS_OPTION = 'display_attempts';
+
     /**
      * (non-PHPdoc)
      * @see \oat\taoDelivery\model\AssignmentService::getAssignments()
@@ -55,40 +58,39 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         
         return $this->orderAssignments($assignments);
     }
-    
+
+    /**
+     * @param User $user
+     * @return array
+     */
     public function getAssignmentFactories(User $user)
     {
         $assignments = array();
-        
-        //$assignmentFactory = new AssignmentFactory();
+
+        $displayAttempts = ($this->hasOption(self::DISPLAY_ATTEMPTS_OPTION)) ? $this->getOption(self::DISPLAY_ATTEMPTS_OPTION) : true;
+
         if ($this->isDeliveryGuestUser($user)) {
             foreach ($this->getGuestAccessDeliveries() as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
-                $startable = $this->verifyTime($delivery);
-                $assignments[] = new AssignmentFactory($delivery, $user, $startable);
+                $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
+                $assignments[] = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
             }
         } else {
             foreach ($this->getDeliveryIdsByUser($user) as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
                 $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
-                $assignments[] = new AssignmentFactory($delivery, $user, $startable);
+                $assignments[] = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
             }
         }
         return $assignments;
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoDelivery\model\AssignmentService::getRuntime()
+     * @deprecated
      */
     public function getRuntime($deliveryId)
     {
-        $delivery = new \core_kernel_classes_Resource($deliveryId);
-        if (!$delivery->exists()) {
-            throw new \common_exception_NoContent('Unable to load runtime associated for delivery ' . $deliveryId .
-                ' Delivery probably deleted.');
-        }
-        return DeliveryAssemblyService::singleton()->getRuntime($delivery);
+        return $this->getServiceLocator()->get(RuntimeService::SERVICE_ID)->getRuntime($deliveryId);
     }
     
     
@@ -101,7 +103,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     {
         $groupClass = GroupsService::singleton()->getRootClass();
         $groups = $groupClass->searchInstances(array(
-            PROPERTY_GROUP_DELVIERY => $deliveryId
+            self::PROPERTY_GROUP_DELIVERY => $deliveryId
         ), array('recursive' => true, 'like' => false));
         
         $users = array();
@@ -116,26 +118,32 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     /**
      * Helpers
      */
-    
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     */
     public function onDelete(core_kernel_classes_Resource $delivery)
     {
         $groupClass = GroupsService::singleton()->getRootClass();
         $assigned = $groupClass->searchInstances(array(
-            PROPERTY_GROUP_DELVIERY => $delivery
+			self::PROPERTY_GROUP_DELIVERY => $delivery
         ), array('like' => false, 'recursive' => true));
         
-        $assignationProperty = new core_kernel_classes_Property(PROPERTY_GROUP_DELVIERY);
+        $assignationProperty = new core_kernel_classes_Property(self::PROPERTY_GROUP_DELIVERY);
         foreach ($assigned as $groupInstance) {
             $groupInstance->removePropertyValue($assignationProperty, $delivery);
         }
     }
-    
+
+    /**
+     * @param User $user
+     * @return array
+     */
     public function getDeliveryIdsByUser(User $user)
     {
         $deliveryUris = array();
         // check if really available
         foreach (GroupsService::singleton()->getGroups($user) as $group) {
-            foreach ($group->getPropertyValues(new \core_kernel_classes_Property(PROPERTY_GROUP_DELVIERY)) as $deliveryUri) {
+            foreach ($group->getPropertyValues(new \core_kernel_classes_Property(self::PROPERTY_GROUP_DELIVERY)) as $deliveryUri) {
                 $candidate = new core_kernel_classes_Resource($deliveryUri);
                 if (!$this->isUserExcluded($candidate, $user) && $candidate->exists()) {
                     $deliveryUris[$candidate->getUri()] = $candidate->getUri();
@@ -146,15 +154,15 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         ksort($deliveryUris);
         return $deliveryUris;
     }
-    
+
     /**
      * Check if a user is excluded from a delivery
      * @param core_kernel_classes_Resource $delivery
-     * @param string $userUri the URI of the user to check
+     * @param User $user the URI of the user to check
      * @return boolean true if excluded
      */
     protected function isUserExcluded(\core_kernel_classes_Resource $delivery, User $user){
-        $excludedUsers = $delivery->getPropertyValues(new \core_kernel_classes_Property(TAO_DELIVERY_EXCLUDEDSUBJECTS_PROP));
+        $excludedUsers = $delivery->getPropertyValues(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS));
         return in_array($user->getIdentifier(), $excludedUsers);
     }
 
@@ -165,11 +173,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     public function getGuestAccessDeliveries()
     {
-        $class = new core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+        $class = new core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
 
         return $class->searchInstances(
             array(
-                TAO_DELIVERY_ACCESS_SETTINGS_PROP => DELIVERY_GUEST_ACCESS
+                DeliveryContainerService::PROPERTY_ACCESS_SETTINGS => DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS
             ),
             array('recursive' => true)
         );
@@ -186,6 +194,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         return ($user instanceof GuestTestUser);
     }
 
+    /**
+     * @param string $deliveryIdentifier
+     * @param User $user
+     * @return bool
+     */
     public function isDeliveryExecutionAllowed($deliveryIdentifier, User $user)
     {
         $delivery = new \core_kernel_classes_Resource($deliveryIdentifier);
@@ -193,7 +206,12 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
             && $this->verifyTime($delivery)
             && $this->verifyToken($delivery, $user);
     }
-    
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @param User $user
+     * @return bool
+     */
     protected function verifyUserAssigned(core_kernel_classes_Resource $delivery, User $user){
         $returnValue = false;
     
@@ -203,7 +221,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         } else {
             $userGroups = GroupsService::singleton()->getGroups($user);
             $deliveryGroups = GroupsService::singleton()->getRootClass()->searchInstances(array(
-                PROPERTY_GROUP_DELVIERY => $delivery->getUri()
+				self::PROPERTY_GROUP_DELIVERY => $delivery->getUri()
             ), array(
                 'like'=>false, 'recursive' => true
             ));
@@ -218,32 +236,37 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      *
      * @param core_kernel_classes_Resource $delivery
      * @return bool
-     * @throws common_exception_InvalidArgumentType
+     * @throws \common_exception_InvalidArgumentType
      */
     protected function hasDeliveryGuestAccess(core_kernel_classes_Resource $delivery )
     {
         $returnValue = false;
     
         $properties = $delivery->getPropertiesValues(array(
-            new core_kernel_classes_Property(TAO_DELIVERY_ACCESS_SETTINGS_PROP),
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_ACCESS_SETTINGS ),
         ));
-        $propAccessSettings = current($properties[TAO_DELIVERY_ACCESS_SETTINGS_PROP]);
+        $propAccessSettings = current($properties[DeliveryContainerService::PROPERTY_ACCESS_SETTINGS ]);
         $accessSetting = (!(is_object($propAccessSettings)) or ($propAccessSettings=="")) ? null : $propAccessSettings->getUri();
     
         if( !is_null($accessSetting) ){
-            $returnValue = ($accessSetting === DELIVERY_GUEST_ACCESS);
+            $returnValue = ($accessSetting === DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS);
         }
     
         return $returnValue;
     }
-    
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @param User $user
+     * @return bool
+     */
     protected function verifyToken(core_kernel_classes_Resource $delivery, User $user)
     {
-        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(TAO_DELIVERY_MAXEXEC_PROP));
+        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_MAX_EXEC));
         $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
         
         //check Tokens
-        $usedTokens = count(\taoDelivery_models_classes_execution_ServiceProxy::singleton()->getUserExecutions($delivery, $user->getIdentifier()));
+        $usedTokens = count(ServiceProxy::singleton()->getUserExecutions($delivery, $user->getIdentifier()));
     
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
             \common_Logger::d("Attempt to start the compiled delivery ".$delivery->getUri(). "without tokens");
@@ -251,20 +274,24 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         }
         return true;
     }
-    
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @return bool
+     */
     protected function verifyTime(core_kernel_classes_Resource $delivery)
     {
         $deliveryProps = $delivery->getPropertiesValues(array(
-            TAO_DELIVERY_START_PROP,
-            TAO_DELIVERY_END_PROP,
+            DeliveryContainerService::PROPERTY_START,
+            DeliveryContainerService::PROPERTY_END,
         ));
         
-        $startExec = empty($deliveryProps[TAO_DELIVERY_START_PROP])
+        $startExec = empty($deliveryProps[DeliveryContainerService::PROPERTY_START])
             ? null
-            : (string)current($deliveryProps[TAO_DELIVERY_START_PROP]);
-        $stopExec = empty($deliveryProps[TAO_DELIVERY_END_PROP])
+            : (string)current($deliveryProps[DeliveryContainerService::PROPERTY_START]);
+        $stopExec = empty($deliveryProps[DeliveryContainerService::PROPERTY_END])
             ? null
-            : (string)current($deliveryProps[TAO_DELIVERY_END_PROP]);
+            : (string)current($deliveryProps[DeliveryContainerService::PROPERTY_END]);
         
         $startDate  =    date_create('@'.$startExec);
         $endDate    =    date_create('@'.$stopExec);

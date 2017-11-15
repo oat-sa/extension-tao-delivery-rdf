@@ -22,11 +22,9 @@ namespace oat\taoDeliveryRdf\model\event;
 use JsonSerializable;
 use oat\oatbox\event\Event;
 
-class DeliveryUpdatedEvent implements Event, JsonSerializable
+class DeliveryUpdatedEvent extends AbstractDeliveryEvent
 {
 
-    /** @var  string */
-    protected $deliveryUri;
     /**
      * @var
      */
@@ -50,6 +48,17 @@ class DeliveryUpdatedEvent implements Event, JsonSerializable
     public function getName()
     {
         return get_class($this);
+    }
+
+    /**
+     * Get the new values for the specified property
+     *
+     * @param string $propertyUri
+     * @return aarray
+     */
+    public function getPropertyValue($propertyUri)
+    {
+        return isset($this->data) ? $this->data[$propertyUri] : [];
     }
 
     /**

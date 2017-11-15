@@ -24,6 +24,9 @@ use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\file\FileIterator;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
+
 /**
  * Im- and export a compiled delivery 
  *
@@ -107,9 +110,9 @@ class Assembler
 
         $properties = array_merge($properties, array(
             RDFS_LABEL                          => $label,
-            PROPERTY_COMPILEDDELIVERY_DIRECTORY => array_keys($dirs),
-            PROPERTY_COMPILEDDELIVERY_TIME      => time(),
-            PROPERTY_COMPILEDDELIVERY_RUNTIME   => $serviceCall->toOntology(),
+            DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => array_keys($dirs),
+            DeliveryAssemblyService::PROPERTY_DELIVERY_TIME      => time(),
+            DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME   => $serviceCall->toOntology()
         ));
         $delivery = $deliveryClass->createInstanceWithProperties($properties);
         
@@ -152,7 +155,7 @@ class Assembler
             'label' => $compiledDelivery->getLabel(),
             'version' => $taoDeliveryVersion
         );
-        $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_DIRECTORY));
+        $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
             $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
             $files = $directory->getIterator();
@@ -162,7 +165,7 @@ class Assembler
             $data['dir'][$id] = $directory->getRelativePath();
         }
 
-        $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
+        $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
         $serviceCall = \tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
         

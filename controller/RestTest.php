@@ -20,8 +20,9 @@
 
 namespace oat\taoDeliveryRdf\controller;
 
-use oat\tao\model\TaskQueueActionTrait;
+use oat\tao\model\import\ImporterNotFound;
 use oat\taoDeliveryRdf\model\tasks\ImportAndCompile;
+use oat\taoTaskQueue\model\TaskLogInterface;
 
 /**
  * Class RestTest
@@ -30,13 +31,10 @@ use oat\taoDeliveryRdf\model\tasks\ImportAndCompile;
  */
 class RestTest extends \tao_actions_RestController
 {
-    use TaskQueueActionTrait {
-        getTask as traitGetTask;
-        getTaskData as traitGetTaskData;
-    }
-
     const REST_IMPORTER_ID = 'importerId';
     const REST_FILE_NAME = 'testPackage';
+    const REST_DELIVERY_PARAMS = 'delivery-params';
+    const REST_DELIVERY_CLASS_LABEL = 'delivery-class-label';
 
     /**
      * Import test and compile it into delivery
@@ -54,23 +52,37 @@ class RestTest extends \tao_actions_RestController
         if (\tao_helpers_Http::hasUploadedFile(self::REST_FILE_NAME)) {
             $file = \tao_helpers_Http::getUploadedFile(self::REST_FILE_NAME);
             $importerId = $this->getRequestParameter(self::REST_IMPORTER_ID);
-
             try {
-                $task = ImportAndCompile::createTask($importerId, $file);
-            } catch (\oat\tao\model\import\ImporterNotFound $e) {
+                $customParams = [];
+                if ($this->hasRequestParameter(self::REST_DELIVERY_PARAMS)) {
+                    $customParams = $this->getRequestParameter(self::REST_DELIVERY_PARAMS);
+                    $customParams = json_decode(html_entity_decode($customParams), true);
+                }
+                $deliveryClassLabel = '';
+                if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_LABEL)) {
+                    $deliveryClassLabel = $this->getRequestParameter(self::REST_DELIVERY_CLASS_LABEL);
+                }
+                $task = ImportAndCompile::createTask($importerId, $file, $customParams, $deliveryClassLabel);
+            } catch (ImporterNotFound $e) {
                 $this->returnFailure(new \common_exception_NotFound($e->getMessage()));
             }
             
             $result = ['reference_id' => $task->getId()];
-            $report = $task->getReport();
+
+            /** @var TaskLogInterface $taskLog */
+            $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+
+            $report = $taskLog->getReport($task->getId());
+
             if (!empty($report)) { //already executed
                 if ($report instanceof \common_report_Report) {
                     //serialize report to array
                     $report = json_encode($report);
                     $report = json_decode($report);
                 }
-                $result['report'] = $report;
+                $result['common_report_Report'] = $report;
             }
+
             return $this->returnSuccess($result);
         } else {
             return $this->returnFailure(new \common_exception_BadRequest('Test package file was not given'));

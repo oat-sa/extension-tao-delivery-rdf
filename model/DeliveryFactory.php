@@ -19,10 +19,14 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use oat\tao\helpers\form\ValidationRuleRegistry;
+use oat\oatbox\event\EventManager;
+use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
+use oat\taoDelivery\model\container\delivery\ContainerProvider;
 
 /**
  * Services to manage Deliveries
@@ -33,10 +37,34 @@ use oat\tao\helpers\form\ValidationRuleRegistry;
  */
 class DeliveryFactory extends ConfigurableService
 {
+    use OntologyAwareTrait;
 
     const SERVICE_ID = 'taoDeliveryRdf/DeliveryFactory';
 
     const OPTION_PROPERTIES = 'properties';
+
+    /**
+     * 'initialProperties' => array(
+     *      'uri_of_property'
+     * )
+     */
+    const OPTION_INITIAL_PROPERTIES = 'initialProperties';
+
+    /**
+     * initialPropertiesMap' => array(
+     *      'name_of_rest_parameter' => array(
+     *          'uri' => 'uri_of_property',
+     *          'values' => array(
+     *              'true' => 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ComplyEnabled'
+     *              )
+     *          )
+     *      )
+     */
+    const OPTION_INITIAL_PROPERTIES_MAP = 'initialPropertiesMap';
+    const OPTION_INITIAL_PROPERTIES_MAP_VALUES = 'values';
+    const OPTION_INITIAL_PROPERTIES_MAP_URI = 'uri';
+
+    private $deliveryResource;
 
     /**
      * Creates a new simple delivery
@@ -44,9 +72,10 @@ class DeliveryFactory extends ConfigurableService
      * @param core_kernel_classes_Class $deliveryClass
      * @param core_kernel_classes_Resource $test
      * @param string $label
+     * @param core_kernel_classes_Resource $deliveryResource
      * @return \common_report_Report
      */
-    public function create(core_kernel_classes_Class $deliveryClass, core_kernel_classes_Resource $test, $label) {
+    public function create(core_kernel_classes_Class $deliveryClass, core_kernel_classes_Resource $test, $label = '', core_kernel_classes_Resource $deliveryResource = null) {
 
         \common_Logger::i('Creating '.$label.' with '.$test->getLabel().' under '.$deliveryClass->getLabel());
 
@@ -63,6 +92,12 @@ class DeliveryFactory extends ConfigurableService
             }
         }
 
+        if (!$deliveryResource instanceof core_kernel_classes_Resource) {
+            $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass, $label);
+        }
+
+        $this->deliveryResource = $deliveryResource;
+
         $storage = new TrackedStorage();
 
         $testCompilerClass = \taoTests_models_classes_TestsService::singleton()->getCompilerClass($test);
@@ -74,7 +109,7 @@ class DeliveryFactory extends ConfigurableService
 
             $properties = array(
                 RDFS_LABEL => $label,
-                PROPERTY_COMPILEDDELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
+                DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
                 DeliveryAssemblyService::PROPERTY_ORIGIN => $test,
             );
 
@@ -82,10 +117,87 @@ class DeliveryFactory extends ConfigurableService
                 $properties[$deliveryProperty] = $test->getPropertyValues(new \core_kernel_classes_Property($testProperty));
             }
 
-            $compilationInstance = DeliveryAssemblyService::singleton()->createAssemblyFromServiceCall($deliveryClass, $serviceCall, $properties);
+            $container = null;
+            if ($compiler instanceof ContainerProvider) {
+                $container = $compiler->getContainer();
+            }
+            $compilationInstance = $this->createDeliveryResource($deliveryClass, $serviceCall, $container, $properties);
             $report->setData($compilationInstance);
         }
 
         return $report;
+    }
+
+    /**
+     * @param $values
+     * @param core_kernel_classes_Resource $delivery
+     * @return core_kernel_classes_Resource
+     */
+    public function setInitialProperties($values, core_kernel_classes_Resource $delivery)
+    {
+        $initialProperties = $this->getOption(self::OPTION_INITIAL_PROPERTIES);
+
+        foreach ($values as $uri => $value) {
+            if (in_array($uri, $initialProperties) && $value) {
+                $property = $this->getProperty($uri);
+                $value = is_array($value) ? current($value) : $value;
+                $delivery->setPropertyValue($property, $value);
+            }
+        }
+        return $delivery;
+    }
+
+    /**
+     * @param \Request $request
+     * @return array
+     */
+    public function getInitialPropertiesFromRequest(\Request $request)
+    {
+        $initialPropertiesMap = $this->getOption(self::OPTION_INITIAL_PROPERTIES_MAP);
+        $requestParameters = $request->getParameters();
+        $initialProperties = [];
+        foreach ($requestParameters as $parameter => $value) {
+            if (isset($initialPropertiesMap[$parameter]) && $value) {
+                $config = $initialPropertiesMap[$parameter];
+                $values = $config[self::OPTION_INITIAL_PROPERTIES_MAP_VALUES];
+                if(isset($values[$value])) {
+                    $initialProperties[$config[self::OPTION_INITIAL_PROPERTIES_MAP_URI]] = $values[$value];
+                }
+            }
+        }
+        return $initialProperties;
+    }
+
+    /**
+     * Create a delivery resource based on a successfull compilation
+     *
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param \tao_models_classes_service_ServiceCall $serviceCall
+     * @param string $containerId
+     * @param string $containerParam
+     * @param array $properties
+     */
+    protected function createDeliveryResource(core_kernel_classes_Class $deliveryClass, \tao_models_classes_service_ServiceCall $serviceCall,
+        $container, $properties = array()) {
+
+        $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_TIME]      = time();
+        $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME]   = $serviceCall->toOntology();
+        if (!isset($properties[DeliveryContainerService::PROPERTY_RESULT_SERVER])) {
+            $properties[DeliveryContainerService::PROPERTY_RESULT_SERVER] = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
+        }
+        if (!is_null($container)) {
+            $properties[ContainerRuntime::PROPERTY_CONTAINER] = json_encode($container);
+        }
+
+        if ($this->deliveryResource instanceof core_kernel_classes_Resource) {
+            $compilationInstance = $this->deliveryResource;
+            $compilationInstance->setPropertiesValues($properties);
+        } else {
+            $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
+        }
+
+        $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+        $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
+        return $compilationInstance;
     }
 }

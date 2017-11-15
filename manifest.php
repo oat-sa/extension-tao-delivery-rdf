@@ -19,20 +19,24 @@
  *
  */
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\install\RegisterDeliveryPublishingService;
+use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
+
 return array(
-    'name'        => 'taoDeliveryRdf',
-	'label'       => 'Delivery Management',
-	'description' => 'Manages deliveries using the ontology',
-    'license'     => 'GPL-2.0',
-    'version'     => '3.5.0',
+  'name'        => 'taoDeliveryRdf',
+  'label'       => 'Delivery Management',
+  'description' => 'Manages deliveries using the ontology',
+  'license'     => 'GPL-2.0',
+  'version'     => '3.18.0',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
         'generis'     => '>=3.36.0',
-        'tao'         => '>=10.26.0',
+        'tao'         => '>=12.17.1',
         'taoGroups'   => '>=2.7.1',
         'taoTests'    => '>=3.5.0',
-        'taoQtiTest'  => '>=7.0.0',
-        'taoDelivery' => '>=6.4.0'
+        'taoQtiTest'  => '>=9.11.0',
+        'taoDelivery' => '>=7.5.0',
+        'taoTaskQueue' => '>=0.4.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
@@ -48,11 +52,12 @@ return array(
             __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php',
             'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
             'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
-            RegisterDeliveryFactoryService::class
+            RegisterDeliveryFactoryService::class,
+            OverrideRuntime::class
         )
     ),
     //'uninstall' => array(),
-    'update' => 'oat\\taoDeliveryRdf\\install\\update\\Updater',
+    'update' => 'oat\\taoDeliveryRdf\\scripts\\update\\Updater',
     'routes' => array(
         '/taoDeliveryRdf' => 'oat\\taoDeliveryRdf\\controller'
     ),
