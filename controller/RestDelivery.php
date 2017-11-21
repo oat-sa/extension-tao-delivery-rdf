@@ -236,6 +236,23 @@ class RestDelivery extends \tao_actions_RestController
     }
 
     /**
+     * Return 'Success' instead of 'Completed', required by the specified API.
+     *
+     * @param TaskLogEntity $taskLogEntity
+     * @return string
+     */
+    protected function getTaskStatus(TaskLogEntity $taskLogEntity)
+    {
+        if ($taskLogEntity->getStatus()->isCreated()) {
+            return 'In Progress';
+        } else if ($taskLogEntity->getStatus()->isCompleted()){
+            return 'Success';
+        }
+
+        return $taskLogEntity->getStatus()->getLabel();
+    }
+
+    /**
      * @param TaskLogEntity $taskLogEntity
      * @return array
      */
