@@ -240,21 +240,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 $deliveryResource = $deliveryFactoryResources->setInitialProperties($values, $deliveryResource);
 
                 $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
-
-                /** @var TaskLogInterface $taskLog */
-                $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
-
-                if (in_array($taskLog->getStatus($task->getId()), [TaskLogInterface::STATUS_FAILED, TaskLogInterface::STATUS_COMPLETED])) {
-                    $report = $taskLog->getReport($task->getId());
-
-                    if (!$report->getData()) {
-                        $report = $report->getIterator()->current();
-                    }
-                } else {
-                    $report = Report::createInfo(__('Creating of delivery is successfully scheduled'));
-                }
-
-                $this->returnReport($report);
+                return $this->returnTaskReport($task);
             } else {
                 $this->setData('myForm', $myForm->render());
                 $this->setData('formTitle', __('Create a new delivery'));
@@ -264,6 +250,30 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         } catch (NoTestsException $e) {
             $this->setView('DeliveryMgmt/wizard_error.tpl');
         }
+    }
+
+    /**
+     * Need to create a task queue module because the argument is a TaskInterface
+     */
+    protected function returnTaskReport($task){
+
+        $report = null;
+        $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+        if (in_array($taskLog->getStatus($task->getId()), [TaskLogInterface::STATUS_FAILED, TaskLogInterface::STATUS_COMPLETED])) {
+            $report = $taskLog->getReport($task->getId());
+
+            if (!$report->getData()) {
+                $report = $report->getIterator()->current();
+            }
+        }
+
+        $this->returnJson([
+            'success' => true,
+            'data' => [
+                'id' => $task->getId(),
+                'report' => $report
+            ]
+        ]);
     }
 
     /**
