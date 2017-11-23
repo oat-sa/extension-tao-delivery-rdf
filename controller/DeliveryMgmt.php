@@ -39,6 +39,7 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use common_report_Report as Report;
 use oat\taoTaskQueue\model\QueueDispatcher;
 use oat\taoTaskQueue\model\TaskLogInterface;
+use oat\taoTaskQueue\model\TaskLogActionTrait;
 
 /**
  * Controller to managed assembled deliveries
@@ -49,6 +50,7 @@ use oat\taoTaskQueue\model\TaskLogInterface;
 class DeliveryMgmt extends \tao_actions_SaSModule
 {
     use EventManagerAwareTrait;
+    use TaskLogActionTrait;
 
     /**
      * constructor: initialize the service and the default data
@@ -228,19 +230,32 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             $myForm = $formContainer->getForm();
              
             if ($myForm->isValid() && $myForm->isSubmited()) {
-                $test = new core_kernel_classes_Resource($myForm->getValue('test'));
-                $label = __("Delivery of %s", $test->getLabel());
-                $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
-                $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
-                $deliveryResource->setLabel($label);
-                $values = $myForm->getValues();
+                try {
+                    $test = new core_kernel_classes_Resource($myForm->getValue('test'));
+                    $label = __("Delivery of %s", $test->getLabel());
+                    $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
+                    $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
+                    $deliveryResource->setLabel($label);
+                    $values = $myForm->getValues();
 
-                /** @var DeliveryFactory $deliveryFactoryResources */
-                $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-                $deliveryResource = $deliveryFactoryResources->setInitialProperties($values, $deliveryResource);
+                    /** @var DeliveryFactory $deliveryFactoryResources */
+                    $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+                    $deliveryResource = $deliveryFactoryResources->setInitialProperties($values, $deliveryResource);
 
-                $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
-                return $this->returnTaskReport($task);
+                    $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
+
+                    $data = $this->getTaskLogReturnData($task->getId());
+                    return $this->returnJson([
+                        'success' => true,
+                        'data' => $data
+                    ]);
+                }catch(\Exception $e){
+                    return $this->returnJson([
+                        'success' => false,
+                        'errorMsg' => $e instanceof \common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
+                        'errorCode' => $e->getCode(),
+                    ]);
+                }
             } else {
                 $this->setData('myForm', $myForm->render());
                 $this->setData('formTitle', __('Create a new delivery'));
@@ -250,30 +265,6 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         } catch (NoTestsException $e) {
             $this->setView('DeliveryMgmt/wizard_error.tpl');
         }
-    }
-
-    /**
-     * Need to create a task queue module because the argument is a TaskInterface
-     */
-    protected function returnTaskReport($task){
-
-        $report = null;
-        $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
-        if (in_array($taskLog->getStatus($task->getId()), [TaskLogInterface::STATUS_FAILED, TaskLogInterface::STATUS_COMPLETED])) {
-            $report = $taskLog->getReport($task->getId());
-
-            if (!$report->getData()) {
-                $report = $report->getIterator()->current();
-            }
-        }
-
-        $this->returnJson([
-            'success' => true,
-            'data' => [
-                'id' => $task->getId(),
-                'report' => $report
-            ]
-        ]);
     }
 
     /**
