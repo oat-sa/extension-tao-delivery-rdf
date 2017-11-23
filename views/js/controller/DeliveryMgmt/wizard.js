@@ -48,10 +48,6 @@ define(['lodash', 'jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'cor
         }
     };
 
-    var submitter = {
-
-    };
-
     return {
         start: function () {
             var $filterContainer = $('.test-select-container');
@@ -90,7 +86,9 @@ define(['lodash', 'jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'cor
                     if(result.finished){
                         //finished quickly display report
                         report({replace:true}, task.report.children[0]).render($container);
-                        taskQueue.pollAll(true);
+                        taskQueue.archive(task.id).then(function(){
+                            taskQueue.pollAll();
+                        });
                     }else{
                         //move this to the queue
                         report({replace:true}, {
@@ -108,13 +106,6 @@ define(['lodash', 'jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'cor
                     taskQueue.pollAll();
                     feedback().error(err);
                 });
-            });
-
-            return;
-            $form.find('.form-submitter').on('click', function(e){
-                e.preventDefault();
-
-                console.log($form.serializeArray());
             });
         }
     };
