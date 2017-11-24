@@ -22,9 +22,8 @@
 namespace oat\taoDeliveryRdf\model\tasks;
 
 use common_report_Report as Report;
+use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
-use oat\oatbox\task\AbstractTaskAction;
-use oat\oatbox\task\Task;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoTaskQueue\model\QueueDispatcher;
@@ -38,7 +37,7 @@ use oat\taoTaskQueue\model\Task\TaskInterface;
  * @package oat\taoQtiTest\models\tasks
  * @author  Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class CompileDelivery extends AbstractTaskAction implements \JsonSerializable
+class CompileDelivery extends AbstractAction implements \JsonSerializable
 {
     /**
      * @param $params
@@ -63,33 +62,12 @@ class CompileDelivery extends AbstractTaskAction implements \JsonSerializable
         }
 
         $test = new \core_kernel_classes_Resource($params['test']);
-        $deliveryResource = new \core_kernel_classes_Resource($params['deliveryResourceUri']);
-
         $label = 'Delivery of ' . $test->getLabel();
 
+        /** @var DeliveryFactory $deliveryFactory */
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-        /** @var Report $report */
-        $report = $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
 
-        if ($report->getType() == Report::TYPE_ERROR) {
-            \common_Logger::i('Unable to generate delivery execution ' .
-                'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
-        }
-
-        if (isset($params['delivery'])) {
-            /** @var \core_kernel_classes_Resource[] $taskResources */
-            $taskResources = self::getTaskClass()->searchInstances([
-                Task::PROPERTY_LINKED_RESOURCE => $deliveryClass->getUri()
-            ]);
-            foreach ($taskResources as $taskResource) {
-                $taskResource->setPropertyValue(
-                    new \core_kernel_classes_Property(Task::PROPERTY_REPORT),
-                    json_encode($report)
-                );
-            }
-        }
-
-        return $report;
+        return $deliveryFactory->create($deliveryClass, $test, $label);
     }
 
     /**
@@ -105,10 +83,9 @@ class CompileDelivery extends AbstractTaskAction implements \JsonSerializable
      *
      * @param \core_kernel_classes_Resource $test     test resource to compile
      * @param \core_kernel_classes_Class    $delivery Optional delivery where to compile the test
-     * @param \core_kernel_classes_Resource $deliveryResource
      * @return TaskInterface
      */
-    public static function createTask(\core_kernel_classes_Resource $test, \core_kernel_classes_Class $delivery = null, \core_kernel_classes_Resource $deliveryResource)
+    public static function createTask(\core_kernel_classes_Resource $test, \core_kernel_classes_Class $delivery = null)
     {
         $action = new self();
         /** @var QueueDispatcher $queueDispatcher */
@@ -121,13 +98,7 @@ class CompileDelivery extends AbstractTaskAction implements \JsonSerializable
         if (!is_null($delivery)) {
             $parameters['delivery'] = $delivery->getUri();
         }
-        $parameters['deliveryResourceUri'] = $deliveryResource->getUri();
 
-        //put task in queue with reference to the test resource and delivery
-        $task = $queueDispatcher->createTask($action, $parameters, 'Compilation of ' . $test->getLabel());
-
-        $queueDispatcher->linkTaskToResource($task, $deliveryResource);
-
-        return $task;
+        return $queueDispatcher->createTask($action, $parameters, 'Compilation of ' . $test->getLabel());
     }
 }

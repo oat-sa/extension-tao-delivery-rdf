@@ -232,21 +232,9 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             if ($myForm->isValid() && $myForm->isSubmited()) {
                 try {
                     $test = new core_kernel_classes_Resource($myForm->getValue('test'));
-                    $label = __("Delivery of %s", $test->getLabel());
                     $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
-                    $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
-                    $deliveryResource->setLabel($label);
-                    $values = $myForm->getValues();
 
-                    /** @var DeliveryFactory $deliveryFactoryResources */
-                    $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-                    $deliveryResource = $deliveryFactoryResources->setInitialProperties($values, $deliveryResource);
-
-                    $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
-
-                    return $this->returnTaskJson($task, [
-                        'selectNode' => json_encode(\tao_helpers_Uri::encode($deliveryResource->getUri()))
-                    ]);
+                    return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass));
                 }catch(\Exception $e){
                     return $this->returnJson([
                         'success' => false,
