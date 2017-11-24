@@ -244,7 +244,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
                     $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
 
-                    return $this->returnCreatedTaskJson($task->getId(), [
+                    return $this->returnTaskJson($task, [
                         'selectNode' => json_encode(\tao_helpers_Uri::encode($deliveryResource->getUri()))
                     ]);
                 }catch(\Exception $e){
