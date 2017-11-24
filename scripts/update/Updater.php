@@ -29,9 +29,11 @@ use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
+use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
 use oat\taoDelivery\model\RuntimeService;
+use oat\taoTaskQueue\model\TaskLogInterface;
 
 /**
  *
@@ -174,5 +176,16 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
         
         $this->skip('3.17.0', '3.17.2');
+
+        if ($this->isVersion('3.17.2')) {
+            /** @var TaskLogInterface $taskLogService */
+            $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+
+            $taskLogService->linkTaskToCategory(CompileDelivery::class, TaskLogInterface::CATEGORY_DELIVERY_COMPILATION);
+
+            $this->getServiceManager()->register(TaskLogInterface::SERVICE_ID, $taskLogService);
+
+            $this->setVersion('3.18.0');
+        }
     }
 }
