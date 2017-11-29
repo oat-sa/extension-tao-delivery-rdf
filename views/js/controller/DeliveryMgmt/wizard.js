@@ -16,7 +16,16 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
-define(['jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'core/promise', 'taoTaskQueue/creator/formTaskCreator'], function ($, __, filterFactory, feedback, urlUtils, Promise, formTaskCreator) {
+define([
+    'jquery',
+    'i18n',
+    'ui/filter',
+    'ui/feedback',
+    'util/url',
+    'core/promise',
+    'taoTaskQueue/model/taskQueue',
+    'taoTaskQueue/component/taskCreationButton/taskCreationButton'
+], function ($, __, filterFactory, feedback, urlUtils, Promise, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
     var provider = {
@@ -54,6 +63,7 @@ define(['jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'core/promise'
             var $formElement = $('#test');
             var $form = $('#simpleWizard');
             var $container = $form.closest('.content-block');
+            var button, $oldSubmitter;
 
             filterFactory($filterContainer, {
                 placeholder: __('Select the test you want to publish to the test-takers'),
@@ -74,9 +84,35 @@ define(['jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'core/promise'
                     });
             }).render('<%= text %>');
 
-            formTaskCreator($form, $container);
+            //find the old submitter and replace it with the new component
+            $oldSubmitter = $form.find('.form-submitter');
+            button = taskCreationButtonFactory({
+                type : 'info',
+                icon : 'delivery',
+                title : __('Publish the test'),
+                label : __('Publish'),
+                terminatedLabel: __('Moved to background'),
+                taskQueue : taskQueue,
+                reportContainer : $container,
+                sourceElement : $form,
+                requestUrl : $form.prop('action'),
+                getRequestData : function getRequestData(){
+                    return $form.serializeArray();
+                }
+            }).on('continue', function(result){
+                if (result.extra && result.extra.selectNode) {
+                    //old jstree API used to refresh the the tree:
+                    $('.tree').trigger('refresh.taotree', [{
+                        uri: result.extra.selectNode
+                    }]);
+                }
+            }).on('error', function(err){
+                //format and display error message to user
+                feedback().error(err);
+            }).render($oldSubmitter.closest('.form-toolbar'));
+
+            //replace the old submitter with the new one
+            $oldSubmitter.replaceWith(button.getElement().css({float: 'right'}));
         }
     };
 });
-
-
