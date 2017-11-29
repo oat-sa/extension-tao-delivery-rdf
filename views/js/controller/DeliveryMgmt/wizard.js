@@ -72,6 +72,11 @@ define([
                 label: __('Select the test')
             }).on('change', function (test) {
                 $formElement.val(test);
+                if(test){
+                    button.enable();
+                }else{
+                    button.disable();
+                }
             }).on('request', function (params) {
                 provider
                     .list(params.data)
@@ -109,7 +114,7 @@ define([
             }).on('error', function(err){
                 //format and display error message to user
                 feedback().error(err);
-            }).render($oldSubmitter.closest('.form-toolbar'));
+            }).render($oldSubmitter.closest('.form-toolbar')).disable();
 
             //replace the old submitter with the new one
             $oldSubmitter.replaceWith(button.getElement().css({float: 'right'}));
