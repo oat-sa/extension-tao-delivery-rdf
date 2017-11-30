@@ -147,9 +147,9 @@ class Updater extends \common_ext_ExtensionUpdater {
             OntologyUpdater::syncModels();
             $this->setVersion('3.4.0');
         }
-       
+
         $this->skip('3.4.0', '3.6.1');
-      
+
         if ($this->isVersion('3.6.1')) {
             OntologyUpdater::syncModels();
             $this->getServiceManager()->register(RuntimeService::SERVICE_ID, new ContainerRuntime());
@@ -174,10 +174,10 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->getServiceManager()->register(DeliveryFactory::SERVICE_ID, $deliveryFactory);
             $this->setVersion('3.17.0');
         }
-        
-        $this->skip('3.17.0', '3.17.2');
 
-        if ($this->isVersion('3.17.2')) {
+        $this->skip('3.17.0', '3.17.3');
+
+        if ($this->isVersion('3.17.3')) {
             /** @var TaskLogInterface $taskLogService */
             $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
 

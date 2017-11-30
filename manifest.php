@@ -31,12 +31,12 @@ return array(
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
         'generis'     => '>=3.36.0',
-        'tao'         => '>=12.17.1',
+        'tao'         => '>=14.5.0',
         'taoGroups'   => '>=2.7.1',
         'taoTests'    => '>=3.5.0',
         'taoQtiTest'  => '>=9.11.0',
         'taoDelivery' => '>=7.4.0',
-        'taoTaskQueue' => '>=0.7.0'
+        'taoTaskQueue' => '>=0.8.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
