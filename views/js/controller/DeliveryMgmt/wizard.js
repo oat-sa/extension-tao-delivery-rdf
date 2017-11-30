@@ -106,7 +106,7 @@ define([
                 }
             }).on('continue', function(result){
                 if (result.extra && result.extra.selectNode) {
-                    //old jstree API used to refresh the the tree:
+                    //old jstree API used to refresh the tree:
                     $('.tree').trigger('refresh.taotree', [{
                         uri: result.extra.selectNode
                     }]);
@@ -116,7 +116,7 @@ define([
                 feedback().error(err);
             }).render($oldSubmitter.closest('.form-toolbar')).disable();
 
-            //replace the old submitter with the new one
+            //replace the old submitter with the new one and apply its style
             $oldSubmitter.replaceWith(button.getElement().css({float: 'right'}));
         }
     };
