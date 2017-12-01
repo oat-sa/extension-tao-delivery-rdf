@@ -20,6 +20,7 @@
  */
 namespace oat\taoDeliveryRdf\scripts\update;
 
+use oat\oatbox\service\ConfigurableService;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
@@ -178,7 +179,7 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('3.17.0', '3.17.3');
 
         if ($this->isVersion('3.17.3')) {
-            /** @var TaskLogInterface $taskLogService */
+            /** @var TaskLogInterface|ConfigurableService $taskLogService */
             $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
 
             $taskLogService->linkTaskToCategory(CompileDelivery::class, TaskLogInterface::CATEGORY_DELIVERY_COMPILATION);
