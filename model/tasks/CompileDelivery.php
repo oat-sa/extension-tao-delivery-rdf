@@ -99,6 +99,6 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
             $parameters['delivery'] = $delivery->getUri();
         }
 
-        return $queueDispatcher->createTask($action, $parameters, 'Compilation of ' . $test->getLabel());
+        return $queueDispatcher->createTask($action, $parameters, __('Publishing of "%s"', $test->getLabel()));
     }
 }
