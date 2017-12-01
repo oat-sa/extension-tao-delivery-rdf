@@ -17,15 +17,18 @@
  *
  */
 define([
+    'lodash',
     'jquery',
     'i18n',
+    'uri',
     'ui/filter',
     'ui/feedback',
     'util/url',
+    'layout/section',
     'core/promise',
     'taoTaskQueue/model/taskQueue',
     'taoTaskQueue/component/taskCreationButton/taskCreationButton'
-], function ($, __, filterFactory, feedback, urlUtils, Promise, taskQueue, taskCreationButtonFactory) {
+], function (_, $, __, uriHelper, filterFactory, feedback, urlUtils, section, Promise, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
     var provider = {
@@ -104,13 +107,28 @@ define([
                 getRequestData : function getRequestData(){
                     return $form.serializeArray();
                 }
-            }).on('continue', function(result){
-                if (result.extra && result.extra.selectNode) {
-                    //old jstree API used to refresh the tree:
-                    $('.tree').trigger('refresh.taotree', [{
-                        uri: result.extra.selectNode
+            }).on('finished', function(result){
+                var $trees;
+                var currentSection = section.current().selected;
+
+                if (result.task
+                    && result.task.report
+                    && _.isArray(result.task.report.children)
+                    && result.task.report.children.length
+                    && result.task.report.children[0]
+                    && result.task.report.children[0].data
+                    && result.task.report.children[0].data.uriResource) {
+
+                    feedback().info(__('%s completed', result.task.taskLabel));
+
+                    //old jstree API used to refresh the tree and select the new resource
+                    $trees = (currentSection && currentSection.panel && currentSection.panel.length) ?
+                        $('.tree', currentSection.panel) : $('.tree:visible');
+                    $trees.trigger('refresh.taotree', [{
+                        selectNode : uriHelper.encode(result.task.report.children[0].data.uriResource)
                     }]);
                 }
+
             }).on('error', function(err){
                 //format and display error message to user
                 feedback().error(err);
