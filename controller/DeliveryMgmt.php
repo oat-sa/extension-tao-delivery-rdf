@@ -244,7 +244,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 }
             } else {
                 $this->setData('myForm', $myForm->render());
-                $this->setData('formTitle', __('Publish a new delivery'));
+                $this->setData('formTitle', __('Create a new delivery'));
                 $this->setView('form.tpl', 'tao');
             }
 
