@@ -60,6 +60,19 @@ define([
         }
     };
 
+    /**
+     * wrapped the old jstree API used to refresh the tree and optionally select a resource
+     * @param {String} [uriResource] - the uri resource node to be selected
+     */
+    var refreshTree = function refreshTree(uriResource){
+        var currentSection = section.current().selected;
+        var $trees = (currentSection && currentSection.panel && currentSection.panel.length) ?
+            $('.tree', currentSection.panel) : $('.tree:visible');
+        $trees.trigger('refresh.taotree', [{
+            selectNode : uriHelper.encode(uriResource)
+        }]);
+    };
+
     return {
         start: function () {
             var $filterContainer = $('.test-select-container');
@@ -108,27 +121,21 @@ define([
                     return $form.serializeArray();
                 }
             }).on('finished', function(result){
-                var $trees;
-                var currentSection = section.current().selected;
-
                 if (result.task
                     && result.task.report
                     && _.isArray(result.task.report.children)
                     && result.task.report.children.length
-                    && result.task.report.children[0]
-                    && result.task.report.children[0].data
-                    && result.task.report.children[0].data.uriResource) {
-
-                    feedback().info(__('%s completed', result.task.taskLabel));
-
-                    //old jstree API used to refresh the tree and select the new resource
-                    $trees = (currentSection && currentSection.panel && currentSection.panel.length) ?
-                        $('.tree', currentSection.panel) : $('.tree:visible');
-                    $trees.trigger('refresh.taotree', [{
-                        selectNode : uriHelper.encode(result.task.report.children[0].data.uriResource)
-                    }]);
+                    && result.task.report.children[0]) {
+                    if(result.task.report.children[0].data
+                        && result.task.report.children[0].data.uriResource){
+                        feedback().info(__('%s completed', result.task.taskLabel));
+                        refreshTree(result.task.report.children[0].data.uriResource);
+                    }else{
+                        this.displayReport(result.task.report.children[0], __('Error'));
+                    }
                 }
-
+            }).on('continue', function(){
+                refreshTree();
             }).on('error', function(err){
                 //format and display error message to user
                 feedback().error(err);
