@@ -37,6 +37,7 @@ use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use common_report_Report as Report;
+use oat\taoPublishing\model\publishing\delivery\PublishingDeliveryService;
 use oat\taoTaskQueue\model\QueueDispatcher;
 use oat\taoTaskQueue\model\TaskLogInterface;
 use oat\taoTaskQueue\model\TaskLogActionTrait;
@@ -234,7 +235,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                     $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                     $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
 
-                    return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass));
+                    return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $myForm->getValues()));
                 }catch(\Exception $e){
                     return $this->returnJson([
                         'success' => false,

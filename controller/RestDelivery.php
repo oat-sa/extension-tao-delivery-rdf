@@ -103,16 +103,12 @@ class RestDelivery extends \tao_actions_RestController
             }
 
             $deliveryClass = $this->getDeliveryClassByParameters();
-            $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
-            $label = __("Delivery of %s", $test->getLabel());
-            $deliveryResource->setLabel($label);
 
             /** @var DeliveryFactory $deliveryFactoryService */
             $deliveryFactoryService = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
             $initialProperties = $deliveryFactoryService->getInitialPropertiesFromRequest($this->getRequest());
-            $deliveryResource = $deliveryFactoryService->setInitialProperties($initialProperties, $deliveryResource);
 
-            $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
+            $task = CompileDelivery::createTask($test, $deliveryClass, $initialProperties);
 
             $result = [
                 'reference_id' => $task->getId()
@@ -132,7 +128,6 @@ class RestDelivery extends \tao_actions_RestController
             }
 
             return $this->returnSuccess($result);
-
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
