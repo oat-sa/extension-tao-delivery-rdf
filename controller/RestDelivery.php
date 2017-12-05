@@ -225,8 +225,7 @@ class RestDelivery extends \tao_actions_RestController
             }
 
             $data = $this->getTaskLogReturnData(
-                $this->getRequestParameter(self::TASK_ID_PARAM),
-                CompileDelivery::class
+                $this->getRequestParameter(self::TASK_ID_PARAM)
             );
 
             $this->returnSuccess($data);
