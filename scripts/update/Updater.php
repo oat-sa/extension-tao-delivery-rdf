@@ -173,6 +173,6 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('3.17.0');
         }
         
-        $this->skip('3.17.0', '3.17.3');
+        $this->skip('3.17.0', '3.18.0');
     }
 }
