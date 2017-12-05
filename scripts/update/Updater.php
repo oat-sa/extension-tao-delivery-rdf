@@ -173,6 +173,18 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('3.17.0');
         }
         
-        $this->skip('3.17.0', '3.17.3');
+        $this->skip('3.17.0', '3.17.2');
+
+        if ($this->isVersion('3.17.2')) {
+            $this->getServiceManager()->register(
+                'taoDeliveryRdf/DeliveryMgmt',
+                new \oat\oatbox\config\ConfigurationService([
+                    'config' => [
+                        'OntologyTreeOrder' => [\oat\generis\model\OntologyRdfs::RDFS_LABEL => 'asc']
+                    ]
+                ])
+            );
+            $this->setVersion('3.18.0');
+        }
     }
 }
