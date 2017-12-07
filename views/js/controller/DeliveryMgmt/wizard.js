@@ -27,7 +27,7 @@ define([
     'layout/section',
     'core/promise',
     'taoTaskQueue/model/taskQueue',
-    'taoTaskQueue/component/taskCreationButton/taskCreationButton'
+    'taoTaskQueue/component/button/standardButton'
 ], function (_, $, __, uriHelper, filterFactory, feedback, urlUtils, section, Promise, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
@@ -79,7 +79,7 @@ define([
             var $formElement = $('#test');
             var $form = $('#simpleWizard');
             var $container = $form.closest('.content-block');
-            var button, $oldSubmitter;
+            var taskCreationButton, $oldSubmitter;
 
             filterFactory($filterContainer, {
                 placeholder: __('Select the test you want to publish to the test-takers'),
@@ -89,9 +89,9 @@ define([
             }).on('change', function (test) {
                 $formElement.val(test);
                 if(test){
-                    button.enable();
+                    taskCreationButton.enable();
                 }else{
-                    button.disable();
+                    taskCreationButton.disable();
                 }
             }).on('request', function (params) {
                 provider
@@ -107,19 +107,17 @@ define([
 
             //find the old submitter and replace it with the new component
             $oldSubmitter = $form.find('.form-submitter');
-            button = taskCreationButtonFactory({
+            taskCreationButton = taskCreationButtonFactory({
                 type : 'info',
                 icon : 'delivery',
                 title : __('Publish the test'),
                 label : __('Publish'),
-                terminatedLabel: __('Moved to background'),
                 taskQueue : taskQueue,
-                reportContainer : $container,
-                sourceElement : $form,
-                requestUrl : $form.prop('action'),
-                getRequestData : function getRequestData(){
+                taskCreationtUrl : $form.prop('action'),
+                taskCreationData : function getTaskCreationData(){
                     return $form.serializeArray();
-                }
+                },
+                taskReportContainer : $container
             }).on('finished', function(result){
                 if (result.task
                     && result.task.report
@@ -142,7 +140,7 @@ define([
             }).render($oldSubmitter.closest('.form-toolbar')).disable();
 
             //replace the old submitter with the new one and apply its style
-            $oldSubmitter.replaceWith(button.getElement().css({float: 'right'}));
+            $oldSubmitter.replaceWith(taskCreationButton.getElement().css({float: 'right'}));
         }
     };
 });
