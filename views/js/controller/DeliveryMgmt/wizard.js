@@ -113,7 +113,7 @@ define([
                 title : __('Publish the test'),
                 label : __('Publish'),
                 taskQueue : taskQueue,
-                taskCreationtUrl : $form.prop('action'),
+                taskCreationUrl : $form.prop('action'),
                 taskCreationData : function getTaskCreationData(){
                     return $form.serializeArray();
                 },
