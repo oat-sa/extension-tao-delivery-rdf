@@ -24,7 +24,10 @@ module.exports = function(grunt) {
             baseUrl : '../js',
             dir : out,
             mainConfigFile : './config/requirejs.build.js',
-            paths : { 'taoDeliveryRdf' : root + '/taoDeliveryRdf/views/js' },
+            paths : {
+                'taoDeliveryRdf' : root + '/taoDeliveryRdf/views/js',
+                'taoTaskQueue' : root + '/taoTaskQueue/views/js'
+            },
             modules : [{
                 name: 'taoDeliveryRdf/controller/routes',
                 include : ext.getExtensionsControllers(['taoDeliveryRdf']),
