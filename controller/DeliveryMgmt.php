@@ -37,8 +37,10 @@ use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use common_report_Report as Report;
+use oat\taoPublishing\model\publishing\delivery\PublishingDeliveryService;
 use oat\taoTaskQueue\model\QueueDispatcher;
 use oat\taoTaskQueue\model\TaskLogInterface;
+use oat\taoTaskQueue\model\TaskLogActionTrait;
 
 /**
  * Controller to managed assembled deliveries
@@ -49,6 +51,7 @@ use oat\taoTaskQueue\model\TaskLogInterface;
 class DeliveryMgmt extends \tao_actions_SaSModule
 {
     use EventManagerAwareTrait;
+    use TaskLogActionTrait;
 
     /**
      * constructor: initialize the service and the default data
@@ -59,7 +62,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     public function __construct()
     {
         parent::__construct();
-        
+
         // the service is initialized by default
         $this->service = DeliveryAssemblyService::singleton();
         $this->defaultData();
@@ -73,7 +76,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     {
         return $this->service;
     }
-    
+
     /*
      * controller actions
      */
@@ -116,11 +119,11 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
         $formContainer = new DeliveryForm($class, $delivery);
         $myForm = $formContainer->getForm();
-        
+
         if ($myForm->isSubmited()) {
             if ($myForm->isValid()) {
                 $propertyValues = $myForm->getValues();
-                
+
                 // then save the property values as usual
                 $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($delivery);
                 $delivery = $binder->bind($propertyValues);
@@ -132,26 +135,26 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 $this->setData('reload', true);
             }
         }
-        
+
         $this->setData('label', $delivery->getLabel());
-        
+
         // history
         $this->setData('date', $this->getClassService()->getCompilationDate($delivery));
         if (ServiceProxy::singleton()->implementsMonitoring()) {
             $execs = ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
             $this->setData('exec', count($execs));
         }
-        
+
         // define the groups related to the current delivery
         $property = new core_kernel_classes_Property(GroupAssignment::PROPERTY_GROUP_DELIVERY);
         $tree = \tao_helpers_form_GenerisTreeForm::buildReverseTree($delivery, $property);
         $tree->setTitle(__('Assigned to'));
         $tree->setTemplate(Template::getTemplate('widgets/assignGroup.tpl'));
         $this->setData('groupTree', $tree->render());
-        
+
         // testtaker brick
         $this->setData('assemblyUri', $delivery->getUri());
-        
+
         // define the subjects excluded from the current delivery
         $property = new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
         $excluded = $delivery->getPropertyValues($property);
@@ -163,26 +166,26 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
         $this->setData('formTitle', __('Properties'));
         $this->setData('myForm', $myForm->render());
-        
+
         if (\common_ext_ExtensionsManager::singleton()->isEnabled('taoCampaign')) {
             $this->setData('campaign', taoCampaign_helpers_Campaign::renderCampaignTree($delivery));
         }
         $this->setView('DeliveryMgmt/editDelivery.tpl');
     }
-    
+
     public function excludeTesttaker()
     {
         $assembly = $this->getCurrentInstance();
         $this->setData('assemblyUri', $assembly->getUri());
-        
+
         // define the subjects excluded from the current delivery
         $property = new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
-        $excluded = array(); 
+        $excluded = array();
         foreach ($assembly->getPropertyValues($property) as $uri) {
             $user = new core_kernel_classes_Resource($uri);
             $excluded[$uri] = $user->getLabel();
         }
-        
+
         $assigned = array();
         foreach ($this->getServiceManager()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($assembly->getUri()) as $userId) {
             if (!in_array($userId, array_keys($excluded))) {
@@ -190,14 +193,14 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 $assigned[$userId] = $user->getLabel();
             }
         }
-        
+
         $this->setData('assigned', $assigned);
         $this->setData('excluded', $excluded);
-        
-        
+
+
         $this->setView('DeliveryMgmt/excludeTesttaker.tpl');
     }
-    
+
     public function saveExcluded() {
         if(!\tao_helpers_Request::isAjax()){
             throw new \common_exception_IsAjaxAction(__FUNCTION__);
@@ -205,12 +208,12 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         if(!$this->hasRequestParameter('excluded')){
             throw new \common_exception_MissingParameter('excluded');
         }
-        
+
         $jsonArray = json_decode($_POST['excluded']);
         if(!is_array($jsonArray)){
             throw new \common_Exception('parameter "excluded" should be a json encoded array');
         }
-        
+
         $assembly = $this->getCurrentInstance();
         $success = $assembly->editPropertyValues(new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS),$jsonArray);
 
@@ -226,41 +229,26 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         try {
             $formContainer = new WizardForm(array('class' => $this->getCurrentClass()));
             $myForm = $formContainer->getForm();
-             
+
             if ($myForm->isValid() && $myForm->isSubmited()) {
-                $test = new core_kernel_classes_Resource($myForm->getValue('test'));
-                $label = __("Delivery of %s", $test->getLabel());
-                $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
-                $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
-                $deliveryResource->setLabel($label);
-                $values = $myForm->getValues();
+                try {
+                    $test = new core_kernel_classes_Resource($myForm->getValue('test'));
+                    $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
 
-                /** @var DeliveryFactory $deliveryFactoryResources */
-                $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-                $deliveryResource = $deliveryFactoryResources->setInitialProperties($values, $deliveryResource);
-
-                $task = CompileDelivery::createTask($test, $deliveryClass, $deliveryResource);
-
-                /** @var TaskLogInterface $taskLog */
-                $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
-
-                if (in_array($taskLog->getStatus($task->getId()), [TaskLogInterface::STATUS_FAILED, TaskLogInterface::STATUS_COMPLETED])) {
-                    $report = $taskLog->getReport($task->getId());
-
-                    if (!$report->getData()) {
-                        $report = $report->getIterator()->current();
-                    }
-                } else {
-                    $report = Report::createInfo(__('Creating of delivery is successfully scheduled'));
+                    return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $myForm->getValues()));
+                }catch(\Exception $e){
+                    return $this->returnJson([
+                        'success' => false,
+                        'errorMsg' => $e instanceof \common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
+                        'errorCode' => $e->getCode(),
+                    ]);
                 }
-
-                $this->returnReport($report);
             } else {
                 $this->setData('myForm', $myForm->render());
                 $this->setData('formTitle', __('Create a new delivery'));
                 $this->setView('form.tpl', 'tao');
             }
-    
+
         } catch (NoTestsException $e) {
             $this->setView('DeliveryMgmt/wizard_error.tpl');
         }

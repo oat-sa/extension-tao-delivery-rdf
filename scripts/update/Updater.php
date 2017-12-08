@@ -20,6 +20,7 @@
  */
 namespace oat\taoDeliveryRdf\scripts\update;
 
+use oat\oatbox\service\ConfigurableService;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
@@ -29,9 +30,11 @@ use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
+use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
 use oat\taoDelivery\model\RuntimeService;
+use oat\taoTaskQueue\model\TaskLogInterface;
 
 /**
  *
@@ -145,9 +148,9 @@ class Updater extends \common_ext_ExtensionUpdater {
             OntologyUpdater::syncModels();
             $this->setVersion('3.4.0');
         }
-       
+
         $this->skip('3.4.0', '3.6.1');
-      
+
         if ($this->isVersion('3.6.1')) {
             OntologyUpdater::syncModels();
             $this->getServiceManager()->register(RuntimeService::SERVICE_ID, new ContainerRuntime());
@@ -172,7 +175,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->getServiceManager()->register(DeliveryFactory::SERVICE_ID, $deliveryFactory);
             $this->setVersion('3.17.0');
         }
-        
+
         $this->skip('3.17.0', '3.17.3');
 
         if ($this->isVersion('3.17.3')) {
@@ -185,6 +188,17 @@ class Updater extends \common_ext_ExtensionUpdater {
                 ])
             );
             $this->setVersion('3.18.0');
+        }
+
+        if ($this->isVersion('3.18.0')) {
+            /** @var TaskLogInterface|ConfigurableService $taskLogService */
+            $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+
+            $taskLogService->linkTaskToCategory(CompileDelivery::class, TaskLogInterface::CATEGORY_DELIVERY_COMPILATION);
+
+            $this->getServiceManager()->register(TaskLogInterface::SERVICE_ID, $taskLogService);
+
+            $this->setVersion('3.19.0');
         }
     }
 }

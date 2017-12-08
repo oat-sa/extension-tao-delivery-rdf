@@ -21,13 +21,14 @@
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryPublishingService;
 use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
+use oat\taoDeliveryRdf\scripts\install\SetUpQueueTasks;
 
 return array(
   'name'        => 'taoDeliveryRdf',
   'label'       => 'Delivery Management',
   'description' => 'Manages deliveries using the ontology',
   'license'     => 'GPL-2.0',
-  'version'     => '3.18.0',
+  'version'     => '3.19.0',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
         'generis'     => '>=3.36.0',
@@ -36,7 +37,7 @@ return array(
         'taoTests'    => '>=3.5.0',
         'taoQtiTest'  => '>=9.11.0',
         'taoDelivery' => '>=7.4.0',
-        'taoTaskQueue' => '>=0.4.0'
+        'taoTaskQueue' => '>=0.10.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
@@ -53,7 +54,8 @@ return array(
             'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
             'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
             RegisterDeliveryFactoryService::class,
-            OverrideRuntime::class
+            OverrideRuntime::class,
+            SetUpQueueTasks::class
         )
     ),
     //'uninstall' => array(),
