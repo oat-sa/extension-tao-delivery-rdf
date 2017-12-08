@@ -53,8 +53,8 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
 
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
 
-        if (isset($params['$deliveryClass'])) {
-            $deliveryClass = new \core_kernel_classes_Class($params['$deliveryClass']);
+        if (isset($params['deliveryClass'])) {
+            $deliveryClass = new \core_kernel_classes_Class($params['deliveryClass']);
             if (!$deliveryClass->exists()) {
                 $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
             }
