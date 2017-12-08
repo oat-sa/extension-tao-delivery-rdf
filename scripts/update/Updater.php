@@ -179,6 +179,18 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('3.17.0', '3.17.3');
 
         if ($this->isVersion('3.17.3')) {
+            $this->getServiceManager()->register(
+                'taoDeliveryRdf/DeliveryMgmt',
+                new \oat\oatbox\config\ConfigurationService([
+                    'config' => [
+                        'OntologyTreeOrder' => [\oat\generis\model\OntologyRdfs::RDFS_LABEL => 'asc']
+                    ]
+                ])
+            );
+            $this->setVersion('3.18.0');
+        }
+
+        if ($this->isVersion('3.18.0')) {
             /** @var TaskLogInterface|ConfigurableService $taskLogService */
             $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
 
@@ -186,7 +198,7 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $this->getServiceManager()->register(TaskLogInterface::SERVICE_ID, $taskLogService);
 
-            $this->setVersion('3.18.0');
+            $this->setVersion('3.19.0');
         }
     }
 }
