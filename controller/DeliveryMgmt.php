@@ -303,4 +303,16 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
         $this->returnJson(['total' => count($tests), 'items' => $tests]);
     }
+
+    /**
+     * @param array $options
+     * @throws \common_exception_IsAjaxAction
+     */
+    protected function getTreeOptionsFromRequest($options = [])
+    {
+        $config = $this->getServiceManager()->get('taoDeliveryRdf/DeliveryMgmt')->getConfig();
+        $options['order'] = key($config['OntologyTreeOrder']);
+        $options['orderdir'] = $config['OntologyTreeOrder'][$options['order']];
+        return parent::getTreeOptionsFromRequest($options);
+    }
 }
