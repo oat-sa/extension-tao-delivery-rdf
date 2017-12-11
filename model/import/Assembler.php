@@ -24,6 +24,7 @@ use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\file\FileIterator;
+use oat\generis\model\OntologyRdfs;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\generis\model\OntologyRdf;
@@ -111,7 +112,7 @@ class Assembler
         $resultServer   = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
         
         $properties = array_merge($properties, array(
-            RDFS_LABEL                          => $label,
+            OntologyRdfs::RDFS_LABEL                          => $label,
             DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => array_keys($dirs),
             DeliveryAssemblyService::PROPERTY_DELIVERY_TIME      => time(),
             DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME   => $serviceCall->toOntology(),

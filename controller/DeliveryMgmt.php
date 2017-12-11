@@ -21,6 +21,7 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
+use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManagerAwareTrait;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
@@ -271,7 +272,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
         $queryBuilder = $search->query();
         $query = $search->searchType($queryBuilder , TaoOntology::TEST_CLASS_URI, true)
-            ->add(RDFS_LABEL)
+            ->add(OntologyRdfs::RDFS_LABEL)
             ->contains($q);
 
         $queryBuilder->setCriteria($query);
