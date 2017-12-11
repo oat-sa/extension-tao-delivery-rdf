@@ -106,13 +106,13 @@ class DeliveryAssemblyServiceTest extends FileStorageTestCase
     }
 
     /**
-     * Test if root class is \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY)
+     * Test if root class is \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_ID)
      */
     public function testGetRootClass()
     {
         $assemblyService = DeliveryAssemblyService::singleton();
 
-        $class = new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+        $class = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
         $this->assertEquals($class, $assemblyService->getRootClass());
     }
 

@@ -16,7 +16,19 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
-define(['jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'core/promise'], function ($, __, filterFactory, feedback, urlUtils, Promise) {
+define([
+    'lodash',
+    'jquery',
+    'i18n',
+    'uri',
+    'ui/filter',
+    'ui/feedback',
+    'util/url',
+    'layout/section',
+    'core/promise',
+    'taoTaskQueue/model/taskQueue',
+    'taoTaskQueue/component/button/standardButton'
+], function (_, $, __, uriHelper, filterFactory, feedback, urlUtils, section, Promise, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
     var provider = {
@@ -48,11 +60,26 @@ define(['jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'core/promise'
         }
     };
 
+    /**
+     * wrapped the old jstree API used to refresh the tree and optionally select a resource
+     * @param {String} [uriResource] - the uri resource node to be selected
+     */
+    var refreshTree = function refreshTree(uriResource){
+        var currentSection = section.current().selected;
+        var $trees = (currentSection && currentSection.panel && currentSection.panel.length) ?
+            $('.tree', currentSection.panel) : $('.tree:visible');
+        $trees.trigger('refresh.taotree', [{
+            selectNode : uriHelper.encode(uriResource)
+        }]);
+    };
 
     return {
         start: function () {
             var $filterContainer = $('.test-select-container');
             var $formElement = $('#test');
+            var $form = $('#simpleWizard');
+            var $container = $form.closest('.content-block');
+            var taskCreationButton, $oldSubmitter;
 
             filterFactory($filterContainer, {
                 placeholder: __('Select the test you want to publish to the test-takers'),
@@ -61,6 +88,11 @@ define(['jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'core/promise'
                 label: __('Select the test')
             }).on('change', function (test) {
                 $formElement.val(test);
+                if(test){
+                    taskCreationButton.enable();
+                }else{
+                    taskCreationButton.disable();
+                }
             }).on('request', function (params) {
                 provider
                     .list(params.data)
@@ -72,8 +104,43 @@ define(['jquery', 'i18n', 'ui/filter', 'ui/feedback', 'util/url', 'core/promise'
                         feedback().error(err);
                     });
             }).render('<%= text %>');
+
+            //find the old submitter and replace it with the new component
+            $oldSubmitter = $form.find('.form-submitter');
+            taskCreationButton = taskCreationButtonFactory({
+                type : 'info',
+                icon : 'delivery',
+                title : __('Publish the test'),
+                label : __('Publish'),
+                taskQueue : taskQueue,
+                taskCreationUrl : $form.prop('action'),
+                taskCreationData : function getTaskCreationData(){
+                    return $form.serializeArray();
+                },
+                taskReportContainer : $container
+            }).on('finished', function(result){
+                if (result.task
+                    && result.task.report
+                    && _.isArray(result.task.report.children)
+                    && result.task.report.children.length
+                    && result.task.report.children[0]) {
+                    if(result.task.report.children[0].data
+                        && result.task.report.children[0].data.uriResource){
+                        feedback().info(__('%s completed', result.task.taskLabel));
+                        refreshTree(result.task.report.children[0].data.uriResource);
+                    }else{
+                        this.displayReport(result.task.report.children[0], __('Error'));
+                    }
+                }
+            }).on('continue', function(){
+                refreshTree();
+            }).on('error', function(err){
+                //format and display error message to user
+                feedback().error(err);
+            }).render($oldSubmitter.closest('.form-toolbar')).disable();
+
+            //replace the old submitter with the new one and apply its style
+            $oldSubmitter.replaceWith(taskCreationButton.getElement().css({float: 'right'}));
         }
     };
 });
-
-

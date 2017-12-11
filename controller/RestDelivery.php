@@ -19,20 +19,24 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
+use oat\oatbox\event\EventManagerAwareTrait;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\generis\model\OntologyRdfs;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
-use oat\tao\model\TaskQueueActionTrait;
-use oat\oatbox\task\Task;
+use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
+use oat\taoTaskQueue\model\Entity\TaskLogEntity;
+use oat\taoTaskQueue\model\TaskLogActionTrait;
+use oat\taoTaskQueue\model\TaskLogInterface;
 
 class RestDelivery extends \tao_actions_RestController
 {
-    use TaskQueueActionTrait {
-        getTask as traitGetTask;
-        getTaskData as traitGetTaskData;
-    }
+    use EventManagerAwareTrait;
+    use TaskLogActionTrait;
 
     const REST_DELIVERY_TEST_ID        = 'test';
+    const REST_DELIVERY_SEARCH_PARAMS  = 'searchParams';
+    const REST_DELIVERY_ID             = 'delivery';
     const REST_DELIVERY_CLASS_URI      = 'delivery-uri';
     const REST_DELIVERY_CLASS_LABEL    = 'delivery-label';
     const REST_DELIVERY_CLASS_PARENT   = 'delivery-parent';
@@ -72,6 +76,11 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_Exception('Unable to generate delivery execution.');
             }
             $delivery = $report->getData();
+
+            /** @var DeliveryFactory $deliveryFactoryService */
+            $deliveryFactoryService = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+            $initialProperties = $deliveryFactoryService->getInitialPropertiesFromRequest($this->getRequest());
+            $delivery = $deliveryFactoryService->setInitialProperties($initialProperties, $delivery);
             $this->returnSuccess(array('delivery' => $delivery->getUri()));
         } catch (\Exception $e) {
             $this->returnFailure($e);
@@ -95,22 +104,108 @@ class RestDelivery extends \tao_actions_RestController
             }
 
             $deliveryClass = $this->getDeliveryClassByParameters();
-            $task = CompileDelivery::createTask($test, $deliveryClass);
+
+            /** @var DeliveryFactory $deliveryFactoryService */
+            $deliveryFactoryService = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+            $initialProperties = $deliveryFactoryService->getInitialPropertiesFromRequest($this->getRequest());
+
+            $task = CompileDelivery::createTask($test, $deliveryClass, $initialProperties);
 
             $result = [
                 'reference_id' => $task->getId()
             ];
-            $report = $task->getReport();
+
+            /** @var TaskLogInterface $taskLog */
+            $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+
+            $report = $taskLog->getReport($task->getId());
+
             if (!empty($report)) {
                 if ($report instanceof \common_report_Report) {
                     //serialize report to array
                     $report = json_decode($report);
                 }
-                $result['report'] = $report;
+                $result['common_report_Report'] = $report;
+            }
+
+            return $this->returnSuccess($result);
+        } catch (\Exception $e) {
+            $this->returnFailure($e);
+        }
+    }
+
+    /**
+     * Update delivery by parameters
+     */
+    public function update()
+    {
+        try {
+            if ($this->getRequestMethod() !== \Request::HTTP_POST) {
+                throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
+            }
+
+            if (! $this->hasRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)) {
+                throw new \common_exception_MissingParameter(self::REST_DELIVERY_SEARCH_PARAMS, $this->getRequestURI());
+            }
+
+            $where = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
+            $propertyValues = $this->getRequestParameters();
+            unset($propertyValues[self::REST_DELIVERY_SEARCH_PARAMS]);
+
+            $deliveryModelClass = $this->getDeliveryRootClass();
+            $deliveries = $deliveryModelClass->searchInstances($where, ['like' => false, 'recursive' => true]);
+
+            $response = [];
+
+            /** @var \core_kernel_classes_Resource $delivery */
+            foreach ($deliveries as $key => $delivery) {
+                foreach ($propertyValues as $rdfKey => $rdfValue) {
+                    $rdfKey = \tao_helpers_Uri::decode($rdfKey);
+                    $property = $this->getProperty($rdfKey);
+                    $delivery->editPropertyValues($property, $rdfValue);
+                }
+                $response[] = ['delivery' => $delivery->getUri()];
+            }
+            $this->returnSuccess($response);
+        }catch (\Exception $e) {
+                $this->returnFailure($e);
+            }
+    }
+
+    /**
+     * Update delivery by parameters
+     */
+    public function updateDeferred()
+    {
+        try {
+            if ($this->getRequestMethod() !== \Request::HTTP_POST) {
+                throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
+            }
+            if (! $this->hasRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)) {
+                throw new \common_exception_MissingParameter(self::REST_DELIVERY_SEARCH_PARAMS, $this->getRequestURI());
+            }
+            $where = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
+            $propertyValues = $this->getRequestParameters();
+            unset($propertyValues[self::REST_DELIVERY_SEARCH_PARAMS]);
+
+            $task = UpdateDelivery::createTask($where, $propertyValues);
+
+            $result = [
+                'reference_id' => $task->getId()
+            ];
+
+            /** @var TaskLogInterface $taskLog */
+            $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+            $report = $taskLog->getReport($task->getId());
+            if (!empty($report)) {
+                if ($report instanceof \common_report_Report) {
+                    //serialize report to array
+                    $report = json_decode($report);
+                }
+                $result['common_report_Report'] = $report;
             }
             return $this->returnSuccess($result);
-
-        } catch (\Exception $e) {
+        }catch (\Exception $e) {
             $this->returnFailure($e);
         }
     }
@@ -124,12 +219,55 @@ class RestDelivery extends \tao_actions_RestController
             if (!$this->hasRequestParameter(self::TASK_ID_PARAM)) {
                 throw new \common_exception_MissingParameter(self::TASK_ID_PARAM, $this->getRequestURI());
             }
-            $data = $this->getTaskData($this->getRequestParameter(self::TASK_ID_PARAM));
+
+            $data = $this->getTaskLogReturnData(
+                $this->getRequestParameter(self::TASK_ID_PARAM),
+                CompileDelivery::class
+            );
+
             $this->returnSuccess($data);
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
     }
+
+    /**
+     * Return 'Success' instead of 'Completed', required by the specified API.
+     *
+     * @param TaskLogEntity $taskLogEntity
+     * @return string
+     */
+    protected function getTaskStatus(TaskLogEntity $taskLogEntity)
+    {
+        if ($taskLogEntity->getStatus()->isCreated()) {
+            return 'In Progress';
+        } else if ($taskLogEntity->getStatus()->isCompleted()){
+            return 'Success';
+        }
+
+        return $taskLogEntity->getStatus()->getLabel();
+    }
+
+    /**
+     * @param TaskLogEntity $taskLogEntity
+     * @return array
+     */
+    protected function addExtraReturnData(TaskLogEntity $taskLogEntity)
+    {
+        $data = [];
+
+        if ($taskLogEntity->getReport()) {
+            $plainReport = $this->getPlainReport($taskLogEntity->getReport());
+
+            //the second report is the report of the compilation test
+            if (isset($plainReport[1]) && isset($plainReport[1]->getData()['uriResource'])) {
+                $data['delivery'] = $plainReport[1]->getData()['uriResource'];
+            }
+        }
+
+        return $data;
+    }
+
 
     /**
      * Create a Delivery Class
@@ -161,83 +299,6 @@ class RestDelivery extends \tao_actions_RestController
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
-    }
-
-    /**
-     * @param $taskId
-     * @return array
-     */
-    protected function getTaskData($taskId)
-    {
-        $data = $this->traitGetTaskData($taskId);
-        $task = $this->getTask($taskId);
-        $report = \common_report_Report::jsonUnserialize($task->getReport());
-        if ($report) {
-            $plainReport = $this->getPlainReport($report);
-            //the second report is report of compilation test
-            if (isset($plainReport[1]) && isset($plainReport[1]->getData()['uriResource'])) {
-                $data['delivery'] = $plainReport[1]->getData()['uriResource'];
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * @param Task $taskId
-     * @return Task
-     * @throws \common_exception_BadRequest
-     */
-    protected function getTask($taskId)
-    {
-        $task = $this->traitGetTask($taskId);
-        if ($task->getInvocable() !== 'oat\taoDeliveryRdf\model\tasks\CompileDelivery') {
-            throw new \common_exception_BadRequest("Wrong task type");
-        }
-        return $task;
-    }
-
-    /**
-     * @param Task $task
-     * @return string
-     */
-    protected function getTaskStatus(Task $task)
-    {
-        $report = $task->getReport();
-        if (in_array(
-            $task->getStatus(),
-            [Task::STATUS_CREATED, Task::STATUS_RUNNING, Task::STATUS_STARTED])
-        ) {
-            $result = 'In Progress';
-        } else if ($report) {
-            $report = \common_report_Report::jsonUnserialize($report);
-            $plainReport = $this->getPlainReport($report);
-            $success = true;
-            foreach ($plainReport as $r) {
-                $success = $success && $r->getType() != \common_report_Report::TYPE_ERROR;
-            }
-            $result = $success ? 'Success' : 'Failed';
-        }
-        return $result;
-    }
-
-    /**
-     * @param Task $task
-     * @return array
-     */
-    protected function getTaskReport(Task $task)
-    {
-        $report = \common_report_Report::jsonUnserialize($task->getReport());
-        $result = [];
-        if ($report) {
-            $plainReport = $this->getPlainReport($report);
-            foreach ($plainReport as $r) {
-                $result[] = [
-                    'type' => $r->getType(),
-                    'message' => $r->getMessage(),
-                ];
-            }
-        }
-        return $result;
     }
 
     /**
@@ -309,7 +370,6 @@ class RestDelivery extends \tao_actions_RestController
      */
     protected function getDeliveryRootClass()
     {
-        return new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY);
+        return new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
     }
-
 }
