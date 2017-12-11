@@ -201,6 +201,6 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('3.19.0');
         }
 
-        $this->skip('3.19.0', '3.19.1');
+        $this->skip('3.19.0', '3.19.2');
     }
 }
