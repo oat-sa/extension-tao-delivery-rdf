@@ -169,6 +169,22 @@ class DeliveryFactory extends ConfigurableService
     }
 
     /**
+     * @param array $properties
+     * @return array
+     */
+    public function getInitialPropertiesFromArray($properties)
+    {
+        $initialProperties = $this->getOption(self::OPTION_INITIAL_PROPERTIES);
+        $initialPropertiesResponse = [];
+        foreach ($properties as $uri => $value) {
+            if (in_array($uri, $initialProperties) && $value) {
+                $initialPropertiesResponse[$uri] = $value;
+            }
+        }
+        return $initialPropertiesResponse;
+    }
+
+    /**
      * Create a delivery resource based on a successfull compilation
      *
      * @param core_kernel_classes_Class $deliveryClass
