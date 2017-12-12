@@ -202,5 +202,12 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('3.19.0', '3.19.1');
+
+        if ($this->isVersion('3.19.1')){
+            // rdf has been updated
+            OntologyUpdater::syncModels();
+            $this->setVersion('3.19.2');
+
+        }
     }
 }

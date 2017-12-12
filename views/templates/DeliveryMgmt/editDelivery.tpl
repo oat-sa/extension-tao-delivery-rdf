@@ -1,7 +1,7 @@
 <?php
 use oat\tao\helpers\Template;
 ?>
-<link rel="stylesheet" type="text/css" href="<?= Template::css('form_delivery.css')?>" />
+<link rel="stylesheet" type="text/css" href="<?= Template::css('delivery-rdf.css')?>" />
 
 <div class="delivery-headings flex-container-full">
     <header>
@@ -42,7 +42,7 @@ use oat\tao\helpers\Template;
     </div>
 
 
-<div class="data-container-wrapper flex-container-remainer">
+<div class="data-container-wrapper flex-container-remainder">
     <?= get_data('groupTree')?>
     <?php Template::inc('widgets/excludeTesttaker.tpl');?>
     <?= has_data('campaign') ? get_data('campaign') : '';?>
