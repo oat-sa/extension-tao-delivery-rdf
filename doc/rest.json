@@ -600,6 +600,13 @@
                     "delivery" : {
                       "type": "string",
                       "description": "Generated delivery identifier"
+                    },
+                    "remote_environments": {
+                      "type": "array",
+                      "description": "Array with remote environments and statuses of publication",
+                      "items": {
+                        "type": "string"
+                      }
                     }
                   }
                 },
@@ -619,7 +626,20 @@
                 "data": {
                   "id": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx",
                   "status": "Success",
-                  "delivery": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx"
+                  "delivery": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx",
+                  "remote_environments": [
+                      {
+                        "id": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx",
+                        "label": "Publishing Delivery",
+                        "status": "Success",
+                        "report": [
+                          {
+                            "type": "info",
+                            "message": "Running task http://tao.local/mytao.rdf#xxxxxxxxxxxxx"
+                          }
+                        ]
+                      }
+                  ]
                 },
                 "version": "3.1.0"
               }

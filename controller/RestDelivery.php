@@ -25,7 +25,9 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
 use oat\taoTaskQueue\model\Entity\TaskLogEntity;
+use oat\taoTaskQueue\model\TaskLog\TaskLogFilter;
 use oat\taoTaskQueue\model\TaskLogActionTrait;
+use oat\taoTaskQueue\model\TaskLogBroker\TaskLogBrokerInterface;
 use oat\taoTaskQueue\model\TaskLogInterface;
 
 class RestDelivery extends \tao_actions_RestController
@@ -223,11 +225,41 @@ class RestDelivery extends \tao_actions_RestController
                 $this->getRequestParameter(self::TASK_ID_PARAM),
                 CompileDelivery::class
             );
-
+            $remoteEnv = $this->getStatusesFromRemoteEnv($this->getRequestParameter(self::TASK_ID_PARAM));
+            $data['remote_environments'] = $remoteEnv;
             $this->returnSuccess($data);
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
+    }
+
+    /**
+     * @param $taskId
+     * @return array
+     */
+    protected function getStatusesFromRemoteEnv($taskId)
+    {
+        $taskLogEntity = $this->getTaskLogEntity($taskId);
+        /** @var TaskLogInterface $taskLog */
+        $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+        $taskId = $taskLogEntity->getId();
+        $filter = (new TaskLogFilter())
+            ->eq(TaskLogBrokerInterface::COLUMN_PARENT_ID, $taskId);
+        $collection = $taskLog->search($filter);
+        $response = [];
+        if ($collection->isEmpty()) {
+            return $response;
+        }
+        /** @var TaskLogEntity $item */
+        foreach ($collection as $item) {
+            $response[] = [
+                'id' => $this->getTaskId($item),
+                'label' => $item->getLabel(),
+                'status' => $this->getTaskStatus($item),
+                'report' => $item->getReport() ? $this->getTaskReport($item) : []
+            ];
+        }
+        return $response;
     }
 
     /**
