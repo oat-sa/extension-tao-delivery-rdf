@@ -225,8 +225,8 @@ class RestDelivery extends \tao_actions_RestController
                 $this->getRequestParameter(self::TASK_ID_PARAM),
                 CompileDelivery::class
             );
-            $remoteEnv = $this->getStatusesFromRemoteEnv($this->getRequestParameter(self::TASK_ID_PARAM));
-            $data['remote_environments'] = $remoteEnv;
+            $children = $this->getStatusesForChildren($this->getRequestParameter(self::TASK_ID_PARAM));
+            $data['children'] = $children;
             $this->returnSuccess($data);
         } catch (\Exception $e) {
             $this->returnFailure($e);
@@ -237,7 +237,7 @@ class RestDelivery extends \tao_actions_RestController
      * @param $taskId
      * @return array
      */
-    protected function getStatusesFromRemoteEnv($taskId)
+    protected function getStatusesForChildren($taskId)
     {
         $taskLogEntity = $this->getTaskLogEntity($taskId);
         /** @var TaskLogInterface $taskLog */

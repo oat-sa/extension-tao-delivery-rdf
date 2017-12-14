@@ -601,7 +601,7 @@
                       "type": "string",
                       "description": "Generated delivery identifier"
                     },
-                    "remote_environments": {
+                    "children": {
                       "type": "array",
                       "description": "Array with remote environments and statuses of publication",
                       "items": {
