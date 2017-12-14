@@ -70,7 +70,6 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
 
         $test = new \core_kernel_classes_Resource($params['test']);
         $label = 'Delivery of ' . $test->getLabel();
-        $deliveryResource = null;
 
         $deliveryResource =  \core_kernel_classes_ResourceFactory::create($deliveryClass);
         if ($params['initialProperties']) {

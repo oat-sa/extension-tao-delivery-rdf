@@ -239,10 +239,7 @@ class RestDelivery extends \tao_actions_RestController
      */
     protected function getStatusesForChildren($taskId)
     {
-        $taskLogEntity = $this->getTaskLogEntity($taskId);
-        /** @var TaskLogInterface $taskLog */
         $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
-        $taskId = $taskLogEntity->getId();
         $filter = (new TaskLogFilter())
             ->eq(TaskLogBrokerInterface::COLUMN_PARENT_ID, $taskId);
         $collection = $taskLog->search($filter);
