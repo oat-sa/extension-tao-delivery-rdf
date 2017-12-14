@@ -93,7 +93,7 @@ class DeliveryFactory extends ConfigurableService
         }
 
         if (!$deliveryResource instanceof core_kernel_classes_Resource) {
-            $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass, $label);
+            $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
         }
 
         $this->deliveryResource = $deliveryResource;
