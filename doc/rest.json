@@ -627,7 +627,7 @@
                   "id": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx",
                   "status": "Success",
                   "delivery": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx",
-                  "remote_environments": [
+                  "children": [
                       {
                         "id": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx",
                         "label": "Publishing Delivery",
