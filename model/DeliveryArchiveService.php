@@ -76,7 +76,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
             throw new DeliverArchiveExistingException('Delivery archive already created: ' . $compiledDelivery->getUri());
         }
 
-        $this->generateTmpPath($compiledDelivery);
+        $this->generateTmpPath($fileName);
         $fileName = $this->getArchiveFileName($compiledDelivery);
         $localZipName = $this->getLocalZipPathName($fileName);
 
@@ -120,7 +120,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
             throw new DeliveryArchiveNotExistingException('Delivery archive not exist please generate: ' . $compiledDelivery->getUri());
         }
 
-        $this->generateTmpPath($compiledDelivery);
+        $this->generateTmpPath($fileName);
         $zipPath = $this->download($compiledDelivery);
 
         $zip = new \ZipArchive();
@@ -174,7 +174,10 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
                 unset($parts[0]);
                 if (in_array($bucketDestination, ['public', 'private',])) {
                     $entryName = implode('/', $parts);
-                    $fileSystem->getFileSystem($bucketDestination)->updateStream($entryName, $zip->getStream($zipEntryName));
+                    $stream = $zip->getStream($zipEntryName);
+                    if (is_resource($stream)) {
+                        $fileSystem->getFileSystem($bucketDestination)->updateStream($entryName, $stream);
+                    }
                 }
             }
         }
@@ -250,11 +253,11 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
 
     /**
      * generate unique tmp folder based on delivery.
-     * @param $compiledDelivery
+     * @param $fileName
      */
-    private function generateTmpPath($compiledDelivery)
+    private function generateTmpPath($fileName)
     {
-        $folder = sys_get_temp_dir().DIRECTORY_SEPARATOR."tmp".md5($compiledDelivery->getUri()).DIRECTORY_SEPARATOR;
+        $folder = sys_get_temp_dir().DIRECTORY_SEPARATOR."tmp".md5($fileName. uniqid('', true)).DIRECTORY_SEPARATOR;
 
         if (!file_exists($folder)) {
             mkdir($folder);
