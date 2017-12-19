@@ -254,16 +254,21 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
     /**
      * generate unique tmp folder based on delivery.
      * @param $fileName
+     * @return string
      */
     private function generateTmpPath($fileName)
     {
-        $folder = sys_get_temp_dir().DIRECTORY_SEPARATOR."tmp".md5($fileName. uniqid('', true)).DIRECTORY_SEPARATOR;
+        if (is_null($this->tmpDir)) {
+            $folder = sys_get_temp_dir().DIRECTORY_SEPARATOR."tmp".md5($fileName. uniqid('', true)).DIRECTORY_SEPARATOR;
 
-        if (!file_exists($folder)) {
-            mkdir($folder);
+            if (!file_exists($folder)) {
+                mkdir($folder);
+            }
+
+            $this->tmpDir = $folder;
         }
 
-        $this->tmpDir = $folder;
+        return $this->tmpDir;
     }
 
     /**
@@ -300,7 +305,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
      * @param $fileName
      * @return \ZipArchive
      */
-    protected function setArchiveProcessed($zip, $fileName)
+    private function setArchiveProcessed($zip, $fileName)
     {
         $stats = json_decode($zip->getArchiveComment(), true);
         if (is_null($stats)) {
@@ -317,7 +322,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
      * @param \ZipArchive $zip
      * @return \ZipArchive
      */
-    protected function refreshArchiveProcessed($zip)
+    private function refreshArchiveProcessed($zip)
     {
         $stats = ['processed' => []];
         $zip->setArchiveComment(json_encode($stats));
@@ -329,7 +334,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
      * @param \ZipArchive $zip
      * @return bool
      */
-    protected function isArchivedProcessed($zip, $fileName)
+    private function isArchivedProcessed($zip, $fileName)
     {
         $stats = json_decode($zip->getArchiveComment(), true);
         if (is_null($stats) || !isset($stats['processed'])) {
