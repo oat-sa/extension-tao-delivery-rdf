@@ -76,7 +76,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
             throw new DeliverArchiveExistingException('Delivery archive already created: ' . $compiledDelivery->getUri());
         }
 
-        $this->generateTmpPath($fileName);
+        $this->generateNewTmpPath($fileName);
         $fileName = $this->getArchiveFileName($compiledDelivery);
         $localZipName = $this->getLocalZipPathName($fileName);
 
@@ -120,7 +120,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
             throw new DeliveryArchiveNotExistingException('Delivery archive not exist please generate: ' . $compiledDelivery->getUri());
         }
 
-        $this->generateTmpPath($fileName);
+        $this->generateNewTmpPath($fileName);
         $zipPath = $this->download($compiledDelivery);
 
         $zip = new \ZipArchive();
@@ -254,21 +254,16 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
     /**
      * generate unique tmp folder based on delivery.
      * @param $fileName
-     * @return string
      */
-    private function generateTmpPath($fileName)
+    private function generateNewTmpPath($fileName)
     {
-        if (is_null($this->tmpDir)) {
-            $folder = sys_get_temp_dir().DIRECTORY_SEPARATOR."tmp".md5($fileName. uniqid('', true)).DIRECTORY_SEPARATOR;
+        $folder = sys_get_temp_dir().DIRECTORY_SEPARATOR."tmp".md5($fileName. uniqid('', true)).DIRECTORY_SEPARATOR;
 
-            if (!file_exists($folder)) {
-                mkdir($folder);
-            }
-
-            $this->tmpDir = $folder;
+        if (!file_exists($folder)) {
+            mkdir($folder);
         }
 
-        return $this->tmpDir;
+        $this->tmpDir = $folder;
     }
 
     /**
@@ -297,7 +292,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
      */
     private function getUniqueProcessedName($fileName)
     {
-        return md5(gethostname()) . $fileName;
+        return md5(gethostname()).'s2' . $fileName;
     }
 
     /**
