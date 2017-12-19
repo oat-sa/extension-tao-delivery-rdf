@@ -35,6 +35,8 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
 {
     use OntologyAwareTrait;
 
+    const BUCKET_DIRECTORY = 'deliveriesArchivesDirectory';
+
     /** @var string */
     protected $tmpDir;
 
@@ -204,6 +206,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
 
     /**
      * @return FileSystem
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     private function getArchiveFileSystem()
     {
@@ -292,7 +295,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
      */
     private function getUniqueProcessedName($fileName)
     {
-        return md5(gethostname()) . $fileName;
+        return md5(gethostname()) .'stao1' . $fileName;
     }
 
     /**
