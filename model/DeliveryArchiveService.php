@@ -28,6 +28,8 @@ use oat\oatbox\filesystem\File;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoDelivery\model\DeliverArchiveExistingException;
+use oat\taoDelivery\model\DeliveryArchiveNotExistingException;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 
@@ -42,6 +44,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
 
     /**
      * @param DeliveryCreatedEvent $event
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     public function catchDeliveryCreated(DeliveryCreatedEvent $event)
     {
@@ -69,6 +72,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
      * @param bool $force
      * @return string
      * @throws DeliverArchiveExistingException
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     public function archive($compiledDelivery, $force = false)
     {

@@ -23,8 +23,8 @@ namespace oat\taoDeliveryRdf\scripts\tools;
 use common_report_Report as Report;
 use oat\oatbox\action\ResolutionException;
 use oat\oatbox\extension\AbstractAction;
-use oat\taoDeliveryRdf\model\DeliverArchiveExistingException;
-use oat\taoDeliveryRdf\model\DeliveryArchiveNotExistingException;
+use oat\taoDelivery\model\DeliverArchiveExistingException;
+use oat\taoDelivery\model\DeliveryArchiveNotExistingException;
 use oat\taoDeliveryRdf\model\DeliveryArchiveService;
 
 /**
