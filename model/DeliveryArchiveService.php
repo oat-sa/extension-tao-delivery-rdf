@@ -292,7 +292,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
      */
     private function getUniqueProcessedName($fileName)
     {
-        return md5(gethostname()).'s2' . $fileName;
+        return md5(gethostname()) . $fileName;
     }
 
     /**
