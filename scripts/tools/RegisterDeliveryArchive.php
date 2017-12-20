@@ -23,6 +23,7 @@ namespace oat\taoDeliveryRdf\scripts\tools;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\service\ServiceNotFoundException;
 use oat\taoDeliveryRdf\model\DeliveryArchiveService;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
@@ -40,13 +41,13 @@ class RegisterDeliveryArchive extends AbstractAction
      * @param $params
      * @return \common_report_Report
      * @throws \common_Exception
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws ServiceNotFoundException
      */
     public function __invoke($params)
     {
 
         $deliveryArchiveService = new DeliveryArchiveService();
-        $this->getServiceManager()->propagate($deliveryArchiveService);
+        $this->propagate($deliveryArchiveService);
         $this->registerService(DeliveryArchiveService::SERVICE_ID, $deliveryArchiveService);
 
         /** @var FileSystemService $fileSystemService */
@@ -58,7 +59,7 @@ class RegisterDeliveryArchive extends AbstractAction
         }
 
         /** @var EventManager $eventManager */
-        $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+        $eventManager = $this->getServiceLocator()->get(EventManager::SERVICE_ID);
         $eventManager->attach(DeliveryCreatedEvent::class, [
             DeliveryArchiveService::SERVICE_ID,
             'catchDeliveryCreated'
