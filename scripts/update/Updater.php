@@ -202,5 +202,10 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('3.19.0', '3.20.0');
+
+        if ($this->isVersion('3.20.0')) {
+            OntologyUpdater::syncModels();
+            $this->setVersion('3.21.0');
+        }
     }
 }
