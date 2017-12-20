@@ -23,8 +23,8 @@ namespace oat\taoDeliveryRdf\scripts\tools;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\filesystem\FileSystemService;
-use oat\taoDelivery\model\DeliveryArchiveService;
 use oat\taoDeliveryRdf\model\DeliveryArchiveService as DeliveryArchiveServiceRdf;
+use oat\taoDeliveryRdf\model\DeliveryArchiveService;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 

@@ -21,11 +21,13 @@
 namespace oat\taoDeliveryRdf\scripts\tools;
 
 use common_report_Report as Report;
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\action\ResolutionException;
 use oat\oatbox\extension\AbstractAction;
 use oat\taoDelivery\model\DeliverArchiveExistingException;
 use oat\taoDelivery\model\DeliveryArchiveNotExistingException;
 use oat\taoDeliveryRdf\model\DeliveryArchiveService;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 /**
  * Run examples:
@@ -37,6 +39,7 @@ use oat\taoDeliveryRdf\model\DeliveryArchiveService;
  */
 class DeliveryExecutionArchive extends AbstractAction
 {
+    use OntologyAwareTrait;
     /**
      * @var array Available script modes
      */
@@ -76,6 +79,7 @@ class DeliveryExecutionArchive extends AbstractAction
      *
      * @throws ResolutionException
      * @throws \common_exception_Error
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     private function process()
     {
@@ -112,7 +116,7 @@ class DeliveryExecutionArchive extends AbstractAction
      */
     private function listAction()
     {
-        $deliveryClass = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery');
+        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
         $deliveries = $deliveryClass->getInstances(true);
         $result = [];
         foreach ($deliveries as $delivery) {
@@ -136,9 +140,10 @@ class DeliveryExecutionArchive extends AbstractAction
             'Unarchived deliveries:'
         );
 
-        $deliveryClass = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery');
+        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
         $deliveries = $deliveryClass->getInstances(true);
-        $archiveService = new DeliveryArchiveService();
+        /** @var DeliveryArchiveService $archiveService */
+        $archiveService = $this->getServiceManager()->get(DeliveryArchiveService::SERVICE_ID);
         $this->propagate($archiveService);
 
         /** @var \core_kernel_classes_Resource $compiledDelivery */
@@ -154,6 +159,7 @@ class DeliveryExecutionArchive extends AbstractAction
 
     /**
      * @throws \common_exception_Error
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     private function archiveAction()
     {
@@ -162,9 +168,10 @@ class DeliveryExecutionArchive extends AbstractAction
             'Archived deliveries:'
         );
 
-        $deliveryClass = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery');
+        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
         $deliveries = $deliveryClass->getInstances(true);
-        $archiveService = new DeliveryArchiveService();
+        /** @var DeliveryArchiveService $archiveService */
+        $archiveService = $this->getServiceManager()->get(DeliveryArchiveService::SERVICE_ID);
         $this->propagate($archiveService);
 
         /** @var \core_kernel_classes_Resource $compiledDelivery */
@@ -180,6 +187,7 @@ class DeliveryExecutionArchive extends AbstractAction
 
     /**
      * @throws \common_exception_Error
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     private function deleteArchivesAction()
     {
@@ -188,9 +196,10 @@ class DeliveryExecutionArchive extends AbstractAction
             'Deleted Archived deliveries:'
         );
 
-        $deliveryClass = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery');
+        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
         $deliveries = $deliveryClass->getInstances(true);
-        $archiveService = new DeliveryArchiveService();
+        /** @var DeliveryArchiveService $archiveService */
+        $archiveService = $this->getServiceManager()->get(DeliveryArchiveService::SERVICE_ID);
         $this->propagate($archiveService);
 
         /** @var \core_kernel_classes_Resource $compiledDelivery */
@@ -229,7 +238,7 @@ class DeliveryExecutionArchive extends AbstractAction
     }
 
     /**
-     * @param $delivery
+     * @param \core_kernel_classes_Resource $delivery
      * @return string
      */
     private function deliveryDescription($delivery)
