@@ -154,9 +154,9 @@ class DeliveryExecutionArchive extends AbstractAction
                 $fileName = $archiveService->unArchive($compiledDelivery, $this->isForced());
                 $this->report->add(new Report(Report::TYPE_SUCCESS, 'Delivery '.$this->deliveryDescription($compiledDelivery).' unarchived completed: ' .$fileName  ));
             }catch (DeliveryArchiveNotExistingException $exception) {
-                $this->report->add(new Report(Report::TYPE_ERROR,  'Delivery '.$this->deliveryDescription($compiledDelivery). $exception->getMessage()));
+                $this->report->add(new Report(Report::TYPE_ERROR,  'Delivery '.$this->deliveryDescription($compiledDelivery).' '. $exception->getMessage()));
             }catch (DeliveryZipException $exception) {
-                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery '.$this->deliveryDescription($compiledDelivery). $exception->getMessage()));
+                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery '.$this->deliveryDescription($compiledDelivery).' '. $exception->getMessage()));
             }
         }
     }
@@ -184,9 +184,9 @@ class DeliveryExecutionArchive extends AbstractAction
                 $fileName = $archiveService->archive($compiledDelivery, $this->isForced());
                 $this->report->add(new Report(Report::TYPE_SUCCESS, 'Delivery '.$this->deliveryDescription($compiledDelivery).' archive created: ' .$fileName));
             } catch (DeliverArchiveExistingException $exception) {
-                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery '.$this->deliveryDescription($compiledDelivery). $exception->getMessage() . ' use --force to regenerate'  ));
+                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery '.$this->deliveryDescription($compiledDelivery).' '. $exception->getMessage() . ' use --force to regenerate'  ));
             } catch (DeliveryZipException $exception) {
-                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery '.$this->deliveryDescription($compiledDelivery). $exception->getMessage()));
+                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery '.$this->deliveryDescription($compiledDelivery).' '. $exception->getMessage()));
             }
         }
     }
