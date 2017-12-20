@@ -30,6 +30,7 @@ use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\taoDelivery\model\DeliverArchiveExistingException;
 use oat\taoDelivery\model\DeliveryArchiveNotExistingException;
+use oat\taoDelivery\model\DeliveryZipException;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_FileStorage;
@@ -56,6 +57,8 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
             $this->archive($compiledDelivery);
         } catch (DeliverArchiveExistingException $e) {
             common_Logger::i($e->getMessage());
+        } catch (DeliveryZipException $e) {
+            common_Logger::e($e->getMessage());
         }
     }
 
@@ -75,6 +78,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
      * @param bool $force
      * @return string
      * @throws DeliverArchiveExistingException
+     * @throws DeliveryZipException
      */
     public function archive($compiledDelivery, $force = false)
     {
@@ -88,7 +92,9 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
         $localZipName = $this->getLocalZipPathName($fileName);
 
         $zip = new \ZipArchive();
-        $zip->open($localZipName, \ZipArchive::CREATE);
+        if ($zip->open($localZipName, \ZipArchive::CREATE) === false) {
+            throw new DeliveryZipException('Cannot open zip archive: '. $localZipName);
+        }
 
         $directories = $compiledDelivery->getPropertyValues(
             $this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY)
@@ -119,6 +125,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
      * @return string
      * @throws DeliveryArchiveNotExistingException
      * @throws ServiceNotFoundException
+     * @throws DeliveryZipException
      */
     public function unArchive($compiledDelivery, $force = false)
     {
@@ -132,7 +139,9 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
         $zipPath = $this->download($compiledDelivery);
 
         $zip = new \ZipArchive();
-        $zip->open($zipPath);
+        if ($zip->open($zipPath) === false) {
+            throw new DeliveryZipException('Cannot open zip archive: '. $zipPath);
+        }
 
         if ($force || !$this->isArchivedProcessed($zip, $fileName)){
             $this->copyFromZip($zip);
@@ -203,11 +212,9 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
         $fileName = $this->getArchiveFileName($compiledDelivery);
         $zipPath = $this->getLocalZipPathName($fileName);
 
-        if (!$this->getArchiveFileSystem()->has($fileName)) {
-            $this->getArchiveFileSystem()->write($fileName, file_get_contents($zipPath));
-        } else {
-            $this->getArchiveFileSystem()->update($fileName, file_get_contents($zipPath));
-        }
+        $stream = fopen($zipPath, 'r');
+        $this->getArchiveFileSystem()->putStream($fileName, $stream);
+        fclose($stream);
 
         return $fileName;
     }

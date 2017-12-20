@@ -27,6 +27,7 @@ use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\taoDelivery\model\DeliverArchiveExistingException;
 use oat\taoDelivery\model\DeliveryArchiveNotExistingException;
+use oat\taoDelivery\model\DeliveryZipException;
 use oat\taoDeliveryRdf\model\DeliveryArchiveService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
@@ -109,7 +110,7 @@ class DeliveryExecutionArchive extends AbstractAction
         $time_end = microtime(true);
         $execution_time = ($time_end - $time_start)/60;
 
-        $this->report->add(new Report(Report::TYPE_INFO, 'Time:' . $execution_time .' Minutes.' ));
+        $this->report->add(new Report(Report::TYPE_INFO, 'Time:' . round($execution_time, 4) .' Minutes.' ));
     }
 
     /**
@@ -154,6 +155,8 @@ class DeliveryExecutionArchive extends AbstractAction
                 $this->report->add(new Report(Report::TYPE_SUCCESS, 'Delivery '.$this->deliveryDescription($compiledDelivery).' unarchived completed: ' .$fileName  ));
             }catch (DeliveryArchiveNotExistingException $exception) {
                 $this->report->add(new Report(Report::TYPE_ERROR, $exception->getMessage()));
+            }catch (DeliveryZipException $exception) {
+                $this->report->add(new Report(Report::TYPE_ERROR, $exception->getMessage()));
             }
         }
     }
@@ -182,6 +185,8 @@ class DeliveryExecutionArchive extends AbstractAction
                 $this->report->add(new Report(Report::TYPE_SUCCESS, 'Delivery '.$this->deliveryDescription($compiledDelivery).' archive created: ' .$fileName));
             } catch (DeliverArchiveExistingException $exception) {
                 $this->report->add(new Report(Report::TYPE_ERROR, $exception->getMessage() . ' use --force to regenerate'  ));
+            } catch (DeliveryZipException $exception) {
+                $this->report->add(new Report(Report::TYPE_ERROR, $exception->getMessage()));
             }
         }
     }
