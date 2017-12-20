@@ -21,23 +21,25 @@
 namespace oat\taoDeliveryRdf\model;
 
 use common_Logger;
-use core_kernel_classes_Property;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\service\ServiceNotFoundException;
 use oat\taoDelivery\model\DeliverArchiveExistingException;
 use oat\taoDelivery\model\DeliveryArchiveNotExistingException;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
+use tao_models_classes_service_FileStorage;
+use tao_models_classes_service_StorageDirectory;
 
 class DeliveryArchiveService extends ConfigurableService implements \oat\taoDelivery\model\DeliveryArchiveService
 {
     use OntologyAwareTrait;
 
-    const BUCKET_DIRECTORY = 'deliveriesArchivesDirectory';
+    const BUCKET_DIRECTORY = 'deliveriesArchives';
 
     /** @var string */
     protected $tmpDir;
@@ -59,6 +61,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
 
     /**
      * @param DeliveryRemovedEvent $event
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     public function catchDeliveryRemoved(DeliveryRemovedEvent $event)
     {
@@ -68,11 +71,10 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
     }
 
     /**
-     * @param string $compiledDelivery
+     * @param \core_kernel_classes_Resource $compiledDelivery
      * @param bool $force
      * @return string
      * @throws DeliverArchiveExistingException
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     public function archive($compiledDelivery, $force = false)
     {
@@ -83,17 +85,17 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
         }
 
         $this->generateNewTmpPath($fileName);
-        $fileName = $this->getArchiveFileName($compiledDelivery);
         $localZipName = $this->getLocalZipPathName($fileName);
 
         $zip = new \ZipArchive();
         $zip->open($localZipName, \ZipArchive::CREATE);
 
         $directories = $compiledDelivery->getPropertyValues(
-            new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY)
+            $this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY)
         );
         foreach ($directories as $directoryId) {
-            $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($directoryId);
+            /** @var tao_models_classes_service_StorageDirectory $directory */
+            $directory = $this->getServiceLocator()->get(tao_models_classes_service_FileStorage::SERVICE_ID)->getDirectoryById($directoryId);
             $directories = $directory->getFlyIterator(Directory::ITERATOR_FILE | Directory::ITERATOR_RECURSIVE);
             /** @var File $item */
             foreach ($directories as $item) {
@@ -112,11 +114,11 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
     }
 
     /**
-     * @param $compiledDelivery
+     * @param \core_kernel_classes_Resource $compiledDelivery
      * @param bool $force
      * @return string
      * @throws DeliveryArchiveNotExistingException
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws ServiceNotFoundException
      */
     public function unArchive($compiledDelivery, $force = false)
     {
@@ -148,8 +150,9 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
     }
 
     /**
-     * @param $compiledDelivery
+     * @param \core_kernel_classes_Resource $compiledDelivery
      * @return string
+     * @throws ServiceNotFoundException
      */
     public function deleteArchive($compiledDelivery)
     {
@@ -164,12 +167,12 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
     /**
      * @param $zip \ZipArchive
      * @return bool
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws ServiceNotFoundException
      */
     private function copyFromZip($zip)
     {
         /** @var FileSystemService $fileSystem */
-        $fileSystem = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
+        $fileSystem = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
 
         for ($index = 0; $index < $zip->numFiles; ++$index)
         {
@@ -182,7 +185,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
                     $entryName = implode('/', $parts);
                     $stream = $zip->getStream($zipEntryName);
                     if (is_resource($stream)) {
-                        $fileSystem->getFileSystem($bucketDestination)->updateStream($entryName, $stream);
+                        $fileSystem->getFileSystem($bucketDestination)->putStream($entryName, $stream);
                     }
                 }
             }
@@ -191,8 +194,9 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
     }
 
     /**
-     * @param $compiledDelivery
+     * @param \core_kernel_classes_Resource $compiledDelivery
      * @return string
+     * @throws ServiceNotFoundException
      */
     private function uploadZip($compiledDelivery)
     {
@@ -210,15 +214,15 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
 
     /**
      * @return FileSystem
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws ServiceNotFoundException
      */
     private function getArchiveFileSystem()
     {
-        return $this->getServiceManager()->get(FileSystemService::SERVICE_ID)->getFileSystem(static::BUCKET_DIRECTORY);
+        return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getFileSystem(static::BUCKET_DIRECTORY);
     }
 
     /**
-     * @param $compiledDelivery
+     * @param \core_kernel_classes_Resource $compiledDelivery
      * @return string
      */
     private function download($compiledDelivery)
@@ -232,7 +236,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
     }
 
     /**
-     * @param $compiledDelivery
+     * @param \core_kernel_classes_Resource $compiledDelivery
      * @return string
      */
     private function getArchiveFileName($compiledDelivery)

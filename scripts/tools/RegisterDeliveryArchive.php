@@ -23,7 +23,6 @@ namespace oat\taoDeliveryRdf\scripts\tools;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\filesystem\FileSystemService;
-use oat\taoDeliveryRdf\model\DeliveryArchiveService as DeliveryArchiveServiceRdf;
 use oat\taoDeliveryRdf\model\DeliveryArchiveService;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
@@ -46,7 +45,7 @@ class RegisterDeliveryArchive extends AbstractAction
     public function __invoke($params)
     {
 
-        $deliveryArchiveService = new DeliveryArchiveServiceRdf();
+        $deliveryArchiveService = new DeliveryArchiveService();
         $this->getServiceManager()->propagate($deliveryArchiveService);
         $this->registerService(DeliveryArchiveService::SERVICE_ID, $deliveryArchiveService);
 
@@ -70,7 +69,7 @@ class RegisterDeliveryArchive extends AbstractAction
             'catchDeliveryRemoved'
         ]);
 
-        $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
+        $this->registerService(EventManager::SERVICE_ID, $eventManager);
 
         return new \common_report_Report(\common_report_Report::TYPE_SUCCESS,
             DeliveryArchiveService::BUCKET_DIRECTORY . ' directory created and event attached');

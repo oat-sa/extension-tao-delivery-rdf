@@ -51,10 +51,10 @@ class UnRegisterDeliveryArchive extends AbstractAction
         /** @var FileSystemService $fileSystemService */
         $fileSystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
         $fileSystemService->unregisterFileSystem(DeliveryArchiveService::BUCKET_DIRECTORY);
-        $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fileSystemService);
+        $this->registerService(FileSystemService::SERVICE_ID, $fileSystemService);
 
         /** @var EventManager $eventManager */
-        $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+        $eventManager = $this->getServiceLocator()->get(EventManager::SERVICE_ID);
         $eventManager->detach(DeliveryCreatedEvent::class, [
             DeliveryArchiveService::SERVICE_ID,
             'catchDeliveryCreated'
@@ -64,9 +64,9 @@ class UnRegisterDeliveryArchive extends AbstractAction
             'catchDeliveryRemoved'
         ]);
 
-        $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
+        $this->registerService(EventManager::SERVICE_ID, $eventManager);
 
         return new \common_report_Report(\common_report_Report::TYPE_SUCCESS,
-            DeliveryArchiveService::BUCKET_DIRECTORY . ' unregister and event deattached');
+            DeliveryArchiveService::BUCKET_DIRECTORY . ' unregister and event detached');
     }
 }

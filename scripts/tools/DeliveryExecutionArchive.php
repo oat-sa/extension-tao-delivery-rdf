@@ -24,6 +24,7 @@ use common_report_Report as Report;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\action\ResolutionException;
 use oat\oatbox\extension\AbstractAction;
+use oat\oatbox\service\ServiceNotFoundException;
 use oat\taoDelivery\model\DeliverArchiveExistingException;
 use oat\taoDelivery\model\DeliveryArchiveNotExistingException;
 use oat\taoDeliveryRdf\model\DeliveryArchiveService;
@@ -79,7 +80,7 @@ class DeliveryExecutionArchive extends AbstractAction
      *
      * @throws ResolutionException
      * @throws \common_exception_Error
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws ServiceNotFoundException
      */
     private function process()
     {
@@ -131,7 +132,7 @@ class DeliveryExecutionArchive extends AbstractAction
 
     /**
      * @throws \common_exception_Error
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws ServiceNotFoundException
      */
     private function unArchiveAction()
     {
@@ -143,7 +144,7 @@ class DeliveryExecutionArchive extends AbstractAction
         $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
         $deliveries = $deliveryClass->getInstances(true);
         /** @var DeliveryArchiveService $archiveService */
-        $archiveService = $this->getServiceManager()->get(DeliveryArchiveService::SERVICE_ID);
+        $archiveService = $this->getServiceLocator()->get(DeliveryArchiveService::SERVICE_ID);
         $this->propagate($archiveService);
 
         /** @var \core_kernel_classes_Resource $compiledDelivery */
@@ -159,7 +160,7 @@ class DeliveryExecutionArchive extends AbstractAction
 
     /**
      * @throws \common_exception_Error
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws ServiceNotFoundException
      */
     private function archiveAction()
     {
@@ -171,7 +172,7 @@ class DeliveryExecutionArchive extends AbstractAction
         $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
         $deliveries = $deliveryClass->getInstances(true);
         /** @var DeliveryArchiveService $archiveService */
-        $archiveService = $this->getServiceManager()->get(DeliveryArchiveService::SERVICE_ID);
+        $archiveService = $this->getServiceLocator()->get(DeliveryArchiveService::SERVICE_ID);
         $this->propagate($archiveService);
 
         /** @var \core_kernel_classes_Resource $compiledDelivery */
@@ -187,7 +188,7 @@ class DeliveryExecutionArchive extends AbstractAction
 
     /**
      * @throws \common_exception_Error
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws ServiceNotFoundException
      */
     private function deleteArchivesAction()
     {
@@ -199,7 +200,7 @@ class DeliveryExecutionArchive extends AbstractAction
         $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
         $deliveries = $deliveryClass->getInstances(true);
         /** @var DeliveryArchiveService $archiveService */
-        $archiveService = $this->getServiceManager()->get(DeliveryArchiveService::SERVICE_ID);
+        $archiveService = $this->getServiceLocator()->get(DeliveryArchiveService::SERVICE_ID);
         $this->propagate($archiveService);
 
         /** @var \core_kernel_classes_Resource $compiledDelivery */
