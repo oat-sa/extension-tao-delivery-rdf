@@ -46,7 +46,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
 
     /**
      * @param DeliveryCreatedEvent $event
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws ServiceNotFoundException
      */
     public function catchDeliveryCreated(DeliveryCreatedEvent $event)
     {
@@ -61,7 +61,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
 
     /**
      * @param DeliveryRemovedEvent $event
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws ServiceNotFoundException
      */
     public function catchDeliveryRemoved(DeliveryRemovedEvent $event)
     {
