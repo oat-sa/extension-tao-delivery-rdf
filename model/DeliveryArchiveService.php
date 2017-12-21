@@ -206,6 +206,7 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
      * @param \core_kernel_classes_Resource $compiledDelivery
      * @return string
      * @throws ServiceNotFoundException
+     * @throws DeliveryZipException
      */
     private function uploadZip($compiledDelivery)
     {
@@ -213,6 +214,9 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
         $zipPath = $this->getLocalZipPathName($fileName);
 
         $stream = fopen($zipPath, 'r');
+        if ($stream === false) {
+            throw new DeliveryZipException('Cannot open local tmp zip archive');
+        }
         $this->getArchiveFileSystem()->putStream($fileName, $stream);
         fclose($stream);
 
@@ -231,13 +235,26 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
     /**
      * @param \core_kernel_classes_Resource $compiledDelivery
      * @return string
+     * @throws DeliveryZipException
      */
     private function download($compiledDelivery)
     {
         $fileName = $this->getArchiveFileName($compiledDelivery);
         $zipPath = $this->getLocalZipPathName($fileName);
 
-        file_put_contents($zipPath, $this->getArchiveFileSystem()->read($fileName));
+        $streamDestination = fopen($zipPath, 'w');
+        $stream = $this->getArchiveFileSystem()->readStream($fileName);
+        if ($stream === false) {
+            throw new DeliveryZipException('Cannot open zip archive');
+        }
+
+        if ($streamDestination === false) {
+            throw new DeliveryZipException('Cannot write to local tmp zip archive');
+        }
+
+        stream_copy_to_stream($stream, $streamDestination);
+        fclose($stream);
+        fclose($streamDestination);
 
         return $zipPath;
     }
