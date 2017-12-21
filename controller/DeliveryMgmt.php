@@ -25,6 +25,7 @@ use oat\oatbox\event\EventManagerAwareTrait;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
+use oat\tao\model\resources\ResourceWatcher;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
@@ -163,7 +164,8 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $users = $this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($delivery->getUri());
         $assigned = array_diff(array_unique($users), $excluded);
         $this->setData('ttassigned', count($assigned));
-
+        $updatedAt = $this->getServiceManager()->get(ResourceWatcher::SERVICE_ID)->getUpdatedAt($delivery);
+        $this->setData('updatedAt', $updatedAt);
         $this->setData('formTitle', __('Properties'));
         $this->setData('myForm', $myForm->render());
 
@@ -234,8 +236,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 try {
                     $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                     $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
-
-                    return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $myForm->getValues()));
+                    /** @var DeliveryFactory $deliveryFactoryResources */
+                    $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+                    $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray($myForm->getValues());
+                    return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
                 }catch(\Exception $e){
                     return $this->returnJson([
                         'success' => false,
