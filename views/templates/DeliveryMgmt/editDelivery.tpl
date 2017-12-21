@@ -7,6 +7,9 @@ use oat\tao\helpers\Template;
     <header>
         <h2><?=_dh(get_data('label'))?></h2>
         <p><?=__('Published on %2s', tao_helpers_Date::displayeDate(get_data('date')))?></p>
+        <?php if(has_data('updatedAt')) : ?>
+            <p><?=__('Last updated on %2s', tao_helpers_Date::displayeDate(get_data('updatedAt')))?></p>
+        <?php endif; ?>
     </header>
 
     <header>

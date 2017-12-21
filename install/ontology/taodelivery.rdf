@@ -153,6 +153,13 @@
     <rdfs:comment xml:lang="en-US"><![CDATA[Status of a delivery execution]]></rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#SystemObject"/>
   </rdf:Description>
+
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask">
+      <rdfs:label xml:lang="en-US"><![CDATA[Delivery compile task]]></rdfs:label>
+      <rdfs:comment xml:lang="en-US"><![CDATA[Delivery compile task id]]></rdfs:comment>
+      <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#TAOObject"/>
+    </rdf:Description>
+
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusActive">
     <rdfs:label xml:lang="en-US"><![CDATA[Active]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Activ status of a delivery execution]]></rdfs:comment>
