@@ -65,6 +65,8 @@ class DeliveryFactory extends ConfigurableService
     const OPTION_INITIAL_PROPERTIES_MAP_VALUES = 'values';
     const OPTION_INITIAL_PROPERTIES_MAP_URI = 'uri';
 
+    const PROPERTY_DELIVERY_COMPILE_TASK = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask';
+
     private $deliveryResource;
 
     /**
@@ -94,7 +96,7 @@ class DeliveryFactory extends ConfigurableService
         }
 
         if (!$deliveryResource instanceof core_kernel_classes_Resource) {
-            $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass, $label);
+            $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
         }
 
         $this->deliveryResource = $deliveryResource;
@@ -167,6 +169,22 @@ class DeliveryFactory extends ConfigurableService
             }
         }
         return $initialProperties;
+    }
+
+    /**
+     * @param array $properties
+     * @return array
+     */
+    public function getInitialPropertiesFromArray($properties)
+    {
+        $initialProperties = $this->getOption(self::OPTION_INITIAL_PROPERTIES);
+        $initialPropertiesResponse = [];
+        foreach ($properties as $uri => $value) {
+            if (in_array($uri, $initialProperties) && $value) {
+                $initialPropertiesResponse[$uri] = $value;
+            }
+        }
+        return $initialPropertiesResponse;
     }
 
     /**
