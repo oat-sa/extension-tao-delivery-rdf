@@ -20,6 +20,7 @@
 namespace oat\taoDeliveryRdf\model;
 
 use oat\generis\model\OntologyAwareTrait;
+use oat\generis\model\OntologyRdfs;
 use oat\oatbox\service\ConfigurableService;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
@@ -110,7 +111,7 @@ class DeliveryFactory extends ConfigurableService
             $serviceCall = $report->getData();
 
             $properties = array(
-                RDFS_LABEL => $label,
+                OntologyRdfs::RDFS_LABEL => $label,
                 DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
                 DeliveryAssemblyService::PROPERTY_ORIGIN => $test,
             );
