@@ -2,6 +2,7 @@
 
 namespace oat\taoDeliveryRdf\test\controller;
 
+use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\test\RestTestRunner;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
@@ -188,7 +189,7 @@ class RestDeliveryTest extends RestTestRunner
     {
         $label = 'fixture';
         $comment = 'commentFixture';
-        $deliveryParent = (new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY))->createSubClass();
+        $deliveryParent = (new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI))->createSubClass();
 
         $data = $this->curlCreateClass($label, $comment, $deliveryParent->getUri());
 
@@ -216,7 +217,7 @@ class RestDeliveryTest extends RestTestRunner
     {
         $label = 'fixture';
         $comment = 'commentFixture';
-        $deliveryParent1 = (new \core_kernel_classes_Class(CLASS_COMPILEDDELIVERY))->createSubClass();
+        $deliveryParent1 = (new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI))->createSubClass();
         $deliveryParent = $deliveryParent1->createSubClass();
 
         $data = $this->curlCreateClass($label, $comment, $deliveryParent->getUri());
@@ -291,7 +292,7 @@ class RestDeliveryTest extends RestTestRunner
     protected function getUserData()
     {
         $data = parent::getUserData();
-        $data[PROPERTY_USER_PASSWORD] = '12345Admin@@@';
+        $data[GenerisRdf::PROPERTY_USER_PASSWORD] = '12345Admin@@@';
         return $data;
     }
 

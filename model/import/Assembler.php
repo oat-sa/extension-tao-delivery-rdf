@@ -24,6 +24,11 @@ use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\file\FileIterator;
+use oat\generis\model\OntologyRdfs;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
+use oat\generis\model\OntologyRdf;
+
 /**
  * Im- and export a compiled delivery 
  *
@@ -84,7 +89,7 @@ class Assembler
         
         $properties = array();
         if (file_exists($rdfPath)) {
-            $blacklist = array(RDF_TYPE);
+            $blacklist = array(OntologyRdf::RDF_TYPE);
             $rdfIterator = new FileIterator($rdfPath, 1);
             foreach ($rdfIterator as $triple) {
                 if (!in_array($triple->predicate, $blacklist)) {
@@ -107,11 +112,11 @@ class Assembler
         $resultServer   = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
         
         $properties = array_merge($properties, array(
-            RDFS_LABEL                          => $label,
-            PROPERTY_COMPILEDDELIVERY_DIRECTORY => array_keys($dirs),
-            PROPERTY_COMPILEDDELIVERY_TIME      => time(),
-            PROPERTY_COMPILEDDELIVERY_RUNTIME   => $serviceCall->toOntology(),
-            TAO_DELIVERY_RESULTSERVER_PROP      => $resultServer
+            OntologyRdfs::RDFS_LABEL                          => $label,
+            DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => array_keys($dirs),
+            DeliveryAssemblyService::PROPERTY_DELIVERY_TIME      => time(),
+            DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME   => $serviceCall->toOntology(),
+            DeliveryContainerService::PROPERTY_RESULT_SERVER      => $resultServer
         ));
         $delivery = $deliveryClass->createInstanceWithProperties($properties);
         
@@ -154,7 +159,7 @@ class Assembler
             'label' => $compiledDelivery->getLabel(),
             'version' => $taoDeliveryVersion
         );
-        $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_DIRECTORY));
+        $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
             $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
             $files = $directory->getIterator();
@@ -164,7 +169,7 @@ class Assembler
             $data['dir'][$id] = $directory->getRelativePath();
         }
 
-        $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_COMPILEDDELIVERY_RUNTIME));
+        $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
         $serviceCall = \tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
         

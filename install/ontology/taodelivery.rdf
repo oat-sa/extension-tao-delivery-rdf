@@ -16,7 +16,7 @@
   </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#CustomLabel">
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-    <rdfs:label xml:lang="en-US"><![CDATA[Custom label for a delivery]]></rdfs:label>
+    <rdfs:label xml:lang="en-US"><![CDATA[Title]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Label which show for test-takers]]></rdfs:comment>
     <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#Delivery"/>
     <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#TextBox"/>
@@ -153,6 +153,13 @@
     <rdfs:comment xml:lang="en-US"><![CDATA[Status of a delivery execution]]></rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#SystemObject"/>
   </rdf:Description>
+
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask">
+      <rdfs:label xml:lang="en-US"><![CDATA[Delivery compile task]]></rdfs:label>
+      <rdfs:comment xml:lang="en-US"><![CDATA[Delivery compile task id]]></rdfs:comment>
+      <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#TAOObject"/>
+    </rdf:Description>
+
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusActive">
     <rdfs:label xml:lang="en-US"><![CDATA[Active]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Activ status of a delivery execution]]></rdfs:comment>

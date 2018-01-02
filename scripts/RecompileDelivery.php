@@ -21,7 +21,9 @@
 namespace oat\taoDeliveryRdf\scripts;
 
 use common_report_Report as Report;
+use oat\generis\model\OntologyRdf;
 use oat\oatbox\extension\AbstractAction;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\oatbox\action\ResolutionException;
 
@@ -58,9 +60,9 @@ class RecompileDelivery extends AbstractAction
      * @var array
      */
     static public $propertiesToCopy = [
-        TAO_DELIVERY_END_PROP,
-        TAO_DELIVERY_START_PROP,
-        TAO_DELIVERY_MAXEXEC_PROP,
+        DeliveryContainerService::PROPERTY_END,
+        DeliveryContainerService::PROPERTY_START,
+        DeliveryContainerService::PROPERTY_MAX_EXEC,
     ];
 
     /**
@@ -217,7 +219,7 @@ class RecompileDelivery extends AbstractAction
     private function compileDelivery(\core_kernel_classes_Resource $delivery)
     {
         $testProperty = new \core_kernel_classes_Property('http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin');
-        $classProperty = new \core_kernel_classes_Property(RDF_TYPE);
+        $classProperty = new \core_kernel_classes_Property(OntologyRdf::RDF_TYPE);
         $test = $delivery->getOnePropertyValue($testProperty);
         $destinationClass = new \core_kernel_classes_Class($delivery->getOnePropertyValue($classProperty)->getUri());
 
