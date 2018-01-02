@@ -20,15 +20,14 @@ define([
     'lodash',
     'jquery',
     'i18n',
-    'uri',
     'ui/filter',
     'ui/feedback',
     'util/url',
-    'layout/section',
+    'layout/actions',
     'core/promise',
     'taoTaskQueue/model/taskQueue',
     'taoTaskQueue/component/button/standardButton'
-], function (_, $, __, uriHelper, filterFactory, feedback, urlUtils, section, Promise, taskQueue, taskCreationButtonFactory) {
+], function (_, $, __, filterFactory, feedback, urlUtils, actionManager, Promise, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
     var provider = {
@@ -61,16 +60,14 @@ define([
     };
 
     /**
-     * wrapped the old jstree API used to refresh the tree and optionally select a resource
+     * wrapped the old jstree API used to refresh the tree and optionally select a resour
      * @param {String} [uriResource] - the uri resource node to be selected
      */
     var refreshTree = function refreshTree(uriResource){
-        var currentSection = section.current().selected;
-        var $trees = (currentSection && currentSection.panel && currentSection.panel.length) ?
-            $('.tree', currentSection.panel) : $('.tree:visible');
-        $trees.trigger('refresh.taotree', [{
-            selectNode : uriHelper.encode(uriResource)
-        }]);
+        console.log(uriResource);
+        actionManager.trigger('refresh', {
+            uri : uriResource
+        });
     };
 
     return {
