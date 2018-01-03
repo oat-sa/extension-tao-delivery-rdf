@@ -60,11 +60,10 @@ define([
     };
 
     /**
-     * wrapped the old jstree API used to refresh the tree and optionally select a resour
+     * wrapped the old jstree API used to refresh the tree and optionally select a resource
      * @param {String} [uriResource] - the uri resource node to be selected
      */
     var refreshTree = function refreshTree(uriResource){
-        console.log(uriResource);
         actionManager.trigger('refresh', {
             uri : uriResource
         });
