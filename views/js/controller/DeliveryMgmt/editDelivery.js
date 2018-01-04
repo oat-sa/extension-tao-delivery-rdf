@@ -23,6 +23,8 @@ function ($, helpers) {
 	
 	return {
         start : function(){
+            var $label = $('#http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_Maxexec').prev('label');
+            $label.html($label.text().replace('(', '<br>('));
             $('#exclude-btn').click(function() {
             	var delivery = $(this).data('delivery');
         	    $('#testtaker-form').load(helpers._url('excludeTesttaker', 'DeliveryMgmt', 'taoDeliveryRdf', {'uri' : delivery}), function() {
@@ -31,5 +33,5 @@ function ($, helpers) {
                 });
         	});
         }
-	}
+    };
 });
