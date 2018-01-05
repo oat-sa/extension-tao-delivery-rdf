@@ -26,9 +26,9 @@
 
 .ttlist li {
     cursor: pointer;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid $uiGeneralContentBorder;
     padding: 3px;
-    background:#F9F8F7;
+    background:whiten($uiClickableDefaultBg, .5);
 }
 
 .ttlist li:hover {
@@ -39,7 +39,7 @@
 .filter-div {
     text-align: right;
     position: relative;
-    background: #ddd;
+    background: $uiGeneralContentBorder;
     padding: 1px;
     input {
         display: block;
