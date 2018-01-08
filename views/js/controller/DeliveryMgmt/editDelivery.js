@@ -19,17 +19,17 @@
  */
 define(['jquery', 'helpers', 'ui/modal'],
 function ($, helpers) {
-	'use strict';
-	
-	return {
+    'use strict';
+
+    return {
         start : function(){
             $('#exclude-btn').click(function() {
-            	var delivery = $(this).data('delivery');
-        	    $('#testtaker-form').load(helpers._url('excludeTesttaker', 'DeliveryMgmt', 'taoDeliveryRdf', {'uri' : delivery}), function() {
+                var delivery = $(this).data('delivery');
+                $('#testtaker-form').load(helpers._url('excludeTesttaker', 'DeliveryMgmt', 'taoDeliveryRdf', {'uri' : delivery}), function() {
                     $('body').prepend($('#modal-container'));
                     $('#testtaker-form').modal();
                 });
-        	});
+            });
         }
-	}
+    };
 });
