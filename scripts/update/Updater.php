@@ -216,6 +216,6 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         }
 
-        $this->skip('3.23.1', '3.27.0');
+        $this->skip('3.23.1', '3.28.0');
     }
 }
