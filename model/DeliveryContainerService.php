@@ -29,6 +29,7 @@ use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoTests\models\runner\plugins\TestPlugin;
 use oat\taoTests\models\runner\plugins\TestPluginService;
 use oat\taoTests\models\runner\features\TestRunnerFeatureService;
+use oat\taoTests\models\runner\providers\TestProviderService;
 
 /**
  * RDF implementation for the Delivery container service.
@@ -50,6 +51,21 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
     const PROPERTY_START = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart';
     /** @deprecated use DeliveryAssemblyService::PROPERTY_END  */
     const PROPERTY_END = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
+
+    /**
+     * Get the list of providers for the current execution
+     * @param DeliveryExecution $execution
+     * @return array the list of providers
+     */
+    public function getProviders(DeliveryExecution $execution)
+    {
+        $serviceManager = $this->getServiceManager();
+        $providerService = $serviceManager->get(TestProviderService::SERVICE_ID);
+        $providers = $providerService->getAllProviders();
+        return array_filter($providers, function ($provider) {
+            return !is_null($provider) && $provider->isActive();
+        });
+    }
 
     /**
      * Get the list of active plugins for the current execution
