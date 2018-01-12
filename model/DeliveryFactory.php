@@ -105,6 +105,7 @@ class DeliveryFactory extends ConfigurableService
 
         $testCompilerClass = \taoTests_models_classes_TestsService::singleton()->getCompilerClass($test);
         $compiler = new $testCompilerClass($test, $storage);
+        $compiler->setServiceLocator($this->getServiceLocator());
 
         $report = $compiler->compile();
         if ($report->getType() == \common_report_Report::TYPE_SUCCESS) {
