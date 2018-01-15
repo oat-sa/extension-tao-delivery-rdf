@@ -21,10 +21,13 @@
 namespace oat\taoDeliveryRdf\scripts\update;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\search\dataProviders\DataProvider;
+use oat\tao\model\search\dataProviders\OntologyDataProvider;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\GroupAssignment;
@@ -217,5 +220,18 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('3.23.1', '3.28.0');
+
+        if ($this->isVersion('3.28.0')){
+            $ontologyDataProvider = $this->getServiceManager()->get(OntologyDataProvider::SERVICE_ID);
+            $options = $ontologyDataProvider->getOptions();
+            $options [DataProvider::INDEXES_MAP_OPTION][] = [
+                DeliveryAssemblyService::CLASS_URI => [
+                    DataProvider::FIELDS_OPTION => 'label'
+                ]
+            ];
+            $ontologyDataProvider->setOptions($options);
+            $this->getServiceManager()->register(OntologyDataProvider::SERVICE_ID, $ontologyDataProvider);
+            $this->setVersion('3.29.0');
+        }
     }
 }
