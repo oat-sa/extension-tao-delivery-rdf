@@ -39,11 +39,9 @@ class SetUpOntologyDataProvider extends InstallAction
     {
         $ontologyDataProvider = $this->getServiceLocator()->get(OntologyDataProvider::SERVICE_ID);
         $options = $ontologyDataProvider->getOptions();
-        $options [DataProvider::INDEXES_MAP_OPTION][] = [
-            DeliveryAssemblyService::CLASS_URI => [
+        $options[DataProvider::INDEXES_MAP_OPTION][DeliveryAssemblyService::CLASS_URI] = [
                 DataProvider::FIELDS_OPTION => 'label'
-            ]
-        ];
+            ];
         $ontologyDataProvider->setOptions($options);
         $this->getServiceManager()->register(OntologyDataProvider::SERVICE_ID, $ontologyDataProvider);
 
