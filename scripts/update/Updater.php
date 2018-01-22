@@ -222,7 +222,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $deliveryAssemblerWrapper = new DeliveryAssemblyWrapperService();
             $this->getServiceManager()->register(DeliveryAssemblyWrapperService::SERVICE_ID, $deliveryAssemblerWrapper);
 
-            $this->setVersion('3.29.0');
+            $this->setVersion('4.0.0');
         }
     }
 }
