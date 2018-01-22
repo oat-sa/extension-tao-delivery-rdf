@@ -28,7 +28,7 @@ use oat\taoQtiTest\models\TestSessionService;
 
 class DeliveryDeleteService extends ConfigurableService
 {
-    const SERVICE_ID = 'taoDeliveryRdf/DeleteDelivery';
+    const SERVICE_ID = 'taoDeliveryRdf/DeliveryDelete';
 
     const OPTION_DELETE_DELIVERY_DATA_SERVICES = 'deleteDeliveryDataServices';
     /**
