@@ -23,7 +23,7 @@ namespace oat\taoDeliveryRdf\model\Delete;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteRequest;
-use oat\taoDeliveryRdf\model\Delete\Execution\DeliveryExecutionDeleteService;
+use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteService;
 use oat\taoQtiTest\models\TestSessionService;
 
 class DeliveryDeleteService extends ConfigurableService
