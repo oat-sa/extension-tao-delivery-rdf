@@ -56,7 +56,7 @@ class DeliveryDeleteService extends ConfigurableService
      */
     public function execute(DeliveryDeleteRequest $request)
     {
-        $this->report = common_report_Report::createInfo('Deleting Delivery');
+        $this->report = common_report_Report::createInfo('Deleting Delivery: '. $request->getDeliveryResource()->getUri());
 
         $executions = $this->getServiceProxy()->getExecutionsByDelivery($request->getDeliveryResource());
 
@@ -98,18 +98,15 @@ class DeliveryDeleteService extends ConfigurableService
         $services = $this->getDeliveryDeleteService();
 
         foreach ($services as $service) {
-            try{
-                $service->deleteDeliveryData($request);
+            $deleted = $service->deleteDeliveryData($request);
+            if ($deleted) {
                 $this->report->add(common_report_Report::createSuccess(
                     'Delivery data related to service: '. get_class($service) . ' has been deleted.')
                 );
-            }catch (\Exception $exception) {
+            } else {
                 $this->report->add(common_report_Report::createFailure(
-                    'Delivery data related to service: '. get_class($service) . ' has NOT been deleted.')
+                    'Delivery data related to service: '. get_class($service) . ' has nothing to deleted.')
                 );
-                $this->report->add(common_report_Report::createFailure($exception->getMessage()));
-
-                throw $exception;
             }
         }
 
