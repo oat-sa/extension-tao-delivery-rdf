@@ -20,6 +20,7 @@
 
 namespace oat\taoDeliveryRdf\model\Delete;
 
+use common_report_Report;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteRequest;
@@ -31,6 +32,9 @@ class DeliveryDeleteService extends ConfigurableService
     const SERVICE_ID = 'taoDeliveryRdf/DeliveryDelete';
 
     const OPTION_DELETE_DELIVERY_DATA_SERVICES = 'deleteDeliveryDataServices';
+
+    /** @var common_report_Report  */
+    private $report;
     /**
      * DeliveryDeleteService constructor.
      * @param array $options
@@ -43,10 +47,13 @@ class DeliveryDeleteService extends ConfigurableService
         if (!$this->hasOption(static::OPTION_DELETE_DELIVERY_DATA_SERVICES)) {
             throw new \common_exception_Error('Invalid Option provided: ' . static::OPTION_DELETE_DELIVERY_DATA_SERVICES);
         }
+
+        $this->report = common_report_Report::createInfo('Deleting Delivery');
     }
 
     /**
      * @param DeliveryDeleteRequest $request
+     * @return bool
      * @throws \Exception
      */
     public function execute(DeliveryDeleteRequest $request)
@@ -58,15 +65,32 @@ class DeliveryDeleteService extends ConfigurableService
                 $request->getDeliveryResource(),
                 $execution
             );
-
-            $this->deleteDeliveryExecution($requestDeleteExecution);
+            /** @var DeliveryExecutionDeleteService $deliveryExecutionDeleteService */
+            $deliveryExecutionDeleteService = $this->getServiceLocator()->get(DeliveryExecutionDeleteService::SERVICE_ID);
+            try{
+                $deliveryExecutionDeleteService->execute($requestDeleteExecution);
+                $this->report->add($deliveryExecutionDeleteService->getReport());
+            } catch (\Exception $exception) {
+                $this->report->add($deliveryExecutionDeleteService->getReport());
+                throw $exception;
+            }
         }
 
-        $this->deleteDelivery($request);
+        return $this->deleteDelivery($request);
+    }
+
+
+    /**
+     * @return common_report_Report
+     */
+    public function getReport()
+    {
+        return $this->report;
     }
 
     /**
      * @param DeliveryDeleteRequest $request
+     * @return bool
      * @throws \Exception
      */
     protected function deleteDelivery(DeliveryDeleteRequest $request)
@@ -76,17 +100,8 @@ class DeliveryDeleteService extends ConfigurableService
         foreach ($services as $service) {
             $service->deleteDeliveryData($request);
         }
-    }
 
-    /**
-     * @param DeliveryExecutionDeleteRequest $request
-     * @throws \Exception
-     */
-    protected function deleteDeliveryExecution(DeliveryExecutionDeleteRequest $request)
-    {
-        /** @var DeliveryExecutionDeleteService $deliveryExecutionDeleteService */
-        $deliveryExecutionDeleteService = $this->getServiceLocator()->get(DeliveryExecutionDeleteService::SERVICE_ID);
-        $deliveryExecutionDeleteService->execute($request);
+        return true;
     }
 
     /**
