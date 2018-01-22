@@ -47,8 +47,6 @@ class DeliveryDeleteService extends ConfigurableService
         if (!$this->hasOption(static::OPTION_DELETE_DELIVERY_DATA_SERVICES)) {
             throw new \common_exception_Error('Invalid Option provided: ' . static::OPTION_DELETE_DELIVERY_DATA_SERVICES);
         }
-
-        $this->report = common_report_Report::createInfo('Deleting Delivery');
     }
 
     /**
@@ -58,6 +56,8 @@ class DeliveryDeleteService extends ConfigurableService
      */
     public function execute(DeliveryDeleteRequest $request)
     {
+        $this->report = common_report_Report::createInfo('Deleting Delivery');
+
         $executions = $this->getServiceProxy()->getExecutionsByDelivery($request->getDeliveryResource());
 
         foreach ($executions as $execution) {
