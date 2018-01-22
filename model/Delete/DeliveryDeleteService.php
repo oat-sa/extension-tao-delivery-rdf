@@ -98,7 +98,19 @@ class DeliveryDeleteService extends ConfigurableService
         $services = $this->getDeliveryDeleteService();
 
         foreach ($services as $service) {
-            $service->deleteDeliveryData($request);
+            try{
+                $service->deleteDeliveryData($request);
+                $this->report->add(common_report_Report::createSuccess(
+                    'Delivery data related to service: '. get_class($service) . ' has been deleted.')
+                );
+            }catch (\Exception $exception) {
+                $this->report->add(common_report_Report::createFailure(
+                    'Delivery data related to service: '. get_class($service) . ' has NOT been deleted.')
+                );
+                $this->report->add(common_report_Report::createFailure($exception->getMessage()));
+
+                throw $exception;
+            }
         }
 
         return true;
