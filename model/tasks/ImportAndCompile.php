@@ -185,8 +185,8 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
             self::OPTION_FILE => $fileUri,
             self::OPTION_IMPORTER => $importerId,
             self::OPTION_CUSTOM => $customParams,
-            self::OPTION_DELIVERY_LABEL => $deliveryClassLabel
-        ]);
+            self::OPTION_DELIVERY_LABEL => $deliveryClassLabel,
+        ], null, null, true);
     }
 
 
