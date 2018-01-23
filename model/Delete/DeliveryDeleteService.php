@@ -101,11 +101,11 @@ class DeliveryDeleteService extends ConfigurableService
             $deleted = $service->deleteDeliveryData($request);
             if ($deleted) {
                 $this->report->add(common_report_Report::createSuccess(
-                    'Delivery data related to service: '. get_class($service) . ' has been deleted.')
+                    'Delete delivery Service: '. get_class($service) . ' data has been deleted.')
                 );
             } else {
                 $this->report->add(common_report_Report::createFailure(
-                    'Delivery data related to service: '. get_class($service) . ' has nothing to deleted.')
+                    'Delete delivery Service: '. get_class($service) . ' data has nothing to delete.')
                 );
             }
         }
