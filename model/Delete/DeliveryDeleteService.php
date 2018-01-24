@@ -104,7 +104,7 @@ class DeliveryDeleteService extends ConfigurableService
                     'Delete delivery Service: '. get_class($service) . ' data has been deleted.')
                 );
             } else {
-                $this->report->add(common_report_Report::createFailure(
+                $this->report->add(common_report_Report::createInfo(
                     'Delete delivery Service: '. get_class($service) . ' data has nothing to delete.')
                 );
             }
