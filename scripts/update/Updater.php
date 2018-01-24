@@ -224,7 +224,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             /** @var IndexService $indexService */
             $indexService = $this->getServiceManager()->get(IndexService::SERVICE_ID);
             $options = $indexService->getOptions();
-            $options['rootClasses'][DeliveryAssemblyService::CLASS_URI] = [
+            $options[IndexService::PROPERTY_ROOT_CLASSES][DeliveryAssemblyService::CLASS_URI] = [
                 IndexService::PROPERTY_FIELDS => []
             ];
             $this->getServiceManager()->register(IndexService::SERVICE_ID, new IndexService($options));
