@@ -97,6 +97,6 @@ class UpdateDelivery extends AbstractTaskAction implements \JsonSerializable
         ];
         /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = ServiceManager::getServiceManager()->get(QueueDispatcher::SERVICE_ID);
-        return $queueDispatcher->createTask($action, $parameters);
+        return $queueDispatcher->createTask($action, $parameters, null, null, true);
     }
 }

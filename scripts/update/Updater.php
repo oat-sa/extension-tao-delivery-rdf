@@ -216,9 +216,9 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         }
 
-        $this->skip('3.23.1', '3.28.0');
+        $this->skip('3.23.1', '3.29.0');
 
-        if ($this->isVersion('3.28.0')) {
+        if ($this->isVersion('3.29.0')) {
             $deliveryAssemblerWrapper = new DeliveryAssemblyWrapperService();
             $this->getServiceManager()->register(DeliveryAssemblyWrapperService::SERVICE_ID, $deliveryAssemblerWrapper);
 
