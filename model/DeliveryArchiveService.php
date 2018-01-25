@@ -31,12 +31,15 @@ use oat\oatbox\service\ServiceNotFoundException;
 use oat\taoDelivery\model\DeliverArchiveExistingException;
 use oat\taoDelivery\model\DeliveryArchiveNotExistingException;
 use oat\taoDelivery\model\DeliveryZipException;
+use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_FileStorage;
 use tao_models_classes_service_StorageDirectory;
+use oat\taoDeliveryRdf\model\Delete\DeliveryDelete;
 
-class DeliveryArchiveService extends ConfigurableService implements \oat\taoDelivery\model\DeliveryArchiveService
+class DeliveryArchiveService extends ConfigurableService
+    implements \oat\taoDelivery\model\DeliveryArchiveService, DeliveryDelete
 {
     use OntologyAwareTrait;
 
@@ -171,6 +174,14 @@ class DeliveryArchiveService extends ConfigurableService implements \oat\taoDeli
         }
 
         return $fileName;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteDeliveryData(DeliveryDeleteRequest $request)
+    {
+        return $this->deleteArchive($request->getDeliveryResource());
     }
 
     /**
