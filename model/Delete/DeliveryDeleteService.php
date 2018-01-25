@@ -22,6 +22,7 @@ namespace oat\taoDeliveryRdf\model\Delete;
 
 use common_report_Report;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoDelivery\model\execution\Monitoring;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteRequest;
 use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteService;
@@ -58,7 +59,13 @@ class DeliveryDeleteService extends ConfigurableService
     {
         $this->report = common_report_Report::createInfo('Deleting Delivery: '. $request->getDeliveryResource()->getUri());
 
-        $executions = $this->getServiceProxy()->getExecutionsByDelivery($request->getDeliveryResource());
+        $serviceProxy = $this->getServiceProxy();
+
+        if (!$serviceProxy instanceof Monitoring) {
+            throw new \Exception('Getting delivery executions by delivery not available on this service: ' . get_class($serviceProxy));
+        }
+
+        $executions = $serviceProxy->getExecutionsByDelivery($request->getDeliveryResource());
 
         foreach ($executions as $execution) {
             $requestDeleteExecution = $this->buildDeliveryExecutionDeleteRequest(
