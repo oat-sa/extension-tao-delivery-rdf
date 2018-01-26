@@ -23,17 +23,18 @@ use oat\taoDeliveryRdf\install\RegisterDeliveryPublishingService;
 use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
 use oat\taoDeliveryRdf\scripts\install\RegisterDeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\scripts\install\SetUpQueueTasks;
+use oat\taoDeliveryRdf\scripts\install\SetupSearchService;
 
 return array(
   'name'        => 'taoDeliveryRdf',
   'label'       => 'Delivery Management',
   'description' => 'Manages deliveries using the ontology',
   'license'     => 'GPL-2.0',
-  'version'     => '4.0.0',
+  'version'     => '4.1.0',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
 	    'generis'     => '>=5.11.0',
-        'tao'         => '>=15.4.0',
+        'tao'         => '>=15.7.0',
         'taoGroups'   => '>=2.7.1',
         'taoTests'    => '>=3.5.0',
         'taoQtiTest'  => '>=18.6.0',
@@ -57,6 +58,7 @@ return array(
             RegisterDeliveryFactoryService::class,
             OverrideRuntime::class,
             SetUpQueueTasks::class,
+            SetupSearchService::class,
             RegisterDeliveryAssemblyWrapperService::class
         )
     ),

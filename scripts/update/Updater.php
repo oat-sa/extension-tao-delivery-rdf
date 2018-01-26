@@ -21,11 +21,13 @@
 namespace oat\taoDeliveryRdf\scripts\update;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\search\index\IndexService;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\GroupAssignment;
@@ -223,6 +225,16 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->getServiceManager()->register(DeliveryAssemblyWrapperService::SERVICE_ID, $deliveryAssemblerWrapper);
 
             $this->setVersion('4.0.0');
+        }
+
+        if ($this->isVersion('4.0.0')){
+            /** @var IndexService $indexService */
+            $indexService = $this->getServiceManager()->get(IndexService::SERVICE_ID);
+            $options = $indexService->getOptions();
+            $options[IndexService::OPTION_ROOT_CLASSES][] = DeliveryAssemblyService::CLASS_URI;
+            $this->getServiceManager()->register(IndexService::SERVICE_ID, new IndexService($options));
+            $this->setVersion('4.1.0');
+
         }
     }
 }
