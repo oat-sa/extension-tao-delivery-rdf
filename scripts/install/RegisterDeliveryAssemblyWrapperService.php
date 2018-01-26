@@ -14,20 +14,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2018 Open Assessment Technologies SA
+ * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
  *
  */
+
 namespace oat\taoDeliveryRdf\scripts\install;
 
-use oat\oatbox\event\EventManager;
 use oat\oatbox\extension\InstallAction;
-use oat\tao\model\search\index\IndexService;
-use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
-use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoResultServer\models\classes\ResultService;
-use oat\taoResultServer\models\classes\search\ResultsWatcher;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 
-class SetupSearchService extends InstallAction
+class RegisterDeliveryAssemblyWrapperService extends InstallAction
 {
     /**
      * @param $params
@@ -36,10 +32,7 @@ class SetupSearchService extends InstallAction
      */
     public function __invoke($params)
     {
-        /** @var IndexService $indexService */
-        $indexService = $this->getServiceLocator()->get(IndexService::SERVICE_ID);
-        $options = $indexService->getOptions();
-        $options[IndexService::OPTION_ROOT_CLASSES][] = DeliveryAssemblyService::CLASS_URI;
-        $this->getServiceManager()->register(IndexService::SERVICE_ID, new IndexService($options));
+        $deliveryAssemblerWrapper = new DeliveryAssemblyWrapperService();
+        $this->getServiceManager()->register(DeliveryAssemblyWrapperService::SERVICE_ID, $deliveryAssemblerWrapper);
     }
 }

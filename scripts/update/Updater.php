@@ -26,6 +26,7 @@ use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\DeliveryPublishing;
@@ -39,8 +40,7 @@ use oat\taoDelivery\model\RuntimeService;
 use oat\taoTaskQueue\model\TaskLogInterface;
 
 /**
- *
- * @author Joel Bout <joel@taotesting.com>
+ ** @author Joel Bout <joel@taotesting.com>
  */
 class Updater extends \common_ext_ExtensionUpdater {
 
@@ -220,18 +220,21 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         $this->skip('3.23.1', '3.29.0');
 
-        if ($this->isVersion('3.29.0')){
+        if ($this->isVersion('3.29.0')) {
+            $deliveryAssemblerWrapper = new DeliveryAssemblyWrapperService();
+            $this->getServiceManager()->register(DeliveryAssemblyWrapperService::SERVICE_ID, $deliveryAssemblerWrapper);
+
+            $this->setVersion('4.0.0');
+        }
+
+        if ($this->isVersion('4.0.0')){
             /** @var IndexService $indexService */
             $indexService = $this->getServiceManager()->get(IndexService::SERVICE_ID);
             $options = $indexService->getOptions();
-            $options[IndexService::PROPERTY_ROOT_CLASSES][DeliveryAssemblyService::CLASS_URI] = [
-                IndexService::PROPERTY_FIELDS => []
-            ];
+            $options[IndexService::OPTION_ROOT_CLASSES][] = DeliveryAssemblyService::CLASS_URI;
             $this->getServiceManager()->register(IndexService::SERVICE_ID, new IndexService($options));
-            $this->setVersion('3.30.0');
+            $this->setVersion('4.1.0');
 
         }
-
-
     }
 }
