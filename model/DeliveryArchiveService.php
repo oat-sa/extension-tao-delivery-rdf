@@ -28,8 +28,6 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceNotFoundException;
-use oat\taoDelivery\model\DeliverArchiveExistingException;
-use oat\taoDelivery\model\DeliveryArchiveNotExistingException;
 use oat\taoDelivery\model\DeliveryZipException;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
@@ -39,7 +37,7 @@ use tao_models_classes_service_StorageDirectory;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDelete;
 
 class DeliveryArchiveService extends ConfigurableService
-    implements \oat\taoDelivery\model\DeliveryArchiveService, DeliveryDelete
+    implements \oat\taoDeliveryRdf\model\DeliveryArchiveServiceInterface, DeliveryDelete
 {
     use OntologyAwareTrait;
 
