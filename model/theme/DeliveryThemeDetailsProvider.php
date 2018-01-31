@@ -70,17 +70,11 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
         );
     }
 
-static $a = 0;
-static $b = 0;
-static $c = 0;
-
     /**
      * @inheritdoc
      */
     public function getThemeId()
     {
-        static::$a++;
-
         $deliveryExecutionId = $this->getDeliveryExecutionId();
 
         if (empty($this->themeId)) {
@@ -91,9 +85,7 @@ static $c = 0;
                 }
             }
         }
-\common_Logger::w(
-    sprintf('Get delivery theme id was called %s times. From this it came from cache %s times, from database %s times.', self::$a, self::$c, self::$b)
-);
+
         return $this->themeId;
     }
 
@@ -153,7 +145,6 @@ static $c = 0;
         if ($this->getCachePersistence() === null) {
             return false;
         }
-static::$c++;
 
         return $this->getCachePersistence()->get($this->getCacheKey($deliveryId));
     }
@@ -172,7 +163,6 @@ static::$c++;
 
             $property = $delivery->getProperty(static::DELIVERY_THEME_ID_URI);
             $themeId  = (string)$delivery->getOnePropertyValue($property);
-static::$b++;
 
             return $themeId;
         }
