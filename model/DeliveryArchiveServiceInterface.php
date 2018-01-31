@@ -19,8 +19,6 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
-use oat\taoDeliveryRdf\model\DeliverArchiveExistingException;
-use oat\taoDeliveryRdf\model\DeliveryArchiveNotExistingException;
 use oat\taoDelivery\model\DeliveryZipException;
 
 interface DeliveryArchiveServiceInterface
