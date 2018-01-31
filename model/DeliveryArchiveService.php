@@ -35,7 +35,6 @@ use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_FileStorage;
 use tao_models_classes_service_StorageDirectory;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDelete;
-use oat\taoDeliveryRdf\model\DeliveryArchiveServiceInterface;
 
 class DeliveryArchiveService extends ConfigurableService
     implements DeliveryArchiveServiceInterface, DeliveryDelete
