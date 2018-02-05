@@ -26,7 +26,7 @@ use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\theme\ThemeDetailsProviderInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 
-class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeDetailsProviderInterface, PhpSerializable
+class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeDetailsProviderInterface
 {
     /**
      * The delivery theme id uri.
