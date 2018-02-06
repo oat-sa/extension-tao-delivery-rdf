@@ -144,7 +144,7 @@ class DeliveryDeleteService extends ConfigurableService
     /**
      * @return array|ServiceProxy|object
      */
-    public function getServiceProxy()
+    private function getServiceProxy()
     {
         return $this->getServiceLocator()->get(ServiceProxy::SERVICE_ID);
     }
