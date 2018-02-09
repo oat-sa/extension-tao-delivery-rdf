@@ -26,6 +26,7 @@ use oat\tao\helpers\form\WidgetRegistry;
 use oat\tao\model\WidgetDefinitions;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\DeliveryPublishing;
+use oat\tao\model\TaoOntology;
 use oat\taoDeliveryRdf\model\NoTestsException;
 /**
  * Create a form from a  resource of your ontology. 
@@ -76,7 +77,7 @@ class WizardForm extends \tao_helpers_form_FormContainer
         /** @var ComplexSearchService $search */
         $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
         $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder , TAO_TEST_CLASS , true);
+        $query = $search->searchType($queryBuilder , TaoOntology::TEST_CLASS_URI, true);
         $queryBuilder->setCriteria($query);
 
         $count = $search->getGateway()->count($queryBuilder);

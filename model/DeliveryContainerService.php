@@ -29,6 +29,7 @@ use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoTests\models\runner\plugins\TestPlugin;
 use oat\taoTests\models\runner\plugins\TestPluginService;
 use oat\taoTests\models\runner\features\TestRunnerFeatureService;
+use oat\taoTests\models\runner\providers\TestProviderService;
 
 /**
  * RDF implementation for the Delivery container service.
@@ -41,14 +42,30 @@ use oat\taoTests\models\runner\features\TestRunnerFeatureService;
  */
 class DeliveryContainerService  extends ConfigurableService implements DeliveryContainerServiceInterface
 {
-
     const PROPERTY_EXCLUDED_SUBJECTS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects';
     const PROPERTY_MAX_EXEC = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec';
-    const PROPERTY_START = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart';
-    const PROPERTY_END = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
     const PROPERTY_ACCESS_SETTINGS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings';
-
     const TEST_RUNNER_FEATURES_PROPERTY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures';
+
+    /** @deprecated use DeliveryAssemblyService::PROPERTY_START  */
+    const PROPERTY_START = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart';
+    /** @deprecated use DeliveryAssemblyService::PROPERTY_END  */
+    const PROPERTY_END = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
+
+    /**
+     * Get the list of providers for the current execution
+     * @param DeliveryExecution $execution
+     * @return array the list of providers
+     */
+    public function getProviders(DeliveryExecution $execution)
+    {
+        $serviceManager = $this->getServiceManager();
+        $providerService = $serviceManager->get(TestProviderService::SERVICE_ID);
+        $providers = $providerService->getAllProviders();
+        return array_filter($providers, function ($provider) {
+            return !is_null($provider) && $provider->isActive();
+        });
+    }
 
     /**
      * Get the list of active plugins for the current execution

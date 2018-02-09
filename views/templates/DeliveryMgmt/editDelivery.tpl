@@ -1,12 +1,15 @@
 <?php
 use oat\tao\helpers\Template;
 ?>
-<link rel="stylesheet" type="text/css" href="<?= Template::css('form_delivery.css')?>" />
+<link rel="stylesheet" type="text/css" href="<?= Template::css('delivery-rdf.css')?>" />
 
 <div class="delivery-headings flex-container-full">
     <header>
         <h2><?=_dh(get_data('label'))?></h2>
         <p><?=__('Published on %2s', tao_helpers_Date::displayeDate(get_data('date')))?></p>
+        <?php if(has_data('updatedAt')) : ?>
+            <p><?=__('Last updated on %2s', tao_helpers_Date::displayeDate(get_data('updatedAt')))?></p>
+        <?php endif; ?>
     </header>
 
     <header>
@@ -42,7 +45,7 @@ use oat\tao\helpers\Template;
     </div>
 
 
-<div class="data-container-wrapper flex-container-remainer">
+<div class="data-container-wrapper flex-container-remainder">
     <?= get_data('groupTree')?>
     <?php Template::inc('widgets/excludeTesttaker.tpl');?>
     <?= has_data('campaign') ? get_data('campaign') : '';?>

@@ -21,10 +21,13 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
+use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManagerAwareTrait;
 use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
+use oat\tao\model\resources\ResourceWatcher;
+use oat\tao\model\TaoOntology;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
@@ -181,7 +184,8 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $users = $this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($delivery->getUri());
         $assigned = array_diff(array_unique($users), $excluded);
         $this->setData('ttassigned', count($assigned));
-
+        $updatedAt = $this->getServiceManager()->get(ResourceWatcher::SERVICE_ID)->getUpdatedAt($delivery);
+        $this->setData('updatedAt', $updatedAt);
         $this->setData('formTitle', __('Properties'));
         $this->setData('myForm', $myForm->render());
 
@@ -289,8 +293,8 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
 
         $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder , TAO_TEST_CLASS , true)
-            ->add(RDFS_LABEL)
+        $query = $search->searchType($queryBuilder , TaoOntology::TEST_CLASS_URI, true)
+            ->add(OntologyRdfs::RDFS_LABEL)
             ->contains($q);
 
         $queryBuilder->setCriteria($query);

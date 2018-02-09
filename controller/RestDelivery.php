@@ -21,11 +21,14 @@ namespace oat\taoDeliveryRdf\controller;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManagerAwareTrait;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\generis\model\OntologyRdfs;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
 use oat\taoTaskQueue\model\Entity\TaskLogEntity;
+use oat\taoTaskQueue\model\TaskLog\TaskLogFilter;
 use oat\taoTaskQueue\model\TaskLogActionTrait;
+use oat\taoTaskQueue\model\TaskLogBroker\TaskLogBrokerInterface;
 use oat\taoTaskQueue\model\TaskLogInterface;
 
 class RestDelivery extends \tao_actions_RestController
@@ -223,11 +226,38 @@ class RestDelivery extends \tao_actions_RestController
                 $this->getRequestParameter(self::TASK_ID_PARAM),
                 CompileDelivery::class
             );
-
+            $children = $this->getStatusesForChildren($this->getRequestParameter(self::TASK_ID_PARAM));
+            $data['children'] = $children;
             $this->returnSuccess($data);
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
+    }
+
+    /**
+     * @param $taskId
+     * @return array
+     */
+    protected function getStatusesForChildren($taskId)
+    {
+        $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+        $filter = (new TaskLogFilter())
+            ->eq(TaskLogBrokerInterface::COLUMN_PARENT_ID, $taskId);
+        $collection = $taskLog->search($filter);
+        $response = [];
+        if ($collection->isEmpty()) {
+            return $response;
+        }
+        /** @var TaskLogEntity $item */
+        foreach ($collection as $item) {
+            $response[] = [
+                'id' => $this->getTaskId($item),
+                'label' => $item->getLabel(),
+                'status' => $this->getTaskStatus($item),
+                'report' => $item->getReport() ? $this->getTaskReport($item) : []
+            ];
+        }
+        return $response;
     }
 
     /**
@@ -337,8 +367,8 @@ class RestDelivery extends \tao_actions_RestController
             $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
             $queryBuilder = $search->query();
             $criteria = $queryBuilder->newQuery()
-                ->add(RDFS_LABEL)->equals($label)
-                ->add(RDFS_SUBCLASSOF)->in($classes)
+                ->add(OntologyRdfs::RDFS_LABEL)->equals($label)
+                ->add(OntologyRdfs::RDFS_SUBCLASSOF)->in($classes)
             ;
             $queryBuilder->setCriteria($criteria);
             $result = $search->getGateway()->search($queryBuilder);

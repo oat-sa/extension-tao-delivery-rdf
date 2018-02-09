@@ -20,6 +20,7 @@
 namespace oat\taoDeliveryRdf\model;
 
 use oat\generis\model\OntologyAwareTrait;
+use oat\generis\model\OntologyRdfs;
 use oat\oatbox\service\ConfigurableService;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
@@ -64,6 +65,8 @@ class DeliveryFactory extends ConfigurableService
     const OPTION_INITIAL_PROPERTIES_MAP_VALUES = 'values';
     const OPTION_INITIAL_PROPERTIES_MAP_URI = 'uri';
 
+    const PROPERTY_DELIVERY_COMPILE_TASK = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask';
+
     private $deliveryResource;
 
     /**
@@ -102,13 +105,14 @@ class DeliveryFactory extends ConfigurableService
 
         $testCompilerClass = \taoTests_models_classes_TestsService::singleton()->getCompilerClass($test);
         $compiler = new $testCompilerClass($test, $storage);
+        $compiler->setServiceLocator($this->getServiceLocator());
 
         $report = $compiler->compile();
         if ($report->getType() == \common_report_Report::TYPE_SUCCESS) {
             $serviceCall = $report->getData();
 
             $properties = array(
-                RDFS_LABEL => $label,
+                OntologyRdfs::RDFS_LABEL => $label,
                 DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
                 DeliveryAssemblyService::PROPERTY_ORIGIN => $test,
             );

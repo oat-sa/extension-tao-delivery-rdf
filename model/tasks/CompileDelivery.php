@@ -22,12 +22,14 @@
 namespace oat\taoDeliveryRdf\model\tasks;
 
 use common_report_Report as Report;
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
-use oat\taoPublishing\model\publishing\delivery\PublishingDeliveryService;
 use oat\taoTaskQueue\model\QueueDispatcher;
+use oat\taoTaskQueue\model\Task\TaskAwareInterface;
+use oat\taoTaskQueue\model\Task\TaskAwareTrait;
 use oat\taoTaskQueue\model\Task\TaskInterface;
 
 /**
@@ -38,8 +40,12 @@ use oat\taoTaskQueue\model\Task\TaskInterface;
  * @package oat\taoQtiTest\models\tasks
  * @author  Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class CompileDelivery extends AbstractAction implements \JsonSerializable
+class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskAwareInterface
 {
+
+    use TaskAwareTrait;
+    use OntologyAwareTrait;
+
     /**
      * @param $params
      * @throws \common_exception_MissingParameter
@@ -64,8 +70,8 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
 
         $test = new \core_kernel_classes_Resource($params['test']);
         $label = 'Delivery of ' . $test->getLabel();
-        $deliveryResource = null;
 
+        $deliveryResource =  \core_kernel_classes_ResourceFactory::create($deliveryClass);
         if ($params['initialProperties']) {
             // Setting "Sync to remote..." if enabled
             /** @var DeliveryFactory $deliveryFactoryResources */
@@ -73,8 +79,15 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
 
             $deliveryResource = $deliveryFactoryResources->setInitialProperties(
                 $params['initialProperties'],
-                \core_kernel_classes_ResourceFactory::create($deliveryClass)
+                $deliveryResource
             );
+        }
+
+        /** @var TaskInterface $task */
+        $task = $this->getTask();
+        if (!is_null($task)) {
+            $deliveryCompileTaskProperty = $this->getProperty(DeliveryFactory::PROPERTY_DELIVERY_COMPILE_TASK);
+            $deliveryResource->setPropertyValue($deliveryCompileTaskProperty, $task->getId());
         }
 
         /** @var DeliveryFactory $deliveryFactory */
@@ -114,6 +127,6 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable
             $parameters['deliveryClass'] = $deliveryClass->getUri();
         }
 
-        return $queueDispatcher->createTask($action, $parameters, __('Publishing of "%s"', $test->getLabel()));
+        return $queueDispatcher->createTask($action, $parameters, __('Publishing of "%s"', $test->getLabel()), null, true);
     }
 }
