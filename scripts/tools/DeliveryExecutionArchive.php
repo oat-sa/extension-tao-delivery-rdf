@@ -21,6 +21,8 @@
 namespace oat\taoDeliveryRdf\scripts\tools;
 
 use common_report_Report as Report;
+use oat\generis\model\kernel\persistence\smoothsql\search\filter\Filter;
+use oat\generis\model\kernel\persistence\smoothsql\search\filter\FilterOperator;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\action\ResolutionException;
 use oat\oatbox\extension\AbstractAction;
@@ -143,7 +145,10 @@ class DeliveryExecutionArchive extends AbstractAction
         );
 
         $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
-        $deliveries = $deliveryClass->getInstances(true);
+        $deliveries = $deliveryClass->searchInstances([
+            new Filter(DeliveryAssemblyService::PROPERTY_DELIVERY_TIME, null, FilterOperator::createIsNotNull())
+        ]);
+
         /** @var DeliveryArchiveService $archiveService */
         $archiveService = $this->getServiceLocator()->get(DeliveryArchiveService::SERVICE_ID);
         $this->propagate($archiveService);
@@ -173,7 +178,9 @@ class DeliveryExecutionArchive extends AbstractAction
         );
 
         $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
-        $deliveries = $deliveryClass->getInstances(true);
+        $deliveries = $deliveryClass->searchInstances([
+            new Filter(DeliveryAssemblyService::PROPERTY_DELIVERY_TIME, null, FilterOperator::createIsNotNull())
+        ]);
         /** @var DeliveryArchiveService $archiveService */
         $archiveService = $this->getServiceLocator()->get(DeliveryArchiveService::SERVICE_ID);
         $this->propagate($archiveService);
@@ -203,7 +210,9 @@ class DeliveryExecutionArchive extends AbstractAction
         );
 
         $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
-        $deliveries = $deliveryClass->getInstances(true);
+        $deliveries = $deliveryClass->searchInstances([
+            new Filter(DeliveryAssemblyService::PROPERTY_DELIVERY_TIME, null, FilterOperator::createIsNotNull())
+        ]);
         /** @var DeliveryArchiveService $archiveService */
         $archiveService = $this->getServiceLocator()->get(DeliveryArchiveService::SERVICE_ID);
         $this->propagate($archiveService);
