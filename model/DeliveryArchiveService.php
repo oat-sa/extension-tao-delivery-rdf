@@ -109,12 +109,12 @@ class DeliveryArchiveService extends ConfigurableService
                 $zip->addFromString($item->getFileSystemId() . '/' . $item->getPrefix(), $item->read());
             }
         }
-
         $zip = $this->refreshArchiveProcessed($zip);
-        $fileName = $this->uploadZip($compiledDelivery);
-        $this->deleteTmpFile($localZipName);
-
         $zip->close();
+
+        $fileName = $this->uploadZip($compiledDelivery);
+
+        $this->deleteTmpFile($localZipName);
 
         return $fileName;
     }
@@ -146,14 +146,14 @@ class DeliveryArchiveService extends ConfigurableService
         if ($force || !$this->isArchivedProcessed($zip, $fileName)){
             $this->copyFromZip($zip);
             $this->setArchiveProcessed($zip, $fileName);
-            $this->deleteTmpFile($zipPath);
             $zip->close();
 
             $fileName = $this->uploadZip($compiledDelivery);
         } else {
-            $this->deleteTmpFile($zipPath);
             $zip->close();
         }
+
+        $this->deleteTmpFile($zipPath);
 
         return $fileName;
     }
