@@ -93,8 +93,8 @@ class DeliveryArchiveService extends ConfigurableService
         $localZipName = $this->getLocalZipPathName($fileName);
 
         $zip = new \ZipArchive();
-        if ($zip->open($localZipName, \ZipArchive::CREATE) === false) {
-            throw new DeliveryZipException('Cannot open zip archive: '. $localZipName);
+        if ($errorCode = $zip->open($localZipName, \ZipArchive::CREATE) !== true) {
+            throw new DeliveryZipException('Cannot open zip archive: '. $localZipName . ' error: '. $errorCode);
         }
 
         $directories = $compiledDelivery->getPropertyValues(
@@ -111,11 +111,10 @@ class DeliveryArchiveService extends ConfigurableService
         }
 
         $zip = $this->refreshArchiveProcessed($zip);
-        $zip->close();
-
         $fileName = $this->uploadZip($compiledDelivery);
-
         $this->deleteTmpFile($localZipName);
+
+        $zip->close();
 
         return $fileName;
     }
@@ -147,14 +146,14 @@ class DeliveryArchiveService extends ConfigurableService
         if ($force || !$this->isArchivedProcessed($zip, $fileName)){
             $this->copyFromZip($zip);
             $this->setArchiveProcessed($zip, $fileName);
+            $this->deleteTmpFile($zipPath);
             $zip->close();
 
             $fileName = $this->uploadZip($compiledDelivery);
         } else {
+            $this->deleteTmpFile($zipPath);
             $zip->close();
         }
-
-        $this->deleteTmpFile($zipPath);
 
         return $fileName;
     }
