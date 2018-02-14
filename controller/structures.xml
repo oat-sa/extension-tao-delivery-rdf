@@ -19,8 +19,11 @@
                     />
                 </trees>
                 <actions>
-                	<action id="delivery-class-properties" name="Properties" url="/tao/PropertiesAuthoring/index" group="content" context="class">
+                    <action id="delivery-class-properties" name="Properties" url="/taoDeliveryRdf/DeliveryMgmt/editClassLabel" group="content" context="class">
                         <icon id="icon-edit"/>
+                    </action>
+                    <action id="delivery-class-schema" name="Manage Schema" url="/tao/PropertiesAuthoring/index" group="content" context="class">
+                        <icon id="icon-property-add" />
                     </action>
                     <action id="delivery-properties" name="Properties"  url="/taoDeliveryRdf/DeliveryMgmt/editDelivery" group="content" context="instance">
                         <icon id="icon-edit"/>
