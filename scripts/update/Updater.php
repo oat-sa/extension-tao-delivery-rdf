@@ -24,7 +24,9 @@ use oat\oatbox\service\ConfigurableService;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
+use oat\taoBackOffice\model\routing\ResourceUrlBuilder;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\DeliveryPublishing;
@@ -226,5 +228,16 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('4.0.0', '4.4.0');
+
+        if ($this->isVersion('4.4.0')) {
+            /** @var ResourceUrlBuilder $urlBuilder */
+            $urlBuilder = $this->getServiceManager()->get(ResourceUrlBuilder::SERVICE_ID);
+
+            $urlBuilder->addAssociation(DeliveryAssemblyService::CLASS_URI, 'taoDeliveryRdf');
+
+            $this->getServiceManager()->register(ResourceUrlBuilder::SERVICE_ID, $urlBuilder);
+
+            $this->setVersion('4.5.0');
+        }
     }
 }
