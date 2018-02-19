@@ -93,7 +93,7 @@ class DeliveryArchiveService extends ConfigurableService
         $localZipName = $this->getLocalZipPathName($fileName);
 
         $zip = new \ZipArchive();
-        if ($errorCode = $zip->open($localZipName, \ZipArchive::CREATE) !== true) {
+        if (($errorCode = $zip->open($localZipName, \ZipArchive::CREATE)) !== true) {
             throw new DeliveryZipException('Cannot open zip archive: '. $localZipName . ' error code: '. $errorCode);
         }
 
@@ -139,7 +139,7 @@ class DeliveryArchiveService extends ConfigurableService
         $zipPath = $this->download($compiledDelivery);
 
         $zip = new \ZipArchive();
-        if ($errorCode = $zip->open($zipPath, \ZipArchive::CREATE) !== true) {
+        if (($errorCode = $zip->open($zipPath, \ZipArchive::CREATE)) !== true) {
             throw new DeliveryZipException('Cannot open zip archive: '. $zipPath . ' error code: '. $errorCode);
         }
 
@@ -221,10 +221,9 @@ class DeliveryArchiveService extends ConfigurableService
         $fileName = $this->getArchiveFileName($compiledDelivery);
         $zipPath = $this->getLocalZipPathName($fileName);
 
-        if (!file_exists($zipPath)) {
+        if (!file_exists($zipPath) || ($stream = fopen($zipPath, 'r')) === false) {
             throw new DeliveryZipException('Cannot open local tmp zip archive');
         }
-        $stream = fopen($zipPath, 'r');
         $this->getArchiveFileSystem()->putStream($fileName, $stream);
         fclose($stream);
 
