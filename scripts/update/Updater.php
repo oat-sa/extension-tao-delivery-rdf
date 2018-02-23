@@ -227,9 +227,9 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('4.0.0');
         }
 
-        $this->skip('4.0.0', '4.4.0');
+        $this->skip('4.0.0', '4.6.0');
 
-        if ($this->isVersion('4.4.0')) {
+        if ($this->isVersion('4.6.0')) {
             /** @var ResourceUrlBuilder $urlBuilder */
             $urlBuilder = $this->getServiceManager()->get(ResourceUrlBuilder::SERVICE_ID);
 
@@ -237,7 +237,7 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $this->getServiceManager()->register(ResourceUrlBuilder::SERVICE_ID, $urlBuilder);
 
-            $this->setVersion('4.5.0');
+            $this->setVersion('4.7.0');
         }
     }
 }
