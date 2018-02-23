@@ -24,6 +24,7 @@ use oat\oatbox\event\EventManager;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ServiceNotFoundException;
+use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use oat\taoDeliveryRdf\model\DeliveryArchiveService;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
@@ -71,6 +72,14 @@ class RegisterDeliveryArchive extends AbstractAction
         ]);
 
         $this->registerService(EventManager::SERVICE_ID, $eventManager);
+
+        /** @var DeliveryDeleteService $deliveryDeleteService */
+        $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
+        $deleteServices = $deliveryDeleteService->getOption(DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES);
+        $deleteServices[] = DeliveryArchiveService::SERVICE_ID;
+        $deliveryDeleteService->setOption(DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES, $deleteServices);
+
+        $this->registerService(DeliveryDeleteService::SERVICE_ID, $deliveryDeleteService);
 
         return new \common_report_Report(\common_report_Report::TYPE_SUCCESS,
             DeliveryArchiveService::BUCKET_DIRECTORY . ' directory created and event attached');
