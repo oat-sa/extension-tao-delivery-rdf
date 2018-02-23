@@ -35,7 +35,7 @@ class RegisterClassToResourceUrlBuilder extends InstallAction
         /** @var ResourceUrlBuilder $urlBuilder */
         $urlBuilder = $this->getServiceManager()->get(ResourceUrlBuilder::SERVICE_ID);
 
-        $urlBuilder->addAssociation(DeliveryAssemblyService::CLASS_URI, 'taoDeliveryRdf');
+        $urlBuilder->addUrlConfig(DeliveryAssemblyService::CLASS_URI, 'taoDeliveryRdf');
 
         $this->getServiceManager()->register(ResourceUrlBuilder::SERVICE_ID, $urlBuilder);
 
