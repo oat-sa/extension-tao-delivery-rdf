@@ -43,7 +43,7 @@ return array(
     ),
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
-        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', array('ext'=>'taoDeliveryRdf')),
+        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', array('ext'=>'taoDeliveryRdf', 'mod' => 'DeliveryMgmt')),
         array('grant', \oat\tao\model\user\TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestDelivery')),
         array('grant', \oat\tao\model\user\TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestTest')),
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole','oat\taoDeliveryRdf\controller\Guest@guest'),
