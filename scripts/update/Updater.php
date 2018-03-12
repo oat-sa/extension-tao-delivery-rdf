@@ -229,8 +229,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('4.0.0', '4.6.0');
 
         if ($this->isVersion('4.6.0')) {
-            AclProxy::revokeRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', array('ext'=>'taoDeliveryRdf')));
-            AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', array('ext'=>'taoDeliveryRdf', 'mod' => 'DeliveryMgmt')));
             AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestDelivery')));
             AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestTest')));
             $this->setVersion('4.7.0');

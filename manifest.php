@@ -33,7 +33,7 @@ return array(
     'author'      => 'Open Assessment Technologies SA',
     'requires'    => array(
         'generis'     => '>=5.11.0',
-        'tao'         => '>=17.5.0',
+        'tao'         => '>=17.9.0',
         'taoGroups'   => '>=2.7.1',
         'taoTests'    => '>=3.5.0',
         'taoQtiTest'  => '>=18.6.0',
@@ -43,7 +43,7 @@ return array(
     ),
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
-        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', array('ext'=>'taoDeliveryRdf', 'mod' => 'DeliveryMgmt')),
+        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', array('ext'=>'taoDeliveryRdf')),
         array('grant', \oat\tao\model\user\TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestDelivery')),
         array('grant', \oat\tao\model\user\TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestTest')),
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole','oat\taoDeliveryRdf\controller\Guest@guest'),
