@@ -233,5 +233,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestTest')));
             $this->setVersion('4.7.0');
         }
+
+        $this->skip('4.7.0', '4.8.0');
     }
 }
