@@ -21,6 +21,7 @@
 namespace oat\taoDeliveryRdf\scripts\update;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
@@ -226,5 +227,13 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('4.0.0', '4.6.0');
+
+        if ($this->isVersion('4.6.0')) {
+            AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestDelivery')));
+            AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestTest')));
+            $this->setVersion('4.7.0');
+        }
+
+        $this->skip('4.7.0', '4.10.0');
     }
 }
