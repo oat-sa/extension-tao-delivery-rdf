@@ -30,6 +30,7 @@ use oat\taoTests\models\runner\plugins\TestPlugin;
 use oat\taoTests\models\runner\plugins\TestPluginService;
 use oat\taoTests\models\runner\features\TestRunnerFeatureService;
 use oat\taoTests\models\runner\providers\TestProviderService;
+use oat\generis\model\OntologyAwareTrait;
 
 /**
  * RDF implementation for the Delivery container service.
@@ -42,6 +43,8 @@ use oat\taoTests\models\runner\providers\TestProviderService;
  */
 class DeliveryContainerService  extends ConfigurableService implements DeliveryContainerServiceInterface
 {
+    use OntologyAwareTrait;
+
     const PROPERTY_EXCLUDED_SUBJECTS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects';
     const PROPERTY_MAX_EXEC = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec';
     const PROPERTY_ACCESS_SETTINGS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings';
@@ -74,8 +77,6 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
      */
     public function getPlugins(DeliveryExecution $deliveryExecution)
     {
-        $delivery = $deliveryExecution->getDelivery();
-
         $serviceManager = $this->getServiceManager();
 
         $pluginService = $serviceManager->get(TestPluginService::SERVICE_ID);
@@ -84,10 +85,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         $allPlugins = $pluginService->getAllPlugins();
 
         $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
-        $activeTestRunnerFeaturesIds = explode(
-            ',',
-            $delivery->getOnePropertyValue(new core_kernel_classes_Property(self::TEST_RUNNER_FEATURES_PROPERTY))
-        );
+        $activeTestRunnerFeaturesIds = $this->getActiveFeatures($deliveryExecution->getDelivery());
 
         // If test runner features are defined, we check if we need to disable some plugins accordingly
         if (count($allTestRunnerFeatures) > 0) {
@@ -152,5 +150,18 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, array());
 
         return $inputParameters['QtiTestCompilation'];
+    }
+
+    /**
+     * @param \core_kernel_classes_Resource $delivery
+     * @return array of feature ids
+     * @throws \core_kernel_persistence_Exception
+     */
+    protected function getActiveFeatures(\core_kernel_classes_Resource $delivery)
+    {
+        return explode(
+            ',',
+            $delivery->getOnePropertyValue(new $this->getProperty(self::TEST_RUNNER_FEATURES_PROPERTY))
+        );
     }
 }
