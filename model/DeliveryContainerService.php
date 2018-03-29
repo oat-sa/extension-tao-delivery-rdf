@@ -161,7 +161,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
     {
         return explode(
             ',',
-            $delivery->getOnePropertyValue(new $this->getProperty(self::TEST_RUNNER_FEATURES_PROPERTY))
+            $delivery->getOnePropertyValue($this->getProperty(self::TEST_RUNNER_FEATURES_PROPERTY))
         );
     }
 }
