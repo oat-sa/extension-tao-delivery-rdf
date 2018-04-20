@@ -32,4 +32,11 @@ class GuestTestTakerSession extends \common_session_DefaultSession
         return __('TAO Guest');
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getInterfaceLanguage()
+    {
+        return DEFAULT_ANONYMOUS_INTERFACE_LANG;
+    }
 }
