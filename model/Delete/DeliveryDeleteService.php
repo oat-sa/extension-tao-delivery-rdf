@@ -29,7 +29,6 @@ use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteService;
 use oat\taoQtiTest\models\TestSessionService;
 use oat\taoResultServer\models\classes\ResultManagement;
 use oat\taoResultServer\models\classes\ResultServerService;
-use taoResultServer_models_classes_ReadableResultStorage;
 
 class DeliveryDeleteService extends ConfigurableService
 {
@@ -37,8 +36,11 @@ class DeliveryDeleteService extends ConfigurableService
 
     const OPTION_DELETE_DELIVERY_DATA_SERVICES = 'deleteDeliveryDataServices';
 
+    const OPTION_WHITE_LIST_EXCEPTIONS = 'whiteListExceptions';
+
     /** @var common_report_Report  */
     private $report;
+
     /**
      * DeliveryDeleteService constructor.
      * @param array $options
@@ -76,6 +78,7 @@ class DeliveryDeleteService extends ConfigurableService
             $executions = $serviceProxy->getExecutionsByDelivery($request->getDeliveryResource());
         }
 
+        $canDeleteDelivery = true;
         foreach ($executions as $execution) {
             $requestDeleteExecution = $this->buildDeliveryExecutionDeleteRequest(
                 $request->getDeliveryResource(),
@@ -88,8 +91,24 @@ class DeliveryDeleteService extends ConfigurableService
                 $this->report->add($deliveryExecutionDeleteService->getReport());
             } catch (\Exception $exception) {
                 $this->report->add($deliveryExecutionDeleteService->getReport());
-                throw $exception;
+
+                //check if exception it's acceptable.
+                $isWhiteException = false;
+                $whiteListExceptions = $this->getOption(static::OPTION_WHITE_LIST_EXCEPTIONS);
+                foreach ($whiteListExceptions as $whiteException){
+                    if ($exception instanceof $whiteException){
+                        $isWhiteException = true;
+                        break;
+                    }
+                }
+                if($isWhiteException === false){
+                    $canDeleteDelivery = false;
+                }
             }
+        }
+
+        if ($canDeleteDelivery === false){
+            throw new DeleteDeliveryException('Cannot delete delivery not all his executions has been deleted.');
         }
 
         return $this->deleteDelivery($request);
