@@ -94,7 +94,7 @@ class DeliveryDeleteService extends ConfigurableService
 
                 //check if exception it's acceptable.
                 $isWhiteException = false;
-                $whiteListExceptions = $this->getOption(static::OPTION_WHITE_LIST_EXCEPTIONS);
+                $whiteListExceptions = $this->getWhiteListExceptions();
                 foreach ($whiteListExceptions as $whiteException){
                     if ($exception instanceof $whiteException){
                         $isWhiteException = true;
@@ -121,6 +121,15 @@ class DeliveryDeleteService extends ConfigurableService
     public function getReport()
     {
         return $this->report;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getWhiteListExceptions()
+    {
+        $exceptions = $this->getOption(static::OPTION_WHITE_LIST_EXCEPTIONS);
+        return $exceptions === null ? [] : $exceptions;
     }
 
     /**
