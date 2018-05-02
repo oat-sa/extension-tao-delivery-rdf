@@ -74,13 +74,13 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
             foreach ($this->getGuestAccessDeliveries() as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
                 $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
-                $assignments[] = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
+                $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts);
             }
         } else {
             foreach ($this->getDeliveryIdsByUser($user) as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
                 $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
-                $assignments[] = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
+                $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts);
             }
         }
         return $assignments;
@@ -332,5 +332,19 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         });
         
         return $assignments;
+    }
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @param User $user
+     * @param $startable
+     * @param bool $displayAttempts
+     * @return AssignmentFactory
+     */
+    protected function getAssignmentFactory(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true)
+    {
+        $factory = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
+        $factory->setServiceLocator($this->getServiceLocator());
+        return $factory;
     }
 }
