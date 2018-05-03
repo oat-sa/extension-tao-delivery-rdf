@@ -104,7 +104,7 @@ class DeliveryDeleteService extends ConfigurableService
                 }
                 if($isWhiteException === false){
                     $canDeleteDelivery = false;
-                    $this->report->add($exception->getMessage()):
+                    $this->report->add($exception->getMessage());
                 }
             }
         }
