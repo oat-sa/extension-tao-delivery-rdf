@@ -19,7 +19,6 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
-use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoGroups\models\GroupsService;
 use oat\oatbox\user\User;
 use oat\oatbox\service\ConfigurableService;
@@ -29,6 +28,8 @@ use \core_kernel_classes_Property;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\model\guest\GuestTestUser;
 use oat\taoDelivery\model\RuntimeService;
+use oat\taoDelivery\model\AttemptServiceInterface;
+
 /**
  * Service to manage the assignment of users to deliveries
  *
@@ -73,13 +74,13 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
             foreach ($this->getGuestAccessDeliveries() as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
                 $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
-                $assignments[] = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
+                $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts);
             }
         } else {
             foreach ($this->getDeliveryIdsByUser($user) as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
                 $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
-                $assignments[] = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
+                $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts);
             }
         }
         return $assignments;
@@ -266,7 +267,8 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
         
         //check Tokens
-        $usedTokens = count(ServiceProxy::singleton()->getUserExecutions($delivery, $user->getIdentifier()));
+        $usedTokens = count($this->getServiceLocator()->get(AttemptServiceInterface::SERVICE_ID)
+            ->getAttempts($delivery->getUri(), $user));
     
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
             \common_Logger::d("Attempt to start the compiled delivery ".$delivery->getUri(). "without tokens");
@@ -330,5 +332,19 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         });
         
         return $assignments;
+    }
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @param User $user
+     * @param $startable
+     * @param bool $displayAttempts
+     * @return AssignmentFactory
+     */
+    protected function getAssignmentFactory(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true)
+    {
+        $factory = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
+        $factory->setServiceLocator($this->getServiceLocator());
+        return $factory;
     }
 }
