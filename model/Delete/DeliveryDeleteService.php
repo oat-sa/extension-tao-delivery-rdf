@@ -90,8 +90,9 @@ class DeliveryDeleteService extends ConfigurableService
                 $deliveryExecutionDeleteService->execute($requestDeleteExecution);
                 $this->report->add($deliveryExecutionDeleteService->getReport());
             } catch (\Exception $exception) {
+              
                 $this->report->add($deliveryExecutionDeleteService->getReport());
-
+                
                 //check if exception it's acceptable.
                 $isWhiteException = false;
                 $whiteListExceptions = $this->getWhiteListExceptions();
@@ -103,6 +104,7 @@ class DeliveryDeleteService extends ConfigurableService
                 }
                 if($isWhiteException === false){
                     $canDeleteDelivery = false;
+                    $this->report->add($exception->getMessage()):
                 }
             }
         }
