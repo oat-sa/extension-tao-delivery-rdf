@@ -80,13 +80,14 @@ class DeliveryDeleteService extends ConfigurableService
 
         $canDeleteDelivery = true;
         foreach ($executions as $execution) {
-            $requestDeleteExecution = $this->buildDeliveryExecutionDeleteRequest(
-                $request->getDeliveryResource(),
-                $execution
-            );
             /** @var DeliveryExecutionDeleteService $deliveryExecutionDeleteService */
             $deliveryExecutionDeleteService = $this->getServiceLocator()->get(DeliveryExecutionDeleteService::SERVICE_ID);
             try{
+                $requestDeleteExecution = $this->buildDeliveryExecutionDeleteRequest(
+                    $request->getDeliveryResource(),
+                    $execution
+                );
+
                 $deliveryExecutionDeleteService->execute($requestDeleteExecution);
                 $this->report->add($deliveryExecutionDeleteService->getReport());
             } catch (\Exception $exception) {
