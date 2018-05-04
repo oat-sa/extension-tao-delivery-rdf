@@ -37,6 +37,6 @@ class GuestTestTakerSession extends \common_session_DefaultSession
      */
     public function getInterfaceLanguage()
     {
-        return DEFAULT_ANONYMOUS_INTERFACE_LANG;
+        return defined('DEFAULT_ANONYMOUS_INTERFACE_LANG') ? DEFAULT_ANONYMOUS_INTERFACE_LANG : DEFAULT_LANG;
     }
 }
