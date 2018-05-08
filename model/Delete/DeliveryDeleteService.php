@@ -77,18 +77,19 @@ class DeliveryDeleteService extends ConfigurableService
         }
 
         foreach ($executions as $execution) {
-            $requestDeleteExecution = $this->buildDeliveryExecutionDeleteRequest(
-                $request->getDeliveryResource(),
-                $execution
-            );
             /** @var DeliveryExecutionDeleteService $deliveryExecutionDeleteService */
             $deliveryExecutionDeleteService = $this->getServiceLocator()->get(DeliveryExecutionDeleteService::SERVICE_ID);
             try{
+                $requestDeleteExecution = $this->buildDeliveryExecutionDeleteRequest(
+                    $request->getDeliveryResource(),
+                    $execution
+                );
+
                 $deliveryExecutionDeleteService->execute($requestDeleteExecution);
                 $this->report->add($deliveryExecutionDeleteService->getReport());
             } catch (\Exception $exception) {
-                $this->report->add($deliveryExecutionDeleteService->getReport());
-                throw $exception;
+                $this->report->add(common_report_Report::createFailure('Failing deleting execution: '. $execution->getIdentifier()));
+                $this->report->add(common_report_Report::createFailure($exception->getMessage()));
             }
         }
 
