@@ -20,7 +20,6 @@
  */
 namespace oat\taoDeliveryRdf\controller;
 
-use core_kernel_classes_Resourc;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManagerAwareTrait;
@@ -41,7 +40,6 @@ use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use common_report_Report as Report;
-use oat\taoPublishing\model\publishing\delivery\PublishingDeliveryService;
 use oat\taoResultServer\models\classes\implementation\OntologyService;
 use oat\taoResultServer\models\classes\ResultServerService;
 use oat\taoTaskQueue\model\QueueDispatcher;
