@@ -20,6 +20,7 @@
  */
 namespace oat\taoDeliveryRdf\controller;
 
+use core_kernel_classes_Resourc;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManagerAwareTrait;
@@ -326,5 +327,18 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $options['order'] = key($config['OntologyTreeOrder']);
         $options['orderdir'] = $config['OntologyTreeOrder'][$options['order']];
         return parent::getTreeOptionsFromRequest($options);
+    }
+
+    /**
+     * Do Delete Resource
+     *
+     * Specific Resource deletion behaviour (references are also deleted).
+     *
+     * @param core_kernel_classes_Resource $resource
+     * @return bool
+     */
+    protected function doDeleteResource(core_kernel_classes_Resource $resource)
+    {
+        return $resource->delete(true);
     }
 }
