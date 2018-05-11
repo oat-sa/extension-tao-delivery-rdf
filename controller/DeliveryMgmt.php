@@ -40,7 +40,6 @@ use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use common_report_Report as Report;
-use oat\taoPublishing\model\publishing\delivery\PublishingDeliveryService;
 use oat\taoResultServer\models\classes\implementation\OntologyService;
 use oat\taoResultServer\models\classes\ResultServerService;
 use oat\taoTaskQueue\model\QueueDispatcher;
@@ -326,5 +325,18 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $options['order'] = key($config['OntologyTreeOrder']);
         $options['orderdir'] = $config['OntologyTreeOrder'][$options['order']];
         return parent::getTreeOptionsFromRequest($options);
+    }
+
+    /**
+     * Do Delete Resource
+     *
+     * Specific Resource deletion behaviour (references are also deleted).
+     *
+     * @param core_kernel_classes_Resource $resource
+     * @return bool
+     */
+    protected function doDeleteResource(core_kernel_classes_Resource $resource)
+    {
+        return $resource->delete(true);
     }
 }
