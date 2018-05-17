@@ -31,7 +31,7 @@ class RegisterDeliveryDeleteService extends ScriptAction
 
     public function provideDescription()
     {
-        return 'TAO QTI Tests - Register Delivery Delete Service';
+        return 'TAO Delivery RDF - Register Delivery Delete Service';
     }
 
     public function run()
