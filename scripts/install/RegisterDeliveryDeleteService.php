@@ -19,12 +19,19 @@
 
 namespace oat\taoDeliveryRdf\scripts\install;
 
-
 use oat\oatbox\extension\script\ScriptAction;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use common_report_Report as Report;
 
+/**
+ * Class RegisterDeliveryDeleteService
+ *
+ * This script aims at providing a way to register/configure the DeliveryDeleteService. The --services option
+ * enables the invoker to setup, as a comma-separated list of service IDs, the set of services to be in use.
+ * 
+ * @package oat\taoDeliveryRdf\scripts\install
+ */
 class RegisterDeliveryDeleteService extends ScriptAction
 {
     private $services;
