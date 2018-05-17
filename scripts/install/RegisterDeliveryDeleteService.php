@@ -29,7 +29,7 @@ use common_report_Report as Report;
  *
  * This script aims at providing a way to register/configure the DeliveryDeleteService. The --services option
  * enables the invoker to setup, as a comma-separated list of service IDs, the set of services to be in use.
- * 
+ *
  * @package oat\taoDeliveryRdf\scripts\install
  */
 class RegisterDeliveryDeleteService extends ScriptAction
