@@ -35,7 +35,7 @@ class DeliveryDeleteTask extends AbstractAction implements \JsonSerializable
             throw new \common_exception_MissingParameter('Missing parameter `deliveryId` in ' . static::class);
         }
 
-        $report = \common_report_Report::createInfo('Deleting');
+        $report = \common_report_Report::createInfo('Deleting delivery: '. $params['deliveryId']);
         try{
             /** @var DeliveryDeleteService $deleteDeliveryService */
             $deleteDeliveryService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);

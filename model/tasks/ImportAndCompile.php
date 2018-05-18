@@ -60,6 +60,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         $this->checkParams($params);
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
         $file = $this->getFileReferenceSerializer()->unserializeFile($params[self::OPTION_FILE]);
+        $report = null;
         try {
             $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
 
@@ -71,7 +72,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
                     $test = $r->getData()->rdfsResource;
                 }
             } else {
-                throw new \common_Exception($file->getBasename() . 'Unable to import test with message '. $report->getMessage());
+                throw new \common_Exception($file->getBasename() . ' Unable to import test with message '. $report->getMessage());
             }
 
             $label = 'Delivery of ' . $test->getLabel();
@@ -92,7 +93,14 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
             $report->add($compilationReport);
             return $report;
         } catch (\Exception $e) {
-            return \common_report_Report::createFailure($e->getMessage());
+            $detailedErrorReport = \common_report_Report::createFailure($e->getMessage());
+            if ($report) {
+                $errors = $report->getErrors();
+                foreach ($errors as $error) {
+                    $detailedErrorReport->add($error->getErrors());
+                }
+            }
+            return $detailedErrorReport;
         }
     }
 
