@@ -56,7 +56,7 @@ class RegisterDeliveryDeleteService extends ScriptAction
 
         try {
             /** @var DeliveryDeleteService $deliveryDeleteService */
-            $deliveryDeleteService = $this->getServiceManager()->get(DeliveryDeleteService::SERVICE_ID);
+            $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
             $report->add(new Report(Report::TYPE_INFO, "'DeliveryDeleteService' service found. Configuration will be replaced."));
 
             // Update service configuration.
