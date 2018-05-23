@@ -14,21 +14,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * 
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2015-2018 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *               
  */
 namespace oat\taoDeliveryRdf\model\export;
 
-use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\action\Action;
 use oat\taoDeliveryRdf\model\import\Assembler;
+
 /**
  * Exports the specified Assembly Class
  * 
  * @author Joel Bout
  *
  */
-class ExportAssemblyClass extends ConfigurableService implements Action
+class ExportAssemblyClass implements Action
 {
     /**
      * (non-PHPdoc)
