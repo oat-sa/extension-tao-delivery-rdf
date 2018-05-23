@@ -26,12 +26,14 @@ use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\DeliveryPublishing;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
+use oat\taoDeliveryRdf\model\import\AssemblerService;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
@@ -235,5 +237,12 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('4.7.0', '4.14.0');
+
+        if ($this->isVersion('4.14.0')) {
+            $assemblerService = new AssemblerService();
+            $this->getServiceManager()->register(AssemblerServiceInterface::SERVICE_ID, $assemblerService);
+            
+            $this->setVersion('5.0.0');
+        }
     }
 }
