@@ -19,7 +19,6 @@
  */
 namespace oat\taoDeliveryRdf\model\import;
 
-use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\action\Action;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
@@ -29,7 +28,7 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
  * @author Joel Bout
  *
  */
-class ImportAssembly extends ConfigurableService implements Action
+class ImportAssembly implements Action
 {
     /**
      * @param $params
