@@ -20,6 +20,8 @@
 namespace oat\taoDeliveryRdf\model\import;
 
 use oat\oatbox\action\Action;
+use oat\oatbox\service\ServiceManager;
+use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 /**
@@ -45,7 +47,7 @@ class ImportAssembly implements Action
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
         
         $deliveryClass = DeliveryAssemblyService::singleton()->getRootClass()->createSubClass('Import '.\tao_helpers_Date::displayeDate(time()));
-        $importer = new Assembler();
+        $importer = ServiceManager::getServiceManager()->get(AssemblerServiceInterface::SERVICE_ID);
         $report = new \common_report_Report(\common_report_Report::TYPE_INFO, __('Importing %1$s files into \'%2$s\'', count($params), $deliveryClass->getLabel()));
         while (!empty($params)) {
             $file = array_shift($params);

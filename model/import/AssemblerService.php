@@ -25,6 +25,8 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\file\FileIterator;
 use oat\generis\model\OntologyRdfs;
+use oat\oatbox\service\ConfigurableService;
+use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\generis\model\OntologyRdf;
@@ -37,16 +39,11 @@ use oat\generis\model\OntologyRdf;
  * @package taoDelivery
  
  */
-class Assembler
+class AssemblerService extends ConfigurableService implements AssemblerServiceInterface
 {
     const MANIFEST_FILE = 'manifest.json';
     
     const RDF_FILE = 'delivery.rdf';
-    
-    public function __construct()
-    {
-        
-    }
     
     public function importDelivery(core_kernel_classes_Class $deliveryClass, $archiveFile)
     {

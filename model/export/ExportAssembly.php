@@ -20,7 +20,8 @@
 namespace oat\taoDeliveryRdf\model\export;
 
 use oat\oatbox\action\Action;
-use oat\taoDeliveryRdf\model\import\Assembler;
+use oat\oatbox\service\ServiceManager;
+use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 
 /**
  * Exports the specified Assembly
@@ -50,8 +51,7 @@ class ExportAssembly implements Action
         $file = array_shift($params);
         
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
-        $assembler = new Assembler();
-        $tmpFile = $assembler->exportCompiledDelivery($delivery);
+        $tmpFile = ServiceManager::getServiceManager()->get(AssemblerServiceInterface::SERVICE_ID)->exportCompiledDelivery($delivery);
         \tao_helpers_File::move($tmpFile, $file);
         return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Exported %1$s to %2$s', $delivery->getLabel(), $file));
     }
