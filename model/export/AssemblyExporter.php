@@ -66,9 +66,9 @@ class AssemblyExporter implements \tao_models_classes_export_ExportHandler
         }
         
         $delivery = new core_kernel_classes_Resource($formValues['exportInstance']);
-      
-        
-        $path = Assembler::exportCompiledDelivery($delivery);
+        $assembler = new Assembler();
+        $path = $assembler->exportCompiledDelivery($delivery);
+
         return $path;
     }
 

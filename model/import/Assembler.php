@@ -139,7 +139,7 @@ class Assembler
      * @throws \Exception
      * @return string
      */
-    public static function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery) {
+    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery) {
         
         $fileName = \tao_helpers_Display::textCleaner($compiledDelivery->getLabel()).'.zip';
         $path = \tao_helpers_File::concat(array(\tao_helpers_Export::getExportPath(), $fileName));
