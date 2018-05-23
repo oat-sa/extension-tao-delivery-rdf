@@ -14,25 +14,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * 
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2015-2018 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *               
  */
 namespace oat\taoDeliveryRdf\model\export;
 
-use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\action\Action;
 use oat\taoDeliveryRdf\model\import\Assembler;
+
 /**
  * Exports the specified Assembly
  * 
  * @author Joel Bout
  *
  */
-class ExportAssembly extends ConfigurableService implements Action
+class ExportAssembly implements Action
 {
     /**
-     *
-     * @param unknown $params
+     * @param $params
+     * @return \common_report_Report
+     * @throws \Exception
+     * @throws \common_ext_ExtensionException
      */
     public function __invoke($params) {
         if (count($params) != 2) {
