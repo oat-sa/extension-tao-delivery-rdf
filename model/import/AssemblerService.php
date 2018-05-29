@@ -148,11 +148,19 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         if($zipArchive->open($path, \ZipArchive::CREATE) !== true){
             throw new \Exception('Unable to create archive at '.$path);
         }
-        
+
+        $this->doExportCompiledDelivery($path, $compiledDelivery, $zipArchive);
+        $zipArchive->close();
+
+        return $path;
+    }
+
+    protected function doExportCompiledDelivery($path, core_kernel_classes_Resource $compiledDelivery, \ZipArchive $zipArchive)
+    {
         $taoDeliveryVersion = \common_ext_ExtensionsManager::singleton()->getInstalledVersion('taoDelivery');
-        
+
         $data = array(
-        	'dir' => array(),
+            'dir' => array(),
             'label' => $compiledDelivery->getLabel(),
             'version' => $taoDeliveryVersion
         );
@@ -169,22 +177,24 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
         $serviceCall = \tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
-        
+
         $rdfExporter = new \tao_models_classes_export_RdfExporter();
         $rdfdata = $rdfExporter->getRdfString(array($compiledDelivery));
         if (!$zipArchive->addFromString('delivery.rdf', $rdfdata)) {
             throw new \common_Exception('Unable to add metadata to exported delivery assembly');
         }
         $data['meta'] = 'delivery.rdf';
-        
-        
+
+
         $content = json_encode($data);
         if (!$zipArchive->addFromString(self::MANIFEST_FILE, $content)) {
             $zipArchive->close();
             unlink($path);
             throw new \common_Exception('Unable to add manifest to exported delivery assembly');
         }
+
+        // "flush" the zip archive to enable overriding to continue working on an up to date ZipArchive object.
         $zipArchive->close();
-        return $path;
+        $zipArchive->open($path, \ZipArchive::CREATE);
     }
 }
