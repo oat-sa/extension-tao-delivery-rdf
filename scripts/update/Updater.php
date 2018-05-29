@@ -20,6 +20,7 @@
  */
 namespace oat\taoDeliveryRdf\scripts\update;
 
+use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\update\OntologyUpdater;
@@ -46,8 +47,10 @@ use oat\taoTaskQueue\model\TaskLogInterface;
 class Updater extends \common_ext_ExtensionUpdater {
 
     /**
-     * @param string $initialVersion
-     * @return string $versionUpdatedTo
+     * @param $initialVersion
+     * @return string|void
+     * @throws \common_Exception
+     * @throws \common_exception_Error
      */
     public function update($initialVersion) {
 
@@ -239,8 +242,15 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('4.7.0', '4.14.0');
 
         if ($this->isVersion('4.14.0')) {
+            $serviceManager = $this->getServiceManager();
+
             $assemblerService = new AssemblerService();
-            $this->getServiceManager()->register(AssemblerServiceInterface::SERVICE_ID, $assemblerService);
+            $serviceManager->register(AssemblerServiceInterface::SERVICE_ID, $assemblerService);
+
+            /** @var FileSystemService $service */
+            $service = $serviceManager->get(FileSystemService::SERVICE_ID);
+            $service->createFileSystem('taoDeliveryRdf');
+            $serviceManager->register(FileSystemService::SERVICE_ID, $service);
             
             $this->setVersion('5.0.0');
         }
