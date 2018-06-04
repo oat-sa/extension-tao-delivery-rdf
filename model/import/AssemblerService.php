@@ -33,6 +33,8 @@ use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\generis\model\OntologyRdf;
 
 /**
+ * AssemblerService Class.
+ *
  * Im- and export a compiled delivery 
  *
  * @access public
@@ -45,7 +47,12 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     const MANIFEST_FILE = 'manifest.json';
     
     const RDF_FILE = 'delivery.rdf';
-    
+
+    /**
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param string $archiveFile
+     * @return common_report_Report
+     */
     public function importDelivery(core_kernel_classes_Class $deliveryClass, $archiveFile)
     {
         
@@ -80,7 +87,11 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         }
         return $report;
     }
-    
+
+    /**
+     * @param $folder
+     * @return array
+     */
     protected function getAdditionalProperties($folder)
     {
         $rdfPath = $folder.self::RDF_FILE;
@@ -100,8 +111,13 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         }
         return $properties;
     }
-    
-    
+
+    /**
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param $manifest
+     * @param array $properties
+     * @return core_kernel_classes_Resource
+     */
     protected function importDeliveryResource(core_kernel_classes_Class $deliveryClass, $manifest, $properties = array())
     {
         $label          = $manifest['label'];
@@ -120,7 +136,13 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         
         return $delivery;
     }
-    
+
+    /**
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param $manifest
+     * @param $directory
+     * @throws \common_Exception
+     */
     protected function importDeliveryFiles(core_kernel_classes_Class $deliveryClass, $manifest, $directory)
     {
         $dirs           = $manifest['dir'];
@@ -175,6 +197,22 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         return $path;
     }
 
+    /**
+     * Do Export Compiled Delivery
+     *
+     * Method containing the main behavior of exporting a compiled delivery into a ZIP archive.
+     *
+     * For developers wanting to override this method, the following information has to be taken into account:
+     *
+     * - The value of the $zipArgive argument is an already open ZipArchive object.
+     * - The method must keep the archive open after its execution (calling code will take care of it).
+     *
+     * @param $path
+     * @param core_kernel_classes_Resource $compiledDelivery
+     * @param \ZipArchive $zipArchive
+     * @throws \common_Exception
+     * @throws \core_kernel_classes_EmptyProperty
+     */
     protected function doExportCompiledDelivery($path, core_kernel_classes_Resource $compiledDelivery, \ZipArchive $zipArchive)
     {
         $taoDeliveryVersion = \common_ext_ExtensionsManager::singleton()->getInstalledVersion('taoDelivery');

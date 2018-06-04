@@ -20,11 +20,39 @@
 
 namespace oat\taoDeliveryRdf\model;
 
+/**
+ * Interface AssemblerServiceInterface
+ *
+ * Interface to be implemented in order to be an AssemblerService. An assembler service
+ * aims at importing/exporting compiled deliveries from TAO platforms to other systems (including other TAO
+ * platforms).
+ *
+ * @package oat\taoDeliveryRdf\model
+ */
 interface AssemblerServiceInterface
 {
     const SERVICE_ID = 'taoDeliveryRdf/AssemblerService';
 
+    /**
+     * Import Delivery
+     *
+     * Import a compiled delivery into a specific class.
+     *
+     * @param \core_kernel_classes_Class $deliveryClass
+     * @param string $archiveFile Path to archive file.
+     * @return \common_report_Report
+     */
     public function importDelivery(\core_kernel_classes_Class $deliveryClass, $archiveFile);
 
+    /**
+     * Export Compiled Delivery
+     *
+     * Exports a delivery into its compiled form. In case of the $fsExportPath argument is set,
+     * the compiled delivery will be stored in the 'taoDelivery' shared file system, at $fsExportPath location.
+     *
+     * @param \core_kernel_classes_Resource $compiledDelivery
+     * @param string $fsExportPath (optional) A relative path to use to store the compiled delivery into the 'taoDelivery' shared file system.
+     * @return string The path to the compiled delivery on the local file system OR the 'taoDelivery' shared file system, depending on whether $fsExportPath is set.
+     */
     public function exportCompiledDelivery(\core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '');
 }
