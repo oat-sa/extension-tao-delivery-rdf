@@ -26,5 +26,5 @@ interface AssemblerServiceInterface
 
     public function importDelivery(\core_kernel_classes_Class $deliveryClass, $archiveFile);
 
-    public function exportCompiledDelivery(\core_kernel_classes_Resource $compiledDelivery);
+    public function exportCompiledDelivery(\core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '');
 }

@@ -17,11 +17,12 @@
  * Copyright (c) 2015-2018 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *               
  */
+
 namespace oat\taoDeliveryRdf\model\export;
 
-use oat\oatbox\action\Action;
-use oat\oatbox\service\ServiceManager;
+use oat\oatbox\extension\AbstractAction;
 use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
+use common_report_Report as Report;
 
 /**
  * Exports the specified Assembly
@@ -29,7 +30,7 @@ use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
  * @author Joel Bout
  *
  */
-class ExportAssembly implements Action
+class ExportAssembly extends AbstractAction
 {
     /**
      * @param $params
@@ -38,22 +39,35 @@ class ExportAssembly implements Action
      * @throws \common_ext_ExtensionException
      */
     public function __invoke($params) {
-        if (count($params) != 2) {
-            return new \common_report_Report(\common_report_Report::TYPE_ERROR, __('Usage: %s DELIVERY_URI OUTPUT_FILE', __CLASS__));
+        if (count($params) < 2) {
+            return new Report(Report::TYPE_ERROR, __('Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]', __CLASS__));
         }
 
         $deliveryUri = array_shift($params);
         $delivery = new \core_kernel_classes_Resource($deliveryUri);
         if (!$delivery->exists()) {
-            return new \common_report_Report(\common_report_Report::TYPE_ERROR, __('Delivery \'%s\' not found', $deliveryUri));
+            return new Report(Report::TYPE_ERROR, __('Delivery \'%s\' not found', $deliveryUri));
         }
         
         $file = array_shift($params);
-        
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
-        $tmpFile = ServiceManager::getServiceManager()->get(AssemblerServiceInterface::SERVICE_ID)->exportCompiledDelivery($delivery);
-        \tao_helpers_File::move($tmpFile, $file);
-        return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Exported %1$s to %2$s', $delivery->getLabel(), $file));
+        $useSharedFileSystem = !is_null(array_shift($params));
+        $assemblerService = $this->getServiceLocator()->get(AssemblerServiceInterface::SERVICE_ID);
+
+        if (!$useSharedFileSystem) {
+            $tmpFile = $assemblerService->exportCompiledDelivery($delivery);
+            \tao_helpers_File::move($tmpFile, $file);
+        } else {
+            $assemblerService->exportCompiledDelivery($delivery, $file);
+        }
+
+        $finalReport = new Report(Report::TYPE_SUCCESS, __('Exported %1$s to %2$s', $delivery->getLabel(), $file));
+        if ($useSharedFileSystem) {
+            $finalReport->add(
+                new Report(Report::TYPE_INFO, "File exported to shared 'taoDelivery' file system.")
+            );
+        }
+
+        return $finalReport;
     }
 
 }

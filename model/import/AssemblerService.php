@@ -25,6 +25,7 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\file\FileIterator;
 use oat\generis\model\OntologyRdfs;
+use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
@@ -133,24 +134,43 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
      * export a compiled delivery into an archive
      * 
      * @param core_kernel_classes_Resource $compiledDelivery
+     * @param string $fsExportPath
      * @throws \Exception
      * @return string
      */
-    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery) {
+    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '') {
         
         $fileName = \tao_helpers_Display::textCleaner($compiledDelivery->getLabel()).'.zip';
         $path = \tao_helpers_File::concat(array(\tao_helpers_Export::getExportPath(), $fileName));
-        if(!\tao_helpers_File::securityCheck($path, true)){
+        if (!\tao_helpers_File::securityCheck($path, true)) {
             throw new \Exception('Unauthorized file name');
+        }
+
+        // If such a target zip file exists, remove it from local filesystem. It prevents some synchronicity issues
+        // to occur while dealing with ZIP Archives (not explained yet).
+        if (file_exists($path)) {
+            unlink($path);
         }
         
         $zipArchive = new \ZipArchive();
-        if($zipArchive->open($path, \ZipArchive::CREATE) !== true){
+        if ($zipArchive->open($path, \ZipArchive::CREATE) !== true) {
             throw new \Exception('Unable to create archive at '.$path);
         }
 
         $this->doExportCompiledDelivery($path, $compiledDelivery, $zipArchive);
         $zipArchive->close();
+
+        if (!empty($fsExportPath)) {
+            $fsExportPath = trim($fsExportPath);
+            $fsExportPath = ltrim($fsExportPath,"/\\");
+
+            /** @var FileSystemService $fileSystemService */
+            $fileSystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
+            $fileSystem = $fileSystemService->getFileSystem('taoDeliveryRdf');
+            $zipArchiveHandler = fopen($path, 'r');
+            $fileSystem->putStream($fsExportPath, $zipArchiveHandler);
+            fclose($zipArchiveHandler);
+        }
 
         return $path;
     }
