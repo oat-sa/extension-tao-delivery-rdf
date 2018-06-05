@@ -26,6 +26,7 @@ use core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\file\FileIterator;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
@@ -44,6 +45,8 @@ use oat\generis\model\OntologyRdf;
  */
 class AssemblerService extends ConfigurableService implements AssemblerServiceInterface
 {
+    use LoggerAwareTrait;
+
     const MANIFEST_FILE = 'manifest.json';
     
     const RDF_FILE = 'delivery.rdf';
@@ -173,7 +176,9 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
      * @return string
      */
     public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '') {
-        
+
+        $this->logDebug("Exporting Delivery Assembly '" . $compiledDelivery->getUri() . "'...");
+
         $fileName = \tao_helpers_Display::textCleaner($compiledDelivery->getLabel()).'.zip';
         $path = \tao_helpers_File::concat(array(\tao_helpers_Export::getExportPath(), $fileName));
         if (!\tao_helpers_File::securityCheck($path, true)) {
@@ -195,6 +200,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $zipArchive->close();
 
         if (!empty($fsExportPath)) {
+            $this->logDebug("Writing Delivery Assembly '" . $compiledDelivery->getUri() . "' into shared file system at location '${fsExportPath}'...");
             $fsExportPath = trim($fsExportPath);
             $fsExportPath = ltrim($fsExportPath,"/\\");
 
