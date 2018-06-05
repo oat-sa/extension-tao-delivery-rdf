@@ -201,7 +201,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             $fsExportPath = ltrim($fsExportPath,"/\\");
 
             $zipArchiveHandler = fopen($path, 'r');
-            $this->getFileSystem()->putStream($fsExportPath, $zipArchiveHandler);
+            $this->getExportDirectory()->getFile($fsExportPath)->put($zipArchiveHandler);
             fclose($zipArchiveHandler);
         }
 
