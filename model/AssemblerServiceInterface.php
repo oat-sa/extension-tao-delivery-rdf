@@ -57,9 +57,11 @@ interface AssemblerServiceInterface
     public function exportCompiledDelivery(\core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '');
 
     /**
+     * Get Export Directory
+     *
+     * Get the Directory object representing where data will be stored in the shared file system.
+     *
      * @return \oat\oatbox\filesystem\Directory
-     * @throws \common_exception_Error
-     * @throws \common_exception_NotFound
      */
     public function getExportDirectory();
 }

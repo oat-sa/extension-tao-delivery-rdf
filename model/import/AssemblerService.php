@@ -90,8 +90,6 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
 
     /**
      * @return \oat\oatbox\filesystem\Directory
-     * @throws \common_exception_Error
-     * @throws \common_exception_NotFound
      */
     public function getExportDirectory()
     {
