@@ -89,6 +89,20 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
+     * @return \oat\oatbox\filesystem\FileSystem
+     * @throws \common_exception_Error
+     * @throws \common_exception_NotFound
+     */
+    public function getFileSystem()
+    {
+        /** @var FileSystemService $fileSystemService */
+        $fileSystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
+        $fileSystem = $fileSystemService->getFileSystem('taoDeliveryRdf');
+
+        return $fileSystem;
+    }
+
+    /**
      * @param $folder
      * @return array
      */
@@ -186,11 +200,8 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             $fsExportPath = trim($fsExportPath);
             $fsExportPath = ltrim($fsExportPath,"/\\");
 
-            /** @var FileSystemService $fileSystemService */
-            $fileSystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
-            $fileSystem = $fileSystemService->getFileSystem('taoDeliveryRdf');
             $zipArchiveHandler = fopen($path, 'r');
-            $fileSystem->putStream($fsExportPath, $zipArchiveHandler);
+            $this->getFileSystem()->putStream($fsExportPath, $zipArchiveHandler);
             fclose($zipArchiveHandler);
         }
 

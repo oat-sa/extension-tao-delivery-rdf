@@ -55,4 +55,11 @@ interface AssemblerServiceInterface
      * @return string The path to the compiled delivery on the local file system OR the 'taoDelivery' shared file system, depending on whether $fsExportPath is set.
      */
     public function exportCompiledDelivery(\core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '');
+
+    /**
+     * @return \oat\oatbox\filesystem\FileSystem
+     * @throws \common_exception_Error
+     * @throws \common_exception_NotFound
+     */
+    public function getFileSystem();
 }
