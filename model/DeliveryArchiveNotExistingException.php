@@ -14,29 +14,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
-namespace oat\taoDeliveryRdf\model\guest;
 
-class GuestTestTakerSession extends \common_session_DefaultSession
+namespace oat\taoDeliveryRdf\model;
+
+class DeliveryArchiveNotExistingException extends \Exception
 {
-
-    public function __construct()
-    {
-        parent::__construct(new GuestTestUser());
-    }
-
-    public function getUserLabel()
-    {
-        return __('TAO Guest');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getInterfaceLanguage()
-    {
-        return defined('DEFAULT_ANONYMOUS_INTERFACE_LANG') ? DEFAULT_ANONYMOUS_INTERFACE_LANG : DEFAULT_LANG;
-    }
 }

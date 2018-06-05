@@ -41,6 +41,8 @@ use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use common_report_Report as Report;
 use oat\taoPublishing\model\publishing\delivery\PublishingDeliveryService;
+use oat\taoResultServer\models\classes\implementation\OntologyService;
+use oat\taoResultServer\models\classes\ResultServerService;
 use oat\taoTaskQueue\model\QueueDispatcher;
 use oat\taoTaskQueue\model\TaskLogInterface;
 use oat\taoTaskQueue\model\TaskLogActionTrait;
@@ -120,7 +122,23 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 }
             }
         }
-        $formContainer = new DeliveryForm($class, $delivery);
+
+        //Removing Result Server form field if it is hardcoded in configuration
+        //since property name (and possibly property itself) is deprecated then this lines will go away to
+        //when "deprecation period" will be over
+        /** @var ResultServerService $resultServerService */
+        $resultServerService = $this->getServiceManager()->get(ResultServerService::SERVICE_ID);
+        if (!$resultServerService->isConfigurable()) {
+            $options = [];
+        } else {
+            $options = [
+                'excludedProperties' => [
+                    OntologyService::PROPERTY_RESULT_SERVER
+                ]
+            ];
+        }
+
+        $formContainer = new DeliveryForm($class, $delivery, $options);
         $myForm = $formContainer->getForm();
 
         if ($myForm->isSubmited()) {
