@@ -57,9 +57,9 @@ interface AssemblerServiceInterface
     public function exportCompiledDelivery(\core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '');
 
     /**
-     * @return \oat\oatbox\filesystem\FileSystem
+     * @return \oat\oatbox\filesystem\Directory
      * @throws \common_exception_Error
      * @throws \common_exception_NotFound
      */
-    public function getFileSystem();
+    public function getExportDirectory();
 }

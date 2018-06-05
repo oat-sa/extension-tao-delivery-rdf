@@ -89,15 +89,15 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
-     * @return \oat\oatbox\filesystem\FileSystem
+     * @return \oat\oatbox\filesystem\Directory
      * @throws \common_exception_Error
      * @throws \common_exception_NotFound
      */
-    public function getFileSystem()
+    public function getExportDirectory()
     {
         /** @var FileSystemService $fileSystemService */
         $fileSystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
-        $fileSystem = $fileSystemService->getFileSystem('taoDeliveryRdf');
+        $fileSystem = $fileSystemService->getDirectory('taoDeliveryRdf');
 
         return $fileSystem;
     }
