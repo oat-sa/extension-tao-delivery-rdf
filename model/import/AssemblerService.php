@@ -51,6 +51,8 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     
     const RDF_FILE = 'delivery.rdf';
 
+    const OPTION_FILESYSTEM_ID = 'filesystemId';
+
     /**
      * @param core_kernel_classes_Class $deliveryClass
      * @param string $archiveFile

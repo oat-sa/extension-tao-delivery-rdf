@@ -4,5 +4,5 @@
  */
 
 return new \oat\taoDeliveryRdf\model\import\AssemblerService([
-    \oat\taoDeliveryRdf\model\AssemblerServiceInterface::OPTION_FILESYSTEM_ID => 'deliveryAssemblyExport'
+    \oat\taoDeliveryRdf\model\import\AssemblerService::OPTION_FILESYSTEM_ID => 'deliveryAssemblyExport'
 ]);

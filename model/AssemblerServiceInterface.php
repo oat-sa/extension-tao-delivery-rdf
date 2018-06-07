@@ -33,8 +33,6 @@ interface AssemblerServiceInterface
 {
     const SERVICE_ID = 'taoDeliveryRdf/AssemblerService';
 
-    const OPTION_FILESYSTEM_ID = 'filesystemId';
-
     /**
      * Import Delivery
      *
