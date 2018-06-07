@@ -33,6 +33,8 @@ interface AssemblerServiceInterface
 {
     const SERVICE_ID = 'taoDeliveryRdf/AssemblerService';
 
+    const OPTION_FILESYSTEM_ID = 'filesystemId';
+
     /**
      * Import Delivery
      *
@@ -55,13 +57,4 @@ interface AssemblerServiceInterface
      * @return string The path to the compiled delivery on the local file system OR the 'taoDelivery' shared file system, depending on whether $fsExportPath is set.
      */
     public function exportCompiledDelivery(\core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '');
-
-    /**
-     * Get Export Directory
-     *
-     * Get the Directory object representing where data will be stored in the shared file system.
-     *
-     * @return \oat\oatbox\filesystem\Directory
-     */
-    public function getExportDirectory();
 }

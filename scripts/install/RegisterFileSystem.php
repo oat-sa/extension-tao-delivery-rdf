@@ -39,7 +39,7 @@ class RegisterFileSystem extends InstallAction
     {
         $serviceManager = $this->getServiceManager();
         $service = $serviceManager->get(FileSystemService::SERVICE_ID);
-        $service->createFileSystem('taoDeliveryRdf');
+        $service->createFileSystem('deliveryAssemblyExport');
         $serviceManager->register(FileSystemService::SERVICE_ID, $service);
     }
 }

@@ -50,7 +50,18 @@ class ExportAssembly extends AbstractAction
         }
         
         $file = array_shift($params);
-        $useSharedFileSystem = !is_null(array_shift($params));
+
+        $sharedFsParam = array_shift($params);
+        $useSharedFileSystem = false;
+        if (!is_null($sharedFsParam)) {
+            $sharedFsParam = trim($sharedFsParam);
+            if ($sharedFsParam === 'true') {
+                $useSharedFileSystem = true;
+            } elseif ($sharedFsParam !== 'false') {
+                return new Report(Report::TYPE_ERROR, __("The shared filesystem parameter should be a boolean value 'true' or 'false'."));
+            }
+        }
+
         $assemblerService = $this->getServiceLocator()->get(AssemblerServiceInterface::SERVICE_ID);
 
         if (!$useSharedFileSystem) {
@@ -63,7 +74,7 @@ class ExportAssembly extends AbstractAction
         $finalReport = new Report(Report::TYPE_SUCCESS, __('Exported %1$s to %2$s', $delivery->getLabel(), $file));
         if ($useSharedFileSystem) {
             $finalReport->add(
-                new Report(Report::TYPE_INFO, "File exported to shared 'taoDelivery' file system.")
+                new Report(Report::TYPE_INFO, "File exported to shared file system.")
             );
         }
 

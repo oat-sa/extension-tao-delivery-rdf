@@ -98,7 +98,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     {
         /** @var FileSystemService $fileSystemService */
         $fileSystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
-        $fileSystem = $fileSystemService->getDirectory('taoDeliveryRdf');
+        $fileSystem = $fileSystemService->getDirectory($this->getOption(self::OPTION_FILESYSTEM_ID));
 
         return $fileSystem;
     }
@@ -265,9 +265,5 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             unlink($path);
             throw new \common_Exception('Unable to add manifest to exported delivery assembly');
         }
-
-        // "flush" the zip archive to enable overriding to continue working on an up to date ZipArchive object.
-        $zipArchive->close();
-        $zipArchive->open($path, \ZipArchive::CREATE);
     }
 }

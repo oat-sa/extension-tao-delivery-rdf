@@ -244,13 +244,14 @@ class Updater extends \common_ext_ExtensionUpdater {
         if ($this->isVersion('4.14.0')) {
             $serviceManager = $this->getServiceManager();
 
-            $assemblerService = new AssemblerService();
-            $serviceManager->register(AssemblerServiceInterface::SERVICE_ID, $assemblerService);
-
+            $defaultFileSystemId = 'deliveryAssemblyExport';
             /** @var FileSystemService $service */
             $service = $serviceManager->get(FileSystemService::SERVICE_ID);
-            $service->createFileSystem('taoDeliveryRdf');
+            $service->createFileSystem($defaultFileSystemId);
             $serviceManager->register(FileSystemService::SERVICE_ID, $service);
+
+            $assemblerService = new AssemblerService([AssemblerService::OPTION_FILESYSTEM_ID => $defaultFileSystemId]);
+            $serviceManager->register(AssemblerServiceInterface::SERVICE_ID, $assemblerService);
             
             $this->setVersion('5.0.0');
         }
