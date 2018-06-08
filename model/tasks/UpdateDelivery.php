@@ -26,9 +26,9 @@ use oat\oatbox\service\ServiceManager;
 use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
+use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use \common_report_Report as Report;
-use oat\taoTaskQueue\model\QueueDispatcher;
 
 /**
  * Class UpdateDelivery
