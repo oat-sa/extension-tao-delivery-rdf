@@ -20,7 +20,10 @@
 namespace oat\taoDeliveryRdf\model;
 
 use tao_models_classes_service_FileStorage;
-/**
+use oat\tao\model\service\ServiceFileStorage;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
+            /**
  * A wrapper of the filestorage that tracks added directories
  *
  * @access public
@@ -28,27 +31,59 @@ use tao_models_classes_service_FileStorage;
  * @package taoDelivery
  
  */
- class TrackedStorage extends tao_models_classes_service_FileStorage
+ class TrackedStorage implements ServiceFileStorage, ServiceLocatorAwareInterface
 {
+    use ServiceLocatorAwareTrait;
+
     private $ids = array();
 
     private $storage;
     
-    public function __construct() {
-        $this->storage = tao_models_classes_service_FileStorage::singleton();
-    }
-    
     /**
      * @param boolean $public
-     * @return tao_models_classes_service_StorageDirectory
+     * @return \tao_models_classes_service_StorageDirectory
      */
     public function spawnDirectory($public = false) {
-        $directory = $this->storage->spawnDirectory($public);
+        $directory = $this->getInternalStorage()->spawnDirectory($public);
         $this->ids[] = $directory->getId();
         return $directory;
     }
-    
+
+    /**
+     * Returns the id used for this storage
+     * @return array
+     */
     public function getSpawnedDirectoryIds() {
         return $this->ids;
     }
-}
+
+    /**
+     * {@inheritDoc}
+     * @see tao_models_classes_service_FileStorage::import()
+     */
+    public function import($id, $directoryPath)
+    {
+        $this->ids[] = $id;
+        return $this->getInternalStorage()->import($id, $directoryPath);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see tao_models_classes_service_FileStorage::getDirectoryById()
+     */
+    public function getDirectoryById($id)
+    {
+        return $this->getInternalStorage()->getDirectoryById($id);
+    }
+
+    /**
+     * @return ServiceFileStorage
+     */
+    protected function getInternalStorage()
+    {
+        if (is_null($this->storage)) {
+            $this->storage = $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID);
+        }
+        return $this->storage;
+    }
+ }
