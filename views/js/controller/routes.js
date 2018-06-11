@@ -29,6 +29,11 @@ define(function(){
                 'excludeTesttaker' : 'controller/DeliveryMgmt/testtaker',
                 'wizard'           : 'controller/DeliveryMgmt/wizard'
             }
+        },
+        'Publish': {
+            'actions' : {
+                'index' : 'controller/Publish/index'
+            }
         }
     };
 });
