@@ -15,7 +15,6 @@
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
- *
  */
 define([
     'jquery',
@@ -26,9 +25,8 @@ define([
     'provider/resources',
     'ui/destination/selector',
     'ui/feedback',
-    'taoTaskQueue/model/taskQueue',
-    'taoTaskQueue/component/button/standardButton'
-], function ($, _, __, urlHelper, actionManager, resourceProviderFactory, destinationSelectorFactory, feedback, taskQueue, taskCreationButtonFactory) {
+    'taoTaskQueue/model/taskQueue'
+], function ($, _, __, urlHelper, actionManager, resourceProviderFactory, destinationSelectorFactory, feedback, taskQueue) {
     'use strict';
 
     /**
@@ -42,44 +40,13 @@ define([
     };
 
     return {
-        start: function () {
+        start : function start() {
 
             var $container = $('.selector-container');
+            var testUri = $container.data('test');
 
             //get the resource provider configured with the action URL
             var resourceProvider = resourceProviderFactory();
-
-            var taskCreationButton = taskCreationButtonFactory({
-                type : 'info',
-                icon : 'delivery',
-                title : __('Publish the test'),
-                label : __('Publish'),
-                taskQueue : taskQueue,
-                taskCreationUrl : urlHelper.route('publish', 'Publish', 'taoDeliveryRdf'),
-                taskCreationData : function getTaskCreationData(){
-                    return $form.serializeArray();
-                },
-                taskReportContainer : $container
-            }).on('finished', function(result){
-                if (result.task
-                    && result.task.report
-                    && _.isArray(result.task.report.children)
-                    && result.task.report.children.length
-                    && result.task.report.children[0]) {
-                    if(result.task.report.children[0].data
-                        && result.task.report.children[0].data.uriResource){
-                        feedback().info(__('%s completed', result.task.taskLabel));
-                        console.log('redirected', result.task.report.children[0].data.uriResource);
-                    }else{
-                        this.displayReport(result.task.report.children[0], __('Error'));
-                    }
-                }
-            }).on('continue', function(){
-                console.log('select test');
-            }).on('error', function(err){
-                //format and display error message to user
-                feedback().error(err);
-            });
 
             //set up a destination selector
             destinationSelectorFactory($container, {
@@ -87,20 +54,9 @@ define([
                 actionName : __('Publish'),
                 icon : 'delivery',
                 taskQueue : taskQueue,
-                taskCreationData : {testUri : $container.data('test')},
+                taskCreationData : {testUri : testUri},
                 taskCreationUrl : urlHelper.route('publish', 'Publish', 'taoDeliveryRdf'),
-                classUri: $container.data('root-class'),
-                preventSelection : function preventSelection(nodeUri, node, $node){
-                    return false;
-                    //prevent selection on nodes without WRITE permissions
-                    if( $node.length &&  $node.data('access') === 'partial' || $node.data('access') === 'denied'){
-                        if(! permissionsManager.hasPermission(nodeUri, 'WRITE') ) {
-                            feedback().warning(__('You are not allowed to write in the class %s', node.label));
-                            return true;
-                        }
-                    }
-                    return false;
-                }
+                classUri: $container.data('root-class')
             })
             .on('query', function(params) {
                 var self = this;
@@ -117,12 +73,6 @@ define([
                         self.trigger('error', err);
                     });
             })
-            .on('select', function(destinationClassUri){
-                var self = this;
-                if(!_.isEmpty(destinationClassUri)){
-                    console.log('GO !!', destinationClassUri);
-                }
-            })
             .on('finished', function (result, button) {
                 if (result.task
                     && result.task.report
@@ -132,15 +82,16 @@ define([
                     if (result.task.report.children[0].data
                         && result.task.report.children[0].data.uriResource) {
                         feedback().info(__('%s completed', result.task.taskLabel));
+
+                        //TODO: redirect to the newly compiled delivery when TAO-5746 is merged
                         refreshTree(result.task.report.children[0].data.uriResource);
                     } else {
-                        // feedback().error(__('%s failed', result.task.taskLabel));
                         button.displayReport(result.task.report.children[0], __('Error'));
                     }
                 }
             })
             .on('continue', function(){
-                refreshTree();
+                refreshTree(testUri);
             })
             .on('error', function(err){
                 feedback().error(err);
