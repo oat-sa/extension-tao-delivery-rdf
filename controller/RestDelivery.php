@@ -20,16 +20,16 @@ namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManagerAwareTrait;
+use oat\tao\model\taskQueue\TaskLog\Broker\TaskLogBrokerInterface;
+use oat\tao\model\taskQueue\TaskLog\Entity\EntityInterface;
+use oat\tao\model\taskQueue\TaskLog\TaskLogFilter;
+use oat\tao\model\taskQueue\TaskLogActionTrait;
+use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\generis\model\OntologyRdfs;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
-use oat\taoTaskQueue\model\Entity\TaskLogEntity;
-use oat\taoTaskQueue\model\TaskLog\TaskLogFilter;
-use oat\taoTaskQueue\model\TaskLogActionTrait;
-use oat\taoTaskQueue\model\TaskLogBroker\TaskLogBrokerInterface;
-use oat\taoTaskQueue\model\TaskLogInterface;
 
 class RestDelivery extends \tao_actions_RestController
 {
@@ -240,6 +240,7 @@ class RestDelivery extends \tao_actions_RestController
      */
     protected function getStatusesForChildren($taskId)
     {
+        /** @var TaskLogInterface $taskLog */
         $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
         $filter = (new TaskLogFilter())
             ->eq(TaskLogBrokerInterface::COLUMN_PARENT_ID, $taskId);
@@ -248,7 +249,7 @@ class RestDelivery extends \tao_actions_RestController
         if ($collection->isEmpty()) {
             return $response;
         }
-        /** @var TaskLogEntity $item */
+        /** @var EntityInterface $item */
         foreach ($collection as $item) {
             $response[] = [
                 'id' => $this->getTaskId($item),
@@ -263,10 +264,10 @@ class RestDelivery extends \tao_actions_RestController
     /**
      * Return 'Success' instead of 'Completed', required by the specified API.
      *
-     * @param TaskLogEntity $taskLogEntity
+     * @param EntityInterface $taskLogEntity
      * @return string
      */
-    protected function getTaskStatus(TaskLogEntity $taskLogEntity)
+    protected function getTaskStatus(EntityInterface $taskLogEntity)
     {
         if ($taskLogEntity->getStatus()->isCreated()) {
             return 'In Progress';
@@ -278,10 +279,10 @@ class RestDelivery extends \tao_actions_RestController
     }
 
     /**
-     * @param TaskLogEntity $taskLogEntity
+     * @param EntityInterface $taskLogEntity
      * @return array
      */
-    protected function addExtraReturnData(TaskLogEntity $taskLogEntity)
+    protected function addExtraReturnData(EntityInterface $taskLogEntity)
     {
         $data = [];
 

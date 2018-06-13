@@ -20,19 +20,23 @@
  */
 namespace oat\taoDeliveryRdf\scripts\update;
 
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
+use oat\taoDeliveryRdf\model\import\AssemblerService;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
 use oat\taoDelivery\model\RuntimeService;
-use oat\taoTaskQueue\model\TaskLogInterface;
 
 /**
  ** @author Joel Bout <joel@taotesting.com>
@@ -40,8 +44,10 @@ use oat\taoTaskQueue\model\TaskLogInterface;
 class Updater extends \common_ext_ExtensionUpdater {
 
     /**
-     * @param string $initialVersion
-     * @return string $versionUpdatedTo
+     * @param $initialVersion
+     * @return string|void
+     * @throws \common_Exception
+     * @throws \common_exception_Error
      */
     public function update($initialVersion) {
 
@@ -150,18 +156,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('3.18.0');
         }
 
-        if ($this->isVersion('3.18.0')) {
-            /** @var TaskLogInterface|ConfigurableService $taskLogService */
-            $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
-
-            $taskLogService->linkTaskToCategory(CompileDelivery::class, TaskLogInterface::CATEGORY_DELIVERY_COMPILATION);
-
-            $this->getServiceManager()->register(TaskLogInterface::SERVICE_ID, $taskLogService);
-
-            $this->setVersion('3.19.0');
-        }
-
-        $this->skip('3.19.0', '3.20.0');
+        $this->skip('3.18.0', '3.20.0');
 
         if ($this->isVersion('3.20.0')) {
             OntologyUpdater::syncModels();
@@ -193,6 +188,36 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('4.7.0');
         }
 
-        $this->skip('4.7.0', '4.15.0');
+        $this->skip('4.7.0', '4.14.0');
+
+        if ($this->isVersion('4.14.0')) {
+            $serviceManager = $this->getServiceManager();
+
+            $defaultFileSystemId = 'deliveryAssemblyExport';
+            /** @var FileSystemService $service */
+            $service = $serviceManager->get(FileSystemService::SERVICE_ID);
+            $service->createFileSystem($defaultFileSystemId);
+            $serviceManager->register(FileSystemService::SERVICE_ID, $service);
+
+            $assemblerService = new AssemblerService([AssemblerService::OPTION_FILESYSTEM_ID => $defaultFileSystemId]);
+            $serviceManager->register(AssemblerServiceInterface::SERVICE_ID, $assemblerService);
+
+            $this->setVersion('5.0.0');
+        }
+
+        if ($this->isVersion('5.0.0')) {
+            // To avoid breaking the updater, this part has been moved in advance
+
+            /** @var TaskLogInterface|ConfigurableService $taskLogService */
+            $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+
+            $taskLogService->linkTaskToCategory(CompileDelivery::class, TaskLogInterface::CATEGORY_DELIVERY_COMPILATION);
+
+            $this->getServiceManager()->register(TaskLogInterface::SERVICE_ID, $taskLogService);
+
+            $this->setVersion('5.1.0');
+        }
+      
+        $this->skip('5.1.0', '5.2.0');
     }
 }

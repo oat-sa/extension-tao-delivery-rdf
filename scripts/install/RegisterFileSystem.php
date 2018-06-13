@@ -14,34 +14,32 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2018 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
 
 namespace oat\taoDeliveryRdf\scripts\install;
 
 use oat\oatbox\extension\InstallAction;
-use oat\oatbox\service\ConfigurableService;
-use oat\tao\model\taskQueue\TaskLogInterface;
-use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
+use oat\oatbox\filesystem\FileSystemService;
 
 /**
- * Install Action to set up things related to the task queue
+ * Class RegisterFileSystem
  *
- * @author Gyula Szucs <gyula@taotesting.com>
+ * @package oat\taoDeliveryRdf
  */
-class SetUpQueueTasks extends InstallAction
+class RegisterFileSystem extends InstallAction
 {
+    /**
+     * @param $params
+     * @throws \common_Exception
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     */
     public function __invoke($params)
     {
-        /** @var TaskLogInterface|ConfigurableService $taskLogService */
-        $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
-
-        $taskLogService->linkTaskToCategory(CompileDelivery::class, TaskLogInterface::CATEGORY_DELIVERY_COMPILATION);
-
-        $this->registerService(TaskLogInterface::SERVICE_ID, $taskLogService);
-
-        return \common_report_Report::createSuccess('Task(s) successfully set up.');
+        $serviceManager = $this->getServiceManager();
+        $service = $serviceManager->get(FileSystemService::SERVICE_ID);
+        $service->createFileSystem('deliveryAssemblyExport');
+        $serviceManager->register(FileSystemService::SERVICE_ID, $service);
     }
 }

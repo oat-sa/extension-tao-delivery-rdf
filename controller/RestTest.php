@@ -21,8 +21,8 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\tao\model\import\ImporterNotFound;
+use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\taoDeliveryRdf\model\tasks\ImportAndCompile;
-use oat\taoTaskQueue\model\TaskLogInterface;
 
 /**
  * Class RestTest
@@ -70,7 +70,7 @@ class RestTest extends \tao_actions_RestController
             $result = ['reference_id' => $task->getId()];
 
             /** @var TaskLogInterface $taskLog */
-            $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+            $taskLog = $this->getServiceLocator()->get(TaskLogInterface::SERVICE_ID);
 
             $report = $taskLog->getReport($task->getId());
 
