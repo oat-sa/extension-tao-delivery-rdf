@@ -25,12 +25,12 @@ use common_report_Report as Report;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\taskQueue\QueueDispatcher;
+use oat\tao\model\taskQueue\Task\TaskAwareInterface;
+use oat\tao\model\taskQueue\Task\TaskAwareTrait;
+use oat\tao\model\taskQueue\Task\TaskInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
-use oat\taoTaskQueue\model\QueueDispatcher;
-use oat\taoTaskQueue\model\Task\TaskAwareInterface;
-use oat\taoTaskQueue\model\Task\TaskAwareTrait;
-use oat\taoTaskQueue\model\Task\TaskInterface;
 
 /**
  * Class CompileDelivery
