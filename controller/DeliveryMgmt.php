@@ -71,7 +71,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
     /**
      * (non-PHPdoc)
-     * @see tao_actions_SaSModule::getClassService()
+     * @see \tao_actions_SaSModule::getClassService()
      */
     protected function getClassService()
     {
@@ -230,7 +230,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                     $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                     $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
                     /** @var DeliveryFactory $deliveryFactoryResources */
-                    $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+                    $deliveryFactoryResources = $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);
                     $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray($myForm->getValues());
                     return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
                 }catch(\Exception $e){

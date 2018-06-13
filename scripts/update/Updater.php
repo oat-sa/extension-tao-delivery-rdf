@@ -31,9 +31,6 @@ use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
-use oat\taoDeliveryRdf\model\DeliveryPublishing;
-use oat\taoDeliveryRdf\model\GroupAssignment;
-use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
 use oat\taoDeliveryRdf\model\import\AssemblerService;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
@@ -54,46 +51,9 @@ class Updater extends \common_ext_ExtensionUpdater {
      */
     public function update($initialVersion) {
 
-        $currentVersion = $initialVersion;
-
-        //migrate ACL
-        if ($currentVersion == '0.1') {
-            AclProxy::applyRule(new AccessRule(
-                AccessRule::GRANT,
-                'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole',
-                ['ext' => 'taoDeliveryRdf', 'mod' => 'DeliveryMgmt']
-            ));
-            $currentVersion = '0.2';
-            $this->setVersion($currentVersion);
+        if ($this->isBetween('0.0.0', '1.1.0')) {
+            throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
         }
-
-        if ($this->isVersion('0.2')) {
-            OntologyUpdater::syncModels();
-            AclProxy::applyRule(new AccessRule(
-                'grant',
-                'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole',
-                array('controller'=>'oat\\taoDeliveryRdf\\controller\\Guest')));
-
-            $currentService = $this->safeLoadService(AssignmentService::CONFIG_ID);
-            if (class_exists('taoDelivery_models_classes_AssignmentService', false)
-                && $currentService instanceof \taoDelivery_models_classes_AssignmentService) {
-
-                    $assignmentService = new GroupAssignment();
-                    $this->getServiceManager()->register(AssignmentService::CONFIG_ID, $assignmentService);
-            }
-
-            $this->setVersion('1.0.0');
-        }
-
-        if ($this->isVersion('1.0.0')){
-            $this->setVersion('1.0.1');
-        }
-
-        if ($this->isVersion('1.0.1')) {
-            OntologyUpdater::syncModels();
-            $this->setVersion('1.1.0');
-        }
-
         $this->skip('1.1.0', '1.4.0');
 
         if ($this->isVersion('1.4.0')) {
@@ -257,5 +217,7 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $this->setVersion('5.1.0');
         }
+      
+        $this->skip('5.1.0', '5.2.0');
     }
 }
