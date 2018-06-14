@@ -25,11 +25,17 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\file\FileIterator;
 use oat\generis\model\OntologyRdfs;
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\log\LoggerAwareTrait;
+use oat\oatbox\service\ConfigurableService;
+use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\generis\model\OntologyRdf;
 
 /**
+ * AssemblerService Class.
+ *
  * Im- and export a compiled delivery 
  *
  * @access public
@@ -37,17 +43,21 @@ use oat\generis\model\OntologyRdf;
  * @package taoDelivery
  
  */
-class Assembler
+class AssemblerService extends ConfigurableService implements AssemblerServiceInterface
 {
+    use LoggerAwareTrait;
+
     const MANIFEST_FILE = 'manifest.json';
     
     const RDF_FILE = 'delivery.rdf';
-    
-    public function __construct()
-    {
-        
-    }
-    
+
+    const OPTION_FILESYSTEM_ID = 'filesystemId';
+
+    /**
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param string $archiveFile
+     * @return common_report_Report
+     */
     public function importDelivery(core_kernel_classes_Class $deliveryClass, $archiveFile)
     {
         
@@ -82,7 +92,23 @@ class Assembler
         }
         return $report;
     }
-    
+
+    /**
+     * @return \oat\oatbox\filesystem\Directory
+     */
+    public function getExportDirectory()
+    {
+        /** @var FileSystemService $fileSystemService */
+        $fileSystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
+        $fileSystem = $fileSystemService->getDirectory($this->getOption(self::OPTION_FILESYSTEM_ID));
+
+        return $fileSystem;
+    }
+
+    /**
+     * @param $folder
+     * @return array
+     */
     protected function getAdditionalProperties($folder)
     {
         $rdfPath = $folder.self::RDF_FILE;
@@ -102,8 +128,13 @@ class Assembler
         }
         return $properties;
     }
-    
-    
+
+    /**
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param $manifest
+     * @param array $properties
+     * @return core_kernel_classes_Resource
+     */
     protected function importDeliveryResource(core_kernel_classes_Class $deliveryClass, $manifest, $properties = array())
     {
         $label          = $manifest['label'];
@@ -122,7 +153,13 @@ class Assembler
         
         return $delivery;
     }
-    
+
+    /**
+     * @param core_kernel_classes_Class $deliveryClass
+     * @param $manifest
+     * @param $directory
+     * @throws \common_Exception
+     */
     protected function importDeliveryFiles(core_kernel_classes_Class $deliveryClass, $manifest, $directory)
     {
         $dirs           = $manifest['dir'];
@@ -136,26 +173,69 @@ class Assembler
      * export a compiled delivery into an archive
      * 
      * @param core_kernel_classes_Resource $compiledDelivery
+     * @param string $fsExportPath
      * @throws \Exception
      * @return string
      */
-    public static function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery) {
-        
+    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '') {
+
+        $this->logDebug("Exporting Delivery Assembly '" . $compiledDelivery->getUri() . "'...");
+
         $fileName = \tao_helpers_Display::textCleaner($compiledDelivery->getLabel()).'.zip';
         $path = \tao_helpers_File::concat(array(\tao_helpers_Export::getExportPath(), $fileName));
-        if(!\tao_helpers_File::securityCheck($path, true)){
+        if (!\tao_helpers_File::securityCheck($path, true)) {
             throw new \Exception('Unauthorized file name');
+        }
+
+        // If such a target zip file exists, remove it from local filesystem. It prevents some synchronicity issues
+        // to occur while dealing with ZIP Archives (not explained yet).
+        if (file_exists($path)) {
+            unlink($path);
         }
         
         $zipArchive = new \ZipArchive();
-        if($zipArchive->open($path, \ZipArchive::CREATE) !== true){
+        if ($zipArchive->open($path, \ZipArchive::CREATE) !== true) {
             throw new \Exception('Unable to create archive at '.$path);
         }
-        
+
+        $this->doExportCompiledDelivery($path, $compiledDelivery, $zipArchive);
+        $zipArchive->close();
+
+        if (!empty($fsExportPath)) {
+            $this->logDebug("Writing Delivery Assembly '" . $compiledDelivery->getUri() . "' into shared file system at location '${fsExportPath}'...");
+            $fsExportPath = trim($fsExportPath);
+            $fsExportPath = ltrim($fsExportPath,"/\\");
+
+            $zipArchiveHandler = fopen($path, 'r');
+            $this->getExportDirectory()->getFile($fsExportPath)->put($zipArchiveHandler);
+            fclose($zipArchiveHandler);
+        }
+
+        return $path;
+    }
+
+    /**
+     * Do Export Compiled Delivery
+     *
+     * Method containing the main behavior of exporting a compiled delivery into a ZIP archive.
+     *
+     * For developers wanting to override this method, the following information has to be taken into account:
+     *
+     * - The value of the $zipArgive argument is an already open ZipArchive object.
+     * - The method must keep the archive open after its execution (calling code will take care of it).
+     *
+     * @param $path
+     * @param core_kernel_classes_Resource $compiledDelivery
+     * @param \ZipArchive $zipArchive
+     * @throws \common_Exception
+     * @throws \core_kernel_classes_EmptyProperty
+     */
+    protected function doExportCompiledDelivery($path, core_kernel_classes_Resource $compiledDelivery, \ZipArchive $zipArchive)
+    {
         $taoDeliveryVersion = \common_ext_ExtensionsManager::singleton()->getInstalledVersion('taoDelivery');
-        
+
         $data = array(
-        	'dir' => array(),
+            'dir' => array(),
             'label' => $compiledDelivery->getLabel(),
             'version' => $taoDeliveryVersion
         );
@@ -172,22 +252,20 @@ class Assembler
         $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
         $serviceCall = \tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
-        
+
         $rdfExporter = new \tao_models_classes_export_RdfExporter();
         $rdfdata = $rdfExporter->getRdfString(array($compiledDelivery));
         if (!$zipArchive->addFromString('delivery.rdf', $rdfdata)) {
             throw new \common_Exception('Unable to add metadata to exported delivery assembly');
         }
         $data['meta'] = 'delivery.rdf';
-        
-        
+
+
         $content = json_encode($data);
         if (!$zipArchive->addFromString(self::MANIFEST_FILE, $content)) {
             $zipArchive->close();
             unlink($path);
             throw new \common_Exception('Unable to add manifest to exported delivery assembly');
         }
-        $zipArchive->close();
-        return $path;
     }
 }

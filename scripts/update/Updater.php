@@ -20,23 +20,23 @@
  */
 namespace oat\taoDeliveryRdf\scripts\update;
 
+use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
-use oat\taoDeliveryRdf\model\DeliveryPublishing;
-use oat\taoDeliveryRdf\model\GroupAssignment;
-use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
+use oat\taoDeliveryRdf\model\import\AssemblerService;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
 use oat\taoDelivery\model\RuntimeService;
-use oat\taoTaskQueue\model\TaskLogInterface;
 
 /**
  ** @author Joel Bout <joel@taotesting.com>
@@ -44,51 +44,16 @@ use oat\taoTaskQueue\model\TaskLogInterface;
 class Updater extends \common_ext_ExtensionUpdater {
 
     /**
-     * @param string $initialVersion
-     * @return string $versionUpdatedTo
+     * @param $initialVersion
+     * @return string|void
+     * @throws \common_Exception
+     * @throws \common_exception_Error
      */
     public function update($initialVersion) {
 
-        $currentVersion = $initialVersion;
-
-        //migrate ACL
-        if ($currentVersion == '0.1') {
-            AclProxy::applyRule(new AccessRule(
-                AccessRule::GRANT,
-                'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole',
-                ['ext' => 'taoDeliveryRdf', 'mod' => 'DeliveryMgmt']
-            ));
-            $currentVersion = '0.2';
-            $this->setVersion($currentVersion);
+        if ($this->isBetween('0.0.0', '1.1.0')) {
+            throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
         }
-
-        if ($this->isVersion('0.2')) {
-            OntologyUpdater::syncModels();
-            AclProxy::applyRule(new AccessRule(
-                'grant',
-                'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole',
-                array('controller'=>'oat\\taoDeliveryRdf\\controller\\Guest')));
-
-            $currentService = $this->safeLoadService(AssignmentService::CONFIG_ID);
-            if (class_exists('taoDelivery_models_classes_AssignmentService', false)
-                && $currentService instanceof \taoDelivery_models_classes_AssignmentService) {
-
-                    $assignmentService = new GroupAssignment();
-                    $this->getServiceManager()->register(AssignmentService::CONFIG_ID, $assignmentService);
-            }
-
-            $this->setVersion('1.0.0');
-        }
-
-        if ($this->isVersion('1.0.0')){
-            $this->setVersion('1.0.1');
-        }
-
-        if ($this->isVersion('1.0.1')) {
-            OntologyUpdater::syncModels();
-            $this->setVersion('1.1.0');
-        }
-
         $this->skip('1.1.0', '1.4.0');
 
         if ($this->isVersion('1.4.0')) {
@@ -191,18 +156,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('3.18.0');
         }
 
-        if ($this->isVersion('3.18.0')) {
-            /** @var TaskLogInterface|ConfigurableService $taskLogService */
-            $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
-
-            $taskLogService->linkTaskToCategory(CompileDelivery::class, TaskLogInterface::CATEGORY_DELIVERY_COMPILATION);
-
-            $this->getServiceManager()->register(TaskLogInterface::SERVICE_ID, $taskLogService);
-
-            $this->setVersion('3.19.0');
-        }
-
-        $this->skip('3.19.0', '3.20.0');
+        $this->skip('3.18.0', '3.20.0');
 
         if ($this->isVersion('3.20.0')) {
             OntologyUpdater::syncModels();
@@ -235,5 +189,35 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('4.7.0', '4.14.0');
+
+        if ($this->isVersion('4.14.0')) {
+            $serviceManager = $this->getServiceManager();
+
+            $defaultFileSystemId = 'deliveryAssemblyExport';
+            /** @var FileSystemService $service */
+            $service = $serviceManager->get(FileSystemService::SERVICE_ID);
+            $service->createFileSystem($defaultFileSystemId);
+            $serviceManager->register(FileSystemService::SERVICE_ID, $service);
+
+            $assemblerService = new AssemblerService([AssemblerService::OPTION_FILESYSTEM_ID => $defaultFileSystemId]);
+            $serviceManager->register(AssemblerServiceInterface::SERVICE_ID, $assemblerService);
+
+            $this->setVersion('5.0.0');
+        }
+
+        if ($this->isVersion('5.0.0')) {
+            // To avoid breaking the updater, this part has been moved in advance
+
+            /** @var TaskLogInterface|ConfigurableService $taskLogService */
+            $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+
+            $taskLogService->linkTaskToCategory(CompileDelivery::class, TaskLogInterface::CATEGORY_DELIVERY_COMPILATION);
+
+            $this->getServiceManager()->register(TaskLogInterface::SERVICE_ID, $taskLogService);
+
+            $this->setVersion('5.1.0');
+        }
+      
+        $this->skip('5.1.0', '5.2.0');
     }
 }

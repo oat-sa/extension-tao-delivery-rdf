@@ -25,8 +25,8 @@ define([
     'util/url',
     'layout/actions',
     'core/promise',
-    'taoTaskQueue/model/taskQueue',
-    'taoTaskQueue/component/button/standardButton'
+    'core/taskQueue/taskQueue',
+    'ui/taskQueueButton/standardButton'
 ], function (_, $, __, filterFactory, feedback, urlUtils, actionManager, Promise, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
