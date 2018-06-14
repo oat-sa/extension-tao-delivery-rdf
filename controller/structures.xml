@@ -48,4 +48,15 @@
             </section>
         </sections>
     </structure>
+    <structure id="tests" name="Tests" level="1" group="main">
+        <sections>
+            <section id="manage_tests" name="Manage tests" url="/taoTests/Tests/index">
+                <actions allowClassActions="true">
+                    <action id="test-publish" name="Publish" url="/taoDeliveryRdf/Publish/index" context="instance" group="tree">
+                        <icon id="icon-delivery"/>
+                    </action>
+                </actions>
+            </section>
+        </sections>
+    </structure>
 </structures>
