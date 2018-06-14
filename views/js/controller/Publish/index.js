@@ -25,7 +25,7 @@ define([
     'provider/resources',
     'ui/destination/selector',
     'ui/feedback',
-    'taoTaskQueue/model/taskQueue'
+    'core/taskQueue/taskQueue'
 ], function ($, _, __, urlHelper, actionManager, resourceProviderFactory, destinationSelectorFactory, feedback, taskQueue) {
     'use strict';
 
@@ -44,13 +44,14 @@ define([
 
             var $container = $('.selector-container');
             var testUri = $container.data('test');
+            var testLabel = $container.data('label');
 
             //get the resource provider configured with the action URL
             var resourceProvider = resourceProviderFactory();
 
             //set up a destination selector
             destinationSelectorFactory($container, {
-                title : __('Publish to'),
+                title : __('Publish "%s" to', testLabel),
                 actionName : __('Publish'),
                 icon : 'delivery',
                 taskQueue : taskQueue,
