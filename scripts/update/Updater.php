@@ -29,6 +29,7 @@ use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
+use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
@@ -217,7 +218,21 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $this->setVersion('5.1.0');
         }
-      
-        $this->skip('5.1.0', '5.2.0');
+
+        $this->skip('5.1.0', '5.2.1');
+
+        if ($this->isVersion('5.2.1')){
+            if (!$this->getServiceManager()->has(DeliveryDeleteService::SERVICE_ID)){
+                $deleteService = new DeliveryDeleteService([
+                    'deleteDeliveryDataServices' => array(
+                        'taoDeliveryRdf/DeliveryAssemblyWrapper'
+                    )
+                ]);
+
+                $this->getServiceManager()->register(DeliveryDeleteService::SERVICE_ID, $deleteService);
+            }
+
+            $this->setVersion('5.2.2');
+        }
     }
 }

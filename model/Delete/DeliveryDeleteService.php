@@ -21,6 +21,7 @@
 namespace oat\taoDeliveryRdf\model\Delete;
 
 use common_report_Report;
+use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\Monitoring;
 use oat\taoDelivery\model\execution\ServiceProxy;
@@ -29,7 +30,6 @@ use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteService;
 use oat\taoQtiTest\models\TestSessionService;
 use oat\taoResultServer\models\classes\ResultManagement;
 use oat\taoResultServer\models\classes\ResultServerService;
-use taoResultServer_models_classes_ReadableResultStorage;
 
 class DeliveryDeleteService extends ConfigurableService
 {
@@ -38,7 +38,8 @@ class DeliveryDeleteService extends ConfigurableService
     const OPTION_DELETE_DELIVERY_DATA_SERVICES = 'deleteDeliveryDataServices';
 
     /** @var common_report_Report  */
-    private $report;
+    protected $report;
+
     /**
      * DeliveryDeleteService constructor.
      * @param array $options
@@ -61,20 +62,7 @@ class DeliveryDeleteService extends ConfigurableService
     public function execute(DeliveryDeleteRequest $request)
     {
         $this->report = common_report_Report::createInfo('Deleting Delivery: '. $request->getDeliveryResource()->getUri());
-        $serviceProxy = $this->getServiceProxy();
-
-        if (!$serviceProxy instanceof Monitoring) {
-            $resultStorage = $this->getResultStorage($request->getDeliveryResource()->getUri());
-
-            $results = $resultStorage->getResultByDelivery([$request->getDeliveryResource()->getUri()]);
-
-            $executions = [];
-            foreach ($results as $result) {
-                $executions[] = $serviceProxy->getDeliveryExecution($result['deliveryResultIdentifier']);
-            }
-        } else{
-            $executions = $serviceProxy->getExecutionsByDelivery($request->getDeliveryResource());
-        }
+        $executions   = $this->getDeliveryExecutions($request->getDeliveryResource());
 
         foreach ($executions as $execution) {
             /** @var DeliveryExecutionDeleteService $deliveryExecutionDeleteService */
@@ -96,6 +84,29 @@ class DeliveryDeleteService extends ConfigurableService
         return $this->deleteDelivery($request);
     }
 
+    /**
+     * @param core_kernel_classes_Resource $deliveryResource
+     * @return array|\oat\taoDelivery\model\execution\DeliveryExecution[]
+     * @throws \common_exception_Error
+     */
+    protected function getDeliveryExecutions(core_kernel_classes_Resource $deliveryResource)
+    {
+        $serviceProxy = $this->getServiceProxy();
+
+        if (!$serviceProxy instanceof Monitoring) {
+            $resultStorage = $this->getResultStorage($deliveryResource->getUri());
+            $results       = $resultStorage->getResultByDelivery([$deliveryResource->getUri()]);
+
+            $executions = [];
+            foreach ($results as $result) {
+                $executions[] = $serviceProxy->getDeliveryExecution($result['deliveryResultIdentifier']);
+            }
+        } else{
+            $executions = $serviceProxy->getExecutionsByDelivery($deliveryResource);
+        }
+
+        return $executions;
+    }
 
     /**
      * @return common_report_Report
@@ -115,15 +126,21 @@ class DeliveryDeleteService extends ConfigurableService
         $services = $this->getDeliveryDeleteService();
 
         foreach ($services as $service) {
-            $deleted = $service->deleteDeliveryData($request);
-            if ($deleted) {
-                $this->report->add(common_report_Report::createSuccess(
-                    'Delete delivery Service: '. get_class($service) . ' data has been deleted.')
-                );
-            } else {
+            try{
+                $deleted = $service->deleteDeliveryData($request);
+                if ($deleted) {
+                    $this->report->add(common_report_Report::createSuccess(
+                        'Delete delivery Service: '. get_class($service) . ' data has been deleted.')
+                    );
+                } else {
+                    $this->report->add(common_report_Report::createInfo(
+                        'Delete delivery Service: '. get_class($service) . ' data has nothing to delete.')
+                    );
+                }
+            }catch (\Exception $exception){
                 $this->report->add(common_report_Report::createInfo(
-                    'Delete delivery Service: '. get_class($service) . ' data has nothing to delete.')
-                );
+                    $exception->getMessage()
+                ));
             }
         }
 
@@ -145,7 +162,7 @@ class DeliveryDeleteService extends ConfigurableService
     /**
      * @return array|ServiceProxy|object
      */
-    private function getServiceProxy()
+    protected function getServiceProxy()
     {
         return $this->getServiceLocator()->get(ServiceProxy::SERVICE_ID);
     }
@@ -181,7 +198,11 @@ class DeliveryDeleteService extends ConfigurableService
     {
         /** @var TestSessionService $testSessionService */
         $testSessionService = $this->getServiceLocator()->get(TestSessionService::SERVICE_ID);
-        $session = $testSessionService->getTestSession($execution);
+        try{
+            $session = $testSessionService->getTestSession($execution);
+        }catch (\Exception $exception){
+            $session = null;
+        }
 
         return new DeliveryExecutionDeleteRequest(
             $deliveryResource,
