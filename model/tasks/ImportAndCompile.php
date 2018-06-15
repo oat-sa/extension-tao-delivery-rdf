@@ -21,14 +21,13 @@
 
 namespace oat\taoDeliveryRdf\model\tasks;
 
-use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\service\ServiceManager;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\import\ImportersService;
+use oat\tao\model\taskQueue\QueueDispatcher;
+use oat\tao\model\taskQueue\Task\TaskInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoTaskQueue\model\QueueDispatcher;
-use oat\taoTaskQueue\model\Task\TaskInterface;
 use oat\taoTests\models\import\AbstractTestImporter;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 
