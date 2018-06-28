@@ -9,6 +9,7 @@ namespace oat\taoDeliveryRdf\scripts\tools;
 use common_report_Report;
 use oat\oatbox\extension\AbstractAction;
 use common_report_Report as Report;
+use oat\oatbox\extension\script\ScriptAction;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 
@@ -16,45 +17,65 @@ use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
  * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\tools\DeleteDeliveryScript'
  *
  * Class TerminateSession
- * @package oat\taoAct\scripts\tools
+ * @package oat\taoDeliveryRdf\scripts\tools
  */
-class DeleteDeliveryScript extends AbstractAction
+class DeleteDeliveryScript extends ScriptAction
 {
     /**
      * @var common_report_Report
      */
     private $report;
 
+    protected function showTime()
+    {
+        return true;
+    }
+
+    protected function provideUsage()
+    {
+        return [
+            'prefix' => 'h',
+            'longPrefix' => 'help',
+            'description' => 'Prints a help statement'
+        ];
+    }
+
+    protected function provideOptions()
+    {
+        return [
+            'delivery' => [
+                'prefix' => 'd',
+                'longPrefix' => 'delivery',
+                'required' => true,
+                'description' => 'A delivery ID.'
+            ]
+        ];
+    }
+
+    protected function provideDescription()
+    {
+        return 'TAO Delivery - Delete Delivery';
+    }
+
     /**
-     * @param $params
      * @return Report
      * @throws \common_exception_Error
      */
-    public function __invoke($params)
+    protected function run()
     {
-
-        if (empty($params)) {
-            return new \common_report_Report(\common_report_Report::TYPE_ERROR, 'delivery id was not given');
-        }
         $this->report = common_report_Report::createInfo('Deleting Delivery ...');
-        $time_start = microtime(true);
 
         /** @var DeliveryDeleteService $deliveryDeleteService */
         $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
-        $this->propagate($deliveryDeleteService);
 
+        $deliveryId = $this->getOption('delivery');
         try{
-            $deliveryDeleteService->execute(new DeliveryDeleteRequest($params[0]));
+            $deliveryDeleteService->execute(new DeliveryDeleteRequest($deliveryId));
             $this->report->add($deliveryDeleteService->getReport());
         } catch (\Exception $exception) {
-            $this->report->add(common_report_Report::createFailure('Failing deleting delivery: '. $params[0]));
+            $this->report->add(common_report_Report::createFailure('Failing deleting delivery: '. $deliveryId));
             $this->report->add(common_report_Report::createFailure($exception->getMessage()));
         }
-
-        $time_end = microtime(true);
-        $execution_time = ($time_end - $time_start)/60;
-
-        $this->report->add(common_report_Report::createInfo('Time:' . round($execution_time, 4) .' Minutes.' ));
 
         return $this->report;
     }
