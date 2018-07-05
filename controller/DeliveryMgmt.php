@@ -28,6 +28,7 @@ use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
 use oat\tao\model\resources\ResourceWatcher;
 use oat\tao\model\TaoOntology;
+use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
@@ -39,13 +40,8 @@ use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use common_report_Report as Report;
-use oat\taoPublishing\model\publishing\delivery\PublishingDeliveryService;
 use oat\taoResultServer\models\classes\implementation\OntologyService;
 use oat\taoResultServer\models\classes\ResultServerService;
-use oat\taoTaskQueue\model\QueueDispatcher;
-use oat\taoTaskQueue\model\TaskLogInterface;
-use oat\taoTaskQueue\model\TaskLogActionTrait;
 
 /**
  * Controller to managed assembled deliveries
@@ -75,7 +71,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
     /**
      * (non-PHPdoc)
-     * @see tao_actions_SaSModule::getClassService()
+     * @see \tao_actions_SaSModule::getClassService()
      */
     protected function getClassService()
     {
@@ -99,29 +95,6 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     {
         $class = $this->getCurrentClass();
         $delivery = $this->getCurrentInstance();
-
-        /** @var QueueDispatcher $queueDispatcher */
-        $queueDispatcher = $this->getServiceManager()->get(QueueDispatcher::SERVICE_ID);
-
-        if ($taskResource = $queueDispatcher->getTaskResource($delivery) ) {
-            /** @var TaskLogInterface $taskLog */
-            $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
-
-            $status = $taskLog->getStatus($taskResource->getUri());
-
-            if (in_array($status, [TaskLogInterface::STATUS_ENQUEUED, TaskLogInterface::STATUS_DEQUEUED, TaskLogInterface::STATUS_RUNNING])) {
-                $report = Report::createInfo(__('Compilation of delivery is in progress.'));
-                $this->returnReport($report);
-                return;
-            } else if (in_array($status, [TaskLogInterface::STATUS_COMPLETED, TaskLogInterface::STATUS_FAILED])) {
-                $report = $queueDispatcher->getReportByLinkedResource($delivery);
-
-                if ($report->getType() == Report::TYPE_ERROR) {
-                    $this->returnReport($report);
-                    return;
-                }
-            }
-        }
 
         //Removing Result Server form field if it is hardcoded in configuration
         //since property name (and possibly property itself) is deprecated then this lines will go away to
@@ -257,7 +230,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                     $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                     $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
                     /** @var DeliveryFactory $deliveryFactoryResources */
-                    $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+                    $deliveryFactoryResources = $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);
                     $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray($myForm->getValues());
                     return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
                 }catch(\Exception $e){

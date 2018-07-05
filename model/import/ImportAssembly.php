@@ -14,26 +14,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * 
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2015-2018 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *               
  */
 namespace oat\taoDeliveryRdf\model\import;
 
-use oat\oatbox\service\ConfigurableService;
-use oat\oatbox\action\Action;
-use oat\taoDeliveryRdf\model\import\Assembler;
+use oat\oatbox\extension\AbstractAction;
+use oat\oatbox\service\ServiceManager;
+use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+
 /**
  * Exports the specified Assembly
  * 
  * @author Joel Bout
  *
  */
-class ImportAssembly extends ConfigurableService implements Action
+class ImportAssembly extends AbstractAction
 {
     /**
-     *
-     * @param unknown $params
+     * @param $params
+     * @return \common_report_Report
+     * @throws \common_Exception
+     * @throws \common_exception_Error
+     * @throws \common_ext_ExtensionException
      */
     public function __invoke($params) {
         if (count($params) < 1) {
@@ -41,9 +45,9 @@ class ImportAssembly extends ConfigurableService implements Action
         }
 
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
-        
+
         $deliveryClass = DeliveryAssemblyService::singleton()->getRootClass()->createSubClass('Import '.\tao_helpers_Date::displayeDate(time()));
-        $importer = new Assembler();
+        $importer = $this->getServiceLocator()->get(AssemblerServiceInterface::SERVICE_ID);
         $report = new \common_report_Report(\common_report_Report::TYPE_INFO, __('Importing %1$s files into \'%2$s\'', count($params), $deliveryClass->getLabel()));
         while (!empty($params)) {
             $file = array_shift($params);

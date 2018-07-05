@@ -21,14 +21,13 @@
 
 namespace oat\taoDeliveryRdf\model\tasks;
 
-use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\service\ServiceManager;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\import\ImportersService;
+use oat\tao\model\taskQueue\QueueDispatcher;
+use oat\tao\model\taskQueue\Task\TaskInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoTaskQueue\model\QueueDispatcher;
-use oat\taoTaskQueue\model\Task\TaskInterface;
 use oat\taoTests\models\import\AbstractTestImporter;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 
@@ -60,6 +59,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         $this->checkParams($params);
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
         $file = $this->getFileReferenceSerializer()->unserializeFile($params[self::OPTION_FILE]);
+        $report = null;
         try {
             $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
 
@@ -71,7 +71,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
                     $test = $r->getData()->rdfsResource;
                 }
             } else {
-                throw new \common_Exception($file->getBasename() . 'Unable to import test with message '. $report->getMessage());
+                throw new \common_Exception($file->getBasename() . ' Unable to import test with message '. $report->getMessage());
             }
 
             $label = 'Delivery of ' . $test->getLabel();
@@ -92,7 +92,14 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
             $report->add($compilationReport);
             return $report;
         } catch (\Exception $e) {
-            return \common_report_Report::createFailure($e->getMessage());
+            $detailedErrorReport = \common_report_Report::createFailure($e->getMessage());
+            if ($report) {
+                $errors = $report->getErrors();
+                foreach ($errors as $error) {
+                    $detailedErrorReport->add($error->getErrors());
+                }
+            }
+            return $detailedErrorReport;
         }
     }
 

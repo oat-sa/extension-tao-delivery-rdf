@@ -14,21 +14,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * 
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2015-2018 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *               
  */
 namespace oat\taoDeliveryRdf\model\export;
 
-use oat\oatbox\service\ConfigurableService;
-use oat\oatbox\action\Action;
-use oat\taoDeliveryRdf\model\import\Assembler;
+use oat\oatbox\extension\AbstractAction;
+use oat\oatbox\service\ServiceManager;
+use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
+
 /**
  * Exports the specified Assembly Class
  * 
  * @author Joel Bout
  *
  */
-class ExportAssemblyClass extends ConfigurableService implements Action
+class ExportAssemblyClass extends AbstractAction
 {
     /**
      * (non-PHPdoc)
@@ -52,9 +53,10 @@ class ExportAssemblyClass extends ConfigurableService implements Action
         $dir = rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
         
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Exporting %s', $deliveryClass->getLabel()));
+        $assembler = $this->getServiceLocator()->get(AssemblerServiceInterface::SERVICE_ID);
         foreach ($deliveryClass->getInstances(true) as $delivery) {
             $destFile = $dir.\tao_helpers_File::getSafeFileName($delivery->getLabel()).'.zip';
-            $tmpFile = Assembler::exportCompiledDelivery($delivery);
+            $tmpFile = $assembler->exportCompiledDelivery($delivery);
             \tao_helpers_File::move($tmpFile, $destFile);
             $report->add(new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Exported %1$s to %2$s', $delivery->getLabel(), $destFile)));
         }

@@ -102,10 +102,8 @@ class DeliveryFactory extends ConfigurableService
         $this->deliveryResource = $deliveryResource;
 
         $storage = new TrackedStorage();
-
-        $testCompilerClass = \taoTests_models_classes_TestsService::singleton()->getCompilerClass($test);
-        $compiler = new $testCompilerClass($test, $storage);
-        $compiler->setServiceLocator($this->getServiceLocator());
+        $this->propagate($storage);
+        $compiler = \taoTests_models_classes_TestsService::singleton()->getCompiler($test, $storage);
 
         $report = $compiler->compile();
         if ($report->getType() == \common_report_Report::TYPE_SUCCESS) {

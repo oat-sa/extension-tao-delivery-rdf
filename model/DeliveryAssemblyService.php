@@ -24,7 +24,6 @@ use core_kernel_classes_Resource;
 use \core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\smoothsql\search\filter\Filter;
 use oat\generis\model\kernel\persistence\smoothsql\search\filter\FilterOperator;
-use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
 use oat\taoDelivery\model\RuntimeService;
@@ -64,7 +63,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     /**
      * (non-PHPdoc)
      *
-     * @see tao_models_classes_ClassService::getRootClass()
+     * @see \tao_models_classes_ClassService::getRootClass()
      */
     public function getRootClass()
     {
