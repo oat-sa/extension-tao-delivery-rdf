@@ -26,12 +26,9 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\taskQueue\QueueDispatcher;
-use oat\tao\model\taskQueue\Task\RedirectUrlAwareInterface;
-use oat\tao\model\taskQueue\Task\RedirectUrlAwareTrait;
 use oat\tao\model\taskQueue\Task\TaskAwareInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareTrait;
 use oat\tao\model\taskQueue\Task\TaskInterface;
-use oat\taoBackOffice\model\routing\ResourceUrlBuilder;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 
@@ -43,10 +40,9 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
  * @package oat\taoQtiTest\models\tasks
  * @author  Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskAwareInterface, RedirectUrlAwareInterface
+class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskAwareInterface
 {
     use TaskAwareTrait;
-    use RedirectUrlAwareTrait;
     use OntologyAwareTrait;
 
     /**
@@ -96,14 +92,7 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         /** @var DeliveryFactory $deliveryFactory */
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
 
-        $report = $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
-
-        // build url to the resource
-        /** @var ResourceUrlBuilder $urlBuilder */
-        $urlBuilder = $this->getServiceLocator()->get(ResourceUrlBuilder::SERVICE_ID);
-        $this->setRedirectUrl($urlBuilder->buildUrl($deliveryResource));
-
-        return $report;
+        return $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
     }
 
     /**
