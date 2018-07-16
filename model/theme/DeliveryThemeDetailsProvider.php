@@ -67,21 +67,22 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
     {
         $request = \Context::getInstance()->getRequest();
 
+        $deliveryExecutionId = '';
         if ($request->hasParameter('deliveryExecution')) {
-            return \tao_helpers_Uri::decode(
+            $deliveryExecutionId = \tao_helpers_Uri::decode(
                 $request->getParameter('deliveryExecution')
             );
         } elseif ($request->hasParameter('testServiceCallId')) {
-            return \tao_helpers_Uri::decode(
+            $deliveryExecutionId = \tao_helpers_Uri::decode(
                 $request->getParameter('testServiceCallId')
             );
         } elseif ($request->hasParameter('serviceCallId')) {
-            return \tao_helpers_Uri::decode(
+            $deliveryExecutionId = \tao_helpers_Uri::decode(
                 $request->getParameter('serviceCallId')
             );
-        } else {
-            return null;
         }
+
+        return $deliveryExecutionId;
     }
 
     /**
