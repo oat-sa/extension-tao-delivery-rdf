@@ -65,9 +65,24 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
      */
     protected function getDeliveryExecutionId()
     {
-        return \tao_helpers_Uri::decode(
-            \Context::getInstance()->getRequest()->getParameter('deliveryExecution')
-        );
+        $request = \Context::getInstance()->getRequest();
+
+        $deliveryExecutionId = '';
+        if ($request->hasParameter('deliveryExecution')) {
+            $deliveryExecutionId = \tao_helpers_Uri::decode(
+                $request->getParameter('deliveryExecution')
+            );
+        } elseif ($request->hasParameter('testServiceCallId')) {
+            $deliveryExecutionId = \tao_helpers_Uri::decode(
+                $request->getParameter('testServiceCallId')
+            );
+        } elseif ($request->hasParameter('serviceCallId')) {
+            $deliveryExecutionId = \tao_helpers_Uri::decode(
+                $request->getParameter('serviceCallId')
+            );
+        }
+
+        return $deliveryExecutionId;
     }
 
     /**
