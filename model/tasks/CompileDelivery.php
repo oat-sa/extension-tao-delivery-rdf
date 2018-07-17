@@ -42,7 +42,6 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
  */
 class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskAwareInterface
 {
-
     use TaskAwareTrait;
     use OntologyAwareTrait;
 

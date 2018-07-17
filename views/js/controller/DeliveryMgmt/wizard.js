@@ -120,10 +120,8 @@ define([
                     && _.isArray(result.task.report.children)
                     && result.task.report.children.length
                     && result.task.report.children[0]) {
-                    if(result.task.report.children[0].data
-                        && result.task.report.children[0].data.uriResource){
-                        feedback().info(__('%s completed', result.task.taskLabel));
-                        refreshTree(result.task.report.children[0].data.uriResource);
+                    if(result.task.redirectUrl){
+                        location.href = result.task.redirectUrl;
                     }else{
                         this.displayReport(result.task.report.children[0], __('Error'));
                     }
