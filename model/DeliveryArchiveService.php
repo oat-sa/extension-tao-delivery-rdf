@@ -28,7 +28,6 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceNotFoundException;
-use oat\taoDelivery\model\DeliveryZipException;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
