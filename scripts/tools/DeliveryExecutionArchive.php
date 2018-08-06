@@ -29,7 +29,7 @@ use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\taoDeliveryRdf\model\DeliverArchiveExistingException;
 use oat\taoDeliveryRdf\model\DeliveryArchiveNotExistingException;
-use oat\taoDelivery\model\DeliveryZipException;
+use oat\taoDeliveryRdf\model\DeliveryZipException;
 use oat\taoDeliveryRdf\model\DeliveryArchiveService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 

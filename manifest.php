@@ -37,7 +37,7 @@ return array(
         'taoGroups'   => '>=2.7.1',
         'taoTests'    => '>=7.9.0',
         'taoQtiTest'  => '>=18.6.0',
-        'taoDelivery' => '>=9.11.1',
+        'taoDelivery' => '>=9.13.0',
         'taoResultServer' => '>=6.1.0'
     ),
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
