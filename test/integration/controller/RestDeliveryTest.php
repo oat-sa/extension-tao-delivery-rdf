@@ -1,6 +1,6 @@
 <?php
 
-namespace oat\taoDeliveryRdf\test\controller;
+namespace oat\taoDeliveryRdf\test\integration\controller;
 
 use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyAwareTrait;
@@ -113,6 +113,8 @@ class RestDeliveryTest extends RestTestRunner
     }
 
     /**
+     * @todo fix failed test case. The actual error message is "Unexpected error. Please contact administrator"
+     * 
      * Test Wrong uri
      * @dataProvider wrongUriProvider
      */
@@ -276,6 +278,7 @@ class RestDeliveryTest extends RestTestRunner
         $deliveryClass->delete();
     }
 
+    // @todo fix failed test case. The actual error message is "Unexpected error. Please contact administrator"
     public function testCreateClassWithoutWrongParentUri()
     {
         $label = 'fixture';

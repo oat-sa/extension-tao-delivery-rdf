@@ -18,7 +18,7 @@
  *
  */
 
-namespace oat\taoDeliveryRdf\test\model;
+namespace oat\taoDeliveryRdf\test\integration\model;
 
 use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\test\FileStorageTestCase;
