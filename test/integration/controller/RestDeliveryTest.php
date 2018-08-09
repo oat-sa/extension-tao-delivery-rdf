@@ -4,7 +4,7 @@ namespace oat\taoDeliveryRdf\test\integration\controller;
 
 use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyAwareTrait;
-use oat\tao\test\RestTestRunner;
+use oat\tao\test\integration\RestTestRunner;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 class RestDeliveryTest extends RestTestRunner

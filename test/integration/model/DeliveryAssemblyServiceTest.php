@@ -21,7 +21,7 @@
 namespace oat\taoDeliveryRdf\test\integration\model;
 
 use oat\oatbox\filesystem\FileSystemService;
-use oat\tao\test\FileStorageTestCase;
+use oat\tao\test\integration\FileStorageTestCase;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use Prophecy\Argument;
