@@ -17,7 +17,7 @@
  * Copyright (c) 2014 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
-namespace oat\taoDeliveryRdf\test\model;
+namespace oat\taoDeliveryRdf\test\integration\model;
 
 use oat\tao\test\TaoPhpUnitTestRunner;
 use \common_ext_ExtensionsManager;
@@ -36,7 +36,7 @@ class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
     /**
      * Override the default constructor to load the extension constants
      * before dataProvider is called
-     * 
+     *
      * @param string $name
      * @param array $data
      * @param string $dataName
@@ -58,7 +58,7 @@ class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
     /**
      *
      * @author Lionel Lecaque, lionel@taotesting.com
-     * @param string $uri            
+     * @param string $uri
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getResourceMock($uri)
@@ -67,7 +67,7 @@ class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
             ->setMockClassName('FakeResource')
             ->setConstructorArgs(array($uri))
             ->getMock();
-        
+
         return $resourceMock;
     }
 
