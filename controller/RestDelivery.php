@@ -20,11 +20,13 @@ namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManagerAwareTrait;
+use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\tao\model\taskQueue\TaskLog\Broker\TaskLogBrokerInterface;
 use oat\tao\model\taskQueue\TaskLog\Entity\EntityInterface;
 use oat\tao\model\taskQueue\TaskLog\TaskLogFilter;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\tao\model\taskQueue\TaskLogInterface;
+use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteTask;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\generis\model\OntologyRdfs;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
@@ -208,6 +210,50 @@ class RestDelivery extends \tao_actions_RestController
             }
             return $this->returnSuccess($result);
         }catch (\Exception $e) {
+            $this->returnFailure($e);
+        }
+    }
+
+    /**
+     * Delete delivery by URI
+     */
+    public function deleteDeferred()
+    {
+        try {
+            if ($this->getRequestMethod() !== \Request::HTTP_POST) {
+                throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
+            }
+
+            $propertyValues = $this->getRequestParameters();
+            if (!array_key_exists('uri', $propertyValues)) {
+                throw new \common_exception_MissingParameter('uri', $this->getRequestURI());
+            }
+
+            /** @var QueueDispatcher $queueDispatcher */
+            $queueDispatcher = $this->getServiceManager()->get(QueueDispatcher::SERVICE_ID);
+
+            $task = new DeliveryDeleteTask();
+            $task->setServiceLocator($this->getServiceLocator());
+            $taskParameters = ['deliveryId' => $propertyValues['uri']];
+
+            $task = $queueDispatcher->createTask($task, $taskParameters, null, null, true);
+
+            $result = [
+                'reference_id' => $task->getId(),
+            ];
+
+            /** @var TaskLogInterface $taskLog */
+            $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
+            $report = $taskLog->getReport($task->getId());
+            if (!empty($report)) {
+                if ($report instanceof \common_report_Report) {
+                    //serialize report to array
+                    $report = json_decode($report);
+                }
+                $result['common_report_Report'] = $report;
+            }
+            return $this->returnSuccess($result);
+        } catch (\Exception $e) {
             $this->returnFailure($e);
         }
     }
