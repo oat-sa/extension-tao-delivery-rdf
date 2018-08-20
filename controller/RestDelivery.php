@@ -238,21 +238,11 @@ class RestDelivery extends \tao_actions_RestController
 
             $task = $queueDispatcher->createTask($task, $taskParameters, null, null, true);
 
-            $result = [
-                'reference_id' => $task->getId(),
-            ];
-
-            /** @var TaskLogInterface $taskLog */
-            $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
-            $report = $taskLog->getReport($task->getId());
-            if (!empty($report)) {
-                if ($report instanceof \common_report_Report) {
-                    //serialize report to array
-                    $report = json_decode($report);
-                }
-                $result['common_report_Report'] = $report;
-            }
-            return $this->returnSuccess($result);
+            $data = $this->getTaskLogReturnData(
+                $task->getId(),
+                DeliveryDeleteTask::class
+            );
+            $this->returnSuccess($data);
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
