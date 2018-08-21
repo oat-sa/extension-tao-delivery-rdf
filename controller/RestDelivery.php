@@ -221,7 +221,7 @@ class RestDelivery extends \tao_actions_RestController
     {
         try {
             if ($this->getRequestMethod() !== \Request::HTTP_DELETE) {
-                throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
+                throw new \common_exception_NotImplemented('Only delete method is accepted to updating delivery');
             }
 
             $propertyValues = $this->getRequestParameters();
