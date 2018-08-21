@@ -220,7 +220,7 @@ class RestDelivery extends \tao_actions_RestController
     public function deleteDeferred()
     {
         try {
-            if ($this->getRequestMethod() !== \Request::HTTP_POST) {
+            if ($this->getRequestMethod() !== \Request::HTTP_DELETE) {
                 throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
             }
 
