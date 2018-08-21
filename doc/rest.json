@@ -556,7 +556,7 @@
       }
     },
     "/taoDeliveryRdf/RestDelivery/deleteDeferred": {
-      "post": {
+      "delete": {
         "description": "Delete the delivery by URI using task queue",
         "tags": [
           "delivery"
