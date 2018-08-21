@@ -236,7 +236,7 @@ class RestDelivery extends \tao_actions_RestController
             $task->setServiceLocator($this->getServiceLocator());
             $taskParameters = ['deliveryId' => $propertyValues['uri']];
 
-            $task = $queueDispatcher->createTask($task, $taskParameters, null, null, true);
+            $task = $queueDispatcher->createTask($task, $taskParameters, __('Deleting of "%s"', $propertyValues['uri']), null, true);
 
             $data = $this->getTaskLogReturnData(
                 $task->getId(),
