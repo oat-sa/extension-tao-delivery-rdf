@@ -230,9 +230,8 @@ class RestDelivery extends \tao_actions_RestController
 
             $uri = $this->getRequestParameter('uri');
             $delivery  = new \core_kernel_classes_Resource($uri);
-            $labelProperty = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(OntologyRdfs::RDFS_LABEL));
 
-            if ($labelProperty === null) {
+            if (!$delivery->exists()) {
                 $this->returnFailure(new \common_exception_NotFound('Delivery has not been found'));
             }
 
@@ -243,7 +242,7 @@ class RestDelivery extends \tao_actions_RestController
             $task->setServiceLocator($this->getServiceLocator());
             $taskParameters = ['deliveryId' => $uri];
 
-            $task = $queueDispatcher->createTask($task, $taskParameters, __('Deleting of "%s"', (string)$labelProperty), null, true);
+            $task = $queueDispatcher->createTask($task, $taskParameters, __('Deleting of "%s"', $delivery->getLabel()), null, true);
 
             $data = $this->getTaskLogReturnData(
                 $task->getId(),
