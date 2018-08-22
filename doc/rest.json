@@ -661,6 +661,20 @@
               "$ref": "#/definitions/errorModel"
             }
           },
+          "404": {
+            "description": "Not found",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "The delivery with given URI has not been found.",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
           "500": {
             "description": "Internal error.",
             "examples": {

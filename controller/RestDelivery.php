@@ -224,9 +224,16 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_exception_NotImplemented('Only delete method is accepted to updating delivery');
             }
 
-            $propertyValues = $this->getRequestParameters();
-            if (!array_key_exists('uri', $propertyValues)) {
+            if ($this->hasRequestParameter('uri')) {
                 throw new \common_exception_MissingParameter('uri', $this->getRequestURI());
+            }
+
+            $uri = $this->getRequestParameter('uri');
+            $delivery  = new \core_kernel_classes_Resource($uri);
+            $labelProperty = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(OntologyRdfs::RDFS_LABEL));
+
+            if ($labelProperty === null) {
+                $this->returnFailure(new \common_exception_NotFound('Delivery has not been found'));
             }
 
             /** @var QueueDispatcher $queueDispatcher */
@@ -234,9 +241,9 @@ class RestDelivery extends \tao_actions_RestController
 
             $task = new DeliveryDeleteTask();
             $task->setServiceLocator($this->getServiceLocator());
-            $taskParameters = ['deliveryId' => $propertyValues['uri']];
+            $taskParameters = ['deliveryId' => $uri];
 
-            $task = $queueDispatcher->createTask($task, $taskParameters, __('Deleting of "%s"', $propertyValues['uri']), null, true);
+            $task = $queueDispatcher->createTask($task, $taskParameters, __('Deleting of "%s"', (string)$labelProperty), null, true);
 
             $data = $this->getTaskLogReturnData(
                 $task->getId(),
