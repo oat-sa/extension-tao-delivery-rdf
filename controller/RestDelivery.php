@@ -224,7 +224,7 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_exception_NotImplemented('Only delete method is accepted to updating delivery');
             }
 
-            if ($this->hasRequestParameter('uri')) {
+            if (!$this->hasRequestParameter('uri')) {
                 throw new \common_exception_MissingParameter('uri', $this->getRequestURI());
             }
 
