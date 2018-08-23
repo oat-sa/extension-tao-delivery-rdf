@@ -93,7 +93,12 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         /** @var DeliveryFactory $deliveryFactory */
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
 
-        return $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
+        $report = $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
+        if ($report->containsError()) {
+            $deliveryResource->delete();
+        }
+
+        return $report;
     }
 
     /**
