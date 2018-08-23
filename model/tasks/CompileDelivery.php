@@ -94,8 +94,8 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
 
         $report = $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
-        if ($report->containsError()) {
-            $deliveryResource->delete();
+        if ($report->getType() === \common_report_Report::TYPE_ERROR ) {
+            $deliveryResource->delete(true);
         }
 
         return $report;
