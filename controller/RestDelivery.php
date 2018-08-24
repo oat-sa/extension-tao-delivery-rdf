@@ -20,11 +20,13 @@ namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManagerAwareTrait;
+use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\tao\model\taskQueue\TaskLog\Broker\TaskLogBrokerInterface;
 use oat\tao\model\taskQueue\TaskLog\Entity\EntityInterface;
 use oat\tao\model\taskQueue\TaskLog\TaskLogFilter;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\tao\model\taskQueue\TaskLogInterface;
+use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteTask;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\generis\model\OntologyRdfs;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
@@ -208,6 +210,46 @@ class RestDelivery extends \tao_actions_RestController
             }
             return $this->returnSuccess($result);
         }catch (\Exception $e) {
+            $this->returnFailure($e);
+        }
+    }
+
+    /**
+     * Delete delivery by URI
+     */
+    public function deleteDeferred()
+    {
+        try {
+            if ($this->getRequestMethod() !== \Request::HTTP_DELETE) {
+                throw new \common_exception_NotImplemented('Only delete method is accepted to updating delivery');
+            }
+
+            if (!$this->hasRequestParameter('uri')) {
+                throw new \common_exception_MissingParameter('uri', $this->getRequestURI());
+            }
+
+            $uri = $this->getRequestParameter('uri');
+            $delivery  = new \core_kernel_classes_Resource($uri);
+
+            if (!$delivery->exists()) {
+                $this->returnFailure(new \common_exception_NotFound('Delivery has not been found'));
+            }
+
+            /** @var QueueDispatcher $queueDispatcher */
+            $queueDispatcher = $this->getServiceManager()->get(QueueDispatcher::SERVICE_ID);
+
+            $task = new DeliveryDeleteTask();
+            $task->setServiceLocator($this->getServiceLocator());
+            $taskParameters = ['deliveryId' => $uri];
+
+            $task = $queueDispatcher->createTask($task, $taskParameters, __('Deleting of "%s"', $delivery->getLabel()), null, true);
+
+            $data = $this->getTaskLogReturnData(
+                $task->getId(),
+                DeliveryDeleteTask::class
+            );
+            $this->returnSuccess($data);
+        } catch (\Exception $e) {
             $this->returnFailure($e);
         }
     }
