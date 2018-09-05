@@ -274,7 +274,7 @@ class RestDelivery extends \tao_actions_RestController
 
             $offset = 0;
             if ($this->hasRequestParameter('offset')) {
-                $offset = (int)$this->getRequestParameter('offset');
+                $offset = $this->getRequestParameter('offset');
                 if (!is_numeric($offset) || $offset < 0) {
                     throw new \common_exception_ValidationFailed('offset', '\'Offset\' should be a positive integer');
                 }
