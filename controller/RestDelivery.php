@@ -267,7 +267,7 @@ class RestDelivery extends \tao_actions_RestController
             $limit = 0;
             if ($this->hasRequestParameter('limit')) {
                 $limit = $this->getRequestParameter('limit');
-                if (!is_numeric($limit) || $limit < 0) {
+                if (!is_numeric($limit) || (int)$limit != $limit || $limit < 0) {
                     throw new \common_exception_ValidationFailed('limit', '\'Limit\' should be a positive integer');
                 }
             }
@@ -275,7 +275,7 @@ class RestDelivery extends \tao_actions_RestController
             $offset = 0;
             if ($this->hasRequestParameter('offset')) {
                 $offset = $this->getRequestParameter('offset');
-                if (!is_numeric($offset) || $offset < 0) {
+                if (!is_numeric($offset) || (int)$offset != $offset || $offset < 0) {
                     throw new \common_exception_ValidationFailed('offset', '\'Offset\' should be a positive integer');
                 }
             }
