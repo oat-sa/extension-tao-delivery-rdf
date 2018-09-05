@@ -221,7 +221,7 @@ class RestDelivery extends \tao_actions_RestController
     {
         try {
             if ($this->getRequestMethod() !== \Request::HTTP_DELETE) {
-                throw new \common_exception_NotImplemented('Only delete method is accepted to updating delivery');
+                throw new \common_exception_NotImplemented('Only delete method is accepted to deleting delivery');
             }
 
             if (!$this->hasRequestParameter('uri')) {
@@ -266,8 +266,8 @@ class RestDelivery extends \tao_actions_RestController
 
             $limit = 0;
             if ($this->hasRequestParameter('limit')) {
-                $limit = (int)$this->getRequestParameter('limit');
-                if ($limit < 0) {
+                $limit = $this->getRequestParameter('limit');
+                if (!is_numeric($limit) || $limit < 0) {
                     throw new \common_exception_ValidationFailed('limit', '\'Limit\' should be a positive integer');
                 }
             }
@@ -275,7 +275,7 @@ class RestDelivery extends \tao_actions_RestController
             $offset = 0;
             if ($this->hasRequestParameter('offset')) {
                 $offset = (int)$this->getRequestParameter('offset');
-                if ($limit < 0) {
+                if (!is_numeric($offset) || $offset < 0) {
                     throw new \common_exception_ValidationFailed('offset', '\'Offset\' should be a positive integer');
                 }
             }
@@ -286,6 +286,9 @@ class RestDelivery extends \tao_actions_RestController
             $deliveries = $service->getAllAssemblies();
             $overallCount = count($deliveries);
             if ($offset || $limit) {
+                if ($overallCount <= $offset) {
+                    throw new \common_exception_ValidationFailed('offset', '\'Offset\' is too large');
+                }
                 $deliveries = array_slice($deliveries, $offset, $limit);
             }
 

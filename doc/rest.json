@@ -835,6 +835,20 @@
             "schema": {
               "$ref": "#/definitions/errorModel"
             }
+          },
+          "501": {
+            "description": "Method not implemented",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "Only get method is accepted to getting deliveries",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
           }
         }
       }
