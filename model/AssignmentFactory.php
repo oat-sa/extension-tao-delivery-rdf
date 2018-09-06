@@ -64,7 +64,13 @@ class AssignmentFactory implements ServiceLocatorAwareInterface
     
     protected function getLabel()
     {
-        return $this->delivery->getLabel();    
+        $label = (string)$this->delivery->getOnePropertyValue(new \core_kernel_classes_Property('http://www.tao.lu/Ontologies/TAODelivery.rdf#CustomLabel'));
+
+        if (!$label) {
+            $label = $this->delivery->getLabel();
+        }
+
+        return $label;
     }
     
     protected function getDescription()
