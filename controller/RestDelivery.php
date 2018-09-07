@@ -221,7 +221,7 @@ class RestDelivery extends \tao_actions_RestController
     {
         try {
             if ($this->getRequestMethod() !== \Request::HTTP_DELETE) {
-                throw new \common_exception_NotImplemented('Only delete method is accepted to updating delivery');
+                throw new \common_exception_NotImplemented('Only delete method is accepted to deleting delivery');
             }
 
             if (!$this->hasRequestParameter('uri')) {
@@ -249,6 +249,62 @@ class RestDelivery extends \tao_actions_RestController
                 DeliveryDeleteTask::class
             );
             $this->returnSuccess($data);
+        } catch (\Exception $e) {
+            $this->returnFailure($e);
+        }
+    }
+
+    /**
+     * List all deliveries or paginated range
+     */
+    public function get()
+    {
+        try {
+            if ($this->getRequestMethod() !== \Request::HTTP_GET) {
+                throw new \common_exception_NotImplemented('Only get method is accepted to getting deliveries');
+            }
+
+            $limit = 0;
+            if ($this->hasRequestParameter('limit')) {
+                $limit = $this->getRequestParameter('limit');
+                if (!is_numeric($limit) || (int)$limit != $limit || $limit < 0) {
+                    throw new \common_exception_ValidationFailed('limit', '\'Limit\' should be a positive integer');
+                }
+            }
+
+            $offset = 0;
+            if ($this->hasRequestParameter('offset')) {
+                $offset = $this->getRequestParameter('offset');
+                if (!is_numeric($offset) || (int)$offset != $offset || $offset < 0) {
+                    throw new \common_exception_ValidationFailed('offset', '\'Offset\' should be a positive integer');
+                }
+            }
+
+            $service = DeliveryAssemblyService::singleton();
+
+            /** @var \core_kernel_classes_Resource[] $deliveries */
+            $deliveries = $service->getAllAssemblies();
+            $overallCount = count($deliveries);
+            if ($offset || $limit) {
+                if ($overallCount <= $offset) {
+                    throw new \common_exception_ValidationFailed('offset', '\'Offset\' is too large');
+                }
+                $deliveries = array_slice($deliveries, $offset, $limit);
+            }
+
+            $mappedDeliveries = [];
+            foreach ($deliveries as $delivery) {
+                $mappedDeliveries[] = [
+                    'uri' => $delivery->getUri(),
+                    'label' => $delivery->getLabel(),
+                ];
+            }
+
+            $response = [
+                'items' => $mappedDeliveries,
+                'overallCount' => $overallCount,
+            ];
+            $this->returnSuccess($response);
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
