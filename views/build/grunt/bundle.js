@@ -23,14 +23,11 @@
 module.exports = function(grunt) {
     'use strict';
 
-    var root = grunt.option('root');
-
     grunt.config.merge({
         bundle : {
             taodeliveryrdf : {
                 options : {
                     extension : 'taoDeliveryRdf',
-                    extensionPath : root + '/taoDeliveryRdf/views/js',
                     outputDir : 'loader',
                     bundles : [{
                         name : 'taoDeliveryRdf',
