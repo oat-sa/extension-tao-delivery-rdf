@@ -72,7 +72,7 @@ class CleanFailedCompiledDeliveriesScript extends ScriptAction
         /** @var \core_kernel_classes_Resource $instance */
         foreach ($searchResult as $instance) {
             try {
-                $value = $instance->getUniquePropertyValue($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_TIME));
+                $value = DeliveryAssemblyService::singleton()->getRuntime($instance);
                 if (is_null($value)) {
                     $failedDeliveries[] = $instance;
                 }
