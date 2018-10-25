@@ -238,13 +238,13 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('5.2.2');
         }
 
-        $this->skip('5.2.2', '5.7.2');
+        $this->skip('5.2.2', '6.0.0');
 
-        if ($this->isVersion('5.7.2')) {
+        if ($this->isVersion('6.0.0')) {
             $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
             $eventManager->attach(DeliveryExecutionReactivated::class, [SessionStateHelper::class, 'onExecutionReactivation']);
             $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
-            $this->setVersion('6.0.0');
+            $this->setVersion('7.0.0');
         }
 
     }
