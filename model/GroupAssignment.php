@@ -46,6 +46,8 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
 
     const DISPLAY_ATTEMPTS_OPTION = 'display_attempts';
 
+    const DISPLAY_DATES_OPTION = false;//'display_dates';
+
     /**
      * (non-PHPdoc)
      * @see \oat\taoDelivery\model\AssignmentService::getAssignments()
@@ -70,19 +72,22 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
 
         $displayAttempts = ($this->hasOption(self::DISPLAY_ATTEMPTS_OPTION)) ? $this->getOption(self::DISPLAY_ATTEMPTS_OPTION) : true;
 
+        $displayDates = ($this->hasOption(self::DISPLAY_DATES_OPTION)) ? $this->getOption(self::DISPLAY_DATES_OPTION) : true;
+
         if ($this->isDeliveryGuestUser($user)) {
             foreach ($this->getGuestAccessDeliveries() as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
                 $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
-                $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts);
+                $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts, $displayDates);
             }
         } else {
             foreach ($this->getDeliveryIdsByUser($user) as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
                 $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
-                $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts);
+                $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts, $displayDates);
             }
         }
+        \common_Logger::i($assignments);
         return $assignments;
     }
 
@@ -341,9 +346,10 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      * @param bool $displayAttempts
      * @return AssignmentFactory
      */
-    protected function getAssignmentFactory(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true)
+    protected function getAssignmentFactory(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true, $displayDates = true)
     {
-        $factory = new AssignmentFactory($delivery, $user, $startable, $displayAttempts);
+        \common_Logger::i($displayDates);
+        $factory = new AssignmentFactory($delivery, $user, $startable, $displayAttempts, $displayDates);
         $factory->setServiceLocator($this->getServiceLocator());
         return $factory;
     }
