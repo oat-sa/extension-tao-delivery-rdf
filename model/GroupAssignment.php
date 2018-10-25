@@ -46,7 +46,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
 
     const DISPLAY_ATTEMPTS_OPTION = 'display_attempts';
 
-    const DISPLAY_DATES_OPTION = false;//'display_dates';
+    const DISPLAY_DATES_OPTION = 'display_dates';
 
     /**
      * (non-PHPdoc)
@@ -87,7 +87,6 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
                 $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts, $displayDates);
             }
         }
-        \common_Logger::i($assignments);
         return $assignments;
     }
 
@@ -348,7 +347,6 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     protected function getAssignmentFactory(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true, $displayDates = true)
     {
-        \common_Logger::i($displayDates);
         $factory = new AssignmentFactory($delivery, $user, $startable, $displayAttempts, $displayDates);
         $factory->setServiceLocator($this->getServiceLocator());
         return $factory;
