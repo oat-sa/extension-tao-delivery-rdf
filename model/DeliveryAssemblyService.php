@@ -203,14 +203,4 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
     public function getOrigin( core_kernel_classes_Resource $assembly) {
         return $assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_ORIGIN));
     }
-
-    /**
-     * @return array
-     */
-    protected function getDefaultFilters()
-    {
-        return [
-            new Filter(static::PROPERTY_DELIVERY_TIME, null, FilterOperator::createIsNotNull())
-        ];
-    }
 }
