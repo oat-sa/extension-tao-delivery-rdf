@@ -113,7 +113,6 @@ class AssignmentFactory implements ServiceLocatorAwareInterface
     {
         $descriptions = array();
 
-        \common_Logger::i('display dates? ' . ($this->displayDates ? 'on' : 'off'));
         if ($this->displayDates) {
             if (!empty($startTime) && !empty($endTime)) {
                 $descriptions[] = __('Available from %1$s to %2$s',
