@@ -27,6 +27,8 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use Prophecy\Argument;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
+require_once dirname(__FILE__) .'/../../../../tao/includes/raw_start.php';
+
 class DeliveryAssemblyServiceTest extends FileStorageTestCase
 {
     public function setUp()
