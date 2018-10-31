@@ -44,12 +44,15 @@ class AssignmentFactory implements ServiceLocatorAwareInterface
 
     private $displayAttempts;
 
-    public function __construct(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true)
+    private $displayDates;
+
+    public function __construct(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true, $displayDates = true)
     {
         $this->delivery = $delivery;
         $this->user = $user;
         $this->startable = $startable;
         $this->displayAttempts = $displayAttempts;
+        $this->displayDates = $displayDates;
     }
     
     public function getDeliveryId()
@@ -109,15 +112,18 @@ class AssignmentFactory implements ServiceLocatorAwareInterface
     protected function buildDescriptionFromData($startTime, $endTime, $countExecs, $maxExecs)
     {
         $descriptions = array();
-        if (!empty($startTime) && !empty($endTime)) {
-            $descriptions[] = __('Available from %1$s to %2$s',
-                tao_helpers_Date::displayeDate($startTime)
-                ,tao_helpers_Date::displayeDate($endTime)
-            );
-        } elseif (!empty($startTime) && empty($endTime)) {
-            $descriptions[] = __('Available from %s', tao_helpers_Date::displayeDate($startTime));
-        } elseif (!empty($endTime)) {
-            $descriptions[] = __('Available until %s', tao_helpers_Date::displayeDate($endTime));
+
+        if ($this->displayDates) {
+            if (!empty($startTime) && !empty($endTime)) {
+                $descriptions[] = __('Available from %1$s to %2$s',
+                    tao_helpers_Date::displayeDate($startTime)
+                    ,tao_helpers_Date::displayeDate($endTime)
+                );
+            } elseif (!empty($startTime) && empty($endTime)) {
+                $descriptions[] = __('Available from %s', tao_helpers_Date::displayeDate($startTime));
+            } elseif (!empty($endTime)) {
+                $descriptions[] = __('Available until %s', tao_helpers_Date::displayeDate($endTime));
+            }    
         }
         
         if ($maxExecs != 0 && $this->displayAttempts) {
