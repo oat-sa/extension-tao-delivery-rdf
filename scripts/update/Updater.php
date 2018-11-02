@@ -20,6 +20,7 @@
  */
 namespace oat\taoDeliveryRdf\scripts\update;
 
+use oat\oatbox\event\EventManager;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\taskQueue\TaskLogInterface;
@@ -27,6 +28,8 @@ use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionReactivated;
+use oat\taoDeliveryRdf\helper\SessionStateHelper;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
@@ -235,6 +238,14 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('5.2.2');
         }
 
-        $this->skip('5.2.2', '5.7.2');
+        $this->skip('5.2.2', '6.0.0');
+
+        if ($this->isVersion('6.0.0')) {
+            $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+            $eventManager->attach(DeliveryExecutionReactivated::class, [SessionStateHelper::class, 'onExecutionReactivation']);
+            $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
+            $this->setVersion('7.0.0');
+        }
+        $this->skip('7.0.0', '7.2.2');
     }
 }
