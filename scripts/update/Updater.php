@@ -246,7 +246,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
             $this->setVersion('7.2.0');
         }
-        $this->skip('7.2.0', '7.2.1');
+        $this->skip('7.2.0', '7.2.2');
 
     }
 }
