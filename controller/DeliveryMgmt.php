@@ -290,6 +290,25 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     }
 
     /**
+     * overwrite the parent moveAllInstances to add the requiresRight only in Items
+     * @see tao_actions_TaoModule::moveResource()
+     * @requiresRight uri WRITE
+     */
+    public function moveResource()
+    {
+        return parent::moveResource();
+    }
+    /**
+     * overwrite the parent moveAllInstances to add the requiresRight only in Items
+     * @see tao_actions_TaoModule::moveAll()
+     * @requiresRight ids WRITE
+     */
+    public function moveAll()
+    {
+        return parent::moveAll();
+    }
+
+    /**
      * @param array $options
      * @throws \common_exception_IsAjaxAction
      */
