@@ -40,6 +40,12 @@
                     <action id="delivery-move" name="Move" url="/taoDeliveryRdf/DeliveryMgmt/moveInstance" context="instance" group="none" binding="moveNode">
                         <icon id="icon-move-item"/>
                     </action>
+                    <action id="delivery-move-to" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveResource" context="resource" group="tree" binding="moveTo">
+                        <icon id="icon-move-item"/>
+                    </action>
+                    <action id="delivery-move-all" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveAll" context="resource" multiple="true" group="tree" binding="moveTo">
+                        <icon id="icon-move-item"/>
+                    </action>
                     <action id="delivery-new" name="New delivery" url="/taoDeliveryRdf/DeliveryMgmt/wizard" context="resource" group="tree">
                         <icon id="icon-delivery"/>
                     </action>
