@@ -45,6 +45,11 @@ class GuestTestUser implements User
         return array();
     }
 
+    public function getPropertiesValues($properties)
+    {
+        return array();
+    }
+
     public function getRoles()
     {
         return array(
