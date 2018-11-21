@@ -85,10 +85,10 @@ class AssignmentFactory implements ServiceLocatorAwareInterface
         $startTime = (!(is_object($propStartExec)) or ($propStartExec=="")) ? null : $propStartExec->literal;
         $endTime = (!(is_object($propEndExec)) or ($propEndExec=="")) ? null : $propEndExec->literal;
         $maxExecs = (!(is_object($propMaxExec)) or ($propMaxExec=="")) ? 0 : $propMaxExec->literal;
-        
-        $countExecs = count($this->getServiceLocator()->get(AttemptServiceInterface::SERVICE_ID)
-            ->getAttempts($this->delivery->getUri(), $this->user));
-        
+
+        $attemptService = $this->getServiceLocator()->get(AttemptServiceInterface::SERVICE_ID);
+        $countExecs = count($attemptService->getAttempts($this->getDeliveryId(), $this->user));
+
         return $this->buildDescriptionFromData($startTime, $endTime, $countExecs, $maxExecs);
     }
     

@@ -130,7 +130,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
     {
         //FIXME this shouldn't be a service call anymore, a delivery property instead
         $delivery = $deliveryExecution->getDelivery();
-        $runtime = ServiceManager::getServiceManager()->get(AssignmentService::SERVICE_ID)->getRuntime($delivery);
+        $runtime = $this->getServiceLocator()->get(RuntimeService::SERVICE_ID)->getRuntime($delivery->getUri());
         $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, array());
 
         return $inputParameters['QtiTestDefinition'];
@@ -146,7 +146,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
 
         //FIXME this shouldn't be a service call anymore, a delivery property instead
         $delivery = $deliveryExecution->getDelivery();
-        $runtime = ServiceManager::getServiceManager()->get(AssignmentService::SERVICE_ID)->getRuntime($delivery);
+        $runtime = $this->getServiceLocator()->get(RuntimeService::SERVICE_ID)->getRuntime($delivery->getUri());
         $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, array());
 
         return $inputParameters['QtiTestCompilation'];

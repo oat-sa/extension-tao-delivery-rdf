@@ -46,9 +46,7 @@ use oat\tao\helpers\Template;
 
 
 <div class="data-container-wrapper flex-container-remainder">
-    <?= get_data('groupTree')?>
-    <?php Template::inc('widgets/excludeTesttaker.tpl');?>
-    <?= has_data('campaign') ? get_data('campaign') : '';?>
+    <?= has_data('assignmentWidget') ? get_data('assignmentWidget') : '';?>
 </div>
 <?php
 Template::inc('footer.tpl', 'tao');

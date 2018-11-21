@@ -14,13 +14,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * 
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
+ *               
  * 
- */
-use oat\oatbox\service\ServiceManager;
-use oat\taoDelivery\model\AssignmentService;
-use oat\taoDeliveryRdf\model\GroupAssignment;
-$serviceManager = ServiceManager::getServiceManager();
+ */               
+namespace oat\taoDeliveryRdf\model;
 
-$assignmentService = new GroupAssignment();
-$serviceManager->register(\oat\taoDelivery\model\AssignmentService::SERVICE_ID, $assignmentService);
+/**
+ * Helper to render the delivery form on the group page
+ * 
+ * @author joel bout, <joel@taotesting.com>
+ * @package taoDelivery
+ */
+interface AssignmentWidgetAware
+{
+    public function getAssignmentWidget(\core_kernel_classes_Resource $delivery);
+}

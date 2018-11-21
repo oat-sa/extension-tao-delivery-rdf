@@ -23,6 +23,7 @@ use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
 use oat\taoDeliveryRdf\scripts\install\RegisterDeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\scripts\install\SetUpQueueTasks;
 use oat\taoDeliveryRdf\scripts\install\RegisterFileSystem;
+use oat\taoDeliveryRdf\scripts\install\RegisterAssignmentService;
 
 return array(
   'name'        => 'taoDeliveryRdf',
@@ -32,9 +33,8 @@ return array(
   'version'     => '7.3.0',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
-	    'generis'     => '>=6.14.0',
+        'generis'     => '>=6.14.0',
         'tao'         => '>=21.0.0',
-        'taoGroups'   => '>=4.0.0',
         'taoTests'    => '>=8.0.0',
         'taoQtiTest'  => '>=29.0.0',
         'taoDelivery' => '>=12.0.0',
@@ -53,7 +53,7 @@ return array(
             __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'ontology'.DIRECTORY_SEPARATOR.'widgetdefinitions.rdf'
         ),
         'php' => array(
-            __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php',
+            RegisterAssignmentService::class,
             'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
             'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
             RegisterDeliveryFactoryService::class,

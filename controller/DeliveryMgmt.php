@@ -23,7 +23,6 @@ namespace oat\taoDeliveryRdf\controller;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManagerAwareTrait;
-use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
 use oat\tao\model\resources\ResourceWatcher;
@@ -34,7 +33,6 @@ use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
-use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
@@ -42,6 +40,7 @@ use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoResultServer\models\classes\implementation\OntologyService;
 use oat\taoResultServer\models\classes\ResultServerService;
+use oat\taoDeliveryRdf\model\AssignmentWidgetAware;
 
 /**
  * Controller to managed assembled deliveries
@@ -139,14 +138,11 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             $this->setData('exec', count($execs));
         }
 
-        // define the groups related to the current delivery
-        $property = new core_kernel_classes_Property(GroupAssignment::PROPERTY_GROUP_DELIVERY);
-        $tree = \tao_helpers_form_GenerisTreeForm::buildReverseTree($delivery, $property);
-        $tree->setTitle(__('Assigned to'));
-        $tree->setTemplate(Template::getTemplate('widgets/assignGroup.tpl'));
-        $this->setData('groupTree', $tree->render());
-
-        // testtaker brick
+        $assignmentService = $this->getServiceLocator()->get(AssignmentService::SERVICE_ID);
+        if ($assignmentService instanceof AssignmentWidgetAware) {
+            $this->setData('assignmentWidget', $assignmentService->getAssignmentWidget($delivery)->render());
+        }
+        // testtaker brick, still to remove
         $this->setData('assemblyUri', $delivery->getUri());
 
         // define the subjects excluded from the current delivery
@@ -161,10 +157,6 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $this->setData('updatedAt', $updatedAt);
         $this->setData('formTitle', __('Properties'));
         $this->setData('myForm', $myForm->render());
-
-        if (\common_ext_ExtensionsManager::singleton()->isEnabled('taoCampaign')) {
-            $this->setData('campaign', taoCampaign_helpers_Campaign::renderCampaignTree($delivery));
-        }
         $this->setView('DeliveryMgmt/editDelivery.tpl');
     }
 
@@ -291,7 +283,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
     /**
      * overwrite the parent moveAllInstances to add the requiresRight only in Items
-     * @see tao_actions_TaoModule::moveResource()
+     * @see \tao_actions_TaoModule::moveResource()
      * @requiresRight uri WRITE
      */
     public function moveResource()
@@ -300,7 +292,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     }
     /**
      * overwrite the parent moveAllInstances to add the requiresRight only in Items
-     * @see tao_actions_TaoModule::moveAll()
+     * @see \tao_actions_TaoModule::moveAll()
      * @requiresRight ids WRITE
      */
     public function moveAll()
