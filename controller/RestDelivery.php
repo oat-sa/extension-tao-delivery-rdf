@@ -62,7 +62,7 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_TEST_ID, $this->getRequestURI());
             }
 
-            $test = new \core_kernel_classes_Resource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
+            $test = $this->getResource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
             if (!$test->exists()) {
                 throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
             }
@@ -75,7 +75,7 @@ class RestDelivery extends \tao_actions_RestController
             $report = $deliveryFactory->create($deliveryClass, $test, $label);
 
             if ($report->getType() == \common_report_Report::TYPE_ERROR) {
-                \common_Logger::i('Unable to generate delivery execution ' .
+                $this->logInfo('Unable to generate delivery execution ' .
                     'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
                 throw new \common_Exception('Unable to generate delivery execution.');
             }
@@ -96,13 +96,13 @@ class RestDelivery extends \tao_actions_RestController
      * Test uri has to be set and existing
      */
     public function generateDeferred()
-    {   
+    {
         try {
             if (! $this->hasRequestParameter(self::REST_DELIVERY_TEST_ID)) {
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_TEST_ID, $this->getRequestURI());
             }
 
-            $test = new \core_kernel_classes_Resource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
+            $test = $this->getResource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
             if (! $test->exists()) {
                 throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
             }
@@ -229,7 +229,7 @@ class RestDelivery extends \tao_actions_RestController
             }
 
             $uri = $this->getRequestParameter('uri');
-            $delivery  = new \core_kernel_classes_Resource($uri);
+            $delivery  = $this->getResource($uri);
 
             if (!$delivery->exists()) {
                 $this->returnFailure(new \common_exception_NotFound('Delivery has not been found'));
@@ -445,7 +445,7 @@ class RestDelivery extends \tao_actions_RestController
 
         // If an uri is provided, check if it's an existing delivery class
         if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_URI)) {
-            $deliveryClass = new \core_kernel_classes_Class($this->getRequestParameter(self::REST_DELIVERY_CLASS_URI));
+            $deliveryClass = $this->getClass($this->getRequestParameter(self::REST_DELIVERY_CLASS_URI));
             if ($deliveryClass == $rootDeliveryClass
                 || ($deliveryClass->exists() && $deliveryClass->isSubClassOf($rootDeliveryClass))) {
                 return $deliveryClass;
@@ -476,7 +476,7 @@ class RestDelivery extends \tao_actions_RestController
                 case 0:
                     throw new \common_exception_NotFound(__('Delivery with label "%s" not found', $label));
                 case 1:
-                    return new \core_kernel_classes_Class($result->current()->getUri());
+                    return $this->getClass($result->current()->getUri());
                 default:
                     $availableClasses = [];
                     foreach ($result as $raw) {
@@ -498,6 +498,6 @@ class RestDelivery extends \tao_actions_RestController
      */
     protected function getDeliveryRootClass()
     {
-        return new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+        return $this->getClass(DeliveryAssemblyService::CLASS_URI);
     }
 }
