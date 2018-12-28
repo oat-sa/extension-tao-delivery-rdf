@@ -119,9 +119,8 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
         // history
         $this->setData('date', $this->getClassService()->getCompilationDate($delivery));
-        $serviceProxy = $this->getServiceLocator()->get(ServiceProxy::SERVICE_ID);
-        if ($serviceProxy->implementsMonitoring()) {
-            $execs = $serviceProxy->getExecutionsByDelivery($delivery);
+        if (ServiceProxy::singleton()->implementsMonitoring()) {
+            $execs = ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
             $this->setData('exec', count($execs));
         }
 
