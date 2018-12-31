@@ -41,6 +41,7 @@ use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoResultServer\models\classes\implementation\OntologyService;
 use oat\taoResultServer\models\classes\ResultServerService;
+use oat\taoDelivery\model\execution\Monitoring;
 
 /**
  * Controller to managed assembled deliveries
@@ -120,7 +121,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         // history
         $this->setData('date', $this->getClassService()->getCompilationDate($delivery));
         $serviceProxy = $this->getServiceLocator()->get(ServiceProxy::SERVICE_ID);
-        if ($serviceProxy->implementsMonitoring()) {
+        if ($serviceProxy instanceof Monitoring) {
             $execs = $serviceProxy->getExecutionsByDelivery($delivery);
             $this->setData('exec', count($execs));
         }
