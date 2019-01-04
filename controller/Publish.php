@@ -21,7 +21,6 @@ namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManagerAwareTrait;
-use core_kernel_classes_Resource;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
@@ -40,7 +39,7 @@ class Publish extends \tao_actions_SaSModule
 
     public function index(){
         $testUri = tao_helpers_Uri::decode($this->getRequestParameter('uri'));
-        $test = new core_kernel_classes_Resource($testUri);
+        $test = $this->getResource($testUri);
         $this->setData('label', $test->getLabel());
         $this->setData('rootClassUri', DeliveryAssemblyService::CLASS_URI);
         $this->setData('testUri', $testUri);
@@ -51,8 +50,8 @@ class Publish extends \tao_actions_SaSModule
         try {
             $testUri = $this->getRequestParameter('testUri');
             $classUri = $this->getRequestParameter('classUri');
-            $test = new core_kernel_classes_Resource($testUri);
-            $deliveryClass = new \core_kernel_classes_Class($classUri);
+            $test = $this->getResource($testUri);
+            $deliveryClass = $this->getClass($classUri);
             /** @var DeliveryFactory $deliveryFactoryResources */
             $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
             $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray([OntologyRdfs::RDFS_LABEL => 'new delivery']);
