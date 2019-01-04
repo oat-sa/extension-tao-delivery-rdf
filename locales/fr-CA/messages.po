@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint72\n"
-"PO-Revision-Date: 2018-03-15T14:19:37\n"
+"Project-Id-Version: TAO 3.3.0-sprint92.1\n"
+"PO-Revision-Date: 2019-01-04T14:41:39\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr-CA\n"
@@ -61,9 +61,6 @@ msgstr "Annuler"
 msgid "Class successfully created."
 msgstr ""
 
-msgid "Compilation of delivery is in progress."
-msgstr ""
-
 msgid "Create a new delivery"
 msgstr "Créer une nouvelle passation"
 
@@ -73,6 +70,9 @@ msgstr "Créer un test"
 #, tao-public
 msgid "Delete"
 msgstr "Supprimer"
+
+msgid "Deleting of \"%s"
+msgstr ""
 
 #, tao-public
 msgid "Deliveries"
@@ -97,9 +97,6 @@ msgstr ""
 msgid "Delivery is not assigned to any test-taker."
 msgstr "La passation n'est pas assignée à un participant."
 
-msgid "Delivery of %s"
-msgstr ""
-
 msgid "Delivery saved"
 msgstr "Passation enregistrée."
 
@@ -121,10 +118,6 @@ msgstr ""
 msgid "Exporting %s"
 msgstr ""
 
-#, tao-public
-msgid "Filter"
-msgstr "Filtre"
-
 msgid "Guest access"
 msgstr "Accès invité"
 
@@ -135,10 +128,11 @@ msgid "Last updated on %2s"
 msgstr ""
 
 #, tao-public
-msgid "Import"
-msgstr "Importer"
-
 msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Manage tests"
 msgstr ""
 
 msgid "Manifest not found in assembly"
@@ -147,6 +141,10 @@ msgstr "Manifeste non trouvé dans l'assemblée"
 #, tao-public
 msgid "Move"
 msgstr "Déplacer"
+
+#, tao-public
+msgid "Move To"
+msgstr ""
 
 msgid "Multiple delivery class found for label \"%s\": %s"
 msgstr ""
@@ -173,7 +171,11 @@ msgstr "Préparer, publier des sessions de passations."
 msgid "Properties"
 msgstr "Propriétés"
 
+#, tao-public
 msgid "Publish"
+msgstr ""
+
+msgid "Publish \"%s\" to"
 msgstr ""
 
 msgid "Publish the test"
@@ -184,10 +186,6 @@ msgstr ""
 
 msgid "Publishing of \"%s"
 msgstr ""
-
-#, tao-public
-msgid "Search"
-msgstr "Rechercher"
 
 msgid "Save"
 msgstr "Enregistrer"
@@ -212,6 +210,13 @@ msgstr ""
 
 msgid "Test-takers"
 msgstr "Participants"
+
+#, tao-public
+msgid "Tests"
+msgstr ""
+
+msgid "The shared filesystem parameter should be a boolean value 'true' or 'false'."
+msgstr ""
 
 msgid "There are currently %s attempts"
 msgstr ""
@@ -240,6 +245,6 @@ msgstr ""
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 msgstr ""
 
-msgid "Usage: %s DELIVERY_URI OUTPUT_FILE"
+msgid "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
 msgstr ""
 
