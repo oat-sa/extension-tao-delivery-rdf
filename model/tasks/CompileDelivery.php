@@ -25,6 +25,7 @@ use common_report_Report as Report;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\session\PretenderSession;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\tao\model\taskQueue\Task\TaskAwareInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareTrait;
@@ -72,6 +73,7 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         $label = 'Delivery of ' . $test->getLabel();
 
         $deliveryResource =  \core_kernel_classes_ResourceFactory::create($deliveryClass);
+
         if ($params['initialProperties']) {
             // Setting "Sync to remote..." if enabled
             /** @var DeliveryFactory $deliveryFactoryResources */
@@ -88,6 +90,11 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         if (!is_null($task)) {
             $deliveryCompileTaskProperty = $this->getProperty(DeliveryFactory::PROPERTY_DELIVERY_COMPILE_TASK);
             $deliveryResource->setPropertyValue($deliveryCompileTaskProperty, $task->getId());
+
+            if (\common_session_SessionManager::isAnonymous() && $task->getMetadata(TaskInterface::JSON_METADATA_OWNER_KEY)) {
+                $userResource = new \core_kernel_classes_Resource($task->getMetadata(TaskInterface::JSON_METADATA_OWNER_KEY));
+                \common_session_SessionManager::startSession(new PretenderSession(new \core_kernel_users_GenerisUser($userResource)));
+            }
         }
 
         /** @var DeliveryFactory $deliveryFactory */
