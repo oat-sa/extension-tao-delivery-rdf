@@ -62,15 +62,15 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
 
         if (isset($params['deliveryClass'])) {
-            $deliveryClass = new \core_kernel_classes_Class($params['deliveryClass']);
+            $deliveryClass = $this->getClass($params['deliveryClass']);
             if (!$deliveryClass->exists()) {
-                $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+                $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
             }
         } else {
-            $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+            $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
         }
 
-        $test = new \core_kernel_classes_Resource($params['test']);
+        $test = $this->getResource($params['test']);
         $label = 'Delivery of ' . $test->getLabel();
 
         $deliveryResource =  \core_kernel_classes_ResourceFactory::create($deliveryClass);
@@ -152,11 +152,11 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
 
     private function emulateSessionAndActionForAsynchronousCompilation(TaskInterface $task)
     {
-        $userResource = new \core_kernel_classes_Resource($task->getMetadata(TaskInterface::JSON_METADATA_OWNER_KEY));
+        $userResource = $this->getResource($task->getMetadata(TaskInterface::JSON_METADATA_OWNER_KEY));
         \common_session_SessionManager::startSession(new PretenderSession(new \core_kernel_users_GenerisUser($userResource)));
 
         /** @var LoggerService $loggerService */
-        $loggerService = $this->getServiceManager()->get(LoggerService::SERVICE_ID);
+        $loggerService = $this->getServiceLocator()->get(LoggerService::SERVICE_ID);
         $loggerService->setAction('/taoDeliveryRdf/RestDelivery/generate');
     }
 }
