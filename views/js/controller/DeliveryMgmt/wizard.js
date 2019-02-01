@@ -99,7 +99,7 @@ define([
                         params.error(err);
                         feedback().error(err);
                     });
-            }).render('<%= text %>');
+            }).render('<%- text %>');
 
             //find the old submitter and replace it with the new component
             $oldSubmitter = $form.find('.form-submitter');
