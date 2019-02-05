@@ -30,8 +30,6 @@ class RestDeliveryTest extends RestTestRunner
             $this->markTestSkipped('taoQtiTest extension is not available.');
         }
 
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoQtiTest');
         $this->deliveryService = DeliveryAssemblyService::singleton();
         $this->testService     = \taoQtiTest_models_classes_QtiTestService::singleton();
         $this->itemService     = \taoItems_models_classes_ItemsService::singleton();
