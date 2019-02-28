@@ -27,6 +27,7 @@ use oat\tao\helpers\Template;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
 use oat\tao\model\resources\ResourceWatcher;
+use oat\tao\model\routing\AnnotationReader\security;
 use oat\tao\model\TaoOntology;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\taoDelivery\model\AssignmentService;
@@ -59,6 +60,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
      *
      * @access public
      * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
+     * @security("hide")
      */
     public function __construct()
     {
