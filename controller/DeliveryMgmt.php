@@ -23,7 +23,7 @@ namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyRdfs;
-use oat\oatbox\event\EventManagerAwareTrait;
+use oat\oatbox\event\EventManager;
 use oat\tao\helpers\Template;
 use oat\tao\model\resources\ResourceWatcher;
 use oat\tao\model\TaoOntology;
@@ -51,8 +51,15 @@ use oat\taoDelivery\model\execution\Monitoring;
  */
 class DeliveryMgmt extends \tao_actions_SaSModule
 {
-    use EventManagerAwareTrait;
     use TaskLogActionTrait;
+
+    /**
+     * @return EventManager
+     */
+    protected function getEventManager()
+    {
+        return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
+    }
 
     /**
      * (non-PHPdoc)
