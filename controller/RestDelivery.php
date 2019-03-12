@@ -19,7 +19,7 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
-use oat\oatbox\event\EventManagerAwareTrait;
+use oat\oatbox\event\EventManager;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\tao\model\taskQueue\TaskLog\Broker\TaskLogBrokerInterface;
 use oat\tao\model\taskQueue\TaskLog\Entity\EntityInterface;
@@ -35,7 +35,6 @@ use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
 
 class RestDelivery extends \tao_actions_RestController
 {
-    use EventManagerAwareTrait;
     use TaskLogActionTrait;
 
     const REST_DELIVERY_TEST_ID        = 'test';
@@ -50,6 +49,11 @@ class RestDelivery extends \tao_actions_RestController
     const CLASS_LABEL_PARAM            = 'delivery-label';
     const CLASS_COMMENT_PARAM          = 'delivery-comment';
     const PARENT_CLASS_URI_PARAM       = 'delivery-parent';
+
+    protected function getEventManager()
+    {
+        return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
+    }
 
     /**
      * Generate a delivery from test uri

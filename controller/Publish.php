@@ -20,7 +20,7 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\OntologyRdfs;
-use oat\oatbox\event\EventManagerAwareTrait;
+use oat\oatbox\event\EventManager;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
@@ -34,8 +34,12 @@ use \tao_helpers_Uri;
  */
 class Publish extends \tao_actions_SaSModule
 {
-    use EventManagerAwareTrait;
     use TaskLogActionTrait;
+
+    protected function getEventManager()
+    {
+        return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
+    }
 
     public function index(){
         $testUri = tao_helpers_Uri::decode($this->getRequestParameter('uri'));
