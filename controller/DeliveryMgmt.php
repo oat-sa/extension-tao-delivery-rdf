@@ -53,6 +53,9 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 {
     use TaskLogActionTrait;
 
+    /**
+     * @return EventManager
+     */
     protected function getEventManager()
     {
         return $this->getServiceLocator()->get(EventManager::SERVICE_ID);

@@ -50,6 +50,9 @@ class RestDelivery extends \tao_actions_RestController
     const CLASS_COMMENT_PARAM          = 'delivery-comment';
     const PARENT_CLASS_URI_PARAM       = 'delivery-parent';
 
+    /**
+     * @return EventManager
+     */
     protected function getEventManager()
     {
         return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
