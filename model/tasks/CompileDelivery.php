@@ -25,14 +25,12 @@ use common_report_Report as Report;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
-use oat\tao\model\session\PretenderSession;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\tao\model\taskQueue\Task\TaskAwareInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareTrait;
 use oat\tao\model\taskQueue\Task\TaskInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
-use oat\taoEventLog\model\eventLog\LoggerService;
 
 /**
  * Class CompileDelivery
@@ -88,17 +86,9 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
 
         /** @var TaskInterface $task */
         $task = $this->getTask();
-        $hasTemporarySession = false;
-
         if (!is_null($task)) {
             $deliveryCompileTaskProperty = $this->getProperty(DeliveryFactory::PROPERTY_DELIVERY_COMPILE_TASK);
             $deliveryResource->setPropertyValue($deliveryCompileTaskProperty, $task->getId());
-
-            if (\common_session_SessionManager::isAnonymous() && $task->getMetadata(TaskInterface::JSON_METADATA_OWNER_KEY)) {
-                $hasTemporarySession = true;
-
-                $this->emulateSessionAndActionForAsynchronousCompilation($task);
-            }
         }
 
         /** @var DeliveryFactory $deliveryFactory */
@@ -107,10 +97,6 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         $report = $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
         if ($report->getType() === \common_report_Report::TYPE_ERROR ) {
             $deliveryResource->delete(true);
-        }
-
-        if ($hasTemporarySession) {
-            \common_session_SessionManager::endSession();
         }
 
         return $report;
@@ -148,15 +134,5 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         }
 
         return $queueDispatcher->createTask($action, $parameters, __('Publishing of "%s"', $test->getLabel()), null, true);
-    }
-
-    private function emulateSessionAndActionForAsynchronousCompilation(TaskInterface $task)
-    {
-        $userResource = $this->getResource($task->getMetadata(TaskInterface::JSON_METADATA_OWNER_KEY));
-        \common_session_SessionManager::startSession(new PretenderSession(new \core_kernel_users_GenerisUser($userResource)));
-
-        /** @var LoggerService $loggerService */
-        $loggerService = $this->getServiceLocator()->get(LoggerService::SERVICE_ID);
-        $loggerService->setAction('/taoDeliveryRdf/RestDelivery/generate');
     }
 }
