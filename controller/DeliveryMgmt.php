@@ -90,6 +90,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
      * @return void
      * @throws \common_exception_NoImplementation
      * @throws \common_exception_Error
+     * @throws \oat\tao\model\security\SecurityException
      */
     public function editDelivery()
     {
@@ -113,21 +114,21 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
         $formContainer = new DeliveryForm($class, $delivery, $options);
         $myForm = $formContainer->getForm();
+        $deliveryUri = $delivery->getUri();
 
-        if ($myForm->isSubmited()) {
-            if ($myForm->isValid()) {
-                $propertyValues = $myForm->getValues();
+        if ($myForm->isSubmited() && $myForm->isValid()) {
+            $this->validateInstanceRoot($deliveryUri);
+            $propertyValues = $myForm->getValues();
 
-                // then save the property values as usual
-                $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($delivery);
-                $delivery = $binder->bind($propertyValues);
+            // then save the property values as usual
+            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($delivery);
+            $delivery = $binder->bind($propertyValues);
 
-                $this->getEventManager()->trigger(new DeliveryUpdatedEvent($delivery->getUri(), $propertyValues));
+            $this->getEventManager()->trigger(new DeliveryUpdatedEvent($deliveryUri, $propertyValues));
 
-                $this->setData("selectNode", \tao_helpers_Uri::encode($delivery->getUri()));
-                $this->setData('message', __('Delivery saved'));
-                $this->setData('reload', true);
-            }
+            $this->setData('selectNode', \tao_helpers_Uri::encode($deliveryUri));
+            $this->setData('message', __('Delivery saved'));
+            $this->setData('reload', true);
         }
 
         $this->setData('label', $delivery->getLabel());
@@ -147,14 +148,14 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $this->setData('groupTree', $tree->render());
 
         // testtaker brick
-        $this->setData('assemblyUri', $delivery->getUri());
+        $this->setData('assemblyUri', $deliveryUri);
 
         // define the subjects excluded from the current delivery
         $property = new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
         $excluded = $delivery->getPropertyValues($property);
         $this->setData('ttexcluded', count($excluded));
 
-        $users = $this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($delivery->getUri());
+        $users = $this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($deliveryUri);
         $assigned = array_diff(array_unique($users), $excluded);
         $this->setData('ttassigned', count($assigned));
         $updatedAt = $this->getServiceManager()->get(ResourceWatcher::SERVICE_ID)->getUpdatedAt($delivery);
