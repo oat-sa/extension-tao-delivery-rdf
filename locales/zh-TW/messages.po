@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint15\n"
-"PO-Revision-Date: 2015-12-22T16:41:41\n"
+"Project-Id-Version: TAO 3.3.0-sprint95\n"
+"PO-Revision-Date: 2019-02-01T10:09:59\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: zh-TW\n"
@@ -12,6 +12,9 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+
+msgid "%s completed"
+msgstr ""
 
 msgid "%s test-taker(s) are excluded."
 msgstr ""
@@ -55,6 +58,9 @@ msgstr ""
 msgid "Cancel"
 msgstr "取消"
 
+msgid "Class successfully created."
+msgstr ""
+
 msgid "Create a new delivery"
 msgstr "建立一個新的輸送"
 
@@ -64,6 +70,9 @@ msgstr "建立考試"
 #, tao-public
 msgid "Delete"
 msgstr "刪除"
+
+msgid "Deleting of \"%s"
+msgstr ""
 
 #, tao-public
 msgid "Deliveries"
@@ -79,38 +88,52 @@ msgstr ""
 msgid "Delivery \'%s\' not found"
 msgstr ""
 
+msgid "Delivery class uri provided is not a valid delivery class."
+msgstr ""
+
 msgid "Delivery is assigned to %s test-takers."
 msgstr ""
 
 msgid "Delivery is not assigned to any test-taker."
 msgstr "此輸送沒被分配給任何的考生。"
 
-msgid "Delivery of %s"
-msgstr ""
-
 msgid "Delivery saved"
 msgstr "遞送已儲存"
+
+msgid "Delivery with label \"%s\" not found"
+msgstr ""
+
+msgid "Directory %s doesn\'t exist"
+msgstr ""
+
+msgid "Error"
+msgstr ""
 
 msgid "Excluded test-takers"
 msgstr "被排除的考生"
 
-#, tao-public
-msgid "Export"
-msgstr ""
-
 msgid "Exported %1$s to %2$s"
 msgstr ""
 
-#, tao-public
-msgid "Filter"
-msgstr "過濾條件"
+msgid "Exporting %s"
+msgstr ""
 
 msgid "Guest access"
 msgstr ""
 
+msgid "Importing %1$s files into \'%2$s\"
+msgstr ""
+
+msgid "Last updated on %2s"
+msgstr ""
+
 #, tao-public
-msgid "Import"
-msgstr "匯入"
+msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Manage tests"
+msgstr ""
 
 msgid "Manifest not found in assembly"
 msgstr "清單中未發現集會"
@@ -118,6 +141,13 @@ msgstr "清單中未發現集會"
 #, tao-public
 msgid "Move"
 msgstr "移動"
+
+#, tao-public
+msgid "Move To"
+msgstr ""
+
+msgid "Multiple delivery class found for label \"%s\": %s"
+msgstr ""
 
 #, tao-public
 msgid "New class"
@@ -141,15 +171,30 @@ msgstr "預備，發布遞送時域。"
 msgid "Properties"
 msgstr "屬性"
 
+#, tao-public
+msgid "Publish"
+msgstr ""
+
+msgid "Publish \"%s\" to"
+msgstr ""
+
+msgid "Publish the test"
+msgstr ""
+
 msgid "Published on %2s"
+msgstr ""
+
+msgid "Publishing of \"%s"
 msgstr ""
 
 msgid "Save"
 msgstr "儲存"
 
-#, tao-public
-msgid "Search"
-msgstr "搜尋"
+msgid "Select the test"
+msgstr ""
+
+msgid "Select the test you want to publish to the test-takers"
+msgstr ""
 
 msgid "Selection saved successfully"
 msgstr "所選的已儲存成功"
@@ -160,8 +205,18 @@ msgstr ""
 msgid "TAO Guest Access"
 msgstr ""
 
+msgid "Test publishing failed because \"%s\" is empty."
+msgstr ""
+
 msgid "Test-takers"
 msgstr "考生"
+
+#, tao-public
+msgid "Tests"
+msgstr ""
+
+msgid "The shared filesystem parameter should be a boolean value 'true' or 'false'."
+msgstr ""
 
 msgid "There are currently %s attempts"
 msgstr ""
@@ -175,15 +230,21 @@ msgstr "考生已試了1次"
 msgid "Unable to import Archive"
 msgstr ""
 
-msgid "Unkown error during impoort"
-msgstr "匯入時發生了不明的錯誤"
+msgid "Unable to load tests"
+msgstr ""
+
+msgid "Unknown error during import"
+msgstr ""
 
 msgid "unlimited"
 msgstr ""
 
-msgid "Usage: %s ASSEMBLY_FILE"
+msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr ""
 
-msgid "Usage: %s DELIVERY_URI OUTPUT_FILE"
+msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr ""
+
+msgid "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
 msgstr ""
 

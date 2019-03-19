@@ -60,18 +60,19 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
 
         if (isset($params['deliveryClass'])) {
-            $deliveryClass = new \core_kernel_classes_Class($params['deliveryClass']);
+            $deliveryClass = $this->getClass($params['deliveryClass']);
             if (!$deliveryClass->exists()) {
-                $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+                $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
             }
         } else {
-            $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+            $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
         }
 
-        $test = new \core_kernel_classes_Resource($params['test']);
+        $test = $this->getResource($params['test']);
         $label = 'Delivery of ' . $test->getLabel();
 
         $deliveryResource =  \core_kernel_classes_ResourceFactory::create($deliveryClass);
+
         if ($params['initialProperties']) {
             // Setting "Sync to remote..." if enabled
             /** @var DeliveryFactory $deliveryFactoryResources */

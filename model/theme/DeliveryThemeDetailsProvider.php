@@ -20,11 +20,16 @@
 
 namespace oat\taoDeliveryRdf\model\theme;
 
-
-use oat\oatbox\PhpSerializable;
+use common_exception_Error;
+use common_exception_NotImplemented;
+use common_persistence_KeyValuePersistence;
+use common_persistence_KvDriver;
+use common_Serializable;
+use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\theme\ThemeDetailsProviderInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use PHPSession;
 
 class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeDetailsProviderInterface
 {
@@ -49,7 +54,7 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
     const OPTION_CACHE_PERSISTENCE_TTL = 'cachePersistenceTtl';
 
     /**
-     * @var \common_persistence_KvDriver
+     * @var common_persistence_KvDriver
      */
     private $cachePersistence;
 
@@ -123,8 +128,8 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
      */
     public function getDeliveryIdFromSession($deliveryExecutionId)
     {
-        if (\PHPSession::singleton()->hasAttribute(DeliveryExecution::getDeliveryIdSessionKey($deliveryExecutionId))) {
-            return \PHPSession::singleton()->getAttribute(DeliveryExecution::getDeliveryIdSessionKey($deliveryExecutionId));
+        if (PHPSession::singleton()->hasAttribute(DeliveryExecution::getDeliveryIdSessionKey($deliveryExecutionId))) {
+            return PHPSession::singleton()->getAttribute(DeliveryExecution::getDeliveryIdSessionKey($deliveryExecutionId));
         }
 
         return false;
@@ -140,7 +145,7 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
     public function getDeliveryThemeId($deliveryId)
     {
         $themeId = $this->getDeliveryThemeIdFromCache($deliveryId);
-        if (empty($themeId)) {
+        if ($themeId === false) {
             $themeId = $this->getDeliveryThemeIdFromDb($deliveryId);
             $this->storeDeliveryThemeIdToCache($deliveryId, $themeId);
         }
@@ -153,7 +158,7 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
      *
      * @param $deliveryId
      *
-     * @return bool|\common_Serializable
+     * @return bool|common_Serializable
      */
     public function getDeliveryThemeIdFromCache($deliveryId)
     {
@@ -174,14 +179,11 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
     public function getDeliveryThemeIdFromDb($deliveryId)
     {
         try {
-            $delivery = new \core_kernel_classes_Resource($deliveryId);
-
+            $delivery = new core_kernel_classes_Resource($deliveryId);
             $property = $delivery->getProperty(static::DELIVERY_THEME_ID_URI);
-            $themeId  = (string)$delivery->getOnePropertyValue($property);
 
-            return $themeId;
-        }
-        catch (\common_exception_Error $e) {
+            return (string)$delivery->getOnePropertyValue($property);
+        } catch (common_exception_Error $e) {
             return '';
         }
     }
@@ -200,8 +202,7 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
             if ($this->getCachePersistence() !== null) {
                 return $this->getCachePersistence()->set($this->getCacheKey($deliveryId), $themeId, $this->getCacheTtl());
             }
-        }
-        catch (\common_exception_NotImplemented $e) {
+        } catch (common_exception_NotImplemented $e) {
         }
 
         return false;
@@ -222,15 +223,15 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
     /**
      * Returns the cache persistence.
      *
-     * @return \common_persistence_KvDriver
+     * @return common_persistence_KvDriver
      */
     protected function getCachePersistence()
     {
         if (is_null($this->cachePersistence) && $this->hasOption(static::OPTION_CACHE_PERSISTENCE)) {
-            $persistenceOption      = $this->getOption(static::OPTION_CACHE_PERSISTENCE);
+            $persistenceOption = $this->getOption(static::OPTION_CACHE_PERSISTENCE);
             $this->cachePersistence = (is_object($persistenceOption))
                 ? $persistenceOption
-                : \common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
+                : common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
         }
 
         return $this->cachePersistence;

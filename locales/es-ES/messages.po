@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint15\n"
-"PO-Revision-Date: 2015-12-22T16:41:41\n"
+"Project-Id-Version: TAO 3.3.0-sprint95\n"
+"PO-Revision-Date: 2019-02-01T10:09:59\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: es-ES\n"
@@ -12,6 +12,9 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+
+msgid "%s completed"
+msgstr ""
 
 msgid "%s test-taker(s) are excluded."
 msgstr "%s participante(s) son excluidos."
@@ -55,6 +58,9 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancelar"
 
+msgid "Class successfully created."
+msgstr ""
+
 msgid "Create a new delivery"
 msgstr "Crear una nueva entrega"
 
@@ -64,6 +70,9 @@ msgstr "Crear una prueba"
 #, tao-public
 msgid "Delete"
 msgstr "Eliminar"
+
+msgid "Deleting of \"%s"
+msgstr ""
 
 #, tao-public
 msgid "Deliveries"
@@ -79,38 +88,52 @@ msgstr "Entrega \"%s\" importada correctamente"
 msgid "Delivery \'%s\' not found"
 msgstr ""
 
+msgid "Delivery class uri provided is not a valid delivery class."
+msgstr ""
+
 msgid "Delivery is assigned to %s test-takers."
 msgstr "Entrega asignada a %s paricipantes."
 
 msgid "Delivery is not assigned to any test-taker."
 msgstr "Entrega no asignada a ningún participante."
 
-msgid "Delivery of %s"
-msgstr "Entrega de %s"
-
 msgid "Delivery saved"
 msgstr "Entrega guardada"
+
+msgid "Delivery with label \"%s\" not found"
+msgstr ""
+
+msgid "Directory %s doesn\'t exist"
+msgstr ""
+
+msgid "Error"
+msgstr ""
 
 msgid "Excluded test-takers"
 msgstr "Participantes excluidos"
 
-#, tao-public
-msgid "Export"
-msgstr ""
-
 msgid "Exported %1$s to %2$s"
 msgstr ""
 
-#, tao-public
-msgid "Filter"
-msgstr "Filtro"
+msgid "Exporting %s"
+msgstr ""
 
 msgid "Guest access"
 msgstr ""
 
+msgid "Importing %1$s files into \'%2$s\"
+msgstr ""
+
+msgid "Last updated on %2s"
+msgstr ""
+
 #, tao-public
-msgid "Import"
-msgstr "Importar"
+msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Manage tests"
+msgstr ""
 
 msgid "Manifest not found in assembly"
 msgstr "Manifiesta no encontrar en reunión"
@@ -118,6 +141,13 @@ msgstr "Manifiesta no encontrar en reunión"
 #, tao-public
 msgid "Move"
 msgstr "Mover"
+
+#, tao-public
+msgid "Move To"
+msgstr ""
+
+msgid "Multiple delivery class found for label \"%s\": %s"
+msgstr ""
 
 #, tao-public
 msgid "New class"
@@ -141,15 +171,30 @@ msgstr "Preparar, publicar sesiones de entregas."
 msgid "Properties"
 msgstr "Propiedades"
 
+#, tao-public
+msgid "Publish"
+msgstr ""
+
+msgid "Publish \"%s\" to"
+msgstr ""
+
+msgid "Publish the test"
+msgstr ""
+
 msgid "Published on %2s"
 msgstr "Publicado en %2s"
+
+msgid "Publishing of \"%s"
+msgstr ""
 
 msgid "Save"
 msgstr "Guardar"
 
-#, tao-public
-msgid "Search"
-msgstr "Buscar"
+msgid "Select the test"
+msgstr ""
+
+msgid "Select the test you want to publish to the test-takers"
+msgstr ""
 
 msgid "Selection saved successfully"
 msgstr "Selección guardada correctamente"
@@ -160,8 +205,18 @@ msgstr ""
 msgid "TAO Guest Access"
 msgstr ""
 
+msgid "Test publishing failed because \"%s\" is empty."
+msgstr ""
+
 msgid "Test-takers"
 msgstr "Participantes"
+
+#, tao-public
+msgid "Tests"
+msgstr ""
+
+msgid "The shared filesystem parameter should be a boolean value 'true' or 'false'."
+msgstr ""
 
 msgid "There are currently %s attempts"
 msgstr "Actuamente hay %s intentos"
@@ -175,15 +230,21 @@ msgstr "Actualmente hay 1 intento"
 msgid "Unable to import Archive"
 msgstr ""
 
-msgid "Unkown error during impoort"
-msgstr "Error desconocido durante la importación"
+msgid "Unable to load tests"
+msgstr ""
+
+msgid "Unknown error during import"
+msgstr ""
 
 msgid "unlimited"
 msgstr "ilimitado"
 
-msgid "Usage: %s ASSEMBLY_FILE"
+msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr ""
 
-msgid "Usage: %s DELIVERY_URI OUTPUT_FILE"
+msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr ""
+
+msgid "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
 msgstr ""
 
