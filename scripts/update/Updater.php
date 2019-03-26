@@ -248,5 +248,14 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('7.0.0', '7.5.2');
+
+        if ($this->isVersion('7.5.2')) {
+            $deleteService = $this->getServiceManager()->get(DeliveryDeleteService::SERVICE_ID);
+            $options = $deleteService->getOptions();
+            $options[DeliveryDeleteService::OPTION_LIMIT_DELIVERY_EXECUTIONS] = 1000;
+            $deleteService->setOptions($options);
+            $this->getServiceManager()->register(DeliveryDeleteService::SERVICE_ID, $deleteService);
+            $this->setVersion('7.6.0');
+        }
     }
 }
