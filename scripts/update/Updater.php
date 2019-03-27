@@ -257,5 +257,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->getServiceManager()->register(DeliveryDeleteService::SERVICE_ID, $deleteService);
             $this->setVersion('7.6.0');
         }
+
+        $this->skip('7.6.0', '7.7.0');
     }
 }
