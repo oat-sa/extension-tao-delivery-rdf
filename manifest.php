@@ -29,11 +29,11 @@ return array(
   'label'       => 'Delivery Management',
   'description' => 'Manages deliveries using the ontology',
   'license'     => 'GPL-2.0',
-  'version'     => '7.6.0',
+  'version'     => '7.7.0',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
 	    'generis'     => '>=6.14.0',
-        'tao'         => '>=30.0.2',
+        'tao'         => '>=31.0.0',
         'taoGroups'   => '>=4.0.0',
         'taoTests'    => '>=8.0.0',
         'taoQtiTest'  => '>=32.3.2',

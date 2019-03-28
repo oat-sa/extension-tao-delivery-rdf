@@ -53,7 +53,7 @@ class AssemblyImportHandler implements \tao_models_classes_import_ImportHandler
      * (non-PHPdoc)
      * @see tao_models_classes_import_ImportHandler::import()
      */
-    public function import($class, $form) {
+    public function import($class, $form, $userId = null) {
 		
         $fileInfo = $form->getValue('source');
         //import for CSV
