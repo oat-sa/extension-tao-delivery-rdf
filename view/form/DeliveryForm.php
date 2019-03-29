@@ -19,6 +19,7 @@
  */
 namespace oat\taoDeliveryRdf\view\form;
 
+use oat\tao\model\controller\SignedFormInstance;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\theme\ThemeService;
@@ -34,7 +35,7 @@ use tao_helpers_Uri;
  
  */
 class DeliveryForm
-    extends \tao_actions_form_Instance
+    extends SignedFormInstance
 {
     protected function initForm()
     {

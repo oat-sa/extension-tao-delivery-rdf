@@ -37,6 +37,8 @@ class DeliveryDeleteService extends ConfigurableService
 
     const OPTION_DELETE_DELIVERY_DATA_SERVICES = 'deleteDeliveryDataServices';
 
+    const OPTION_LIMIT_DELIVERY_EXECUTIONS = 'executionsLimit';
+
     /** @var common_report_Report  */
     protected $report;
 
@@ -56,32 +58,28 @@ class DeliveryDeleteService extends ConfigurableService
 
     /**
      * @param DeliveryDeleteRequest $request
+     * @param boolean $byChunk
      * @return bool
      * @throws \Exception
      */
-    public function execute(DeliveryDeleteRequest $request)
+    public function execute(DeliveryDeleteRequest $request, $byChunk = false)
     {
-        $this->report = common_report_Report::createInfo('Deleting Delivery: '. $request->getDeliveryResource()->getUri());
-        $executions   = $this->getDeliveryExecutions($request->getDeliveryResource());
+        $delivery = $request->getDeliveryResource();
 
-        foreach ($executions as $execution) {
-            /** @var DeliveryExecutionDeleteService $deliveryExecutionDeleteService */
-            $deliveryExecutionDeleteService = $this->getServiceLocator()->get(DeliveryExecutionDeleteService::SERVICE_ID);
-            try{
-                $requestDeleteExecution = $this->buildDeliveryExecutionDeleteRequest(
-                    $request->getDeliveryResource(),
-                    $execution
-                );
+        $this->report = common_report_Report::createInfo('Deleting Delivery: '. $delivery->getUri());
+        $executions   = $this->getDeliveryExecutions($delivery);
 
-                $deliveryExecutionDeleteService->execute($requestDeleteExecution);
-                $this->report->add($deliveryExecutionDeleteService->getReport());
-            } catch (\Exception $exception) {
-                $this->report->add(common_report_Report::createFailure('Failing deleting execution: '. $execution->getIdentifier()));
-                $this->report->add(common_report_Report::createFailure($exception->getMessage()));
-            }
+        $executionsLimit = $this->hasOption(self::OPTION_LIMIT_DELIVERY_EXECUTIONS)
+            ? $this->getOption(self::OPTION_LIMIT_DELIVERY_EXECUTIONS)
+            : count($executions);
+        if ($byChunk && $executions && count($executions) > $executionsLimit) {
+            $executionsForDeleting = array_slice($executions, 0, $executionsLimit);
+            $this->deleteDeliveryExecutions($delivery, $executionsForDeleting);
+        } else {
+            $this->deleteDeliveryExecutions($delivery, $executions);
+            return $this->deleteDelivery($request);
         }
-
-        return $this->deleteDelivery($request);
+        return true;
     }
 
     /**
@@ -199,7 +197,7 @@ class DeliveryDeleteService extends ConfigurableService
         /** @var TestSessionService $testSessionService */
         $testSessionService = $this->getServiceLocator()->get(TestSessionService::SERVICE_ID);
         try{
-            $session = $testSessionService->getTestSession($execution);
+            $session = $testSessionService->getTestSession($execution, false);
         }catch (\Exception $exception){
             $session = null;
         }
@@ -209,5 +207,42 @@ class DeliveryDeleteService extends ConfigurableService
             $execution,
             $session
         );
+    }
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @param $executions
+     * @throws \common_exception_Error
+     */
+    private function deleteDeliveryExecutions(\core_kernel_classes_Resource $delivery, $executions)
+    {
+        /** @var DeliveryExecutionDeleteService $deliveryExecutionDeleteService */
+        $deliveryExecutionDeleteService = $this->getServiceLocator()->get(DeliveryExecutionDeleteService::SERVICE_ID);
+
+        foreach ($executions as $execution) {
+            try{
+                $requestDeleteExecution = $this->buildDeliveryExecutionDeleteRequest(
+                    $delivery,
+                    $execution
+                );
+
+                $deliveryExecutionDeleteService->execute($requestDeleteExecution);
+                $this->report->add($deliveryExecutionDeleteService->getReport());
+            } catch (\Exception $exception) {
+                $this->report->add(common_report_Report::createFailure('Failing deleting execution: '. $execution->getIdentifier()));
+                $this->report->add(common_report_Report::createFailure($exception->getMessage()));
+            }
+        }
+    }
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @return bool
+     * @throws \common_exception_Error
+     */
+    public function hasDeliveryExecutions(\core_kernel_classes_Resource $delivery)
+    {
+        $executions = $this->getDeliveryExecutions($delivery);
+        return !empty($executions);
     }
 }
