@@ -122,21 +122,21 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
         $formContainer = new DeliveryForm($class, $delivery);
         $myForm = $formContainer->getForm();
+        $myForm->addCsrfTokenProtection();
 
-        if ($myForm->isSubmited()) {
-            if ($myForm->isValid()) {
-                $propertyValues = $myForm->getValues();
+        if ($myForm->isSubmited() && $myForm->isValid()) {
+            $this->validateCsrf();
+            $propertyValues = $myForm->getValues();
 
-                // then save the property values as usual
-                $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($delivery);
-                $delivery = $binder->bind($propertyValues);
+            // then save the property values as usual
+            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($delivery);
+            $delivery = $binder->bind($propertyValues);
 
-                $this->getEventManager()->trigger(new DeliveryUpdatedEvent($delivery->getUri(), $propertyValues));
+            $this->getEventManager()->trigger(new DeliveryUpdatedEvent($delivery->getUri(), $propertyValues));
 
-                $this->setData("selectNode", \tao_helpers_Uri::encode($delivery->getUri()));
-                $this->setData('message', __('Delivery saved'));
-                $this->setData('reload', true);
-            }
+            $this->setData("selectNode", \tao_helpers_Uri::encode($delivery->getUri()));
+            $this->setData('message', __('Delivery saved'));
+            $this->setData('reload', true);
         }
 
         $this->setData('label', $delivery->getLabel());
@@ -233,8 +233,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         try {
             $formContainer = new WizardForm(array('class' => $this->getCurrentClass()));
             $myForm = $formContainer->getForm();
+            $myForm->addCsrfTokenProtection();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
+                $this->validateCsrf();
                 try {
                     $test = new core_kernel_classes_Resource($myForm->getValue('test'));
                     $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
