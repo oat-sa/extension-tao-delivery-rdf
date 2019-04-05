@@ -134,9 +134,15 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
             $this->getEventManager()->trigger(new DeliveryUpdatedEvent($delivery->getUri(), $propertyValues));
 
-            $this->setData("selectNode", \tao_helpers_Uri::encode($delivery->getUri()));
+            $this->setData('selectNode', \tao_helpers_Uri::encode($delivery->getUri()));
             $this->setData('message', __('Delivery saved'));
             $this->setData('reload', true);
+
+            $this->returnJson([
+                'success' => true,
+                'message' => __('Delivery saved')
+            ]);
+            return;
         }
 
         $this->setData('label', $delivery->getLabel());
