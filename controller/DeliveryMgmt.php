@@ -14,20 +14,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
  *
  *
  */
+
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyRdfs;
-use oat\oatbox\event\EventManagerAwareTrait;
+use oat\oatbox\event\EventManager;
 use oat\tao\helpers\Template;
-use core_kernel_classes_Resource;
-use core_kernel_classes_Property;
 use oat\tao\model\resources\ResourceWatcher;
 use oat\tao\model\TaoOntology;
+use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
@@ -39,11 +39,9 @@ use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use common_report_Report as Report;
-use oat\taoPublishing\model\publishing\delivery\PublishingDeliveryService;
-use oat\taoTaskQueue\model\QueueDispatcher;
-use oat\taoTaskQueue\model\TaskLogInterface;
-use oat\taoTaskQueue\model\TaskLogActionTrait;
+use oat\taoResultServer\models\classes\implementation\OntologyService;
+use oat\taoResultServer\models\classes\ResultServerService;
+use oat\taoDelivery\model\execution\Monitoring;
 
 /**
  * Controller to managed assembled deliveries
@@ -53,36 +51,27 @@ use oat\taoTaskQueue\model\TaskLogActionTrait;
  */
 class DeliveryMgmt extends \tao_actions_SaSModule
 {
-    use EventManagerAwareTrait;
     use TaskLogActionTrait;
 
     /**
-     * constructor: initialize the service and the default data
-     *
-     * @access public
-     * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
+     * @return EventManager
      */
-    public function __construct()
+    protected function getEventManager()
     {
-        parent::__construct();
-
-        // the service is initialized by default
-        $this->service = DeliveryAssemblyService::singleton();
-        $this->defaultData();
+        return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
     }
 
     /**
      * (non-PHPdoc)
-     * @see tao_actions_SaSModule::getClassService()
+     * @see \tao_actions_SaSModule::getClassService()
      */
     protected function getClassService()
     {
+        if (!$this->service) {
+            $this->service = DeliveryAssemblyService::singleton();
+        }
         return $this->service;
     }
-
-    /*
-     * controller actions
-     */
 
     /**
      * Edit a delivery instance
@@ -92,49 +81,47 @@ class DeliveryMgmt extends \tao_actions_SaSModule
      * @return void
      * @throws \common_exception_NoImplementation
      * @throws \common_exception_Error
+     * @throws \oat\tao\model\security\SecurityException
      */
     public function editDelivery()
     {
+        $this->defaultData();
+
         $class = $this->getCurrentClass();
         $delivery = $this->getCurrentInstance();
 
-        /** @var QueueDispatcher $queueDispatcher */
-        $queueDispatcher = $this->getServiceManager()->get(QueueDispatcher::SERVICE_ID);
-
-        if ($taskResource = $queueDispatcher->getTaskResource($delivery) ) {
-            /** @var TaskLogInterface $taskLog */
-            $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
-
-            $status = $taskLog->getStatus($taskResource->getUri());
-
-            if (in_array($status, [TaskLogInterface::STATUS_ENQUEUED, TaskLogInterface::STATUS_DEQUEUED, TaskLogInterface::STATUS_RUNNING])) {
-                $report = Report::createInfo(__('Compilation of delivery is in progress.'));
-                $this->returnReport($report);
-                return;
-            } else if (in_array($status, [TaskLogInterface::STATUS_COMPLETED, TaskLogInterface::STATUS_FAILED])) {
-                $report = $queueDispatcher->getReportByLinkedResource($delivery);
-
-                if ($report->getType() == Report::TYPE_ERROR) {
-                    $this->returnReport($report);
-                    return;
-                }
-            }
+        //Removing Result Server form field if it is hardcoded in configuration
+        //since property name (and possibly property itself) is deprecated then this lines will go away to
+        //when "deprecation period" will be over
+        /** @var ResultServerService $resultServerService */
+        $resultServerService = $this->getServiceManager()->get(ResultServerService::SERVICE_ID);
+        if (!$resultServerService->isConfigurable()) {
+            $options = [];
+        } else {
+            $options = [
+                'excludedProperties' => [
+                    OntologyService::PROPERTY_RESULT_SERVER
+                ]
+            ];
         }
-        $formContainer = new DeliveryForm($class, $delivery);
+
+        $formContainer = new DeliveryForm($class, $delivery, $options);
         $myForm = $formContainer->getForm();
         $myForm->addCsrfTokenProtection();
+        $deliveryUri = $delivery->getUri();
 
         if ($myForm->isSubmited() && $myForm->isValid()) {
             $this->validateCsrf();
+            $this->validateInstanceRoot($deliveryUri);
             $propertyValues = $myForm->getValues();
 
             // then save the property values as usual
             $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($delivery);
             $delivery = $binder->bind($propertyValues);
 
-            $this->getEventManager()->trigger(new DeliveryUpdatedEvent($delivery->getUri(), $propertyValues));
+            $this->getEventManager()->trigger(new DeliveryUpdatedEvent($deliveryUri, $propertyValues));
 
-            $this->setData('selectNode', \tao_helpers_Uri::encode($delivery->getUri()));
+            $this->setData('selectNode', \tao_helpers_Uri::encode($deliveryUri));
             $this->setData('message', __('Delivery saved'));
             $this->setData('reload', true);
 
@@ -149,35 +136,36 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
         // history
         $this->setData('date', $this->getClassService()->getCompilationDate($delivery));
-        if (ServiceProxy::singleton()->implementsMonitoring()) {
-            $execs = ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
+        $serviceProxy = $this->getServiceLocator()->get(ServiceProxy::SERVICE_ID);
+        if ($serviceProxy instanceof Monitoring) {
+            $execs = $serviceProxy->getExecutionsByDelivery($delivery);
             $this->setData('exec', count($execs));
         }
 
         // define the groups related to the current delivery
-        $property = new core_kernel_classes_Property(GroupAssignment::PROPERTY_GROUP_DELIVERY);
+        $property = $this->getProperty(GroupAssignment::PROPERTY_GROUP_DELIVERY);
         $tree = \tao_helpers_form_GenerisTreeForm::buildReverseTree($delivery, $property);
         $tree->setTitle(__('Assigned to'));
         $tree->setTemplate(Template::getTemplate('widgets/assignGroup.tpl'));
         $this->setData('groupTree', $tree->render());
 
         // testtaker brick
-        $this->setData('assemblyUri', $delivery->getUri());
+        $this->setData('assemblyUri', $deliveryUri);
 
         // define the subjects excluded from the current delivery
-        $property = new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
+        $property = $this->getProperty(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
         $excluded = $delivery->getPropertyValues($property);
         $this->setData('ttexcluded', count($excluded));
 
-        $users = $this->getServiceManager()->get('taoDelivery/assignment')->getAssignedUsers($delivery->getUri());
+        $users = $this->getServiceLocator()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($deliveryUri);
         $assigned = array_diff(array_unique($users), $excluded);
         $this->setData('ttassigned', count($assigned));
-        $updatedAt = $this->getServiceManager()->get(ResourceWatcher::SERVICE_ID)->getUpdatedAt($delivery);
+        $updatedAt = $this->getServiceLocator()->get(ResourceWatcher::SERVICE_ID)->getUpdatedAt($delivery);
         $this->setData('updatedAt', $updatedAt);
         $this->setData('formTitle', __('Properties'));
         $this->setData('myForm', $myForm->render());
 
-        if (\common_ext_ExtensionsManager::singleton()->isEnabled('taoCampaign')) {
+        if ($this->getServiceLocator()->get(\common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoCampaign')) {
             $this->setData('campaign', taoCampaign_helpers_Campaign::renderCampaignTree($delivery));
         }
         $this->setView('DeliveryMgmt/editDelivery.tpl');
@@ -185,21 +173,23 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
     public function excludeTesttaker()
     {
+        $this->defaultData();
+
         $assembly = $this->getCurrentInstance();
         $this->setData('assemblyUri', $assembly->getUri());
 
         // define the subjects excluded from the current delivery
-        $property = new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
+        $property = $this->getProperty(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
         $excluded = array();
         foreach ($assembly->getPropertyValues($property) as $uri) {
-            $user = new core_kernel_classes_Resource($uri);
+            $user = $this->getResource($uri);
             $excluded[$uri] = $user->getLabel();
         }
 
         $assigned = array();
-        foreach ($this->getServiceManager()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($assembly->getUri()) as $userId) {
+        foreach ($this->getServiceLocator()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($assembly->getUri()) as $userId) {
             if (!in_array($userId, array_keys($excluded))) {
-                $user = new core_kernel_classes_Resource($userId);
+                $user = $this->getResource($userId);
                 $assigned[$userId] = $user->getLabel();
             }
         }
@@ -211,21 +201,22 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $this->setView('DeliveryMgmt/excludeTesttaker.tpl');
     }
 
-    public function saveExcluded() {
-        if(!\tao_helpers_Request::isAjax()){
+    public function saveExcluded()
+    {
+        if (!$this->isXmlHttpRequest()) {
             throw new \common_exception_IsAjaxAction(__FUNCTION__);
         }
-        if(!$this->hasRequestParameter('excluded')){
+        if (!$this->hasRequestParameter('excluded')) {
             throw new \common_exception_MissingParameter('excluded');
         }
 
         $jsonArray = json_decode($_POST['excluded']);
-        if(!is_array($jsonArray)){
+        if (!is_array($jsonArray)) {
             throw new \common_Exception('parameter "excluded" should be a json encoded array');
         }
 
         $assembly = $this->getCurrentInstance();
-        $success = $assembly->editPropertyValues(new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS),$jsonArray);
+        $success = $assembly->editPropertyValues($this->getProperty(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS),$jsonArray);
 
         $this->getEventManager()->trigger(new DeliveryUpdatedEvent($assembly->getUri(), [DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS => $jsonArray]));
 
@@ -236,6 +227,8 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
     public function wizard()
     {
+        $this->defaultData();
+
         try {
             $formContainer = new WizardForm(array('class' => $this->getCurrentClass()));
             $myForm = $formContainer->getForm();
@@ -244,10 +237,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             if ($myForm->isValid() && $myForm->isSubmited()) {
                 $this->validateCsrf();
                 try {
-                    $test = new core_kernel_classes_Resource($myForm->getValue('test'));
-                    $deliveryClass = new \core_kernel_classes_Class($myForm->getValue('classUri'));
+                    $test = $this->getResource($myForm->getValue('test'));
+                    $deliveryClass = $this->getClass($myForm->getValue('classUri'));
                     /** @var DeliveryFactory $deliveryFactoryResources */
-                    $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+                    $deliveryFactoryResources = $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);
                     $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray($myForm->getValues());
                     return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
                 }catch(\Exception $e){
@@ -280,10 +273,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
         $testService = \taoTests_models_classes_TestsService::singleton();
         /** @var ComplexSearchService $search */
-        $search = $this->getServiceManager()->get(ComplexSearchService::SERVICE_ID);
+        $search = $this->getServiceLocator()->get(ComplexSearchService::SERVICE_ID);
 
         $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder , TaoOntology::TEST_CLASS_URI, true)
+        $query = $search->searchType($queryBuilder , TaoOntology::CLASS_URI_TEST, true)
             ->add(OntologyRdfs::RDFS_LABEL)
             ->contains($q);
 
@@ -300,10 +293,29 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                     $tests[] = ['id' => $testUri, 'uri' => $testUri, 'text' => $test->getLabel()];
                 }
             } catch (\Exception $e) {
-                \common_Logger::w('Unable to load items for test ' . $testUri);
+                $this->logWarning('Unable to load items for test ' . $testUri);
             }
         }
         $this->returnJson(['total' => count($tests), 'items' => $tests]);
+    }
+
+    /**
+     * overwrite the parent moveAllInstances to add the requiresRight only in Items
+     * @see tao_actions_TaoModule::moveResource()
+     * @requiresRight uri WRITE
+     */
+    public function moveResource()
+    {
+        return parent::moveResource();
+    }
+    /**
+     * overwrite the parent moveAllInstances to add the requiresRight only in Items
+     * @see tao_actions_TaoModule::moveAll()
+     * @requiresRight ids WRITE
+     */
+    public function moveAll()
+    {
+        return parent::moveAll();
     }
 
     /**
@@ -312,7 +324,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
      */
     protected function getTreeOptionsFromRequest($options = [])
     {
-        $config = $this->getServiceManager()->get('taoDeliveryRdf/DeliveryMgmt')->getConfig();
+        $config = $this->getServiceLocator()->get('taoDeliveryRdf/DeliveryMgmt')->getConfig();
         $options['order'] = key($config['OntologyTreeOrder']);
         $options['orderdir'] = $config['OntologyTreeOrder'][$options['order']];
         return parent::getTreeOptionsFromRequest($options);

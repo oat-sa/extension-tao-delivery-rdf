@@ -25,12 +25,12 @@ use common_report_Report as Report;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\taskQueue\QueueDispatcher;
+use oat\tao\model\taskQueue\Task\TaskAwareInterface;
+use oat\tao\model\taskQueue\Task\TaskAwareTrait;
+use oat\tao\model\taskQueue\Task\TaskInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
-use oat\taoTaskQueue\model\QueueDispatcher;
-use oat\taoTaskQueue\model\Task\TaskAwareInterface;
-use oat\taoTaskQueue\model\Task\TaskAwareTrait;
-use oat\taoTaskQueue\model\Task\TaskInterface;
 
 /**
  * Class CompileDelivery
@@ -60,18 +60,19 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
 
         if (isset($params['deliveryClass'])) {
-            $deliveryClass = new \core_kernel_classes_Class($params['deliveryClass']);
+            $deliveryClass = $this->getClass($params['deliveryClass']);
             if (!$deliveryClass->exists()) {
-                $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+                $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
             }
         } else {
-            $deliveryClass = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+            $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
         }
 
-        $test = new \core_kernel_classes_Resource($params['test']);
+        $test = $this->getResource($params['test']);
         $label = 'Delivery of ' . $test->getLabel();
 
         $deliveryResource =  \core_kernel_classes_ResourceFactory::create($deliveryClass);
+
         if ($params['initialProperties']) {
             // Setting "Sync to remote..." if enabled
             /** @var DeliveryFactory $deliveryFactoryResources */
@@ -93,7 +94,12 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         /** @var DeliveryFactory $deliveryFactory */
         $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
 
-        return $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
+        $report = $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
+        if ($report->getType() === \common_report_Report::TYPE_ERROR ) {
+            $deliveryResource->delete(true);
+        }
+
+        return $report;
     }
 
     /**

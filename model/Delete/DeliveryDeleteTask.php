@@ -21,6 +21,7 @@
 namespace oat\taoDeliveryRdf\model\Delete;
 
 use oat\oatbox\extension\AbstractAction;
+use oat\tao\model\taskQueue\QueueDispatcher;
 
 class DeliveryDeleteTask extends AbstractAction implements \JsonSerializable
 {
@@ -34,12 +35,20 @@ class DeliveryDeleteTask extends AbstractAction implements \JsonSerializable
         if (!isset($params['deliveryId'])) {
             throw new \common_exception_MissingParameter('Missing parameter `deliveryId` in ' . static::class);
         }
+        /** @var QueueDispatcher $queueDispatcher */
+        $queueDispatcher = $this->getServiceManager()->get(QueueDispatcher::SERVICE_ID);
 
-        $report = \common_report_Report::createInfo('Deleting');
+        $report = \common_report_Report::createInfo('Deleting delivery: '. $params['deliveryId']);
         try{
             /** @var DeliveryDeleteService $deleteDeliveryService */
             $deleteDeliveryService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
-            $deleteDeliveryService->execute(new DeliveryDeleteRequest($params['deliveryId']));
+            $request = new DeliveryDeleteRequest($params['deliveryId']);
+            $deleteDeliveryService->execute($request, true);
+            $delivery = $request->getDeliveryResource();
+            if ($deleteDeliveryService->hasDeliveryExecutions($delivery)) {
+                $queueDispatcher->createTask($this, $params, __('Continue deleting of delivery "%s".', $delivery->getLabel()));
+                $this->logInfo('Queued task to continue delete delivery ' . $delivery->getLabel());
+            }
 
             $report->add($deleteDeliveryService->getReport());
         } catch (\Exception $exception) {

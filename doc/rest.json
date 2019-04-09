@@ -14,6 +14,7 @@
     "/taoDeliveryRdf/RestDelivery/generate": {
       "post": {
         "description": "Generate a delivery from a valid test uri",
+        "consumes": ["application/x-www-form-urlencoded"],
         "tags": [
           "delivery"
         ],
@@ -152,6 +153,7 @@
     "/taoDeliveryRdf/RestDelivery/generateDeferred": {
       "post": {
         "description": "Generate a delivery from a valid test uri using task queue",
+        "consumes": ["application/x-www-form-urlencoded"],
         "tags": [
           "delivery"
         ],
@@ -294,6 +296,7 @@
     "/taoDeliveryRdf/RestDelivery/update": {
       "post": {
         "description": "Update parameters of all the deliveries found by criteria given from url query",
+        "consumes": ["application/x-www-form-urlencoded"],
         "tags": [
           "delivery"
         ],
@@ -424,6 +427,7 @@
     "/taoDeliveryRdf/RestDelivery/updateDeferred": {
       "post": {
         "description": "Update parameters of all the deliveries found by criteria given from url query using task queue",
+        "consumes": ["application/x-www-form-urlencoded"],
         "tags": [
           "delivery"
         ],
@@ -551,6 +555,305 @@
         }
       }
     },
+    "/taoDeliveryRdf/RestDelivery/deleteDeferred": {
+      "delete": {
+        "description": "Delete the delivery by URI using task queue",
+        "tags": [
+          "delivery"
+        ],
+        "parameters": [
+          {
+            "name": "uri",
+            "in": "query",
+            "description": "A valid URI",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "title": "response",
+              "format": "json",
+              "type": "object",
+              "required": [
+                "success",
+                "version"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "false on failure, true on success"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "tao version"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id" : {
+                      "type": "string",
+                      "description": "Identifier of the task in the task queue"
+                    }
+                  }
+                },
+                "errorCode": {
+                  "type": "string",
+                  "description": "error code. it appear if success value is false"
+                },
+                "errorMsg": {
+                  "type": "string",
+                  "description": "error description. it appear if success value is false"
+                }
+              }
+            },
+            "examples": {
+              "application/json": {
+                "success": true,
+                "data": {
+                  "id": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx"
+                },
+                "version": "3.1.0"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request if you send invalid parameters.",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "At least one mandatory parameter was required but found missing in your request",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "You are unauthorized.",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "You don't have permission to access this resource.",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "The delivery with given URI has not been found.",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "Exception error description",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    },
+    "/taoDeliveryRdf/RestDelivery/get": {
+      "get": {
+        "description": "List all deliveries or a range of deliveries",
+        "tags": [
+          "delivery"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Amount of deliveries to be shown",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Start from delivery number",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "title": "response",
+              "format": "json",
+              "type": "object",
+              "required": [
+                "success",
+                "version"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "false on failure, true on success"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "tao version"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "items" : {
+                      "type": "array",
+                      "description": "delivery objects",
+                      "items": {
+                        "type": "object"
+                        }
+                    },
+                    "overallCount" : {
+                      "type": "integer",
+                      "description": "overall count of deliveries regardless of pagination"
+                    }
+                  }
+                },
+                "errorCode": {
+                  "type": "string",
+                  "description": "error code. it appear if success value is false"
+                },
+                "errorMsg": {
+                  "type": "string",
+                  "description": "error description. it appear if success value is false"
+                }
+              }
+            },
+            "examples": {
+              "application/json": {
+                "success": true,
+                "data": {
+                  "overallCount": 5,
+                  "items": [
+                    {
+                      "uri": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx",
+                      "label": "Delivery Label 1"
+                    },
+                    {
+                      "uri": "http://tao.local/mytao.rdf#xxxxxxxxxxxxx",
+                      "label": "Delivery Label 2"
+                    }
+                  ]
+                },
+                "version": "3.1.0"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request if you send invalid parameters.",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "'Offset' should be a positive integer",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "You don't have permission to access this resource.",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "You don't have permission to access this resource.",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "500": {
+            "description": "Internal error (should not occur)",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "Exception error description",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          },
+          "501": {
+            "description": "Method not implemented",
+            "examples": {
+              "application/json": {
+                "success": false,
+                "errorCode": 0,
+                "errorMsg": "Only get method is accepted to getting deliveries",
+                "version": "3.1.0"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    },
+
     "/taoDeliveryRdf/RestDelivery/getStatus": {
       "get": {
         "description": "Check status of generate delivery task. Available since Tao 3.1.",
@@ -707,6 +1010,7 @@
     "/taoDeliveryRdf/RestTest/compileDeferred": {
       "post": {
         "description": "Import test and compile delivery using task queue",
+        "consumes": ["multipart/form-data"],
         "tags": [
           "delivery", "test"
         ],
@@ -837,6 +1141,7 @@
     "/taoDeliveryRdf/RestDelivery/createClass": {
       "post": {
         "description": "Create a delivery class",
+        "consumes": ["application/x-www-form-urlencoded"],
         "tags": [
           "delivery"
         ],

@@ -14,12 +14,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2017-2018 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoDeliveryRdf\scripts;
 
 use oat\oatbox\event\EventManager;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionReactivated;
+use oat\taoDeliveryRdf\helper\SessionStateHelper;
 
 /**
  * @author Antoine Robin <antoine@taotesting.com>
@@ -28,14 +30,19 @@ class RegisterEvents extends \common_ext_action_InstallAction
 {
     public function __invoke($params)
     {
-        $eventManager = $this->getServiceManager()->get(EventManager::CONFIG_ID);
+        $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
 
         $eventManager->attach(
             'oat\\taoDeliveryRdf\\model\\event\\DeliveryCreatedEvent',
             ['oat\\taoDeliveryRdf\\model\\TestRunnerFeatures', 'enableDefaultFeatures']
         );
 
-        $this->getServiceManager()->register(EventManager::CONFIG_ID, $eventManager);
+        $eventManager->attach(
+            DeliveryExecutionReactivated::class,
+            [SessionStateHelper::class, 'onExecutionReactivation']
+        );
+
+        $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 
         return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, 'Events attached');
     }

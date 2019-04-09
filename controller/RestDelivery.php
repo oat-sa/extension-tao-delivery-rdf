@@ -19,21 +19,22 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
-use oat\oatbox\event\EventManagerAwareTrait;
+use oat\oatbox\event\EventManager;
+use oat\tao\model\taskQueue\QueueDispatcher;
+use oat\tao\model\taskQueue\TaskLog\Broker\TaskLogBrokerInterface;
+use oat\tao\model\taskQueue\TaskLog\Entity\EntityInterface;
+use oat\tao\model\taskQueue\TaskLog\TaskLogFilter;
+use oat\tao\model\taskQueue\TaskLogActionTrait;
+use oat\tao\model\taskQueue\TaskLogInterface;
+use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteTask;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\generis\model\OntologyRdfs;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
-use oat\taoTaskQueue\model\Entity\TaskLogEntity;
-use oat\taoTaskQueue\model\TaskLog\TaskLogFilter;
-use oat\taoTaskQueue\model\TaskLogActionTrait;
-use oat\taoTaskQueue\model\TaskLogBroker\TaskLogBrokerInterface;
-use oat\taoTaskQueue\model\TaskLogInterface;
 
 class RestDelivery extends \tao_actions_RestController
 {
-    use EventManagerAwareTrait;
     use TaskLogActionTrait;
 
     const REST_DELIVERY_TEST_ID        = 'test';
@@ -50,6 +51,14 @@ class RestDelivery extends \tao_actions_RestController
     const PARENT_CLASS_URI_PARAM       = 'delivery-parent';
 
     /**
+     * @return EventManager
+     */
+    protected function getEventManager()
+    {
+        return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
+    }
+
+    /**
      * Generate a delivery from test uri
      * Test uri has to be set and existing
      */
@@ -60,7 +69,7 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_TEST_ID, $this->getRequestURI());
             }
 
-            $test = new \core_kernel_classes_Resource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
+            $test = $this->getResource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
             if (!$test->exists()) {
                 throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
             }
@@ -73,7 +82,7 @@ class RestDelivery extends \tao_actions_RestController
             $report = $deliveryFactory->create($deliveryClass, $test, $label);
 
             if ($report->getType() == \common_report_Report::TYPE_ERROR) {
-                \common_Logger::i('Unable to generate delivery execution ' .
+                $this->logInfo('Unable to generate delivery execution ' .
                     'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
                 throw new \common_Exception('Unable to generate delivery execution.');
             }
@@ -94,13 +103,13 @@ class RestDelivery extends \tao_actions_RestController
      * Test uri has to be set and existing
      */
     public function generateDeferred()
-    {   
+    {
         try {
             if (! $this->hasRequestParameter(self::REST_DELIVERY_TEST_ID)) {
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_TEST_ID, $this->getRequestURI());
             }
 
-            $test = new \core_kernel_classes_Resource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
+            $test = $this->getResource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
             if (! $test->exists()) {
                 throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
             }
@@ -213,6 +222,102 @@ class RestDelivery extends \tao_actions_RestController
     }
 
     /**
+     * Delete delivery by URI
+     */
+    public function deleteDeferred()
+    {
+        try {
+            if ($this->getRequestMethod() !== \Request::HTTP_DELETE) {
+                throw new \common_exception_NotImplemented('Only delete method is accepted to deleting delivery');
+            }
+
+            if (!$this->hasRequestParameter('uri')) {
+                throw new \common_exception_MissingParameter('uri', $this->getRequestURI());
+            }
+
+            $uri = $this->getRequestParameter('uri');
+            $delivery  = $this->getResource($uri);
+
+            if (!$delivery->exists()) {
+                $this->returnFailure(new \common_exception_NotFound('Delivery has not been found'));
+            }
+
+            /** @var QueueDispatcher $queueDispatcher */
+            $queueDispatcher = $this->getServiceManager()->get(QueueDispatcher::SERVICE_ID);
+
+            $task = new DeliveryDeleteTask();
+            $task->setServiceLocator($this->getServiceLocator());
+            $taskParameters = ['deliveryId' => $uri];
+
+            $task = $queueDispatcher->createTask($task, $taskParameters, __('Deleting of "%s"', $delivery->getLabel()), null, true);
+
+            $data = $this->getTaskLogReturnData(
+                $task->getId(),
+                DeliveryDeleteTask::class
+            );
+            $this->returnSuccess($data);
+        } catch (\Exception $e) {
+            $this->returnFailure($e);
+        }
+    }
+
+    /**
+     * List all deliveries or paginated range
+     */
+    public function get()
+    {
+        try {
+            if ($this->getRequestMethod() !== \Request::HTTP_GET) {
+                throw new \common_exception_NotImplemented('Only get method is accepted to getting deliveries');
+            }
+
+            $limit = 0;
+            if ($this->hasRequestParameter('limit')) {
+                $limit = $this->getRequestParameter('limit');
+                if (!is_numeric($limit) || (int)$limit != $limit || $limit < 0) {
+                    throw new \common_exception_ValidationFailed('limit', '\'Limit\' should be a positive integer');
+                }
+            }
+
+            $offset = 0;
+            if ($this->hasRequestParameter('offset')) {
+                $offset = $this->getRequestParameter('offset');
+                if (!is_numeric($offset) || (int)$offset != $offset || $offset < 0) {
+                    throw new \common_exception_ValidationFailed('offset', '\'Offset\' should be a positive integer');
+                }
+            }
+
+            $service = DeliveryAssemblyService::singleton();
+
+            /** @var \core_kernel_classes_Resource[] $deliveries */
+            $deliveries = $service->getAllAssemblies();
+            $overallCount = count($deliveries);
+            if ($offset || $limit) {
+                if ($overallCount <= $offset) {
+                    throw new \common_exception_ValidationFailed('offset', '\'Offset\' is too large');
+                }
+                $deliveries = array_slice($deliveries, $offset, $limit);
+            }
+
+            $mappedDeliveries = [];
+            foreach ($deliveries as $delivery) {
+                $mappedDeliveries[] = [
+                    'uri' => $delivery->getUri(),
+                    'label' => $delivery->getLabel(),
+                ];
+            }
+
+            $response = [
+                'items' => $mappedDeliveries,
+                'overallCount' => $overallCount,
+            ];
+            $this->returnSuccess($response);
+        } catch (\Exception $e) {
+            $this->returnFailure($e);
+        }
+    }
+
+    /**
      * Action to retrieve test compilation task status from queue
      */
     public function getStatus()
@@ -240,6 +345,7 @@ class RestDelivery extends \tao_actions_RestController
      */
     protected function getStatusesForChildren($taskId)
     {
+        /** @var TaskLogInterface $taskLog */
         $taskLog = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
         $filter = (new TaskLogFilter())
             ->eq(TaskLogBrokerInterface::COLUMN_PARENT_ID, $taskId);
@@ -248,7 +354,7 @@ class RestDelivery extends \tao_actions_RestController
         if ($collection->isEmpty()) {
             return $response;
         }
-        /** @var TaskLogEntity $item */
+        /** @var EntityInterface $item */
         foreach ($collection as $item) {
             $response[] = [
                 'id' => $this->getTaskId($item),
@@ -263,10 +369,10 @@ class RestDelivery extends \tao_actions_RestController
     /**
      * Return 'Success' instead of 'Completed', required by the specified API.
      *
-     * @param TaskLogEntity $taskLogEntity
+     * @param EntityInterface $taskLogEntity
      * @return string
      */
-    protected function getTaskStatus(TaskLogEntity $taskLogEntity)
+    protected function getTaskStatus(EntityInterface $taskLogEntity)
     {
         if ($taskLogEntity->getStatus()->isCreated()) {
             return 'In Progress';
@@ -278,10 +384,10 @@ class RestDelivery extends \tao_actions_RestController
     }
 
     /**
-     * @param TaskLogEntity $taskLogEntity
+     * @param EntityInterface $taskLogEntity
      * @return array
      */
-    protected function addExtraReturnData(TaskLogEntity $taskLogEntity)
+    protected function addExtraReturnData(EntityInterface $taskLogEntity)
     {
         $data = [];
 
@@ -346,7 +452,7 @@ class RestDelivery extends \tao_actions_RestController
 
         // If an uri is provided, check if it's an existing delivery class
         if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_URI)) {
-            $deliveryClass = new \core_kernel_classes_Class($this->getRequestParameter(self::REST_DELIVERY_CLASS_URI));
+            $deliveryClass = $this->getClass($this->getRequestParameter(self::REST_DELIVERY_CLASS_URI));
             if ($deliveryClass == $rootDeliveryClass
                 || ($deliveryClass->exists() && $deliveryClass->isSubClassOf($rootDeliveryClass))) {
                 return $deliveryClass;
@@ -377,7 +483,7 @@ class RestDelivery extends \tao_actions_RestController
                 case 0:
                     throw new \common_exception_NotFound(__('Delivery with label "%s" not found', $label));
                 case 1:
-                    return new \core_kernel_classes_Class($result->current()->getUri());
+                    return $this->getClass($result->current()->getUri());
                 default:
                     $availableClasses = [];
                     foreach ($result as $raw) {
@@ -399,6 +505,6 @@ class RestDelivery extends \tao_actions_RestController
      */
     protected function getDeliveryRootClass()
     {
-        return new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
+        return $this->getClass(DeliveryAssemblyService::CLASS_URI);
     }
 }

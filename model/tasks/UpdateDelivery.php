@@ -22,13 +22,12 @@
 namespace oat\taoDeliveryRdf\model\tasks;
 
 use oat\generis\model\OntologyAwareTrait;
+use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
-use oat\oatbox\task\AbstractTaskAction;
-use oat\oatbox\task\Queue;
-use oat\oatbox\task\Task;
+use oat\tao\model\taskQueue\QueueDispatcher;
+use oat\tao\model\taskQueue\Task\TaskInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use \common_report_Report as Report;
-use oat\taoTaskQueue\model\QueueDispatcher;
 
 /**
  * Class UpdateDelivery
@@ -38,7 +37,7 @@ use oat\taoTaskQueue\model\QueueDispatcher;
  * @package oat\taoQtiTest\models\tasks
  * @author Aleksej Tikhanovich, <aleksej@taotesting.com>
  */
-class UpdateDelivery extends AbstractTaskAction implements \JsonSerializable
+class UpdateDelivery extends AbstractAction implements \JsonSerializable
 {
     use OntologyAwareTrait;
     const OPTION_WHERE = 'where';
@@ -83,7 +82,7 @@ class UpdateDelivery extends AbstractTaskAction implements \JsonSerializable
      * Create a task to update a delivery
      * @param array $where
      * @param array $propertyValues
-     * @return Task created task id
+     * @return TaskInterface
      */
     public static function createTask($where = [], $propertyValues = [])
     {

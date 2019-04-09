@@ -19,8 +19,6 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
-use oat\taoDelivery\model\DeliveryZipException;
-
 interface DeliveryArchiveServiceInterface
 {
     const SERVICE_ID = 'taoDeliveryRdf/DeliveryArchive';

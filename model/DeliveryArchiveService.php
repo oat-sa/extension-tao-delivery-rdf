@@ -28,7 +28,6 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceNotFoundException;
-use oat\taoDelivery\model\DeliveryZipException;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
@@ -93,8 +92,8 @@ class DeliveryArchiveService extends ConfigurableService
         $localZipName = $this->getLocalZipPathName($fileName);
 
         $zip = new \ZipArchive();
-        if ($zip->open($localZipName, \ZipArchive::CREATE) === false) {
-            throw new DeliveryZipException('Cannot open zip archive: '. $localZipName);
+        if (($errorCode = $zip->open($localZipName, \ZipArchive::CREATE)) !== true) {
+            throw new DeliveryZipException('Cannot open zip archive: '. $localZipName . ' error code: '. $errorCode);
         }
 
         $directories = $compiledDelivery->getPropertyValues(
@@ -109,7 +108,6 @@ class DeliveryArchiveService extends ConfigurableService
                 $zip->addFromString($item->getFileSystemId() . '/' . $item->getPrefix(), $item->read());
             }
         }
-
         $zip = $this->refreshArchiveProcessed($zip);
         $zip->close();
 
@@ -140,8 +138,8 @@ class DeliveryArchiveService extends ConfigurableService
         $zipPath = $this->download($compiledDelivery);
 
         $zip = new \ZipArchive();
-        if ($zip->open($zipPath) === false) {
-            throw new DeliveryZipException('Cannot open zip archive: '. $zipPath);
+        if (($errorCode = $zip->open($zipPath, \ZipArchive::CREATE)) !== true) {
+            throw new DeliveryZipException('Cannot open zip archive: '. $zipPath . ' error code: '. $errorCode);
         }
 
         if ($force || !$this->isArchivedProcessed($zip, $fileName)){
@@ -222,8 +220,7 @@ class DeliveryArchiveService extends ConfigurableService
         $fileName = $this->getArchiveFileName($compiledDelivery);
         $zipPath = $this->getLocalZipPathName($fileName);
 
-        $stream = fopen($zipPath, 'r');
-        if ($stream === false) {
+        if (!file_exists($zipPath) || ($stream = fopen($zipPath, 'r')) === false) {
             throw new DeliveryZipException('Cannot open local tmp zip archive');
         }
         $this->getArchiveFileSystem()->putStream($fileName, $stream);

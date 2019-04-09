@@ -19,30 +19,32 @@
  *
  */
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
-use oat\taoDeliveryRdf\install\RegisterDeliveryPublishingService;
 use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
 use oat\taoDeliveryRdf\scripts\install\RegisterDeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\scripts\install\SetUpQueueTasks;
+use oat\taoDeliveryRdf\scripts\install\RegisterFileSystem;
 
 return array(
   'name'        => 'taoDeliveryRdf',
   'label'       => 'Delivery Management',
   'description' => 'Manages deliveries using the ontology',
   'license'     => 'GPL-2.0',
-  'version'     => '4.1.0',
+  'version'     => '7.7.0',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
-	    'generis'     => '>=5.11.0',
-        'tao'         => '>=15.4.0',
-        'taoGroups'   => '>=2.7.1',
-        'taoTests'    => '>=3.5.0',
-        'taoQtiTest'  => '>=18.6.0',
-        'taoDelivery' => '>=9.0.0',
-        'taoTaskQueue' => '>=0.14.0'
+	    'generis'     => '>=6.14.0',
+        'tao'         => '>=31.0.0',
+        'taoGroups'   => '>=4.0.0',
+        'taoTests'    => '>=8.0.0',
+        'taoQtiTest'  => '>=32.3.2',
+        'taoDelivery' => '>=12.0.0',
+        'taoResultServer' => '>=7.0.0'
     ),
-	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
+    'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => array(
-		array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', array('ext'=>'taoDeliveryRdf')),
+        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', array('ext'=>'taoDeliveryRdf')),
+        array('grant', \oat\tao\model\user\TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestDelivery')),
+        array('grant', \oat\tao\model\user\TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestTest')),
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole','oat\taoDeliveryRdf\controller\Guest@guest'),
     ),
     'install' => array(
@@ -57,7 +59,8 @@ return array(
             RegisterDeliveryFactoryService::class,
             OverrideRuntime::class,
             SetUpQueueTasks::class,
-            RegisterDeliveryAssemblyWrapperService::class
+            RegisterDeliveryAssemblyWrapperService::class,
+            RegisterFileSystem::class
         )
     ),
     //'uninstall' => array(),

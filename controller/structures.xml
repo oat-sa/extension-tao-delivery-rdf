@@ -19,8 +19,11 @@
                     />
                 </trees>
                 <actions>
-                	<action id="delivery-class-properties" name="Properties" url="/tao/PropertiesAuthoring/index" group="content" context="class">
+                    <action id="delivery-class-properties" name="Properties" url="/taoDeliveryRdf/DeliveryMgmt/editClassLabel" group="content" context="class">
                         <icon id="icon-edit"/>
+                    </action>
+                    <action id="delivery-class-schema" name="Manage Schema" url="/tao/PropertiesAuthoring/index" group="content" context="class">
+                        <icon id="icon-property-add" />
                     </action>
                     <action id="delivery-properties" name="Properties"  url="/taoDeliveryRdf/DeliveryMgmt/editDelivery" group="content" context="instance">
                         <icon id="icon-edit"/>
@@ -37,10 +40,27 @@
                     <action id="delivery-move" name="Move" url="/taoDeliveryRdf/DeliveryMgmt/moveInstance" context="instance" group="none" binding="moveNode">
                         <icon id="icon-move-item"/>
                     </action>
+                    <action id="delivery-move-to" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveResource" context="resource" group="tree" binding="moveTo">
+                        <icon id="icon-move-item"/>
+                    </action>
+                    <action id="delivery-move-all" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveAll" context="resource" multiple="true" group="tree" binding="moveTo">
+                        <icon id="icon-move-item"/>
+                    </action>
                     <action id="delivery-new" name="New delivery" url="/taoDeliveryRdf/DeliveryMgmt/wizard" context="resource" group="tree">
                         <icon id="icon-delivery"/>
                     </action>
 
+                </actions>
+            </section>
+        </sections>
+    </structure>
+    <structure id="tests" name="Tests" level="1" group="main">
+        <sections>
+            <section id="manage_tests" name="Manage tests" url="/taoTests/Tests/index">
+                <actions allowClassActions="true">
+                    <action id="test-publish" name="Publish" url="/taoDeliveryRdf/Publish/index" context="instance" group="tree">
+                        <icon id="icon-delivery"/>
+                    </action>
                 </actions>
             </section>
         </sections>

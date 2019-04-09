@@ -21,8 +21,10 @@ namespace oat\taoDeliveryRdf\model;
 
 use oat\oatbox\user\User;
 use \core_kernel_classes_Property;
-use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoDelivery\model\AttemptServiceInterface;
 use tao_helpers_Date;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
 /**
  * Service to manage the assignment of users to deliveries
  *
@@ -30,8 +32,10 @@ use tao_helpers_Date;
  * @author Joel Bout, <joel@taotesting.com>
  * @package taoDelivery
  */
-class AssignmentFactory
+class AssignmentFactory implements ServiceLocatorAwareInterface
 {
+    use ServiceLocatorAwareTrait;
+
     protected $delivery;
     
     private $user;
@@ -40,12 +44,15 @@ class AssignmentFactory
 
     private $displayAttempts;
 
-    public function __construct(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true)
+    private $displayDates;
+
+    public function __construct(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true, $displayDates = true)
     {
         $this->delivery = $delivery;
         $this->user = $user;
         $this->startable = $startable;
         $this->displayAttempts = $displayAttempts;
+        $this->displayDates = $displayDates;
     }
     
     public function getDeliveryId()
@@ -79,7 +86,8 @@ class AssignmentFactory
         $endTime = (!(is_object($propEndExec)) or ($propEndExec=="")) ? null : $propEndExec->literal;
         $maxExecs = (!(is_object($propMaxExec)) or ($propMaxExec=="")) ? 0 : $propMaxExec->literal;
         
-        $countExecs = count(ServiceProxy::singleton()->getUserExecutions($this->delivery, $this->getUserId()));
+        $countExecs = count($this->getServiceLocator()->get(AttemptServiceInterface::SERVICE_ID)
+            ->getAttempts($this->delivery->getUri(), $this->user));
         
         return $this->buildDescriptionFromData($startTime, $endTime, $countExecs, $maxExecs);
     }
@@ -104,15 +112,18 @@ class AssignmentFactory
     protected function buildDescriptionFromData($startTime, $endTime, $countExecs, $maxExecs)
     {
         $descriptions = array();
-        if (!empty($startTime) && !empty($endTime)) {
-            $descriptions[] = __('Available from %1$s to %2$s',
-                tao_helpers_Date::displayeDate($startTime)
-                ,tao_helpers_Date::displayeDate($endTime)
-            );
-        } elseif (!empty($startTime) && empty($endTime)) {
-            $descriptions[] = __('Available from %s', tao_helpers_Date::displayeDate($startTime));
-        } elseif (!empty($endTime)) {
-            $descriptions[] = __('Available until %s', tao_helpers_Date::displayeDate($endTime));
+
+        if ($this->displayDates) {
+            if (!empty($startTime) && !empty($endTime)) {
+                $descriptions[] = __('Available from %1$s to %2$s',
+                    tao_helpers_Date::displayeDate($startTime)
+                    ,tao_helpers_Date::displayeDate($endTime)
+                );
+            } elseif (!empty($startTime) && empty($endTime)) {
+                $descriptions[] = __('Available from %s', tao_helpers_Date::displayeDate($startTime));
+            } elseif (!empty($endTime)) {
+                $descriptions[] = __('Available until %s', tao_helpers_Date::displayeDate($endTime));
+            }    
         }
         
         if ($maxExecs != 0 && $this->displayAttempts) {
