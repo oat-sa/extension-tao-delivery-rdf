@@ -111,7 +111,6 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $deliveryUri = $delivery->getUri();
 
         if ($myForm->isSubmited() && $myForm->isValid()) {
-            $this->validateCsrf();
             $this->validateInstanceRoot($deliveryUri);
             $propertyValues = $myForm->getValues();
 
@@ -124,12 +123,6 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             $this->setData('selectNode', \tao_helpers_Uri::encode($deliveryUri));
             $this->setData('message', __('Delivery saved'));
             $this->setData('reload', true);
-
-            $this->returnJson([
-                'success' => true,
-                'message' => __('Delivery saved')
-            ]);
-            return;
         }
 
         $this->setData('label', $delivery->getLabel());
@@ -232,10 +225,8 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         try {
             $formContainer = new WizardForm(array('class' => $this->getCurrentClass()));
             $myForm = $formContainer->getForm();
-            $myForm->addCsrfTokenProtection();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
-                $this->validateCsrf();
                 try {
                     $test = $this->getResource($myForm->getValue('test'));
                     $deliveryClass = $this->getClass($myForm->getValue('classUri'));
