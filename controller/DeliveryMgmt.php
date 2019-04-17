@@ -42,6 +42,7 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoResultServer\models\classes\implementation\OntologyService;
 use oat\taoResultServer\models\classes\ResultServerService;
 use oat\taoDelivery\model\execution\Monitoring;
+use tao_helpers_form_FormContainer as FormContainer;
 
 /**
  * Controller to managed assembled deliveries
@@ -105,9 +106,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             ];
         }
 
+        $options[FormContainer::CSRF_PROTECTION_OPTION] = true;
+
         $formContainer = new DeliveryForm($class, $delivery, $options);
         $myForm = $formContainer->getForm();
-        $myForm->addCsrfTokenProtection();
         $deliveryUri = $delivery->getUri();
 
         if ($myForm->isSubmited() && $myForm->isValid()) {
