@@ -14,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
  *
  *
  */
@@ -42,6 +42,7 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoResultServer\models\classes\implementation\OntologyService;
 use oat\taoResultServer\models\classes\ResultServerService;
 use oat\taoDelivery\model\execution\Monitoring;
+use tao_helpers_form_FormContainer as FormContainer;
 
 /**
  * Controller to managed assembled deliveries
@@ -104,6 +105,8 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 ]
             ];
         }
+
+        $options[FormContainer::CSRF_PROTECTION_OPTION] = true;
 
         $formContainer = new DeliveryForm($class, $delivery, $options);
         $myForm = $formContainer->getForm();
