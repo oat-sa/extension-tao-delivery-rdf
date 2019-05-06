@@ -1,0 +1,250 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:10:56\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ca-ES-valencia\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: ca-ES-valencia\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s completed"
+msgstr ""
+
+msgid "%s test-taker(s) are excluded."
+msgstr "%s participants són exclosos."
+
+msgid "Access deliveries as a guest"
+msgstr "Accés als lliuraments com a convidat"
+
+msgid "An error occured during the import"
+msgstr "S'ha produït un error durant la importació."
+
+msgid "Assembly"
+msgstr "Assemblatge"
+
+msgid "Assembly import"
+msgstr "Assembla la importació"
+
+msgid "Assigned test-takers"
+msgstr "Participants assignats"
+
+msgid "Assigned to"
+msgstr "Assignat a"
+
+msgid "Attempt %1$s of %2$s"
+msgstr "Intent %1$s de %2$s"
+
+msgid "Attempts"
+msgstr "Intents"
+
+msgid "Attempts %1$s of %2$s"
+msgstr "Intents %1$s de %2$s"
+
+msgid "Available from %1$s to %2$s"
+msgstr "Disponible des de %1$s fins a %2$s"
+
+msgid "Available from %s"
+msgstr "Disponible des de %s"
+
+msgid "Available until %s"
+msgstr "Disponible fins a %s"
+
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgid "Class successfully created."
+msgstr "La classe s'ha creat correctament."
+
+msgid "Create a new delivery"
+msgstr "Crea un lliurament nou"
+
+msgid "Create a test"
+msgstr "Crea una prova"
+
+#, tao-public
+msgid "Delete"
+msgstr "Elimina"
+
+msgid "Deleting of \"%s"
+msgstr ""
+
+#, tao-public
+msgid "Deliveries"
+msgstr "Lliuraments"
+
+#, tao-public
+msgid "Deliveries library"
+msgstr "Biblioteca de lliuraments"
+
+msgid "Delivery \"%s\" successfully imported"
+msgstr "El lliurament \"%s\" s'ha importat correctament."
+
+msgid "Delivery \'%s\' not found"
+msgstr ""
+
+msgid "Delivery class uri provided is not a valid delivery class."
+msgstr "L'URI de classe de lliurament proporcionat no és una classe de lliurament vàlida."
+
+msgid "Delivery is assigned to %s test-takers."
+msgstr "El lliurament s'ha assignat a %s participants."
+
+msgid "Delivery is not assigned to any test-taker."
+msgstr "El lliurament no s'ha assignat a cap participant."
+
+msgid "Delivery saved"
+msgstr "Lliurament guardat"
+
+msgid "Delivery with label \"%s\" not found"
+msgstr "El lliurament amb l'etiqueta \"%s\" no s'ha trobat."
+
+msgid "Directory %s doesn\'t exist"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Excluded test-takers"
+msgstr "Participants exclosos"
+
+msgid "Exported %1$s to %2$s"
+msgstr "S'ha exportat %1$s a %2$s"
+
+msgid "Exporting %s"
+msgstr "S'està exportant %s"
+
+msgid "Guest access"
+msgstr "Accés de convidat"
+
+msgid "Importing %1$s files into \'%2$s\"
+msgstr ""
+
+msgid "Last updated on %2s"
+msgstr ""
+
+#, tao-public
+msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Manage tests"
+msgstr ""
+
+msgid "Manifest not found in assembly"
+msgstr ""
+
+#, tao-public
+msgid "Move"
+msgstr "Mou"
+
+#, tao-public
+msgid "Move To"
+msgstr ""
+
+msgid "Multiple delivery class found for label \"%s\": %s"
+msgstr "S'ha trobat una classe de lliurament múltiple per a \"%s\": %s"
+
+#, tao-public
+msgid "New class"
+msgstr "Classe nova"
+
+#, tao-public
+msgid "New delivery"
+msgstr "Lliurament nou"
+
+msgid "No attempt has been started yet."
+msgstr "Encara no s'ha començat cap intent."
+
+msgid "No information available"
+msgstr "No hi ha informació disponible."
+
+#, tao-public
+msgid "Prepare, publish deliveries sessions."
+msgstr "Prepara i publica sessions de lliuraments."
+
+#, tao-public
+msgid "Properties"
+msgstr "Propietats"
+
+#, tao-public
+msgid "Publish"
+msgstr ""
+
+msgid "Publish \"%s\" to"
+msgstr ""
+
+msgid "Publish the test"
+msgstr ""
+
+msgid "Published on %2s"
+msgstr "S'ha publicat el %2s."
+
+msgid "Publishing of \"%s"
+msgstr ""
+
+msgid "Save"
+msgstr "Guarda"
+
+msgid "Select the test"
+msgstr "Seleccioneu la prova"
+
+msgid "Select the test you want to publish to the test-takers"
+msgstr "Seleccioneu la prova que voleu publicar per als participants"
+
+msgid "Selection saved successfully"
+msgstr "La selecció s'ha guardat correctament."
+
+msgid "TAO Guest"
+msgstr "Convidat del TAO"
+
+msgid "TAO Guest Access"
+msgstr "Accés de convidat del TAO"
+
+msgid "Test publishing failed because \"%s\" is empty."
+msgstr "La publicació de la prova ha fallat perquè \"%s\" és buit."
+
+msgid "Test-takers"
+msgstr "Participants"
+
+#, tao-public
+msgid "Tests"
+msgstr ""
+
+msgid "The shared filesystem parameter should be a boolean value 'true' or 'false'."
+msgstr ""
+
+msgid "There are currently %s attempts"
+msgstr "Hi ha actualment %s intents."
+
+msgid "There are currently no tests available to publish."
+msgstr "No hi ha actualment cap prova disponible per a publicació."
+
+msgid "There is currently 1 attempt"
+msgstr "Hi ha actualment un intent."
+
+msgid "Unable to import Archive"
+msgstr "No es pot importar l'arxiu."
+
+msgid "Unable to load tests"
+msgstr "No es poden carregar proves."
+
+msgid "Unknown error during import"
+msgstr "S'ha produït un error desconegut durant la importació."
+
+msgid "unlimited"
+msgstr "il·limitat"
+
+msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr "Ús: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+
+msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr "Ús: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+
+msgid "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
+msgstr ""
+

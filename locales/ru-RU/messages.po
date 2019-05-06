@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint95\n"
-"PO-Revision-Date: 2019-02-01T10:09:59\n"
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:12:45\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ru-RU\n"
@@ -20,10 +20,10 @@ msgid "%s test-taker(s) are excluded."
 msgstr ""
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "Доступ к раздачам от имени гостя"
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "Произошла ошибка во время импорта"
 
 msgid "Assembly"
 msgstr ""
@@ -32,16 +32,16 @@ msgid "Assembly import"
 msgstr ""
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "Назначенные тестируемые"
 
 msgid "Assigned to"
-msgstr ""
+msgstr "Назначено"
 
 msgid "Attempt %1$s of %2$s"
 msgstr ""
 
 msgid "Attempts"
-msgstr ""
+msgstr "Попытки"
 
 msgid "Attempts %1$s of %2$s"
 msgstr ""
@@ -50,13 +50,13 @@ msgid "Available from %1$s to %2$s"
 msgstr ""
 
 msgid "Available from %s"
-msgstr ""
+msgstr "Доступно с %s"
 
 msgid "Available until %s"
 msgstr ""
 
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 msgid "Class successfully created."
 msgstr ""
@@ -65,11 +65,11 @@ msgid "Create a new delivery"
 msgstr ""
 
 msgid "Create a test"
-msgstr ""
+msgstr "Создание теста"
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 msgid "Deleting of \"%s"
 msgstr ""
@@ -110,7 +110,7 @@ msgid "Error"
 msgstr ""
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Исключенные тестируемые"
 
 msgid "Exported %1$s to %2$s"
 msgstr ""
@@ -119,7 +119,7 @@ msgid "Exporting %s"
 msgstr ""
 
 msgid "Guest access"
-msgstr ""
+msgstr "Гостевой доступ"
 
 msgid "Importing %1$s files into \'%2$s\"
 msgstr ""
@@ -140,7 +140,7 @@ msgstr ""
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Переместить"
 
 #, tao-public
 msgid "Move To"
@@ -151,17 +151,17 @@ msgstr ""
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Новый класс"
 
 #, tao-public
 msgid "New delivery"
 msgstr ""
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "Попытки еще не начаты."
 
 msgid "No information available"
-msgstr ""
+msgstr "Информация отсутствует"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
@@ -169,7 +169,7 @@ msgstr ""
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Свойства"
 
 #, tao-public
 msgid "Publish"
@@ -188,7 +188,7 @@ msgid "Publishing of \"%s"
 msgstr ""
 
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 msgid "Select the test"
 msgstr ""
@@ -197,19 +197,19 @@ msgid "Select the test you want to publish to the test-takers"
 msgstr ""
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "Выбор сохранен успешно"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "Гость ТАО"
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "Гостевой доступ ТАО"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr ""
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Тестируемые"
 
 #, tao-public
 msgid "Tests"
@@ -222,13 +222,13 @@ msgid "There are currently %s attempts"
 msgstr ""
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "В настоящее время нет доступных для публикации тестов."
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "В настоящее время 1 попытка"
 
 msgid "Unable to import Archive"
-msgstr ""
+msgstr "Не удается импортировать Архив"
 
 msgid "Unable to load tests"
 msgstr ""
@@ -237,7 +237,7 @@ msgid "Unknown error during import"
 msgstr ""
 
 msgid "unlimited"
-msgstr ""
+msgstr "неограниченный"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr ""

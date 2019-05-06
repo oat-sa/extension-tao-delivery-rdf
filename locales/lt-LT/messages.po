@@ -1,0 +1,250 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:14:03\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: lt-LT\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: lt-LT\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s completed"
+msgstr ""
+
+msgid "%s test-taker(s) are excluded."
+msgstr "Neįtraukti %s testo laikytojas(–ai)."
+
+msgid "Access deliveries as a guest"
+msgstr "Gauti pateiktis, kaip svečias"
+
+msgid "An error occured during the import"
+msgstr "Įvyko klaida importuojant"
+
+msgid "Assembly"
+msgstr "Surinkimas"
+
+msgid "Assembly import"
+msgstr "Surinkimo importavimas"
+
+msgid "Assigned test-takers"
+msgstr "Paskirti testo laikytojai."
+
+msgid "Assigned to"
+msgstr "Priskirtas"
+
+msgid "Attempt %1$s of %2$s"
+msgstr "Badnymas %1$s iš %2$s"
+
+msgid "Attempts"
+msgstr "Bandymai"
+
+msgid "Attempts %1$s of %2$s"
+msgstr "Bandymai %1$s iš %2$s"
+
+msgid "Available from %1$s to %2$s"
+msgstr "Galima nuo %1$s iki %2$s"
+
+msgid "Available from %s"
+msgstr "Galima nuo %s"
+
+msgid "Available until %s"
+msgstr "Galima iki %s"
+
+msgid "Cancel"
+msgstr "Atšaukti"
+
+msgid "Class successfully created."
+msgstr "Klasė sėkmingai sukurta."
+
+msgid "Create a new delivery"
+msgstr "Sukurti naują pateiktį"
+
+msgid "Create a test"
+msgstr "Sukurti testą"
+
+#, tao-public
+msgid "Delete"
+msgstr "Ištrinti"
+
+msgid "Deleting of \"%s"
+msgstr ""
+
+#, tao-public
+msgid "Deliveries"
+msgstr "Pateiktys"
+
+#, tao-public
+msgid "Deliveries library"
+msgstr "Pateikčių biblioteka"
+
+msgid "Delivery \"%s\" successfully imported"
+msgstr "Pateiktis \"%s\" sėkmingai importuota"
+
+msgid "Delivery \'%s\' not found"
+msgstr ""
+
+msgid "Delivery class uri provided is not a valid delivery class."
+msgstr "Šios pateikties klasės uri nėra teisinga pateikties klasė."
+
+msgid "Delivery is assigned to %s test-takers."
+msgstr "Pateiktis yra paskirta %s testo laikytojams."
+
+msgid "Delivery is not assigned to any test-taker."
+msgstr "Pateiktis nėra paskirtam jokiam testo laikytojui."
+
+msgid "Delivery saved"
+msgstr "Pateiktis išsaugota"
+
+msgid "Delivery with label \"%s\" not found"
+msgstr "Pateiktis su pavadinimu \"%s\" nerasta"
+
+msgid "Directory %s doesn\'t exist"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Excluded test-takers"
+msgstr "Neįtraukti testo laikytojai."
+
+msgid "Exported %1$s to %2$s"
+msgstr "Eksportuoti %1$s į %2$s"
+
+msgid "Exporting %s"
+msgstr "Eksportuojama %s"
+
+msgid "Guest access"
+msgstr "Svečio prieiga"
+
+msgid "Importing %1$s files into \'%2$s\"
+msgstr ""
+
+msgid "Last updated on %2s"
+msgstr ""
+
+#, tao-public
+msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Manage tests"
+msgstr ""
+
+msgid "Manifest not found in assembly"
+msgstr ""
+
+#, tao-public
+msgid "Move"
+msgstr "Perkelti"
+
+#, tao-public
+msgid "Move To"
+msgstr ""
+
+msgid "Multiple delivery class found for label \"%s\": %s"
+msgstr "Ne viena pateikties klasė buvo rasta pavadinimui \"%s\": %s"
+
+#, tao-public
+msgid "New class"
+msgstr "Nauja klasė"
+
+#, tao-public
+msgid "New delivery"
+msgstr "Nauja pateiktis"
+
+msgid "No attempt has been started yet."
+msgstr "Laikymas nebuvo pradėtas."
+
+msgid "No information available"
+msgstr "Nėra informacijos"
+
+#, tao-public
+msgid "Prepare, publish deliveries sessions."
+msgstr "Paruošk, paskelbk pateikčių sesijas."
+
+#, tao-public
+msgid "Properties"
+msgstr "Savybės"
+
+#, tao-public
+msgid "Publish"
+msgstr ""
+
+msgid "Publish \"%s\" to"
+msgstr ""
+
+msgid "Publish the test"
+msgstr ""
+
+msgid "Published on %2s"
+msgstr "Paskelbta %2s"
+
+msgid "Publishing of \"%s"
+msgstr ""
+
+msgid "Save"
+msgstr "Išsaugoti"
+
+msgid "Select the test"
+msgstr "Pasirinkti testą"
+
+msgid "Select the test you want to publish to the test-takers"
+msgstr "Pasirink testą, kurį norite paskelbti testo laikytojams."
+
+msgid "Selection saved successfully"
+msgstr "Pasirinkimas sėkmingai išsaugotas"
+
+msgid "TAO Guest"
+msgstr "TAO Svečias"
+
+msgid "TAO Guest Access"
+msgstr "TAO Svečio Prieiga"
+
+msgid "Test publishing failed because \"%s\" is empty."
+msgstr "Testo paskelbimas nepavyko, nes \"%s\" yra tuščias."
+
+msgid "Test-takers"
+msgstr "Testo laikytojai"
+
+#, tao-public
+msgid "Tests"
+msgstr ""
+
+msgid "The shared filesystem parameter should be a boolean value 'true' or 'false'."
+msgstr ""
+
+msgid "There are currently %s attempts"
+msgstr "Šiuo metu yra %s bandymai"
+
+msgid "There are currently no tests available to publish."
+msgstr "Šiuo metu nėra jokių galimų testų paskelbimui."
+
+msgid "There is currently 1 attempt"
+msgstr "Šiuo metu yra 1 bandymas"
+
+msgid "Unable to import Archive"
+msgstr "Nepavyko importuoti Archyvo"
+
+msgid "Unable to load tests"
+msgstr "Nepavyko įkelti testų"
+
+msgid "Unknown error during import"
+msgstr "Importuojant įvyko nežinoma klaida"
+
+msgid "unlimited"
+msgstr "neribota"
+
+msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr "Naudojimas: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+
+msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr "Naudojimas: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+
+msgid "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
+msgstr ""
+

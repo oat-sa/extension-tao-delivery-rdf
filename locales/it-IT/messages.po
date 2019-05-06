@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint95\n"
-"PO-Revision-Date: 2019-02-01T10:09:59\n"
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:04:24\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it-IT\n"
@@ -17,28 +17,28 @@ msgid "%s completed"
 msgstr ""
 
 msgid "%s test-taker(s) are excluded."
-msgstr ""
+msgstr "%s partecipanti sono esclusi."
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "Accesso alle somministrazioni come ospite"
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "Si è verificato un errore durante l'importazione"
 
 msgid "Assembly"
-msgstr ""
+msgstr "Assemblaggio"
 
 msgid "Assembly import"
-msgstr ""
+msgstr "Importazione assemblaggio"
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "Partecipanti assegnati"
 
 msgid "Assigned to"
-msgstr ""
+msgstr "Assegnato a"
 
 msgid "Attempt %1$s of %2$s"
-msgstr "Tentativi %1$s di %2$s"
+msgstr "Tentativo %1$s di %2$s"
 
 msgid "Attempts"
 msgstr "Tentativi"
@@ -47,43 +47,43 @@ msgid "Attempts %1$s of %2$s"
 msgstr "Tentativi %1$s di %2$s"
 
 msgid "Available from %1$s to %2$s"
-msgstr "Disponibile dal %1$s al %2$s"
+msgstr "Disponibile da %1$s a %2$s"
 
 msgid "Available from %s"
-msgstr "Disponibile dal %s"
+msgstr "Disponibile da %s"
 
 msgid "Available until %s"
-msgstr ""
+msgstr "Disponibile fino a %s"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 msgid "Class successfully created."
 msgstr ""
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "Creare una nuova somministrazione"
 
 msgid "Create a test"
-msgstr ""
+msgstr "Creare un test"
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 msgid "Deleting of \"%s"
 msgstr ""
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Somministrazioni"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "Libreria somministrazioni"
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr ""
+msgstr "Somministrazione \"%s\" importata correttamente"
 
 msgid "Delivery \'%s\' not found"
 msgstr ""
@@ -92,13 +92,13 @@ msgid "Delivery class uri provided is not a valid delivery class."
 msgstr ""
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr "La somministrazione viene assegnata a %s partecipanti."
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "La somministrazione non viene assegnata a qualsiasi partecipante."
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "Somministrazione salvata"
 
 msgid "Delivery with label \"%s\" not found"
 msgstr ""
@@ -110,16 +110,16 @@ msgid "Error"
 msgstr ""
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Partecipanti esclusi"
 
 msgid "Exported %1$s to %2$s"
-msgstr ""
+msgstr "Esportato %1$s a %2$s"
 
 msgid "Exporting %s"
 msgstr ""
 
 msgid "Guest access"
-msgstr ""
+msgstr "Accesso ospite"
 
 msgid "Importing %1$s files into \'%2$s\"
 msgstr ""
@@ -136,11 +136,11 @@ msgid "Manage tests"
 msgstr ""
 
 msgid "Manifest not found in assembly"
-msgstr ""
+msgstr "Manifesto non trovato nell'assieme"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Muovi"
 
 #, tao-public
 msgid "Move To"
@@ -151,25 +151,25 @@ msgstr ""
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Nuova classe"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "Nuova somministrazione"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "Non è stato ancora avviato alcun tentativo."
 
 msgid "No information available"
-msgstr ""
+msgstr "Nessuna informazione disponibile"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr ""
+msgstr "Preparare, pubblicare le sessioni di somministrazioni."
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Proprietà"
 
 #, tao-public
 msgid "Publish"
@@ -182,13 +182,13 @@ msgid "Publish the test"
 msgstr ""
 
 msgid "Published on %2s"
-msgstr ""
+msgstr "Pubblicato su %2s"
 
 msgid "Publishing of \"%s"
 msgstr ""
 
 msgid "Save"
-msgstr ""
+msgstr "Salva"
 
 msgid "Select the test"
 msgstr ""
@@ -197,19 +197,19 @@ msgid "Select the test you want to publish to the test-takers"
 msgstr ""
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "Selezione salvata correttamente"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "TAO Ospite"
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "TAO Accesso Ospite"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr ""
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Partecipanti"
 
 #, tao-public
 msgid "Tests"
@@ -219,16 +219,16 @@ msgid "The shared filesystem parameter should be a boolean value 'true' or 'fals
 msgstr ""
 
 msgid "There are currently %s attempts"
-msgstr ""
+msgstr "Ci sono attualmente %s tentativi"
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "Attualmente non sono disponibili test da pubblicare."
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "C'è attualmente 1 tentativo"
 
 msgid "Unable to import Archive"
-msgstr ""
+msgstr "Impossibile importare Archivio"
 
 msgid "Unable to load tests"
 msgstr ""
@@ -237,7 +237,7 @@ msgid "Unknown error during import"
 msgstr ""
 
 msgid "unlimited"
-msgstr "illimitati"
+msgstr "illimitato"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr ""
