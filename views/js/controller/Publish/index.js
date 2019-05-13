@@ -25,7 +25,7 @@ define([
     'provider/resources',
     'ui/destination/selector',
     'ui/feedback',
-    'core/taskQueue/taskQueue'
+    'ui/taskQueue/taskQueue'
 ], function ($, _, __, urlHelper, actionManager, resourceProviderFactory, destinationSelectorFactory, feedback, taskQueue) {
     'use strict';
 
