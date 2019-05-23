@@ -67,11 +67,7 @@ class WizardForm extends \tao_helpers_form_FormContainer
             throw new \common_Exception('missing class in simple delivery creation form');
         }
 
-        if (isset($this->data['isToggable']) && $this->data['isToggable'] === true) {
-            $toggleElt = \tao_helpers_form_FormFactory::getElement('toggleElt', 'Free');
-            $toggleElt->setValue('<div class="form-switch"></div>');
-            $this->form->addElement($toggleElt);
-        }
+        $this->applyToggleElement();
 
         $classUriElt = \tao_helpers_form_FormFactory::getElement('classUri', 'Hidden');
         $classUriElt->setValue($class->getUri());
@@ -115,10 +111,20 @@ class WizardForm extends \tao_helpers_form_FormContainer
         }
 
     }
+
+    protected function applyToggleElement()
+    {
+        if (isset($this->data['isToggable']) && $this->data['isToggable'] === true) {
+            $toggleElt = \tao_helpers_form_FormFactory::getElement('toggleElt', 'Free');
+            $toggleElt->setValue('<div class="form-switch"></div>');
+//            $this->form->addElement($toggleElt);
+        }
+    }
+
     /**r
      * @return ServiceManager
      */
-    private function getServiceManager()
+    protected function getServiceManager()
     {
         return ServiceManager::getServiceManager();
     }
