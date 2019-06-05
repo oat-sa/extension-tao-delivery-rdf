@@ -13,22 +13,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2013-2019 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  *
  */
-define(['jquery', 'helpers', 'ui/modal'],
-function ($, helpers) {
+define([
+    'jquery',
+    'util/url',
+    'ui/modal'
+], function ($, urlUtil) {
     'use strict';
 
     return {
-        start : function(){
+        start(){
             $('#exclude-btn').click(function() {
-                var delivery = $(this).data('delivery');
-                $('#testtaker-form').load(helpers._url('excludeTesttaker', 'DeliveryMgmt', 'taoDeliveryRdf', {'uri' : delivery}), function() {
-                    $('body').prepend($('#modal-container'));
-                    $('#testtaker-form').modal();
-                });
+                const delivery = $(this).data('delivery');
+
+                $('#testtaker-form').load(
+                    urlUtil.route('excludeTesttaker', 'DeliveryMgmt', 'taoDeliveryRdf', {'uri' : delivery}),
+                    () => {
+                        $('body').prepend($('#modal-container'));
+                        $('#testtaker-form').modal();
+                    }
+                );
             });
         }
     };
