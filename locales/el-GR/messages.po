@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint95\n"
-"PO-Revision-Date: 2019-02-01T10:09:59\n"
+"Project-Id-Version: TAO 3.3.0-sprint104\n"
+"PO-Revision-Date: 2019-06-07T10:04:21\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: el-GR\n"
@@ -59,6 +59,9 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Class successfully created."
+msgstr ""
+
+msgid "Continue deleting of delivery \"%s\"."
 msgstr ""
 
 msgid "Create a new delivery"
