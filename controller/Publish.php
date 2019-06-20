@@ -20,14 +20,11 @@
 namespace oat\taoDeliveryRdf\controller;
 
 use oat\generis\model\OntologyRdfs;
-use common_session_SessionManager as SessionManager;
 use oat\oatbox\event\EventManager;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoQtiItem\model\qti\Service as QtiItemService;
-use oat\taoQtiTest\models\TestModelService;
 use \tao_helpers_Uri;
 
 /**
@@ -64,19 +61,6 @@ class Publish extends \tao_actions_SaSModule
             $deliveryClass = $this->getClass($classUri);
             /** @var DeliveryFactory $deliveryFactoryResources */
             $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-
-            $qtiTestService = $this->getServiceLocator()->get(TestModelService::SERVICE_ID);
-            $items = $qtiTestService->getItems($test);
-            $lang = SessionManager::getSession()->getDataLanguage();
-            $qtiItemService = QtiItemService::singleton();
-
-            foreach ($items as $item) {
-                $qtiItem = $qtiItemService->getDataItemByRdfItem($item, $lang, true);
-
-                if (count($qtiItem->getBody()->getElements()) === 0) {
-                    throw new \Exception('Test has an empty item', 401);
-                }
-            }
 
             $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray([OntologyRdfs::RDFS_LABEL => 'new delivery']);
             return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
