@@ -61,7 +61,6 @@ class Publish extends \tao_actions_SaSModule
             $deliveryClass = $this->getClass($classUri);
             /** @var DeliveryFactory $deliveryFactoryResources */
             $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-
             $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray([OntologyRdfs::RDFS_LABEL => 'new delivery']);
             return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
         }catch(\Exception $e){
