@@ -64,10 +64,22 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
     {
         $serviceManager = $this->getServiceManager();
         $providerService = $serviceManager->get(TestProviderService::SERVICE_ID);
-        $providers = $providerService->getAllProviders();
-        return array_filter($providers, function ($provider) {
-            return !is_null($provider) && $provider->isActive();
-        });
+        $activeProviders = array_filter(
+            $providerService->getAllProviders(),
+            function ($provider) {
+                return !is_null($provider) && $provider->isActive();
+            }
+        );
+        $providers = [];
+        foreach($activeProviders as $provider){
+            $category = $provider->getCategory();
+            if(!isset($providers[$category])){
+                $providers[$category] = [];
+            }
+            $providers[$category][] = $provider;
+        }
+        $providers['plugins'] = array_values($this->getPlugins($execution));
+        return $providers;
     }
 
     /**
