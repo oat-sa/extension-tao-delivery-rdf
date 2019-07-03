@@ -36,7 +36,7 @@ return array(
         'tao'         => '>=36.1.0',
         'taoGroups'   => '>=4.0.0',
         'taoTests'    => '>=12.1.0',
-        'taoQtiTest'  => '>=33.9.0',
+        'taoQtiTest'  => '>=33.10.0',
         'taoDelivery' => '>=13.3.0',
         'taoResultServer' => '>=7.0.0'
     ),
