@@ -22,8 +22,8 @@ use oat\generis\test\TestCase;
 use oat\tao\model\TaoOntology;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use tao_models_classes_service_FileStorage;
-use oat\taoDeliveryRdf\model\GroupAssignment;
-use oat\oatbox\service\ServiceManager;
+use tao_models_classes_service_ServiceCall;
+use oat\taoDelivery\model\RuntimeService;
 
 class DeliveryAssemblyServiceTest extends TestCase
 {
@@ -128,5 +128,38 @@ class DeliveryAssemblyServiceTest extends TestCase
 
         $fileStorage->method('deleteDirectoryById')->willReturn(false);
         $this->assertFalse($service->deleteDeliveryDirectory($assembly));
+    }
+
+    public function testGetRuntime()
+    {
+        $assembly = $this->getMockBuilder(core_kernel_classes_Resource::class)
+            ->setConstructorArgs(['test'])
+            ->getMock();
+
+        $runtimeService = $this->getMockBuilder(RuntimeService::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getRuntime', 'getDeliveryContainer'])
+            ->getMock();
+        $runtimeService->method('getRuntime')->willReturn(true);
+        $runtimeService->method('getDeliveryContainer')->willReturn(true);
+
+        $serviceLocator = $this->getServiceLocatorMock([
+            RuntimeService::SERVICE_ID => $runtimeService,
+        ]);
+
+        $service = new DeliveryAssemblyService();
+        $service->setServiceLocator($serviceLocator);
+        $this->assertTrue($service->getRuntime($assembly));
+    }
+
+    public function testGetCompilationDate() {
+        $assembly = $this->getMockBuilder(core_kernel_classes_Resource::class)
+            ->setConstructorArgs(['test'])
+            ->setMethods(['getUniquePropertyValue'])
+            ->getMock();
+        $assembly->method('getUniquePropertyValue')->willReturn('test');
+
+        $service = new DeliveryAssemblyService();
+        $this->assertEquals('test', $service->getCompilationDate($assembly));
     }
 }
