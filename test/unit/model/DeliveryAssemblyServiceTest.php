@@ -22,6 +22,8 @@ use oat\generis\test\TestCase;
 use oat\tao\model\TaoOntology;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use tao_models_classes_service_FileStorage;
+use oat\taoDeliveryRdf\model\GroupAssignment;
+use oat\oatbox\service\ServiceManager;
 
 class DeliveryAssemblyServiceTest extends TestCase
 {
@@ -69,5 +71,62 @@ class DeliveryAssemblyServiceTest extends TestCase
         $service->method('deleteDeliveryDirectory')->willReturn(true);
 
         $this->assertTrue($service->deleteInstance($resource));
+    }
+
+    public function testDeleteDeliveryDirectory()
+    {
+        $class = $this->getMockBuilder(core_kernel_classes_Class::class)
+            ->setConstructorArgs(['test'])
+            ->setMethods(['getInstances'])
+            ->getMock();
+        $class->method('getInstances')->willReturn(['test' => 'test']);
+
+        $property1 = $this->getMockBuilder(core_kernel_classes_Property::class)
+            ->setConstructorArgs(['test1'])
+            ->setMethods(['delete'])
+            ->getMock();
+        $property1->method('delete')->willReturn(true);
+
+        $property2 = $this->getMockBuilder(core_kernel_classes_Property::class)
+            ->setConstructorArgs(['test2'])
+            ->setMethods(['delete'])
+            ->getMock();
+        $property2->method('delete')->willReturn(true);
+
+        $assembly = $this->getMockBuilder(core_kernel_classes_Resource::class)
+            ->setConstructorArgs(['test'])
+            ->setMethods(['getPropertyValues'])
+            ->getMock();
+        $assembly->method('getPropertyValues')->willReturn(['test1' => $property1, 'test2' => $property2]);
+
+        $fileStorage = $this->getMockBuilder(tao_models_classes_service_FileStorage::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['deleteDirectoryById'])
+            ->getMock();
+
+        $service = $this->getMockBuilder(DeliveryAssemblyService::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getFileStorage', 'getRootClass'])
+            ->getMock();
+        $service->method('getFileStorage')->willReturn($fileStorage);
+        $service->method('getRootClass')->willReturn($class);
+
+        $fileStorage->method('deleteDirectoryById')->willReturn(true);
+        $this->assertTrue($service->deleteDeliveryDirectory($assembly));
+
+        $fileStorage = $this->getMockBuilder(tao_models_classes_service_FileStorage::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['deleteDirectoryById'])
+            ->getMock();
+
+        $service = $this->getMockBuilder(DeliveryAssemblyService::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getFileStorage', 'getRootClass'])
+            ->getMock();
+        $service->method('getFileStorage')->willReturn($fileStorage);
+        $service->method('getRootClass')->willReturn($class);
+
+        $fileStorage->method('deleteDirectoryById')->willReturn(false);
+        $this->assertFalse($service->deleteDeliveryDirectory($assembly));
     }
 }
