@@ -162,4 +162,16 @@ class DeliveryAssemblyServiceTest extends TestCase
         $service = new DeliveryAssemblyService();
         $this->assertEquals('test', $service->getCompilationDate($assembly));
     }
+
+    public function testGetOrigin()
+    {
+        $assembly = $this->getMockBuilder(core_kernel_classes_Resource::class)
+            ->setConstructorArgs(['test'])
+            ->setMethods(['getUniquePropertyValue'])
+            ->getMock();
+        $assembly->method('getUniquePropertyValue')->willReturn('test');
+
+        $service = new DeliveryAssemblyService();
+        $this->assertEquals('test', $service->getOrigin($assembly));
+    }
 }
