@@ -19,7 +19,6 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
-use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use \core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\smoothsql\search\filter\Filter;
@@ -68,7 +67,7 @@ class DeliveryAssemblyService extends OntologyClassService
      */
     public function getRootClass()
     {
-        return new core_kernel_classes_Class(self::CLASS_URI);
+        return $this->getClass(self::CLASS_URI);
     }
 
     /**
