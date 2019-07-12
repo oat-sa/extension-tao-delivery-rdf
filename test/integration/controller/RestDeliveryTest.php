@@ -252,7 +252,7 @@ class RestDeliveryTest extends RestTestRunner
         $this->assertFalse($data['success']);
 
         $this->assertTrue(isset($data['errorMsg']));
-        $this->assertEquals('At least one mandatory parameter was required but found missing in your request', $data['errorMsg']);
+        $this->assertEquals('Missed required parameter: delivery-label', $data['errorMsg']);
     }
 
     public function testCreateClassWithoutComment()
