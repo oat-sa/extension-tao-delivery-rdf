@@ -20,9 +20,7 @@
 
 namespace oat\taoDeliveryRdf\test\integration\model;
 
-use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\test\integration\FileStorageTestCase;
-use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use Prophecy\Argument;
 
@@ -92,7 +90,7 @@ class DeliveryAssemblyServiceTest extends FileStorageTestCase
      */
     public function testGetFileStorage()
     {
-        $assemblyService = DeliveryAssemblyService::singleton();
+        $assemblyService = new DeliveryAssemblyService();
 
         $class = new \ReflectionClass(DeliveryAssemblyService::class);
         $method = $class->getMethod('getFileStorage');
@@ -106,10 +104,10 @@ class DeliveryAssemblyServiceTest extends FileStorageTestCase
      */
     public function testGetRootClass()
     {
-        $assemblyService = DeliveryAssemblyService::singleton();
+        $assemblyService = new DeliveryAssemblyService();
 
         $class = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
-        $this->assertEquals($class, $assemblyService->getRootClass());
+        $this->assertEquals($class->getUri(), $assemblyService->getRootClass()->getUri());
     }
 
     /**
