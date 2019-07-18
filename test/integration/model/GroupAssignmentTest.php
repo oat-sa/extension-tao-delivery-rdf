@@ -43,7 +43,6 @@ class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
      */
     public function __construct($name = null, array $data = array(), $dataName = '') {
         parent::__construct($name, $data, $dataName);
-        common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
     }
 
     /**
