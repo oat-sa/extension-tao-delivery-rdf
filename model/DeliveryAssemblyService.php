@@ -19,7 +19,6 @@
  */
 namespace oat\taoDeliveryRdf\model;
 
-use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use \core_kernel_classes_Property;
 use oat\generis\model\kernel\persistence\smoothsql\search\filter\Filter;
@@ -27,6 +26,7 @@ use oat\generis\model\kernel\persistence\smoothsql\search\filter\FilterOperator;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
 use oat\taoDelivery\model\RuntimeService;
+use oat\tao\model\OntologyClassService;
 
 /**
  * Service to manage the authoring of deliveries
@@ -35,7 +35,7 @@ use oat\taoDelivery\model\RuntimeService;
  * @author Joel Bout, <joel@taotesting.com>
  * @package taoDelivery
  */
-class DeliveryAssemblyService extends \tao_models_classes_ClassService
+class DeliveryAssemblyService extends OntologyClassService
 {
     const PROPERTY_ORIGIN = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
 
@@ -67,7 +67,7 @@ class DeliveryAssemblyService extends \tao_models_classes_ClassService
      */
     public function getRootClass()
     {
-        return new core_kernel_classes_Class(self::CLASS_URI);
+        return $this->getClass(self::CLASS_URI);
     }
 
     /**
