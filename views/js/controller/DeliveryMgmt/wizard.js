@@ -17,59 +17,10 @@
  *
  */
 define([
-    'lodash',
     'jquery',
-    'i18n',
-    'ui/filter',
-    'ui/feedback',
-    'util/url',
-    'layout/actions',
-    'core/promise',
-    'ui/taskQueue/taskQueue',
-    'ui/taskQueueButton/standardButton'
-], function (_, $, __, filterFactory, feedback, urlUtils, actionManager, Promise, taskQueue, taskCreationButtonFactory) {
+    'taoDeliveryRdf/util/forms/inputBehaviours'
+], function ($, inputBehaviours) {
     'use strict';
-
-    var provider = {
-        /**
-         * List available tests
-         * @param {Object} data
-         * @returns {Promise}
-         */
-        list: function list(data) {
-            return new Promise(function (resolve, reject) {
-                $.ajax({
-                    url: urlUtils.route('getAvailableTests', 'DeliveryMgmt', 'taoDeliveryRdf'),
-                    data: {
-                        q: data.q,
-                        page: data.page
-                    },
-                    type: 'GET',
-                    dataType: 'JSON'
-                }).done(function (tests) {
-                    if (tests) {
-                        resolve(tests);
-                    } else {
-                        reject(new Error(__('Unable to load tests')));
-                    }
-                }).fail(function () {
-                    reject(new Error(__('Unable to load tests')));
-                });
-            });
-        }
-    };
-
-    /**
-     * wrapped the old jstree API used to refresh the tree and optionally select a resource
-     * @param {String} [uriResource] - the uri resource node to be selected
-     */
-    var refreshTree = function refreshTree(uriResource){
-        actionManager.trigger('refresh', {
-            uri : uriResource
-        });
-    };
-
-    var taskCreationButton;
 
     return {
         start: function () {
@@ -78,74 +29,8 @@ define([
             var $form = $('#simpleWizard');
             var $container = $form.closest('.content-block');
 
-            this.createTestSelector($filterContainer, $formElement);
-
-            this.replaceSubmitWithTaskButton($form, $container);
-        },
-
-        createTestSelector: function createTestSelector($filterContainer, $formElement) {
-            filterFactory($filterContainer, {
-                placeholder: __('Select the test you want to publish to the test-takers'),
-                width: '64%',
-                quietMillis: 1000,
-                label: __('Select the test')
-            }).on('change', function (test) {
-                $formElement.val(test);
-                if(test){
-                    taskCreationButton.enable();
-                }else{
-                    taskCreationButton.disable();
-                }
-            }).on('request', function (params) {
-                provider
-                    .list(params.data)
-                    .then(function (tests) {
-                        params.success(tests);
-                    })
-                    .catch(function (err) {
-                        params.error(err);
-                        feedback().error(err);
-                    });
-            }).render('<%- text %>');
-        },
-
-        replaceSubmitWithTaskButton: function replaceSubmitWithTaskButton($form, $container) {
-            //find the old submitter and replace it with the new component
-            var $oldSubmitter = $form.find('.form-submitter');
-            taskCreationButton = taskCreationButtonFactory({
-                type : 'info',
-                icon : 'delivery',
-                title : __('Publish the test'),
-                label : __('Publish'),
-                taskQueue : taskQueue,
-                taskCreationUrl : $form.prop('action'),
-                taskCreationData : function getTaskCreationData(){
-                    return $form.serializeArray();
-                },
-                taskReportContainer : $container
-            }).on('finished', function(result){
-                if (result.task
-                    && result.task.report
-                    && _.isArray(result.task.report.children)
-                    && result.task.report.children.length
-                    && result.task.report.children[0]) {
-                    if(result.task.report.children[0].data
-                        && result.task.report.children[0].data.uriResource){
-                        feedback().info(__('%s completed', result.task.taskLabel));
-                        refreshTree(result.task.report.children[0].data.uriResource);
-                    }else{
-                        this.displayReport(result.task.report.children[0], __('Error'));
-                    }
-                }
-            }).on('continue', function(){
-                refreshTree();
-            }).on('error', function(err){
-                //format and display error message to user
-                feedback().error(err);
-            }).render($oldSubmitter.closest('.form-toolbar')).disable();
-
-            //replace the old submitter with the new one and apply its style
-            $oldSubmitter.replaceWith(taskCreationButton.getElement().css({float: 'right'}));
+            inputBehaviours.createTestSelector($filterContainer, $formElement);
+            inputBehaviours.replaceSubmitWithTaskButton($form, $container);
         }
     };
 });
