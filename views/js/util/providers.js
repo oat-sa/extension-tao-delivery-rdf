@@ -32,7 +32,7 @@ define([
          * @param {Object} data
          * @returns {Promise}
          */
-        list: function list(data) {
+        listTests(data) {
             return new Promise(function (resolve, reject) {
                 $.ajax({
                     url: urlUtils.route('getAvailableTests', 'DeliveryMgmt', 'taoDeliveryRdf'),

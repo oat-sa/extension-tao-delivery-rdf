@@ -25,10 +25,9 @@ define([
     'ui/filter',
     'ui/feedback',
     'layout/actions',
-    'taoDeliveryRdf/util/providers',
     'ui/taskQueue/taskQueue',
     'ui/taskQueueButton/standardButton'
-], function (_, __, filterFactory, feedback, actionManager, providers, taskQueue, taskCreationButtonFactory) {
+], function (_, __, filterFactory, feedback, actionManager, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
     /**
@@ -41,60 +40,79 @@ define([
         });
     };
 
-    let taskCreationButton; // inject it?
-
     return {
         /**
          * Enhances a hidden form field, rendering a text input with filter, autocomplete and dropdown
-         * @param {jQuery} $filterContainer
-         * @param {jQuery} $formElement
+         * @param {Object} options
+         * @param {jQuery} options.$filterContainer
+         * @param {jQuery} options.$formElement
+         * @param {taskQueueButton} options.taskButton - button which submits the form
+         * @param {Function} options.dataProvider - provider function which returns a Promise
+         * @param {String} options.inputPlaceholder
+         * @param {String} options.inputLabel
+         * @returns {filter} component which manages the form input
          */
-        createTestSelector($filterContainer, $formElement) {
-            filterFactory($filterContainer, {
-                placeholder: __('Select the test you want to publish to the test-takers'),
+        createSelectorInput(options) {
+            // unpack options:
+            const { $filterContainer, $formElement, taskButton, dataProvider, inputPlaceholder, inputLabel } = options;
+
+            return filterFactory($filterContainer, {
+                placeholder: inputPlaceholder,
+                label: inputLabel,
                 width: '64%',
-                quietMillis: 1000,
-                label: __('Select the test')
-            }).on('change', function (test) {
-                $formElement.val(test);
-                if(test){
-                    taskCreationButton.enable();
-                }else{
-                    taskCreationButton.disable();
+                quietMillis: 1000
+            })
+            .on('change', function(selection) {
+                $formElement.val(selection);
+                if (selection) {
+                    taskButton.enable();
+                } else {
+                    taskButton.disable();
                 }
-            }).on('request', function (params) {
-                providers
+            })
+            .on('request', function(params) {
+                dataProvider
                     .list(params.data)
-                    .then(function (tests) {
-                        params.success(tests);
+                    .then(function(data) {
+                        params.success(data);
                     })
-                    .catch(function (err) {
+                    .catch(function(err) {
                         params.error(err);
                         feedback().error(err);
                     });
-            }).render('<%- text %>');
+            })
+            .render('<%- text %>');
         },
 
         /**
          * Replaces rendered submit input with a button that sends a task to taskQueue over AJAX
-         * @param {jQuery} $form
-         * @param {jQuery} $reportContainer
+         * @param {Object} options
+         * @param {jQuery} options.$form
+         * @param {jQuery} options.$reportContainer
+         * @param {Object} options.buttonTitle
+         * @param {Object} options.buttonLabel
+         * @returns {taskQueueButton}
          */
-        replaceSubmitWithTaskButton($form, $reportContainer) {
-            //find the old submitter and replace it with the new component
-            var $oldSubmitter = $form.find('.form-submitter');
-            taskCreationButton = taskCreationButtonFactory({
+        replaceSubmitWithTaskButton(options) {
+            // unpack options:
+            const { $form, $reportContainer, buttonTitle, buttonLabel } = options;
+
+            //find the old submitter
+            const $oldSubmitter = $form.find('.form-submitter');
+            //prepare the new component
+            const taskCreationButton = taskCreationButtonFactory({
                 type : 'info',
                 icon : 'delivery',
-                title : __('Publish the test'),
-                label : __('Publish'),
+                title : buttonTitle,
+                label : buttonLabel,
                 taskQueue : taskQueue,
                 taskCreationUrl : $form.prop('action'),
                 taskCreationData : function getTaskCreationData(){
                     return $form.serializeArray();
                 },
                 taskReportContainer : $reportContainer
-            }).on('finished', function(result){
+            })
+            .on('finished', function(result){
                 if (result.task
                     && result.task.report
                     && _.isArray(result.task.report.children)
@@ -108,15 +126,22 @@ define([
                         this.displayReport(result.task.report.children[0], __('Error'));
                     }
                 }
-            }).on('continue', function(){
+            })
+            .on('continue', function(){
                 refreshTree();
-            }).on('error', function(err){
+            })
+            .on('error', function(err){
                 //format and display error message to user
                 feedback().error(err);
-            }).render($oldSubmitter.closest('.form-toolbar')).disable();
+                this.trigger('finished');
+            })
+            .render($oldSubmitter.closest('.form-toolbar'))
+            .disable();
 
-            //replace the old submitter with the new one and apply its style
-            $oldSubmitter.replaceWith(taskCreationButton.getElement().css({float: 'right'}));
+            //replace the old submitter with the new one
+            $oldSubmitter.replaceWith(taskCreationButton.getElement());
+
+            return taskCreationButton;
         }
     };
 });

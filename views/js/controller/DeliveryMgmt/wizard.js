@@ -18,19 +18,38 @@
  */
 define([
     'jquery',
+    'i18n',
+    'taoDeliveryRdf/util/providers',
     'taoDeliveryRdf/util/forms/inputBehaviours'
-], function ($, inputBehaviours) {
+], function ($, __, testProviders, inputBehaviours) {
     'use strict';
 
     return {
-        start: function () {
-            var $filterContainer = $('.test-select-container');
-            var $formElement = $('#test');
-            var $form = $('#simpleWizard');
-            var $container = $form.closest('.content-block');
+        start() {
+            const $form = $('#simpleWizard');
+            const $reportContainer = $form.closest('.content-block');
+            const $filterContainer = $('.test-select-container');
+            const $formElement = $('#test');
 
-            inputBehaviours.createTestSelector($filterContainer, $formElement);
-            inputBehaviours.replaceSubmitWithTaskButton($form, $container);
+            // Replace submit button with taskQueue requester
+            const taskButton = inputBehaviours.replaceSubmitWithTaskButton({
+                $form,
+                $reportContainer,
+                buttonTitle: __('Publish the test'),
+                buttonLabel: __('Publish')
+            });
+
+            // Enhanced selector input for tests:
+            inputBehaviours.createSelectorInput({
+                $filterContainer,
+                $formElement,
+                taskButton,
+                dataProvider: {
+                    list: testProviders.listTests
+                },
+                inputPlaceholder: __('Select the test you want to publish to the test-takers'),
+                inputLabel: __('Select the test')
+            });
         }
     };
 });
