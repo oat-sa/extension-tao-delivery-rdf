@@ -31,9 +31,9 @@ define([
     'use strict';
 
     var provider = {
-
         /**
          * List available tests
+         * @param {Object} data
          * @returns {Promise}
          */
         list: function list(data) {
@@ -69,14 +69,21 @@ define([
         });
     };
 
+    var taskCreationButton;
+
     return {
         start: function () {
             var $filterContainer = $('.test-select-container');
             var $formElement = $('#test');
             var $form = $('#simpleWizard');
             var $container = $form.closest('.content-block');
-            var taskCreationButton, $oldSubmitter;
 
+            this.createTestSelector($filterContainer, $formElement);
+
+            this.replaceSubmitWithTaskButton($form, $container);
+        },
+
+        createTestSelector: function createTestSelector($filterContainer, $formElement) {
             filterFactory($filterContainer, {
                 placeholder: __('Select the test you want to publish to the test-takers'),
                 width: '64%',
@@ -100,9 +107,11 @@ define([
                         feedback().error(err);
                     });
             }).render('<%- text %>');
+        },
 
+        replaceSubmitWithTaskButton: function replaceSubmitWithTaskButton($form, $container) {
             //find the old submitter and replace it with the new component
-            $oldSubmitter = $form.find('.form-submitter');
+            var $oldSubmitter = $form.find('.form-submitter');
             taskCreationButton = taskCreationButtonFactory({
                 type : 'info',
                 icon : 'delivery',
