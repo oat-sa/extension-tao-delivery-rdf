@@ -53,10 +53,14 @@ define([
          * @param {String} options.inputLabel
          * @returns {filter} component which manages the form input
          */
-        createSelectorInput(options) {
-            // unpack options:
-            const { $filterContainer, $formElement, taskButton, dataProvider, inputPlaceholder, inputLabel } = options;
-
+        createSelectorInput({
+            $filterContainer,
+            $inputElement,
+            taskButton,
+            dataProvider,
+            inputPlaceholder = __('Select the test you want to publish to the test-takers'),
+            inputLabel = __('Select the test')
+        }) {
             return filterFactory($filterContainer, {
                 placeholder: inputPlaceholder,
                 label: inputLabel,
@@ -64,7 +68,7 @@ define([
                 quietMillis: 1000
             })
             .on('change', function(selection) {
-                $formElement.val(selection);
+                $inputElement.val(selection);
                 if (selection) {
                     taskButton.enable();
                 } else {
@@ -170,9 +174,7 @@ define([
                 taskButton,
                 dataProvider: {
                     list: providers.listTests
-                },
-                inputPlaceholder: __('Select the test you want to publish to the test-takers'),
-                inputLabel: __('Select the test')
+                }
             });
         }
     };
