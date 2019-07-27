@@ -20,6 +20,7 @@
  * @author Martin Nicholson <martin@taotesting.com>
  */
 define([
+    'jquery',
     'lodash',
     'i18n',
     'ui/filter',
@@ -27,7 +28,7 @@ define([
     'layout/actions',
     'ui/taskQueue/taskQueue',
     'ui/taskQueueButton/standardButton'
-], function (_, __, filterFactory, feedback, actionManager, taskQueue, taskCreationButtonFactory) {
+], function ($, _, __, filterFactory, feedback, actionManager, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
     /**
@@ -93,10 +94,12 @@ define([
          * @param {Object} options.buttonLabel
          * @returns {taskQueueButton}
          */
-        replaceSubmitWithTaskButton(options) {
-            // unpack options:
-            const { $form, $reportContainer, buttonTitle, buttonLabel } = options;
-
+        replaceSubmitWithTaskButton({
+            $form,
+            $reportContainer,
+            buttonTitle = __('Publish the test'),
+            buttonLabel = __('Publish')
+        }) {
             //find the old submitter
             const $oldSubmitter = $form.find('.form-submitter');
             //prepare the new component
@@ -142,6 +145,35 @@ define([
             $oldSubmitter.replaceWith(taskCreationButton.getElement());
 
             return taskCreationButton;
+        },
+
+        /**
+         * Set up the wizard form for publishing a TAO Local delivery
+         * @param {jQuery} $form
+         * @param {Object} providers - contains function(s) for fetching data
+         */
+        setupTaoLocalForm($form, providers) {
+            const $reportContainer = $form.closest('.content-block');
+            const $filterContainer = $('.test-select-container', $form);
+            const $inputElement = $('#test', $form);
+
+            // Replace submit button with taskQueue requester
+            const taskButton = this.replaceSubmitWithTaskButton({
+                $form,
+                $reportContainer
+            });
+
+            // Enhanced selector input for tests:
+            this.createSelectorInput({
+                $filterContainer,
+                $inputElement,
+                taskButton,
+                dataProvider: {
+                    list: providers.listTests
+                },
+                inputPlaceholder: __('Select the test you want to publish to the test-takers'),
+                inputLabel: __('Select the test')
+            });
         }
     };
 });

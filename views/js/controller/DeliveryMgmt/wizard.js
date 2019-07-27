@@ -16,40 +16,20 @@
  * Copyright (c) 2019 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
+/**
+ * @author Martin Nicholson <martin@taotesting.com>
+ */
 define([
     'jquery',
-    'i18n',
     'taoDeliveryRdf/util/providers',
     'taoDeliveryRdf/util/forms/inputBehaviours'
-], function ($, __, testProviders, inputBehaviours) {
+], function ($, testProviders, inputBehaviours) {
     'use strict';
 
     return {
         start() {
             const $form = $('#simpleWizard');
-            const $reportContainer = $form.closest('.content-block');
-            const $filterContainer = $('.test-select-container');
-            const $formElement = $('#test');
-
-            // Replace submit button with taskQueue requester
-            const taskButton = inputBehaviours.replaceSubmitWithTaskButton({
-                $form,
-                $reportContainer,
-                buttonTitle: __('Publish the test'),
-                buttonLabel: __('Publish')
-            });
-
-            // Enhanced selector input for tests:
-            inputBehaviours.createSelectorInput({
-                $filterContainer,
-                $formElement,
-                taskButton,
-                dataProvider: {
-                    list: testProviders.listTests
-                },
-                inputPlaceholder: __('Select the test you want to publish to the test-takers'),
-                inputLabel: __('Select the test')
-            });
+            inputBehaviours.setupTaoLocalForm($form, testProviders);
         }
     };
 });
