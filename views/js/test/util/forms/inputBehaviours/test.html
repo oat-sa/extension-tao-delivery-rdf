@@ -16,6 +16,7 @@
 
             //load the config
             require(['/tao/ClientConfig/config'], function () {
+
                 //load the test
                 require(['taoDeliveryRdf/test/util/forms/inputBehaviours/test'], function () {
                     //Tests loaded, run tests
@@ -27,12 +28,17 @@
     <body>
         <div id="qunit"></div>
         <div id="qunit-fixture">
+            <div id="feedback-box"></div>
             <div class="content-block">
                 <div id="form-container">
-                    <div id="#simpleWizard">
+                    <form id="simpleWizard" action="/taoDeliveryRdf/DeliveryMgmt/wizard">
                         <div class="test-select-container"></div>
                         <input type="hidden" id="test" />
-                    </div>
+                        <button class="form-submitter">
+                            <span class="icon-publish"></span>
+                            Publish
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

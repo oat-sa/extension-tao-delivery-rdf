@@ -120,10 +120,63 @@ define([
     });
 
     QUnit.test('replaceSubmitWithTaskButton', function(assert) {
-        const options = {};
+        // mocks
+        const mockResponse = {
+            task: {
+                taskLabel: 'fakeLabel',
+                report: {
+                    children: [{
+                        data: {
+                            uriResource: 'fakeUri'
+                        }
+                    }]
+                }
+            }
+        };
+        const mockEmptyResponse = {
+            task: {
+                report: {
+                    children: [{
+                        type: 'error',
+                        message: 'fakeMessage'
+                    }]
+                }
+            }
+        };
+
+        const $form = $('#simpleWizard');
+        const $reportContainer = $form.closest('.content-block');
+        const options = {
+            $form: $form,
+            $reportContainer: $reportContainer,
+            buttonTitle: 'Title',
+            buttonLabel: 'Label'
+        };
         const taskButton = inputBehaviours.replaceSubmitWithTaskButton(options);
 
-        assert.ok(true);
+        // taskButton
+        assert.equal(typeof taskButton, 'object', 'A task button object was created');
+        assert.equal(typeof taskButton.config.taskQueue, 'object', 'The task button has a taskQueue');
+        assert.ok(/\/taoDeliveryRdf\/DeliveryMgmt\/wizard/.test(taskButton.config.taskCreationUrl), 'The task button has the right url');
+
+        // old element not there
+        assert.equal($('button.form-submitter', $form).length, 0, 'The original button is gone');
+        // new element there
+        const $newButton = ($('button.loading-button', $form));
+        assert.equal($newButton.length, 1, 'A new button is present');
+        assert.equal($newButton.attr('disabled'), 'disabled', 'The button is disabled');
+        assert.ok(taskButton.is('disabled'), 'The component is disabled');
+        // title/label
+        assert.equal($newButton.attr('title'), 'Title', 'The button title is correct');
+        assert.equal($newButton.find(':contains("Label")').length, 1, 'The button label is correct');
+
+        // report feedback
+        taskButton.trigger('finished', mockResponse);
+        assert.equal($('.feedback.feedback-info :contains("fakeLabel completed")').length, 1, 'Success feedback was created');
+        // error in container
+        taskButton.trigger('finished', mockEmptyResponse);
+        assert.equal($('.task-report-container').length, 1, 'Error feedback was rendered to container');
+        assert.equal($('.task-report-container div.message').text(), 'fakeMessage', 'Error feedback contains message');
     });
 
     QUnit.test('setupTaoLocalForm', function(assert) {
