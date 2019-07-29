@@ -32,6 +32,7 @@ use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\generis\model\OntologyRdf;
+use oat\taoQtiTest\models\CompilationDataService;
 
 /**
  * AssemblerService Class.
@@ -67,6 +68,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             return  common_report_Report::createFailure(__('Unable to import Archive'));
         }
         $zip->extractTo($folder);
+        $this->importCleanup($folder);
         $zip->close();
 
         $manifestPath = $folder.self::MANIFEST_FILE;
@@ -244,7 +246,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
             $files = $directory->getIterator();
             foreach ($files as $file) {
-                \tao_helpers_File::addFilesToZip($zipArchive, $directory->readPsrStream($file), $directory->getRelativePath() . $file);
+                $this->addFile($directory, $zipArchive, $file, $directory->getRelativePath());
             }
             $data['dir'][$id] = $directory->getRelativePath();
         }
@@ -266,6 +268,39 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             $zipArchive->close();
             unlink($path);
             throw new \common_Exception('Unable to add manifest to exported delivery assembly');
+        }
+    }
+
+    protected function addFile(\tao_models_classes_service_StorageDirectory $directory, \ZipArchive $zipArchive, $sourceFileName, $destination)
+    {
+        if ($sourceFileName === '/compact-test.php') {
+            /** @var CompilationDataService $compilationDataService */
+            $compilationDataService = $this->getServiceLocator()->get(CompilationDataService::SERVICE_ID);
+            $zipArchive->addFromString(
+                $destination . '/compact-test.xml',
+                $compilationDataService->convertToSourceFormat($directory->read($sourceFileName))
+            );
+        } else {
+            \tao_helpers_File::addFilesToZip($zipArchive, $directory->readPsrStream($sourceFileName), $destination . $sourceFileName);
+        }
+    }
+
+    protected function importCleanup($tempFolder)
+    {
+        $dirIterator = new \RecursiveDirectoryIterator($tempFolder, \FilesystemIterator::SKIP_DOTS);
+
+        /** @var \SplFileInfo $file */
+        foreach(new \RecursiveIteratorIterator($dirIterator) as $file) {
+            $basename = $file->getBasename();
+            $path = $file->getPath();
+
+            if ($basename === 'compact-test.xml') {
+                $content = file_get_contents("${path}/${basename}");
+                /** @var CompilationDataService $compilationDataService */
+                $compilationDataService = $this->getServiceLocator()->get(CompilationDataService::SERVICE_ID);
+                file_put_contents("${path}/compact-test.php", $compilationDataService->convertToCompiledFormat($content));
+                unlink("${path}/${basename}");
+            }
         }
     }
 }
