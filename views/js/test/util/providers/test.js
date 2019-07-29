@@ -90,7 +90,7 @@ define([
             status: caseData.status,
             dataType: 'json',
             contentType: 'application/json',
-            data: () => {
+            data: function() {
                 assert.ok(true, 'Request received at configured url');
                 return true;
             },
@@ -120,7 +120,7 @@ define([
             status: caseData.status,
             dataType: 'json',
             contentType: 'application/json',
-            data: () => {
+            data: function() {
                 assert.ok(true, 'Request received at configured url');
                 return true;
             },

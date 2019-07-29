@@ -56,31 +56,17 @@ define([
     });
 
     QUnit.test('createSelectorInput', function(assert) {
-        const ready = assert.async();
+        var ready = assert.async();
 
         // mocks
-        const mockTaskButton = {
+        var mockTaskButton = {
             isEnabled: false,
-            enable: () => { mockTaskButton.isEnabled = true; },
-            disable: () => { mockTaskButton.isEnabled = false; }
+            enable: function() { mockTaskButton.isEnabled = true; },
+            disable: function() { mockTaskButton.isEnabled = false; }
         };
-        const reqParamsData = {q: 'myQuery', page: 1 };
-        $.mockjax({
-            url: /taoDeliveryRdf\/DeliveryMgmt\/getAvailableTests/,
-            status: 200,
-            dataType: 'json',
-            contentType: 'application/json',
-            data: json => {
-                assert.deepEqual(json, reqParamsData, 'Sent params received at configured url');
-                ready();
-                return true;
-            },
-            responseText: { success: true, ans: 42 }
-        });
-
-        const $filterContainer = $('.test-select-container');
-        const $inputElement = $('#test');
-        const options = {
+        var $filterContainer = $('.test-select-container');
+        var $inputElement = $('#test');
+        var options = {
             $filterContainer: $filterContainer,
             $inputElement: $inputElement,
             taskButton: mockTaskButton,
@@ -91,13 +77,32 @@ define([
             inputLabel: 'Label'
 
         };
-        const filter = inputBehaviours.createSelectorInput(options);
+        var filter,
+            $select2Label,
+            $select2Container,
+            $select2Offscreen;
+
+        var reqParamsData = {q: 'myQuery', page: 1 };
+        $.mockjax({
+            url: /taoDeliveryRdf\/DeliveryMgmt\/getAvailableTests/,
+            status: 200,
+            dataType: 'json',
+            contentType: 'application/json',
+            data: function(json) {
+                assert.deepEqual(json, reqParamsData, 'Sent params received at configured url');
+                ready();
+                return true;
+            },
+            responseText: { success: true, ans: 42 }
+        });
+
+        filter = inputBehaviours.createSelectorInput(options);
 
         assert.equal(typeof filter, 'object', 'A filter is returned'); // improve
         // rendering
-        const $select2Label = $('label.form_desc', $filterContainer);
-        const $select2Container = $('.select2-container', $filterContainer);
-        const $select2Offscreen = $('.select2-offscreen', $filterContainer);
+        $select2Label = $('label.form_desc', $filterContainer);
+        $select2Container = $('.select2-container', $filterContainer);
+        $select2Offscreen = $('.select2-offscreen', $filterContainer);
         assert.equal($select2Label.length, 1, 'A label is rendered');
         assert.equal($select2Container.length, 1, 'A container is created');
         assert.ok($select2Offscreen.length >= 1, 'Offscreen element(s) is created');
@@ -111,17 +116,16 @@ define([
         assert.equal($inputElement.val(), '', 'The hidden input was updated with the selected value');
         assert.equal(mockTaskButton.isEnabled, false, 'The task button got disabled');
         // on request (mockjax)
-        const reqParams = {
+        filter.trigger('request', {
             data: reqParamsData,
-            success: () => {},
-            error: () => {}
-        };
-        filter.trigger('request', reqParams);
+            success: function() {},
+            error: function() {}
+        });
     });
 
     QUnit.test('replaceSubmitWithTaskButton', function(assert) {
         // mocks
-        const mockResponse = {
+        var mockResponse = {
             task: {
                 taskLabel: 'fakeLabel',
                 report: {
@@ -133,7 +137,7 @@ define([
                 }
             }
         };
-        const mockEmptyResponse = {
+        var mockEmptyResponse = {
             task: {
                 report: {
                     children: [{
@@ -144,15 +148,16 @@ define([
             }
         };
 
-        const $form = $('#simpleWizard');
-        const $reportContainer = $form.closest('.content-block');
-        const options = {
+        var $form = $('#simpleWizard');
+        var $reportContainer = $form.closest('.content-block');
+        var options = {
             $form: $form,
             $reportContainer: $reportContainer,
             buttonTitle: 'Title',
             buttonLabel: 'Label'
         };
-        const taskButton = inputBehaviours.replaceSubmitWithTaskButton(options);
+        var taskButton = inputBehaviours.replaceSubmitWithTaskButton(options);
+        var $newButton;
 
         // taskButton
         assert.equal(typeof taskButton, 'object', 'A task button object was created');
@@ -162,7 +167,7 @@ define([
         // old element not there
         assert.equal($('button.form-submitter', $form).length, 0, 'The original button is gone');
         // new element there
-        const $newButton = ($('button.loading-button', $form));
+        $newButton = ($('button.loading-button', $form));
         assert.equal($newButton.length, 1, 'A new button is present');
         assert.equal($newButton.attr('disabled'), 'disabled', 'The button is disabled');
         assert.ok(taskButton.is('disabled'), 'The component is disabled');
@@ -178,12 +183,4 @@ define([
         assert.equal($('.task-report-container').length, 1, 'Error feedback was rendered to container');
         assert.equal($('.task-report-container div.message').text(), 'fakeMessage', 'Error feedback contains message');
     });
-
-    QUnit.test('setupTaoLocalForm', function(assert) {
-        const $form = $('#simpleWizard');
-        inputBehaviours.setupTaoLocalForm($form, testProviders);
-
-        assert.ok(true);
-    });
-
 });
