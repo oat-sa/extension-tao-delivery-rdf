@@ -46,7 +46,7 @@ define([
          * Enhances a hidden form field, rendering a text input with filter, autocomplete and dropdown
          * @param {Object} options
          * @param {jQuery} options.$filterContainer
-         * @param {jQuery} options.$formElement
+         * @param {jQuery} options.$inputElement
          * @param {taskQueueButton} options.taskButton - button which submits the form
          * @param {Function} options.dataProvider - provider function which returns a Promise
          * @param {String} options.inputPlaceholder
@@ -120,7 +120,8 @@ define([
                 taskReportContainer : $reportContainer
             })
             .on('finished', function(result){
-                if (result.task
+                if (result
+                    && result.task
                     && result.task.report
                     && _.isArray(result.task.report.children)
                     && result.task.report.children.length
