@@ -22,7 +22,8 @@
 define([
     'jquery',
     'taoDeliveryRdf/util/providers',
-    'taoDeliveryRdf/util/forms/inputBehaviours'
+    'taoDeliveryRdf/util/forms/inputBehaviours',
+    'css!taoDeliveryRdfCss/delivery-rdf.css'
 ], function ($, testProviders, inputBehaviours) {
     'use strict';
 
