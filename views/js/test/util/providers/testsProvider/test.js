@@ -21,9 +21,9 @@
  */
 define([
     'jquery',
-    'taoDeliveryRdf/util/providers',
+    'taoDeliveryRdf/util/providers/testsProvider',
     'lib/jquery.mockjax/jquery.mockjax'
-], function ($, providers) {
+], function ($, testsProvider) {
     'use strict';
 
     var requests;
@@ -37,16 +37,16 @@ define([
         $.mockjax.clear();
     });
 
-    QUnit.module('providers');
+    QUnit.module('testsProvider');
 
     QUnit.test('module', function(assert) {
         assert.expect(1);
-        assert.equal(typeof providers, 'object', 'The providers module exposes an object');
+        assert.equal(typeof testsProvider, 'object', 'The testsProvider module exposes an object');
     });
 
     QUnit.test('instance API ', function(assert) {
         assert.expect(1);
-        assert.equal(typeof providers.listTests, 'function', 'The providers instance exposes a "listTests" function');
+        assert.equal(typeof testsProvider.listTests, 'function', 'The testsProvider instance exposes a "listTests" function');
     });
 
     requests = {
@@ -99,7 +99,7 @@ define([
 
         assert.expect(3);
 
-        prom = providers.listTests(caseData)
+        prom = testsProvider.listTests(caseData)
             .then(function(value) {
                 assert.deepEqual(value, caseData.results, 'The promise resolved with the expected value');
                 ready();
@@ -129,7 +129,7 @@ define([
 
         assert.expect(4);
 
-        prom = providers.listTests(caseData)
+        prom = testsProvider.listTests(caseData)
             .then(function() {
                 assert.ok(false, 'Should not resolve');
                 ready();

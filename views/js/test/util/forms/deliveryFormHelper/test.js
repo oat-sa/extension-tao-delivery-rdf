@@ -21,38 +21,38 @@
  */
 define([
     'jquery',
-    'taoDeliveryRdf/util/providers',
-    'taoDeliveryRdf/util/forms/inputBehaviours',
+    'taoDeliveryRdf/util/providers/testsProvider',
+    'taoDeliveryRdf/util/forms/deliveryFormHelper',
     'lib/jquery.mockjax/jquery.mockjax'
-], function ($, testProviders, inputBehaviours) {
+], function ($, testsProvider, deliveryFormHelper) {
     'use strict';
 
-    QUnit.module('inputBehaviours');
+    QUnit.module('deliveryFormHelper');
 
     QUnit.test('module', function(assert) {
         assert.expect(1);
 
-        assert.equal(typeof inputBehaviours, 'object', 'The inputBehaviours module exposes an object');
+        assert.equal(typeof deliveryFormHelper, 'object', 'The deliveryFormHelper module exposes an object');
     });
 
-    var inputBehavioursApi = [
+    var deliveryFormHelperApi = [
         { name: 'createSelectorInput' },
         { name: 'replaceSubmitWithTaskButton' },
         { name: 'setupTaoLocalForm' }
     ];
 
-    QUnit.cases.init(inputBehavioursApi).test('instance API ', function(data, assert) {
+    QUnit.cases.init(deliveryFormHelperApi).test('instance API ', function(data, assert) {
         assert.expect(1);
         assert.equal(
-            typeof inputBehaviours[data.name],
+            typeof deliveryFormHelper[data.name],
             'function',
-            'The inputBehaviours instance exposes a "' + data.name + '" function'
+            'The deliveryFormHelper instance exposes a "' + data.name + '" function'
         );
     });
 
-    QUnit.test('provider dependency', function(assert) {
-        assert.equal(typeof testProviders, 'object', 'Providers are loaded');
-        assert.equal(typeof testProviders.listTests, 'function', 'Providers has a listTests function');
+    QUnit.test('testsProvider dependency', function(assert) {
+        assert.equal(typeof testsProvider, 'object', 'Provider is loaded');
+        assert.equal(typeof testsProvider.listTests, 'function', 'Provider has a listTests function');
     });
 
     QUnit.test('createSelectorInput', function(assert) {
@@ -71,7 +71,7 @@ define([
             $inputElement: $inputElement,
             taskButton: mockTaskButton,
             dataProvider: {
-                list: testProviders.listTests
+                list: testsProvider.listTests
             },
             inputPlaceholder: 'Placeholder',
             inputLabel: 'Label'
@@ -96,7 +96,7 @@ define([
             responseText: { success: true, ans: 42 }
         });
 
-        filter = inputBehaviours.createSelectorInput(options);
+        filter = deliveryFormHelper.createSelectorInput(options);
 
         assert.equal(typeof filter, 'object', 'A filter is returned'); // improve
         // rendering
@@ -156,7 +156,7 @@ define([
             buttonTitle: 'Title',
             buttonLabel: 'Label'
         };
-        var taskButton = inputBehaviours.replaceSubmitWithTaskButton(options);
+        var taskButton = deliveryFormHelper.replaceSubmitWithTaskButton(options);
         var $newButton;
 
         // taskButton
