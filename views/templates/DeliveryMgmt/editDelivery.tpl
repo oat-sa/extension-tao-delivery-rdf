@@ -1,7 +1,6 @@
 <?php
 use oat\tao\helpers\Template;
 ?>
-<!--link rel="stylesheet" type="text/css" href="<?= Template::css('delivery-rdf.css')?>" /-->
 
 <div class="delivery-headings flex-container-full">
     <header>
