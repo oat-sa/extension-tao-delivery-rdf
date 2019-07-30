@@ -21,16 +21,16 @@
  */
 define([
     'jquery',
-    'taoDeliveryRdf/util/providers',
-    'taoDeliveryRdf/util/forms/inputBehaviours',
+    'taoDeliveryRdf/util/providers/testsProvider',
+    'taoDeliveryRdf/util/forms/deliveryFormHelper',
     'css!taoDeliveryRdfCss/delivery-rdf.css'
-], function ($, testProviders, inputBehaviours) {
+], function ($, testsProvider, deliveryFormHelper) {
     'use strict';
 
     return {
         start() {
             const $form = $('#simpleWizard');
-            inputBehaviours.setupTaoLocalForm($form, testProviders);
+            deliveryFormHelper.setupTaoLocalForm($form, testsProvider);
         }
     };
 });
