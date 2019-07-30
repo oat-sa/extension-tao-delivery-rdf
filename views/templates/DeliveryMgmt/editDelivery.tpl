@@ -1,21 +1,20 @@
 <?php
 use oat\tao\helpers\Template;
 ?>
-<link rel="stylesheet" type="text/css" href="<?= Template::css('delivery-rdf.css')?>" />
+<!--link rel="stylesheet" type="text/css" href="<?= Template::css('delivery-rdf.css')?>" /-->
 
 <div class="delivery-headings flex-container-full">
     <header>
         <h2><?=_dh(get_data('label'))?></h2>
-        <p><?=__('Published on %2s', tao_helpers_Date::displayeDate(get_data('date')))?></p>
-        <?php if(has_data('updatedAt')) : ?>
-            <p><?=__('Last updated on %2s', tao_helpers_Date::displayeDate(get_data('updatedAt')))?></p>
-        <?php endif; ?>
-    </header>
-
-    <header>
-        <h3><?=__("Attempts")?></h3>
-    </header>
-    <p>
+        <p>
+            <span class="label"><?=__('Published on:') ?></span>
+            <span><?= tao_helpers_Date::displayeDate(get_data('date')) ?></span>
+            <?php if(has_data('updatedAt')) : ?>
+                <span class="label"><?=__('Last updated on:') ?></span>
+                <span><?= tao_helpers_Date::displayeDate(get_data('updatedAt')) ?></span>
+            <?php endif; ?>
+        </p>
+        <p>
         <?php if(has_data('exec')):?>
             <?php if(get_data('exec') == 0):?>
                 <?=__('No attempt has been started yet.')?>
@@ -25,25 +24,24 @@ use oat\tao\helpers\Template;
                 <?=__('There are currently %s attempts', get_data('exec'))?>.
             <?php endif;?>
         <?php else:?>
-            <?=__('No information available')?>.
+            <?=__('No information available about attempts')?>.
         <?php endif;?>
-    </p>
+        </p>
+    </header>
     <div>
         <table id="history-list"></table>
         <div id="history-list-pager"></div>
     </div>
-
 </div>
-    <header class="flex-container-full">
-        <h3><?=get_data('formTitle')?></h3>
-    </header>
-    <div class="main-container flex-container-main-form">
 
-        <div id="form-container">
-            <?=get_data('myForm')?>
-        </div>
+<header class="flex-container-full">
+    <h3><?=get_data('formTitle')?></h3>
+</header>
+<div class="main-container flex-container-main-form">
+    <div id="form-container">
+        <?=get_data('myForm')?>
     </div>
-
+</div>
 
 <div class="data-container-wrapper flex-container-remainder">
     <?= get_data('groupTree')?>

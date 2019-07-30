@@ -25,6 +25,12 @@
     h2 {
         margin-bottom: 5px;
     }
+    .label {
+        font-weight: bold;
+        &:not(:first-child) {
+            margin-left: 1em;
+        }
+    }
 }
 
 .xhtml_form {
