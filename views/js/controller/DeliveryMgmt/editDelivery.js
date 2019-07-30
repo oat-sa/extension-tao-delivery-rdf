@@ -20,7 +20,8 @@
 define([
     'jquery',
     'util/url',
-    'ui/modal'
+    'ui/modal',
+    'css!taoDeliveryRdfCss/delivery-rdf.css'
 ], function ($, urlUtil) {
     'use strict';
 
