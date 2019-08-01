@@ -10,5 +10,5 @@
 		"../../../tao/views/scss/inc/fonts/_tao-icon-vars.scss"
 	],
 	"names": [],
-	"mappings": "AAoBA,AAAA,mBAAmB,AAAA,CACf,KAAK,CAAE,IAAI,CACd"
+	"mappings": "AAoBA,AAAA,mBAAmB,AAAC,CAChB,KAAK,CAAE,IAAI,CACd"
 }

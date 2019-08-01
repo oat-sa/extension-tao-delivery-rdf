@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Test - deliveryFormHelper</title>
+        <base href="../../../../../../../tao/views/" />
+        <link rel="stylesheet" type="text/css" href="js/lib/qunit/qunit.css">
+        <script type="text/javascript" src="js/lib/qunit/qunit.js"></script>
+        <script type="text/javascript" src="js/lib/qunit/qunit-parameterize.js"></script>
+        <script type="text/javascript" src="js/lib/require.js"></script>
+        <script type="text/javascript" src="js/lib/blanket/blanket.min.js" data-cover-flag="branchTracking" data-cover-only="util/forms/deliveryFormHelper.js"></script>
+        <script type="text/javascript">
+
+            //don't start the test now
+            QUnit.config.autostart = false;
+
+            //load the config
+            require(['/tao/ClientConfig/config'], function () {
+
+                //load the test
+                require(['taoDeliveryRdf/test/util/forms/deliveryFormHelper/test'], function () {
+                    //Tests loaded, run tests
+                    QUnit.start();
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture">
+            <div id="feedback-box"></div>
+            <div class="content-block">
+                <div id="form-container">
+                    <form id="simpleWizard" action="/taoDeliveryRdf/DeliveryMgmt/wizard">
+                        <div class="test-select-container"></div>
+                        <input type="hidden" id="test" />
+                        <button class="form-submitter">
+                            <span class="icon-publish"></span>
+                            Publish
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

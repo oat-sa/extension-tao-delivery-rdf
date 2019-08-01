@@ -8,6 +8,7 @@ module.exports = function(grunt) {
     sass.taodeliveryrdf = { };
     sass.taodeliveryrdf.files = { };
     sass.taodeliveryrdf.files[root + 'css/selector.css'] = root + 'scss/selector.scss';
+    sass.taodeliveryrdf.files[root + 'css/delivery-rdf.css'] = root + 'scss/delivery-rdf.scss';
 
     watch.taodeliveryrdfsass = {
         files : [root + 'scss/**/*.scss'],
