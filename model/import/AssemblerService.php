@@ -19,6 +19,7 @@
  */
 namespace oat\taoDeliveryRdf\model\import;
 
+use ZipArchive;
 use common_report_Report;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
@@ -60,9 +61,8 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
      */
     public function importDelivery(core_kernel_classes_Class $deliveryClass, $archiveFile)
     {
-        
         $folder = \tao_helpers_File::createTempDir();
-        $zip = new \ZipArchive();
+        $zip = new ZipArchive();
         if ($zip->open($archiveFile) !== true) {
             return  common_report_Report::createFailure(__('Unable to import Archive'));
         }
@@ -76,12 +76,11 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $manifest = json_decode(file_get_contents($manifestPath), true);
 
         try {
-            
             $this->importDeliveryFiles($deliveryClass, $manifest, $folder);
-            
+
             $properties = $this->getAdditionalProperties($folder);
             $delivery = $this->importDeliveryResource($deliveryClass, $manifest, $properties);
-            
+
             $report = common_report_Report::createSuccess(__('Delivery "%s" successfully imported',$delivery->getUri()), $delivery);
         } catch (\Exception $e) {
             \common_Logger::w($e->getMessage());
@@ -141,7 +140,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $dirs           = $manifest['dir'];
         $serviceCall    = \tao_models_classes_service_ServiceCall::fromString(base64_decode($manifest['runtime']));
         $resultServer   = \taoResultServer_models_classes_ResultServerAuthoringService::singleton()->getDefaultResultServer();
-        
+
         $properties = array_merge($properties, array(
             OntologyRdfs::RDFS_LABEL                          => $label,
             DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => array_keys($dirs),
@@ -150,7 +149,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             DeliveryContainerService::PROPERTY_RESULT_SERVER      => $resultServer
         ));
         $delivery = $deliveryClass->createInstanceWithProperties($properties);
-        
+
         return $delivery;
     }
 
@@ -166,19 +165,18 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         foreach ($dirs as $id => $relPath) {
             \tao_models_classes_service_FileStorage::singleton()->import($id, $directory.$relPath);
         }
-        
     }
-    
+
     /**
      * export a compiled delivery into an archive
-     * 
+     *
      * @param core_kernel_classes_Resource $compiledDelivery
      * @param string $fsExportPath
      * @throws \Exception
      * @return string
      */
-    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '') {
-
+    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '')
+    {
         $this->logDebug("Exporting Delivery Assembly '" . $compiledDelivery->getUri() . "'...");
 
         $fileName = \tao_helpers_Display::textCleaner($compiledDelivery->getLabel()).'.zip';
@@ -192,9 +190,9 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         if (file_exists($path)) {
             unlink($path);
         }
-        
-        $zipArchive = new \ZipArchive();
-        if ($zipArchive->open($path, \ZipArchive::CREATE) !== true) {
+
+        $zipArchive = new ZipArchive();
+        if ($zipArchive->open($path, ZipArchive::CREATE) !== true) {
             throw new \Exception('Unable to create archive at '.$path);
         }
 
@@ -226,11 +224,11 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
      *
      * @param $path
      * @param core_kernel_classes_Resource $compiledDelivery
-     * @param \ZipArchive $zipArchive
+     * @param ZipArchive $zipArchive
      * @throws \common_Exception
      * @throws \core_kernel_classes_EmptyProperty
      */
-    protected function doExportCompiledDelivery($path, core_kernel_classes_Resource $compiledDelivery, \ZipArchive $zipArchive)
+    protected function doExportCompiledDelivery($path, core_kernel_classes_Resource $compiledDelivery, ZipArchive $zipArchive)
     {
         $taoDeliveryVersion = \common_ext_ExtensionsManager::singleton()->getInstalledVersion('taoDelivery');
 
@@ -244,7 +242,8 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
             $files = $directory->getIterator();
             foreach ($files as $file) {
-                \tao_helpers_File::addFilesToZip($zipArchive, $directory->readPsrStream($file), $directory->getRelativePath() . $file);
+                $source = $this->getFileSource($directory, $file);
+                \tao_helpers_File::addFilesToZip($zipArchive, $source, $directory->getRelativePath() . $file);
             }
             $data['dir'][$id] = $directory->getRelativePath();
         }
@@ -267,5 +266,15 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             unlink($path);
             throw new \common_Exception('Unable to add manifest to exported delivery assembly');
         }
+    }
+
+    /**
+     * @param \tao_models_classes_service_StorageDirectory $directory
+     * @param string $file
+     * @return \Psr\Http\Message\StreamInterface
+     */
+    protected function getFileSource(\tao_models_classes_service_StorageDirectory $directory, $file)
+    {
+        return $directory->readPsrStream($file);
     }
 }
