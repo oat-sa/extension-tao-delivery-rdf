@@ -41,16 +41,16 @@ class DetectTestAndItemIdentifiersHelper
         $testIdentifier = null;
         if (isset($test)) {
             $delivery = $this->getResource($deliveryId);
-            $test = $this->getResource($delivery->getOnePropertyValue($this->getProperty(DeliveryAssemblyService::PROPERTY_ORIGIN)));
-            $qtiTestIdentifier = (string) $test->getOnePropertyValue($this->getProperty(QtiTestService::PROPERTY_QTI_TEST_IDENTIFIER));
-            $testIdentifier = $qtiTestIdentifier ? implode('#', [$remoteNamespace[0], $qtiTestIdentifier]) : null;
+            $testResource = $this->getResource($delivery->getOnePropertyValue($this->getProperty(DeliveryAssemblyService::PROPERTY_ORIGIN)));
+            $qtiTestIdentifier = (string) $testResource->getOnePropertyValue($this->getProperty(QtiTestService::PROPERTY_QTI_TEST_IDENTIFIER));
+            $testIdentifier = $qtiTestIdentifier ? implode('#', [$remoteNamespace[0], $qtiTestIdentifier]) : $test;
         }
 
         $itemIdentifier = null;
         if (isset($item)) {
-            $item = $this->getResource($item);
-            $qtiItemIdentifier = (string) $item->getOnePropertyValue($this->getProperty(ImportService::PROPERTY_QTI_ITEM_IDENTIFIER));
-            $itemIdentifier = $qtiItemIdentifier ? implode('#', [$remoteNamespace[0], $qtiItemIdentifier]) : null;
+            $itemResource = $this->getResource($item);
+            $qtiItemIdentifier = (string) $itemResource->getOnePropertyValue($this->getProperty(ImportService::PROPERTY_QTI_ITEM_IDENTIFIER));
+            $itemIdentifier = $qtiItemIdentifier ? implode('#', [$remoteNamespace[0], $qtiItemIdentifier]) : $item;
         }
 
         return [$testIdentifier, $itemIdentifier];
