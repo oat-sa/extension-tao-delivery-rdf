@@ -33,7 +33,6 @@ use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\generis\model\OntologyRdf;
 
 /**
@@ -162,7 +161,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
      */
     protected function getRdfResourceIterator($folder)
     {
-        $rdfPath = $folder.self::RDF_FILE;
+        $rdfPath = $folder . self::RDF_FILE;
         if (!file_exists($rdfPath)) {
             throw new AssemblyImportFailedException("Delivery rdf file {$rdfPath} does not exist");
         }
@@ -185,12 +184,15 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $serviceCall    = \tao_models_classes_service_ServiceCall::fromString(base64_decode($manifest['runtime']));
 
         $properties = $this->getAdditionalProperties($this->getRdfResourceIterator($this->importFolder));
-        $properties = array_merge($properties, array(
-            OntologyRdfs::RDFS_LABEL                          => $label,
-            DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => array_keys($dirs),
-            DeliveryAssemblyService::PROPERTY_DELIVERY_TIME      => time(),
-            DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME   => $serviceCall->toOntology(),
-        ));
+        $properties = array_merge(
+            $properties,
+            [
+                OntologyRdfs::RDFS_LABEL => $label,
+                DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => array_keys($dirs),
+                DeliveryAssemblyService::PROPERTY_DELIVERY_TIME => time(),
+                DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME => $serviceCall->toOntology()
+            ]
+        );
 
         $delivery = $this->getResource($deliveryUri);
         if ($delivery->exists()) {
