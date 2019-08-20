@@ -24,6 +24,7 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\script\ScriptAction;
 use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoDeliveryRdf\model\import\AssemblyImportFailedException;
 
 class ImportDeliveryAssembly extends ScriptAction
 {
@@ -116,10 +117,13 @@ class ImportDeliveryAssembly extends ScriptAction
      */
     private function getImportClass()
     {
-        if ($this->hasOption(self::OPTION_CLASS_URI)) {
-            return $this->getOption(self::OPTION_CLASS_URI);
+        $classUri = $this->hasOption(self::OPTION_CLASS_URI) ? $this->getOption(self::OPTION_CLASS_URI) : DeliveryAssemblyService::CLASS_URI;
+        $importClass = $this->getClass($classUri);
+
+        if (!$importClass->exists()) {
+            throw new AssemblyImportFailedException("Class with provided URI does not exist: {$importClass}");
         }
 
-        return $this->getClass(DeliveryAssemblyService::CLASS_URI);
+        return $importClass;
     }
 }
