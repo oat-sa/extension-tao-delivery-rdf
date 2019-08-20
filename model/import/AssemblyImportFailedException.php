@@ -19,11 +19,8 @@
 
 namespace oat\taoDeliveryRdf\model\import;
 
+use common_Exception;
 
-class AssemblyImportFailedException extends \common_exception_ClientException
+class AssemblyImportFailedException extends common_Exception
 {
-    public function getUserMessage()
-    {
-        return $this->getMessage();
-    }
 }
