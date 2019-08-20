@@ -87,8 +87,9 @@ class ImportDeliveryAssembly extends ScriptAction
             $importClass = $this->getImportClass();
             /** @var AssemblerServiceInterface $importer */
             $importer = $this->getServiceLocator()->get(AssemblerServiceInterface::SERVICE_ID);
+            $useOriginalUri = $this->hasOption(self::OPTION_USE_ORIGINAL_URI);
 
-            $importReport = $importer->importDelivery($importClass, $file, $this->getOption(self::OPTION_USE_ORIGINAL_URI));
+            $importReport = $importer->importDelivery($importClass, $file, $useOriginalUri);
 
             $this->report->add($importReport);
         } catch (\Exception $e) {
