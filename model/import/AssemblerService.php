@@ -58,13 +58,6 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     const OPTION_FILESYSTEM_ID = 'filesystemId';
 
     /**
-     * @var string Path to assembly import folder.
-     */
-    private $importFolder;
-
-    private $deliveryManifest = null;
-
-    /**
      * @param core_kernel_classes_Class $deliveryClass
      * @param string $archiveFile
      * @param boolean $useOriginalUri Use original delivery URI from assembly package
@@ -74,18 +67,18 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     public function importDelivery(core_kernel_classes_Class $deliveryClass, $archiveFile, $useOriginalUri = false)
     {
         try {
-            $this->importFolder = \tao_helpers_File::createTempDir();
+            $tmpImportFolder = \tao_helpers_File::createTempDir();
             $zip = new ZipArchive();
             if ($zip->open($archiveFile) !== true) {
                 return  common_report_Report::createFailure(__('Unable to import Archive'));
             }
-            $zip->extractTo($this->importFolder);
+            $zip->extractTo($tmpImportFolder);
             $zip->close();
 
-            $this->importDeliveryFiles($this->importFolder);
+            $this->importDeliveryFiles($tmpImportFolder);
 
-            $deliveryUri = $this->getDeliveryUri($useOriginalUri);
-            $delivery = $this->importDeliveryResource($deliveryClass, $deliveryUri);
+            $deliveryUri = $this->getDeliveryUri($useOriginalUri, $tmpImportFolder);
+            $delivery = $this->importDeliveryResource($deliveryClass, $deliveryUri, $tmpImportFolder);
 
             $report = common_report_Report::createSuccess(__('Delivery "%s" successfully imported',$delivery->getUri()), $delivery);
 
@@ -100,26 +93,24 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
+     * @param string $tmpImportFolder
+     *
      * @return array
      * @throws AssemblyImportFailedException
      */
-    private function getDeliveryManifest()
+    private function getDeliveryManifest($tmpImportFolder)
     {
-        if ($this->deliveryManifest === null) {
-            $manifestPath = $this->importFolder . self::MANIFEST_FILE;
-            if (!file_exists($manifestPath)) {
-                throw new AssemblyImportFailedException('Manifest not found in assembly.');
-            }
-
-            $manifest = json_decode(file_get_contents($manifestPath), true);
-            if (!is_array($manifest) || json_last_error() !== JSON_ERROR_NONE) {
-                throw new AssemblyImportFailedException('Manifest file is not valid.');
-            }
-
-            $this->deliveryManifest = $manifest;
+        $manifestPath = $tmpImportFolder . self::MANIFEST_FILE;
+        if (!file_exists($manifestPath)) {
+            throw new AssemblyImportFailedException('Manifest not found in assembly.');
         }
 
-        return $this->deliveryManifest;
+        $manifest = json_decode(file_get_contents($manifestPath), true);
+        if (!is_array($manifest) || json_last_error() !== JSON_ERROR_NONE) {
+            throw new AssemblyImportFailedException('Manifest file is not valid.');
+        }
+
+        return $manifest;
     }
 
     /**
@@ -155,14 +146,14 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
-     * @param $folder
+     * @param $tmpImportFolder
      * @return FileIterator
      *
      * @throws AssemblyImportFailedException
      */
-    protected function getRdfResourceIterator($folder)
+    protected function getRdfResourceIterator($tmpImportFolder)
     {
-        $rdfPath = $folder.self::RDF_FILE;
+        $rdfPath = $tmpImportFolder . self::RDF_FILE;
         if (!file_exists($rdfPath)) {
             throw new AssemblyImportFailedException("Delivery rdf file {$rdfPath} does not exist");
         }
@@ -172,19 +163,20 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
 
     /**
      * @param core_kernel_classes_Class $deliveryClass
-     * @param $deliveryUri
+     * @param string $deliveryUri
+     * @param string $tmpImportFolder
      *
      * @return core_kernel_classes_Resource
      * @throws AssemblyImportFailedException
      */
-    protected function importDeliveryResource(core_kernel_classes_Class $deliveryClass, $deliveryUri)
+    protected function importDeliveryResource(core_kernel_classes_Class $deliveryClass, $deliveryUri, $tmpImportFolder)
     {
-        $manifest       = $this->getDeliveryManifest();
+        $manifest       = $this->getDeliveryManifest($tmpImportFolder);
         $label          = $manifest['label'];
         $dirs           = $manifest['dir'];
         $serviceCall    = \tao_models_classes_service_ServiceCall::fromString(base64_decode($manifest['runtime']));
 
-        $properties = $this->getAdditionalProperties($this->getRdfResourceIterator($this->importFolder));
+        $properties = $this->getAdditionalProperties($this->getRdfResourceIterator($tmpImportFolder));
         $properties = array_merge($properties, array(
             OntologyRdfs::RDFS_LABEL                          => $label,
             DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => array_keys($dirs),
@@ -204,19 +196,20 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
-     * @param $useOriginalUri
+     * @param boolean   $useOriginalUri
+     * @param string    $tmpImportFolder
      * @return string
      *
      * @throws AssemblyImportFailedException
      */
-    private function getDeliveryUri($useOriginalUri)
+    private function getDeliveryUri($useOriginalUri, $tmpImportFolder)
     {
         if ($useOriginalUri === false) {
             return common_Utils::getNewUri();
         }
 
         $deliveryUri = null;
-        foreach ($this->getRdfResourceIterator($this->importFolder) as $triple) {
+        foreach ($this->getRdfResourceIterator($tmpImportFolder) as $triple) {
             if ($triple->predicate == OntologyRdf::RDF_TYPE && $triple->object == DeliveryAssemblyService::CLASS_URI) {
                 $deliveryUri = $triple->subject;
                 break;
@@ -231,15 +224,15 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
-     * @param $directory
+     * @param $tmpImportFolder
      * @throws \common_Exception
      */
-    protected function importDeliveryFiles($directory)
+    protected function importDeliveryFiles($tmpImportFolder)
     {
-        $manifest = $this->getDeliveryManifest();
+        $manifest = $this->getDeliveryManifest($tmpImportFolder);
         $dirs     = $manifest['dir'];
         foreach ($dirs as $id => $relPath) {
-            \tao_models_classes_service_FileStorage::singleton()->import($id, $directory.$relPath);
+            \tao_models_classes_service_FileStorage::singleton()->import($id, $tmpImportFolder . $relPath);
         }
     }
 
