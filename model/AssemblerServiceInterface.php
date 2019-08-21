@@ -40,9 +40,10 @@ interface AssemblerServiceInterface
      *
      * @param \core_kernel_classes_Class $deliveryClass
      * @param string $archiveFile Path to archive file.
+     * @param boolean $useOriginalUri Use original delivery URI from assembly package
      * @return \common_report_Report
      */
-    public function importDelivery(\core_kernel_classes_Class $deliveryClass, $archiveFile);
+    public function importDelivery(\core_kernel_classes_Class $deliveryClass, $archiveFile, $useOriginalUri = false);
 
     /**
      * Export Compiled Delivery
