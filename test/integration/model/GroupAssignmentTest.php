@@ -24,6 +24,7 @@ use \common_ext_ExtensionsManager;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
+use oat\generis\test\MockObject;
 
 class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
 {
@@ -59,7 +60,7 @@ class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
      *
      * @author Lionel Lecaque, lionel@taotesting.com
      * @param string $uri
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function getResourceMock($uri)
     {
