@@ -23,6 +23,7 @@ namespace oat\taoDeliveryRdf\test\integration\model;
 use oat\tao\test\integration\FileStorageTestCase;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use Prophecy\Argument;
+use oat\generis\test\MockObject;
 
 require_once dirname(__FILE__) .'/../../../../tao/includes/raw_start.php';
 
@@ -127,7 +128,7 @@ class DeliveryAssemblyServiceTest extends FileStorageTestCase
     /**
      * Get assembly service mock for testDeleteDeliveryDirectory()
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     protected function getAssemblyServiceMock()
     {
