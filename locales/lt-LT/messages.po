@@ -85,8 +85,8 @@ msgstr "Pateikčių biblioteka"
 msgid "Delivery \"%s\" successfully imported"
 msgstr "Pateiktis \"%s\" sėkmingai importuota"
 
-msgid "Delivery '%s' not found"
-msgstr "Pateiktis '%s' nerasta"
+msgid "Delivery \'%s\' not found"
+msgstr "Pateiktis \'%s\' nerasta"
 
 msgid "Delivery class uri provided is not a valid delivery class."
 msgstr "Šios pateikties klasės uri nėra teisinga pateikties klasė."
@@ -121,7 +121,7 @@ msgstr "Eksportuojama %s"
 msgid "Guest access"
 msgstr "Svečio prieiga"
 
-msgid "Importing %1$s files into '%2$s\"
+msgid "Importing %1$s files into \'%2$s\'"
 msgstr ""
 
 msgid "Last updated on:"
