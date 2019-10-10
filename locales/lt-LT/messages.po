@@ -71,8 +71,8 @@ msgstr "Sukurti testą"
 msgid "Delete"
 msgstr "Ištrinti"
 
-msgid "Deleting of \"%s"
-msgstr "Šalinamas \"%s"
+msgid "Deleting of \"%s\""
+msgstr "Šalinamas \"%s\""
 
 #, tao-public
 msgid "Deliveries"
@@ -181,8 +181,8 @@ msgstr "Paskelbti testą"
 msgid "Published on:"
 msgstr ""
 
-msgid "Publishing of \"%s"
-msgstr "\"%s paskelbimas"
+msgid "Publishing of \"%s\""
+msgstr "\"%s\" paskelbimas"
 
 msgid "Save"
 msgstr "Išsaugoti"
