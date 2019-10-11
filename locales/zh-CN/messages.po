@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint104\n"
-"PO-Revision-Date: 2019-06-07T10:04:21\n"
+"Project-Id-Version: TAO 3.3.0-sprint107\n"
+"PO-Revision-Date: 2019-10-11T08:48:33\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: zh-CN\n"
@@ -39,9 +39,6 @@ msgstr "已分配给"
 
 msgid "Attempt %1$s of %2$s"
 msgstr ""
-
-msgid "Attempts"
-msgstr "试的次数"
 
 msgid "Attempts %1$s of %2$s"
 msgstr ""
@@ -127,7 +124,7 @@ msgstr ""
 msgid "Importing %1$s files into \'%2$s\"
 msgstr ""
 
-msgid "Last updated on %2s"
+msgid "Last updated on:"
 msgstr ""
 
 #, tao-public
@@ -137,9 +134,6 @@ msgstr ""
 #, tao-public
 msgid "Manage tests"
 msgstr ""
-
-msgid "Manifest not found in assembly"
-msgstr "清单中未发现集会"
 
 #, tao-public
 msgid "Move"
@@ -163,8 +157,8 @@ msgstr "新的递送"
 msgid "No attempt has been started yet."
 msgstr "没有已开始的考试。"
 
-msgid "No information available"
-msgstr "没资讯可提供"
+msgid "No information available about attempts"
+msgstr ""
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
@@ -184,7 +178,7 @@ msgstr ""
 msgid "Publish the test"
 msgstr ""
 
-msgid "Published on %2s"
+msgid "Published on:"
 msgstr ""
 
 msgid "Publishing of \"%s"
@@ -234,9 +228,6 @@ msgid "Unable to import Archive"
 msgstr ""
 
 msgid "Unable to load tests"
-msgstr ""
-
-msgid "Unknown error during import"
 msgstr ""
 
 msgid "unlimited"
