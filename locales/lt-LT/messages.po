@@ -4,9 +4,9 @@ msgstr ""
 "PO-Revision-Date: 2019-10-11T08:48:32\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: it-IT\n"
+"Language: lt-LT\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: it-IT\n"
+"targetLanguage: lt-LT\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
@@ -14,112 +14,112 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s completed"
-msgstr ""
+msgstr "%s atlikta"
 
 msgid "%s test-taker(s) are excluded."
-msgstr ""
+msgstr "Neįtraukti %s testo laikytojas(–ai)."
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "Gauti pateiktis, kaip svečias"
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "Įvyko klaida importuojant"
 
 msgid "Assembly"
-msgstr ""
+msgstr "Surinkimas"
 
 msgid "Assembly import"
-msgstr ""
+msgstr "Surinkimo importavimas"
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "Paskirti testo laikytojai."
 
 msgid "Assigned to"
-msgstr ""
+msgstr "Priskirtas"
 
 msgid "Attempt %1$s of %2$s"
-msgstr "Tentativi %1$s di %2$s"
+msgstr "Badnymas %1$s iš %2$s"
 
 msgid "Attempts %1$s of %2$s"
-msgstr "Tentativi %1$s di %2$s"
+msgstr "Bandymai %1$s iš %2$s"
 
 msgid "Available from %1$s to %2$s"
-msgstr "Disponibile dal %1$s al %2$s"
+msgstr "Galima nuo %1$s iki %2$s"
 
 msgid "Available from %s"
-msgstr "Disponibile dal %s"
+msgstr "Galima nuo %s"
 
 msgid "Available until %s"
-msgstr ""
+msgstr "Galima iki %s"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Atšaukti"
 
 msgid "Class successfully created."
-msgstr ""
+msgstr "Klasė sėkmingai sukurta."
 
 msgid "Continue deleting of delivery \"%s\"."
 msgstr ""
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "Sukurti naują pateiktį"
 
 msgid "Create a test"
-msgstr ""
+msgstr "Sukurti testą"
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Ištrinti"
 
 msgid "Deleting of \"%s"
 msgstr ""
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Pateiktys"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "Pateikčių biblioteka"
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr ""
+msgstr "Pateiktis \"%s\" sėkmingai importuota"
 
 msgid "Delivery \'%s\' not found"
-msgstr ""
+msgstr "Pateiktis \'%s\' nerasta"
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr ""
+msgstr "Šios pateikties klasės uri nėra teisinga pateikties klasė."
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr "Pateiktis yra paskirta %s testo laikytojams."
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "Pateiktis nėra paskirtam jokiam testo laikytojui."
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "Pateiktis išsaugota"
 
 msgid "Delivery with label \"%s\" not found"
-msgstr ""
+msgstr "Pateiktis su pavadinimu \"%s\" nerasta"
 
 msgid "Directory %s doesn\'t exist"
 msgstr ""
 
 msgid "Error"
-msgstr ""
+msgstr "Klaida"
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Neįtraukti testo laikytojai."
 
 msgid "Exported %1$s to %2$s"
-msgstr ""
+msgstr "Eksportuoti %1$s į %2$s"
 
 msgid "Exporting %s"
-msgstr ""
+msgstr "Eksportuojama %s"
 
 msgid "Guest access"
-msgstr ""
+msgstr "Svečio prieiga"
 
 msgid "Importing %1$s files into \'%2$s\"
 msgstr ""
@@ -129,54 +129,54 @@ msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "Tvarkyti Schemą"
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "Tvarkyti testus"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Perkelti"
 
 #, tao-public
 msgid "Move To"
-msgstr ""
+msgstr "Perkelti Į"
 
 msgid "Multiple delivery class found for label \"%s\": %s"
-msgstr ""
+msgstr "Ne viena pateikties klasė buvo rasta pavadinimui \"%s\": %s"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Nauja klasė"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "Nauja pateiktis"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "Laikymas nebuvo pradėtas."
 
 msgid "No information available about attempts"
 msgstr ""
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr ""
+msgstr "Paruošk, paskelbk pateikčių sesijas."
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Savybės"
 
 #, tao-public
 msgid "Publish"
-msgstr ""
+msgstr "Paskelbti"
 
 msgid "Publish \"%s\" to"
-msgstr ""
+msgstr "Paskelbti \"%s\" į"
 
 msgid "Publish the test"
-msgstr ""
+msgstr "Paskelbti testą"
 
 msgid "Published on:"
 msgstr ""
@@ -185,60 +185,60 @@ msgid "Publishing of \"%s"
 msgstr ""
 
 msgid "Save"
-msgstr ""
+msgstr "Išsaugoti"
 
 msgid "Select the test"
-msgstr ""
+msgstr "Pasirinkti testą"
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr ""
+msgstr "Pasirink testą, kurį norite paskelbti testo laikytojams."
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "Pasirinkimas sėkmingai išsaugotas"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "TAO Svečias"
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "TAO Svečio Prieiga"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr ""
+msgstr "Testo paskelbimas nepavyko, nes \"%s\" yra tuščias."
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Testo laikytojai"
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "Testai"
 
 msgid "The shared filesystem parameter should be a boolean value 'true' or 'false'."
 msgstr ""
 
 msgid "There are currently %s attempts"
-msgstr ""
+msgstr "Šiuo metu yra %s bandymai"
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "Šiuo metu nėra jokių galimų testų paskelbimui."
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "Šiuo metu yra 1 bandymas"
 
 msgid "Unable to import Archive"
-msgstr ""
+msgstr "Nepavyko importuoti Archyvo"
 
 msgid "Unable to load tests"
-msgstr ""
+msgstr "Nepavyko įkelti testų"
 
 msgid "unlimited"
-msgstr "illimitati"
+msgstr "neribota"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr ""
+msgstr "Naudojimas: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr ""
+msgstr "Naudojimas: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 
 msgid "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
-msgstr ""
+msgstr "Naudojimas: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
 

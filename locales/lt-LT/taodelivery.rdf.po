@@ -4,444 +4,329 @@ msgstr ""
 "PO-Revision-Date: 2019-10-11T08:48:32\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: da-DK\n"
+"Language: lt-LT\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: da-DK\n"
+"targetLanguage: lt-LT\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery
+# http://www.tao.lu/Ontologies/TAODelivery.rdf#Delivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Delivery"
-msgstr "Delivery"
+msgstr "Pateiktis"
 
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery
+# http://www.tao.lu/Ontologies/TAODelivery.rdf#Delivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Delivery"
-msgstr "An assembled Delivery"
+msgstr "Pateiktis"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#CustomLabel
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Title"
-msgstr ""
+msgstr "Pavadinimas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#CustomLabel
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Label which show for test-takers"
-msgstr ""
+msgstr "Pavadinimas, kurį rodyti testo laikytojams"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Start Date"
-msgstr "Start Date"
+msgstr "Pradžios Data"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The start date of the delivery"
-msgstr ""
+msgstr "Pateikties pradžios data"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "End Date"
-msgstr "End Date"
+msgstr "Pabaigos Data"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The end date of the delivery"
-msgstr ""
+msgstr "Pateikties pabaigos data"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Max. Executions (default: unlimited)"
-msgstr ""
+msgstr "Maks. Vykdymai (numatyta: neribotai)"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Maximum Times of Execution per subject"
-msgstr ""
+msgstr "Maksimalus Vykdymų Kiekis per dalyką"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Access"
-msgstr ""
+msgstr "Prieiga"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Access"
-msgstr ""
+msgstr "Prieiga"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DisplayOrder
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Display Order"
-msgstr ""
+msgstr "Rodymo Eiliškumas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DisplayOrder
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "A weight determining in which order to display the available deliveries to Test Takers. The deliveries will be displayed in ascending order, depending on the integer value of this property."
-msgstr ""
+msgstr "Svoris pagal kurį nusprendžiama, kuria tvarka atvaizduoti pasiekiamas pateiktis Testo Laikytojams. Pateiktys bus atvaizduojamas didėjančia tvarka, priklausomai nuo skaičiaus reikšmės šiai savybei."
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Test Runner Features"
-msgstr ""
+msgstr "Testo Vykdytojo Ypatybės"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Test runner features associated to the delivery"
-msgstr ""
+msgstr "Testo vykdytojo ypatybės susietos su pateiktimi"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Excluded Subjects"
-msgstr "Excluded Subjects"
+msgstr "Išskirti Dalykai"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Excluded Subjects"
-msgstr "Excluded Subjects"
+msgstr "Išskirti Dalykai"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Result Server"
-msgstr "Result Server"
+msgstr "Rezultatų Serveris"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Result Server"
-msgstr "Result Server"
+msgstr "Rezultatų Serveris"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryPlugins
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Plugins"
-msgstr ""
+msgstr "Įskiepiai"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryPlugins
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Plugins associated to the delivery"
-msgstr ""
+msgstr "Įskiepiai susieti su pateiktim"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Delivery execution"
-msgstr "Delivery execution"
+msgstr "Pateikties vykdymas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Execution of a delivery"
-msgstr ""
+msgstr "Pateikties vykdymas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Execution's delivery"
-msgstr "Execution's delivery"
+msgstr "Vykdomo pateiktis"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Delivery of this execution"
-msgstr ""
+msgstr "Šio vykdymo pateiktis"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionSubject
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "DeliveryExecution Subject"
-msgstr "DeliveryExecution Subject"
+msgstr "Pateikties Vykdymo Dalykas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionSubject
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "test-taker of the delivery execution"
-msgstr ""
+msgstr "pateikties vykdymo testo laikytojas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStart
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "DeliveryExecution start"
-msgstr "DeliveryExecution start"
+msgstr "DeliveryExecution pradžia"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStart
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Timestamp of the delivery execution start"
-msgstr ""
+msgstr "Pateikties vykdymo pradžios laiko antspaudas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionEnd
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "DeliveryExecution end"
-msgstr "DeliveryExecution end"
+msgstr "DeliveryExecution pabaiga"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionEnd
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Timestamp of the delivery finish"
-msgstr ""
+msgstr "Pateikties pabaigos laiko antspaudas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#StatusOfDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "DeliveryExecutions Status"
-msgstr "DeliveryExecutions Status"
+msgstr "DeliveryExecution Būsena"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#StatusOfDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The current status of the DeliveryExecution"
-msgstr ""
+msgstr "DeliveryExecution esama būsena"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "DeliveryExecution status"
-msgstr "DeliveryExecution status"
+msgstr "DeliveryExecution būsena"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Status of a delivery execution"
-msgstr ""
+msgstr "Pateikties vykdymo būsena"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Delivery compile task"
-msgstr ""
+msgstr "Pateikties surinkimo užduotis"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Delivery compile task id"
-msgstr ""
+msgstr "Pateikties surinkimo užduoties id"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusActive
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Active"
-msgstr "Active"
+msgstr "Aktyvus"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusActive
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Activ status of a delivery execution"
-msgstr ""
+msgstr "Dabartinė pateikties vykdymo būsena"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusAbandoned
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Finished"
-msgstr "Finished"
+msgstr "Baigtas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusFinished
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Finished status of a delivery execution"
-msgstr ""
+msgstr "Pateikties vykdymo baigimo būsena"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusPaused
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Paused"
-msgstr ""
+msgstr "Pristabdytas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusPaused
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Paused status of a delivery execution"
-msgstr ""
+msgstr "Pateikties vykdymo pristabdymo būsena"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusAbandoned
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Abandoned status of a delivery execution"
-msgstr ""
+msgstr "Pateikties vykdymo apleidimo būsena"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Assembled Delivery "
-msgstr ""
+msgstr "Sutverta Pateiktis"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "An assembled Delivery"
-msgstr ""
+msgstr "Sutverta Pateiktis"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Compilation Time"
-msgstr "Compilation Time"
+msgstr "Kompiliacijos Laikas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The time of the compilation of the delivery"
-msgstr ""
+msgstr "Pateikties kompiliavimo laikas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationDirectory
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Compilation Directory"
-msgstr "Compilation Directory"
+msgstr "Kompiliacijos Direktorija"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationDirectory
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The directory of the compilation of the delivery"
-msgstr ""
+msgstr "Pateikties kompiliavimo vieta"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Delivery origin"
-msgstr ""
+msgstr "Pateikties kilmė"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The original test/template of the delivery"
-msgstr ""
+msgstr "Pateikties pradinis testas/šablonas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainer
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Delivery container serial"
-msgstr ""
+msgstr "Pateikties konteinerio serija"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainer
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The serialized delivery container"
-msgstr ""
+msgstr "Serializuotas pateikties konteineris"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Runtime"
-msgstr "Runtime"
+msgstr "Vykdymas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Service call to run the compiled delivery"
-msgstr ""
+msgstr "Serviso iškvietimas, kuris paleidžia surinktą pateiktį"
 
 # http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Deliveries"
-msgstr "Deliveries"
+msgstr "Pateiktys"
 
 # http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Deliveries of the group"
-msgstr ""
+msgstr "Grupės pateiktys"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Delivery Manager"
-msgstr "Delivery Manager"
+msgstr "Pateikties Tvarkytojas"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The Delivery Manager Role"
-msgstr ""
+msgstr "Pateikties Tvarkytojo Rolė"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#GuestAccess
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Guest Access"
-msgstr ""
+msgstr "Svečio Prieiga"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#GuestAccess
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Guest Access"
-msgstr ""
+msgstr "Svečio Prieiga"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Max. number of executions (default: unlimited)"
-msgstr "Max. number of executions (default: unlimited)"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Start Date"
-msgstr "The start date of the delivery"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "End Date"
-msgstr "The end date of the delivery"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Max. number of executions (default: unlimited)"
-msgstr "Maximum Times of Execution per subject"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#AbstractDeliveryContent
-msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
-msgid "Delivery Content abstraction"
-msgstr "Delivery Content abstraction"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#AbstractDeliveryContent
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Delivery Content abstraction"
-msgstr "An abstract content class"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryContentImplementation
-msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
-msgid "DeliveryContent implementation"
-msgstr "DeliveryContent implementation"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryContentImplementation
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "DeliveryContent implementation"
-msgstr "Implementation of the delivery content"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryContent
-msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
-msgid "Delivery Content"
-msgstr "Delivery Content"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryContent
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Delivery Content"
-msgstr "Delivery Content"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecution
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Delivery execution"
-msgstr "Execution of a delivery"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionDelivery
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Execution's delivery"
-msgstr "Delivery of this execution"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionSubject
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "DeliveryExecution Subject"
-msgstr "test-taker of the delivery execution"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStart
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "DeliveryExecution start"
-msgstr "Timestamp of the delivery execution start"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionEnd
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "DeliveryExecution end"
-msgstr "Timestamp of the delivery finish"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#StatusOfDeliveryExecution
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "DeliveryExecutions Status"
-msgstr "The current status of the DeliveryExecution"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "DeliveryExecution status"
-msgstr "Status of a delivery execution"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusActive
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Active"
-msgstr "Activ status of a delivery execution"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusAbandoned
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Finished"
-msgstr "Abandoned status of a delivery execution"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Compilation Time"
-msgstr "The time of the compilation of the delivery"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationDirectory
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Compilation Directory"
-msgstr "The directory of the compilation of the delivery"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Runtime"
-msgstr "Service call to run the compiled delivery"
-
-# http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Deliveries"
-msgstr "Deliveries of the group"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Delivery Manager"
-msgstr "The Delivery Manager Role"
+msgstr "Maks. kiekis laikymų (numatytas: beribis)"
 
