@@ -21,6 +21,8 @@ namespace oat\taoDeliveryRdf\model\import;
 
 use common_Utils;
 use oat\generis\model\OntologyAwareTrait;
+use tao_models_classes_service_ServiceCall;
+use tao_models_classes_service_StorageDirectory;
 use ZipArchive;
 use common_report_Report;
 use core_kernel_classes_Resource;
@@ -33,7 +35,6 @@ use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\generis\model\OntologyRdf;
 
 /**
@@ -174,7 +175,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $manifest       = $this->getDeliveryManifest($tmpImportFolder);
         $label          = $manifest['label'];
         $dirs           = $manifest['dir'];
-        $serviceCall    = \tao_models_classes_service_ServiceCall::fromString(base64_decode($manifest['runtime']));
+        $serviceCall    = tao_models_classes_service_ServiceCall::fromString(base64_decode($manifest['runtime']));
 
         $properties = $this->getAdditionalProperties($this->getRdfResourceIterator($tmpImportFolder));
         $properties = array_merge($properties, array(
@@ -282,6 +283,29 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
+     * @param tao_models_classes_service_ServiceCall $serviceCall
+     * @return string
+     */
+    protected function getRuntime(tao_models_classes_service_ServiceCall $serviceCall)
+    {
+        return base64_encode($serviceCall->serializeToString());
+    }
+
+    /**
+     * Adding files from the directory to the archive
+     * @param tao_models_classes_service_StorageDirectory $directory
+     * @param ZipArchive $toArchive
+     */
+    protected function addFilesToZip(tao_models_classes_service_StorageDirectory $directory, ZipArchive $toArchive)
+    {
+        $files = $directory->getIterator();
+        foreach ($files as $file) {
+            $source = $this->getFileSource($directory, $file);
+            \tao_helpers_File::addFilesToZip($toArchive, $source, $directory->getRelativePath() . $file);
+        }
+    }
+
+    /**
      * Do Export Compiled Delivery
      *
      * Method containing the main behavior of exporting a compiled delivery into a ZIP archive.
@@ -309,17 +333,13 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
             $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
-            $files = $directory->getIterator();
-            foreach ($files as $file) {
-                $source = $this->getFileSource($directory, $file);
-                \tao_helpers_File::addFilesToZip($zipArchive, $source, $directory->getRelativePath() . $file);
-            }
+            $this->addFilesToZip($directory, $zipArchive);
             $data['dir'][$id] = $directory->getRelativePath();
         }
 
         $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
-        $serviceCall = \tao_models_classes_service_ServiceCall::fromResource($runtime);
-        $data['runtime'] = base64_encode($serviceCall->serializeToString());
+        $serviceCall = tao_models_classes_service_ServiceCall::fromResource($runtime);
+        $data['runtime'] = $this->getRuntime($serviceCall);
 
         $rdfExporter = new \tao_models_classes_export_RdfExporter();
         $rdfdata = $rdfExporter->getRdfString(array($compiledDelivery));
@@ -338,11 +358,11 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
-     * @param \tao_models_classes_service_StorageDirectory $directory
+     * @param tao_models_classes_service_StorageDirectory $directory
      * @param string $file
      * @return \Psr\Http\Message\StreamInterface
      */
-    protected function getFileSource(\tao_models_classes_service_StorageDirectory $directory, $file)
+    protected function getFileSource(tao_models_classes_service_StorageDirectory $directory, $file)
     {
         return $directory->readPsrStream($file);
     }
