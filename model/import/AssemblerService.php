@@ -19,8 +19,12 @@
  */
 namespace oat\taoDeliveryRdf\model\import;
 
+use common_ext_ExtensionsManager;
 use common_Utils;
+use Exception;
 use oat\generis\model\OntologyAwareTrait;
+use tao_helpers_File;
+use tao_models_classes_service_FileStorage;
 use tao_models_classes_service_ServiceCall;
 use tao_models_classes_service_StorageDirectory;
 use ZipArchive;
@@ -68,7 +72,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     public function importDelivery(core_kernel_classes_Class $deliveryClass, $archiveFile, $useOriginalUri = false)
     {
         try {
-            $tmpImportFolder = \tao_helpers_File::createTempDir();
+            $tmpImportFolder = tao_helpers_File::createTempDir();
             $zip = new ZipArchive();
             if ($zip->open($archiveFile) !== true) {
                 return  common_report_Report::createFailure(__('Unable to import Archive'));
@@ -86,7 +90,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             return $report;
         } catch (AssemblyImportFailedException $e) {
             return common_report_Report::createFailure($e->getMessage());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError($e->getMessage());
 
             return common_report_Report::createFailure('Unknown error during import');
@@ -163,6 +167,15 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
+     * @param $runtime
+     * @return tao_models_classes_service_ServiceCall
+     */
+    protected function getRuntimeFromString($runtime)
+    {
+        return tao_models_classes_service_ServiceCall::fromString(base64_decode($runtime));
+    }
+
+    /**
      * @param core_kernel_classes_Class $deliveryClass
      * @param string $deliveryUri
      * @param string $tmpImportFolder
@@ -175,7 +188,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $manifest       = $this->getDeliveryManifest($tmpImportFolder);
         $label          = $manifest['label'];
         $dirs           = $manifest['dir'];
-        $serviceCall    = tao_models_classes_service_ServiceCall::fromString(base64_decode($manifest['runtime']));
+        $serviceCall    = $this->getRuntimeFromString($manifest['runtime']);
 
         $properties = $this->getAdditionalProperties($this->getRdfResourceIterator($tmpImportFolder));
         $properties = array_merge($properties, array(
@@ -233,7 +246,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $manifest = $this->getDeliveryManifest($tmpImportFolder);
         $dirs     = $manifest['dir'];
         foreach ($dirs as $id => $relPath) {
-            \tao_models_classes_service_FileStorage::singleton()->import($id, $tmpImportFolder . $relPath);
+            tao_models_classes_service_FileStorage::singleton()->import($id, $tmpImportFolder . $relPath);
         }
     }
 
@@ -242,7 +255,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
      *
      * @param core_kernel_classes_Resource $compiledDelivery
      * @param string $fsExportPath
-     * @throws \Exception
+     * @throws Exception
      * @return string
      */
     public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '')
@@ -250,9 +263,9 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $this->logDebug("Exporting Delivery Assembly '" . $compiledDelivery->getUri() . "'...");
 
         $fileName = \tao_helpers_Display::textCleaner($compiledDelivery->getLabel()).'.zip';
-        $path = \tao_helpers_File::concat(array(\tao_helpers_Export::getExportPath(), $fileName));
-        if (!\tao_helpers_File::securityCheck($path, true)) {
-            throw new \Exception('Unauthorized file name');
+        $path = tao_helpers_File::concat(array(\tao_helpers_Export::getExportPath(), $fileName));
+        if (!tao_helpers_File::securityCheck($path, true)) {
+            throw new Exception('Unauthorized file name');
         }
 
         // If such a target zip file exists, remove it from local filesystem. It prevents some synchronicity issues
@@ -263,7 +276,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
 
         $zipArchive = new ZipArchive();
         if ($zipArchive->open($path, ZipArchive::CREATE) !== true) {
-            throw new \Exception('Unable to create archive at '.$path);
+            throw new Exception('Unable to create archive at '.$path);
         }
 
         $this->doExportCompiledDelivery($path, $compiledDelivery, $zipArchive);
@@ -301,7 +314,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $files = $directory->getIterator();
         foreach ($files as $file) {
             $source = $this->getFileSource($directory, $file);
-            \tao_helpers_File::addFilesToZip($toArchive, $source, $directory->getRelativePath() . $file);
+            tao_helpers_File::addFilesToZip($toArchive, $source, $directory->getRelativePath() . $file);
         }
     }
 
@@ -323,7 +336,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
      */
     protected function doExportCompiledDelivery($path, core_kernel_classes_Resource $compiledDelivery, ZipArchive $zipArchive)
     {
-        $taoDeliveryVersion = \common_ext_ExtensionsManager::singleton()->getInstalledVersion('taoDelivery');
+        $taoDeliveryVersion = common_ext_ExtensionsManager::singleton()->getInstalledVersion('taoDelivery');
 
         $data = array(
             'dir' => array(),
@@ -332,7 +345,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         );
         $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
-            $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
+            $directory = tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
             $this->addFilesToZip($directory, $zipArchive);
             $data['dir'][$id] = $directory->getRelativePath();
         }

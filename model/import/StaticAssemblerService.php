@@ -20,6 +20,7 @@
 namespace oat\taoDeliveryRdf\model\import;
 
 use common_Exception;
+use oat\generis\model\OntologyAwareTrait;
 use oat\taoQtiTest\models\PhpCodeCompilationDataService;
 use oat\taoQtiTest\models\XmlCompilationDataService;
 use tao_helpers_File;
@@ -38,6 +39,8 @@ use ZipArchive;
  */
 class StaticAssemblerService extends AssemblerService
 {
+    use OntologyAwareTrait;
+    
     /**
      * @param tao_models_classes_service_ServiceCall $serviceCall
      * @return false|string
@@ -45,6 +48,16 @@ class StaticAssemblerService extends AssemblerService
     protected function getRuntime(tao_models_classes_service_ServiceCall $serviceCall)
     {
         return json_encode($serviceCall);
+    }
+
+    /**
+     * @param $runtime
+     * @return tao_models_classes_service_ServiceCall
+     */
+    protected function getRuntimeFromString($runtime)
+    {
+        $data = json_decode($runtime, 1);
+        return tao_models_classes_service_ServiceCall::fromJSON($data);
     }
 
     /**
