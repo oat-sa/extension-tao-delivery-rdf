@@ -35,7 +35,6 @@ use ZipArchive;
  * @access public
  * @author Joel Bout, <joel@taotesting.com>
  * @package taoDelivery
- 
  */
 class StaticAssemblerService extends AssemblerService
 {
