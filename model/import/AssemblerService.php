@@ -20,6 +20,7 @@
 namespace oat\taoDeliveryRdf\model\import;
 
 use ArrayIterator;
+use common_ext_ExtensionsManager;
 use common_Utils;
 use Exception;
 use oat\generis\model\OntologyAwareTrait;
@@ -28,6 +29,7 @@ use oat\oatbox\filesystem\File;
 use oat\taoDeliveryRdf\model\import\assemblerDataProviders\AssemblerFileReader;
 use oat\taoDeliveryRdf\model\import\assemblerDataProviders\ServiceCallConverterInterface;
 use tao_helpers_File;
+use tao_models_classes_service_FileStorage;
 use tao_models_classes_service_ServiceCall;
 use tao_models_classes_service_StorageDirectory;
 use ZipArchive;
