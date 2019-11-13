@@ -185,8 +185,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     {
         /** @var ServiceCallConverterInterface $converter */
         $converter = $this->getOption(self::OPTION_SERVICE_CALL_CONVERTER);
-        // todo
-        return $converter->($serviceCall);
+        return $converter->getServiceCallFromString($runtime);
     }
 
     /**
