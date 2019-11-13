@@ -36,6 +36,8 @@ use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\AssemblerFileReader;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\SerializedServiceCallConverter;
 use oat\taoDeliveryRdf\model\import\AssemblerService;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
@@ -259,5 +261,13 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('7.6.0', '9.0.0');
+
+        if ($this->isVersion('9.0.0')) {
+            $service = $this->getServiceManager()->get(AssemblerService::SERVICE_ID);
+            $options = $service->getOptions();
+            $options[AssemblerService::OPTION_FILE_READER] = new AssemblerFileReader();
+            $options[AssemblerService::OPTION_SERVICE_CALL_CONVERTER] = new SerializedServiceCallConverter();
+            $this->setVersion('9.1.0');
+        }
     }
 }

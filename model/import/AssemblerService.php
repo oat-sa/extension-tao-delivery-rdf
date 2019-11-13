@@ -19,8 +19,14 @@
  */
 namespace oat\taoDeliveryRdf\model\import;
 
+use ArrayIterator;
 use common_Utils;
 use oat\generis\model\OntologyAwareTrait;
+use oat\oatbox\filesystem\Directory;
+use oat\oatbox\filesystem\File;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\AssemblerFileReader;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\ServiceCallConverterInterface;
+use tao_helpers_File;
 use tao_models_classes_service_ServiceCall;
 use tao_models_classes_service_StorageDirectory;
 use ZipArchive;
@@ -57,6 +63,14 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     const RDF_FILE = 'delivery.rdf';
 
     const OPTION_FILESYSTEM_ID = 'filesystemId';
+    /**
+     * Getting file content
+     */
+    const OPTION_FILE_READER = 'fileReader';
+    /**
+     * Transform runtime to the different formats
+     */
+    const OPTION_SERVICE_CALL_CONVERTER = 'serviceCallConverter';
 
     /**
      * @param core_kernel_classes_Class $deliveryClass
@@ -68,7 +82,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     public function importDelivery(core_kernel_classes_Class $deliveryClass, $archiveFile, $useOriginalUri = false)
     {
         try {
-            $tmpImportFolder = \tao_helpers_File::createTempDir();
+            $tmpImportFolder = tao_helpers_File::createTempDir();
             $zip = new ZipArchive();
             if ($zip->open($archiveFile) !== true) {
                 return  common_report_Report::createFailure(__('Unable to import Archive'));
@@ -250,8 +264,8 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $this->logDebug("Exporting Delivery Assembly '" . $compiledDelivery->getUri() . "'...");
 
         $fileName = \tao_helpers_Display::textCleaner($compiledDelivery->getLabel()).'.zip';
-        $path = \tao_helpers_File::concat(array(\tao_helpers_Export::getExportPath(), $fileName));
-        if (!\tao_helpers_File::securityCheck($path, true)) {
+        $path = tao_helpers_File::concat(array(\tao_helpers_Export::getExportPath(), $fileName));
+        if (!tao_helpers_File::securityCheck($path, true)) {
             throw new \Exception('Unauthorized file name');
         }
 
@@ -288,7 +302,9 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
      */
     protected function getRuntime(tao_models_classes_service_ServiceCall $serviceCall)
     {
-        return base64_encode($serviceCall->serializeToString());
+        /** @var ServiceCallConverterInterface $converter */
+        $converter = $this->getOption(self::OPTION_SERVICE_CALL_CONVERTER);
+        return $converter->convertServiceCallToString($serviceCall);
     }
 
     /**
@@ -298,10 +314,17 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
      */
     protected function addFilesToZip(tao_models_classes_service_StorageDirectory $directory, ZipArchive $toArchive)
     {
-        $files = $directory->getIterator();
-        foreach ($files as $file) {
-            $source = $this->getFileSource($directory, $file);
-            \tao_helpers_File::addFilesToZip($toArchive, $source, $directory->getRelativePath() . $file);
+        /** @var AssemblerFileReader $reader */
+        $reader = $this->getOption(self::OPTION_FILE_READER);
+        $this->propagate($reader);
+        /** @var ArrayIterator $iterator */
+        $iterator = $directory->getFlyIterator(Directory::ITERATOR_FILE | Directory::ITERATOR_RECURSIVE);
+        while ($iterator->valid()) {
+            /** @var File $file */
+            $file = $iterator->current();
+            tao_helpers_File::addFilesToZip($toArchive, $reader->getFileStream($file, $directory), $directory->getPrefix() . $file->getBasename());
+            $reader->clean();
+            $iterator->next();
         }
     }
 
@@ -355,15 +378,5 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
             unlink($path);
             throw new \common_Exception('Unable to add manifest to exported delivery assembly');
         }
-    }
-
-    /**
-     * @param tao_models_classes_service_StorageDirectory $directory
-     * @param string $file
-     * @return \Psr\Http\Message\StreamInterface
-     */
-    protected function getFileSource(tao_models_classes_service_StorageDirectory $directory, $file)
-    {
-        return $directory->readPsrStream($file);
     }
 }
