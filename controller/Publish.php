@@ -58,12 +58,21 @@ class Publish extends \tao_actions_SaSModule
             $testUri = $this->getRequestParameter('testUri');
             $classUri = $this->getRequestParameter('classUri');
             $test = $this->getResource($testUri);
+
+            $testService = \taoTests_models_classes_TestsService::singleton();
+            $testItems = $testService->getTestItems($test);
+            if (empty($testItems)) {
+                throw new \RuntimeException(
+                    __('The test "%s" does not contain any items and cannot be published.', $test->getLabel())
+                );
+            }
+
             $deliveryClass = $this->getClass($classUri);
             /** @var DeliveryFactory $deliveryFactoryResources */
             $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
             $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray([OntologyRdfs::RDFS_LABEL => 'new delivery']);
             return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
-        }catch(\Exception $e){
+        } catch(\Exception $e) {
             return $this->returnJson([
                 'success' => false,
                 'errorMsg' => $e instanceof \common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
