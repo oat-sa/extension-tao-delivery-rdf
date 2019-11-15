@@ -19,17 +19,21 @@
  */
 namespace oat\taoDeliveryRdf\model\import;
 
+
 use ArrayIterator;
+use common_Exception;
 use common_ext_ExtensionsManager;
-use common_Utils;
+use core_kernel_classes_Container;
+use core_kernel_classes_EmptyProperty;
 use Exception;
+use oat\generis\model\kernel\uri\UriProvider;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\File;
-use oat\taoDeliveryRdf\model\import\assemblerDataProviders\AssemblerFileReader;
-use oat\taoDeliveryRdf\model\import\assemblerDataProviders\ServiceCallConverterInterface;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters\AssemblerFileReader;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters\ServiceCallConverterInterface;
 use tao_helpers_File;
-use tao_models_classes_service_FileStorage;
+use tao_models_classes_export_RdfExporter;
 use tao_models_classes_service_ServiceCall;
 use tao_models_classes_service_StorageDirectory;
 use ZipArchive;
@@ -45,6 +49,7 @@ use oat\oatbox\service\ConfigurableService;
 use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\generis\model\OntologyRdf;
+use oat\tao\model\service\ServiceFileStorage;
 
 /**
  * AssemblerService Class.
@@ -66,14 +71,21 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     const RDF_FILE = 'delivery.rdf';
 
     const OPTION_FILESYSTEM_ID = 'filesystemId';
+
     /**
      * Getting file content
      */
     const OPTION_FILE_READER = 'fileReader';
+
     /**
      * Transform runtime to the different formats
      */
     const OPTION_SERVICE_CALL_CONVERTER = 'serviceCallConverter';
+
+    /**
+     * Exporter (example new tao_models_classes_export_RdfExporter())
+     */
+    const OPTION_RDF_EXPORTER = 'rdfExporter';
 
     /**
      * @param core_kernel_classes_Class $deliveryClass
@@ -144,7 +156,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
-     * @param $folder
+     * @param FileIterator $rdfIterator
      * @return array
      */
     protected function getAdditionalProperties(FileIterator $rdfIterator)
@@ -152,7 +164,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         $properties = [];
         $blacklist = array(OntologyRdf::RDF_TYPE);
         foreach ($rdfIterator as $triple) {
-            if (!in_array($triple->predicate, $blacklist)) {
+            if (!in_array($triple->predicate, $blacklist, true)) {
                 if (!isset($properties[$triple->predicate])) {
                     $properties[$triple->predicate] = array();
                 }
@@ -180,14 +192,47 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
-     * @param $runtime
+     * Getting configured ServiceCall converter
+     * @return ServiceCallConverterInterface
+     * @throws AssemblyImportFailedException
+     */
+    private function getServiceCallConverter()
+    {
+        $converter = $this->getOption(self::OPTION_SERVICE_CALL_CONVERTER);
+        if (!is_a($converter, ServiceCallConverterInterface::class)) {
+            throw new AssemblyImportFailedException(self::OPTION_SERVICE_CALL_CONVERTER. ' option is not configured properly');
+        }
+        return $converter;
+    }
+
+    /**
+     * @param string $runtime
      * @return tao_models_classes_service_ServiceCall
+     * @throws AssemblyImportFailedException
      */
     protected function getRuntimeFromString($runtime)
     {
-        /** @var ServiceCallConverterInterface $converter */
-        $converter = $this->getOption(self::OPTION_SERVICE_CALL_CONVERTER);
-        return $converter->getServiceCallFromString($runtime);
+        return $this->getServiceCallConverter()->getServiceCallFromString($runtime);
+    }
+
+    /**
+     * @param tao_models_classes_service_ServiceCall $serviceCall
+     * @return string
+     * @throws AssemblyImportFailedException
+     */
+    protected function getRuntime(tao_models_classes_service_ServiceCall $serviceCall)
+    {
+        return $this->getServiceCallConverter()->convertServiceCallToString($serviceCall);
+    }
+
+    /**
+     * @param core_kernel_classes_Resource|core_kernel_classes_Container $resource
+     * @return tao_models_classes_service_ServiceCall
+     * @throws AssemblyImportFailedException
+     */
+    protected function getServiceCallFromResource(core_kernel_classes_Resource $resource)
+    {
+        return $this->getServiceCallConverter()->getServiceCallFromResource($resource);
     }
 
     /**
@@ -234,7 +279,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     private function getDeliveryUri($useOriginalUri, $tmpImportFolder)
     {
         if ($useOriginalUri === false) {
-            return common_Utils::getNewUri();
+            return $this->getServiceLocator()->get(UriProvider::SERVICE_ID)->provide();
         }
 
         $deliveryUri = null;
@@ -254,14 +299,14 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
 
     /**
      * @param $tmpImportFolder
-     * @throws \common_Exception
+     * @throws common_Exception
      */
     protected function importDeliveryFiles($tmpImportFolder)
     {
         $manifest = $this->getDeliveryManifest($tmpImportFolder);
         $dirs     = $manifest['dir'];
         foreach ($dirs as $id => $relPath) {
-            tao_models_classes_service_FileStorage::singleton()->import($id, $tmpImportFolder . $relPath);
+            $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID)->import($id, $tmpImportFolder . $relPath);
         }
     }
 
@@ -311,17 +356,6 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
     }
 
     /**
-     * @param tao_models_classes_service_ServiceCall $serviceCall
-     * @return string
-     */
-    protected function getRuntime(tao_models_classes_service_ServiceCall $serviceCall)
-    {
-        /** @var ServiceCallConverterInterface $converter */
-        $converter = $this->getOption(self::OPTION_SERVICE_CALL_CONVERTER);
-        return $converter->convertServiceCallToString($serviceCall);
-    }
-
-    /**
      * Adding files from the directory to the archive
      * @param tao_models_classes_service_StorageDirectory $directory
      * @param ZipArchive $toArchive
@@ -355,12 +389,13 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
      * @param $path
      * @param core_kernel_classes_Resource $compiledDelivery
      * @param ZipArchive $zipArchive
-     * @throws \common_Exception
-     * @throws \core_kernel_classes_EmptyProperty
+     * @throws common_Exception
+     * @throws core_kernel_classes_EmptyProperty
      */
     protected function doExportCompiledDelivery($path, core_kernel_classes_Resource $compiledDelivery, ZipArchive $zipArchive)
     {
-        $taoDeliveryVersion = common_ext_ExtensionsManager::singleton()->getInstalledVersion('taoDelivery');
+        $taoDeliveryVersion = $this->getServiceLocator()
+            ->get(common_ext_ExtensionsManager::SERVICE_ID)->getInstalledVersion('taoDelivery');
 
         $data = array(
             'dir' => array(),
@@ -369,28 +404,40 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         );
         $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
-            $directory = tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
+            $directory = $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID)->getDirectoryById($id);
             $this->addFilesToZip($directory, $zipArchive);
             $data['dir'][$id] = $directory->getRelativePath();
         }
 
         $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
-        $serviceCall = tao_models_classes_service_ServiceCall::fromResource($runtime);
+        $serviceCall = $this->getServiceCallFromResource($runtime);
         $data['runtime'] = $this->getRuntime($serviceCall);
 
-        $rdfExporter = new \tao_models_classes_export_RdfExporter();
+        $rdfExporter = $this->getRdfExporter();
         $rdfdata = $rdfExporter->getRdfString(array($compiledDelivery));
         if (!$zipArchive->addFromString('delivery.rdf', $rdfdata)) {
-            throw new \common_Exception('Unable to add metadata to exported delivery assembly');
+            throw new common_Exception('Unable to add metadata to exported delivery assembly');
         }
         $data['meta'] = 'delivery.rdf';
-
 
         $content = json_encode($data);
         if (!$zipArchive->addFromString(self::MANIFEST_FILE, $content)) {
             $zipArchive->close();
             unlink($path);
-            throw new \common_Exception('Unable to add manifest to exported delivery assembly');
+            throw new common_Exception('Unable to add manifest to exported delivery assembly');
         }
+    }
+
+    /**
+     * @return mixed
+     * @throws AssemblyImportFailedException
+     */
+    protected function getRdfExporter()
+    {
+        $exporter = $this->getOption(self::OPTION_RDF_EXPORTER);
+        if (!is_a($exporter, tao_models_classes_export_RdfExporter::class)) {
+            throw new AssemblyImportFailedException(self::OPTION_RDF_EXPORTER . ' option does not configured properly');
+        }
+        return $exporter;
     }
 }

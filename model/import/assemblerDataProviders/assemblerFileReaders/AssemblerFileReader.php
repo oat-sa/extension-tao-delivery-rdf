@@ -19,21 +19,23 @@
  * @author Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders;
+namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters;
 
 
-use tao_models_classes_service_ServiceCall;
+use GuzzleHttp\Psr7\Stream;
+use oat\oatbox\filesystem\File;
+use Psr\Http\Message\StreamInterface;
+use tao_models_classes_service_StorageDirectory;
 
-class JsonServiceCallConverter implements ServiceCallConverterInterface
+class AssemblerFileReader extends AssemblerFileReaderAbstract
 {
-    public function getServiceCallFromString($serviceCall)
+    /**
+     * @param File $file
+     * @param tao_models_classes_service_StorageDirectory $directory
+     * @return StreamInterface|Stream
+     */
+    protected function stream(File $file, tao_models_classes_service_StorageDirectory $directory)
     {
-        $data = json_decode($serviceCall, 1);
-        return tao_models_classes_service_ServiceCall::fromJSON($data);
-    }
-
-    public function convertServiceCallToString(tao_models_classes_service_ServiceCall $serviceCall)
-    {
-        return json_encode($serviceCall);
+        return $file->readPsrStream();
     }
 }

@@ -19,23 +19,20 @@
  * @author Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders;
+namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters;
 
 
-use GuzzleHttp\Psr7\Stream;
-use oat\oatbox\filesystem\File;
-use Psr\Http\Message\StreamInterface;
-use tao_models_classes_service_StorageDirectory;
+use core_kernel_classes_Resource;
+use tao_models_classes_service_ServiceCall;
 
-class AssemblerFileReader extends AssemblerFileReaderAbstract
+abstract class AbstractServiceCallConverter implements ServiceCallConverterInterface
 {
     /**
-     * @param File $file
-     * @param tao_models_classes_service_StorageDirectory $directory
-     * @return StreamInterface|Stream
+     * @param core_kernel_classes_Resource $resource
+     * @return mixed|void
      */
-    protected function stream(File $file, tao_models_classes_service_StorageDirectory $directory)
+    public function getServiceCallFromResource(core_kernel_classes_Resource $resource)
     {
-        return $file->readPsrStream();
+        tao_models_classes_service_ServiceCall::fromResource($resource);
     }
 }

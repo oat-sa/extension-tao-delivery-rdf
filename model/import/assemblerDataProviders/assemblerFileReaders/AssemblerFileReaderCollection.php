@@ -19,7 +19,7 @@
  * @author Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders;
+namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters;
 
 
 use common_exception_Error;

@@ -36,13 +36,14 @@ use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
-use oat\taoDeliveryRdf\model\import\assemblerDataProviders\AssemblerFileReader;
-use oat\taoDeliveryRdf\model\import\assemblerDataProviders\SerializedServiceCallConverter;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters\AssemblerFileReader;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters\SerializedServiceCallConverter;
 use oat\taoDeliveryRdf\model\import\AssemblerService;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
 use oat\taoDelivery\model\RuntimeService;
+use tao_models_classes_export_RdfExporter;
 
 /**
  ** @author Joel Bout <joel@taotesting.com>
@@ -267,6 +268,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $options = $service->getOptions();
             $options[AssemblerService::OPTION_FILE_READER] = new AssemblerFileReader();
             $options[AssemblerService::OPTION_SERVICE_CALL_CONVERTER] = new SerializedServiceCallConverter();
+            $options[AssemblerService::OPTION_RDF_EXPORTER] = new tao_models_classes_export_RdfExporter();
             $this->setVersion('9.1.0');
         }
     }

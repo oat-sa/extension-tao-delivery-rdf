@@ -19,20 +19,29 @@
  * @author Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders;
+namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters;
 
 
+use core_kernel_classes_Resource;
 use tao_models_classes_service_ServiceCall;
 
-class SerializedServiceCallConverter implements ServiceCallConverterInterface
+interface ServiceCallConverterInterface
 {
-    public function getServiceCallFromString($runtime)
-    {
-        return tao_models_classes_service_ServiceCall::fromString(base64_decode($runtime));
-    }
+    /**
+     * @param string $runtime
+     * @return tao_models_classes_service_ServiceCall
+     */
+    public function getServiceCallFromString($runtime);
 
-    public function convertServiceCallToString(tao_models_classes_service_ServiceCall $serviceCall)
-    {
-        return base64_encode($serviceCall->serializeToString());
-    }
+    /**
+     * @param tao_models_classes_service_ServiceCall $serviceCall
+     * @return string
+     */
+    public function convertServiceCallToString(tao_models_classes_service_ServiceCall $serviceCall);
+
+    /**
+     * @param core_kernel_classes_Resource $resource
+     * @return tao_models_classes_service_ServiceCall
+     */
+    public function getServiceCallFromResource(core_kernel_classes_Resource $resource);
 }

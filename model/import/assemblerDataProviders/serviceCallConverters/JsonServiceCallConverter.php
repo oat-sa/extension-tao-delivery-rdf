@@ -19,22 +19,29 @@
  * @author Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders;
+namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters;
 
 
 use tao_models_classes_service_ServiceCall;
 
-interface ServiceCallConverterInterface
+class JsonServiceCallConverter extends AbstractServiceCallConverter
 {
     /**
-     * @param string $runtime
+     * @param string $serviceCall
      * @return tao_models_classes_service_ServiceCall
      */
-    public function getServiceCallFromString($runtime);
+    public function getServiceCallFromString($serviceCall)
+    {
+        $data = json_decode($serviceCall, 1);
+        return tao_models_classes_service_ServiceCall::fromJSON($data);
+    }
 
     /**
      * @param tao_models_classes_service_ServiceCall $serviceCall
-     * @return string
+     * @return false|string
      */
-    public function convertServiceCallToString(tao_models_classes_service_ServiceCall $serviceCall);
+    public function convertServiceCallToString(tao_models_classes_service_ServiceCall $serviceCall)
+    {
+        return json_encode($serviceCall);
+    }
 }
