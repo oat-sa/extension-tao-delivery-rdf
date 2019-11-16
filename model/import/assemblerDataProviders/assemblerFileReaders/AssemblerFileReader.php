@@ -19,7 +19,7 @@
  * @author Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters;
+namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\assemblerFileReaders;
 
 
 use GuzzleHttp\Psr7\Stream;

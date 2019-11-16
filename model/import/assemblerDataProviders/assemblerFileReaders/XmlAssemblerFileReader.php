@@ -19,12 +19,14 @@
  * @author Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters;
+namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\assemblerFileReaders;
 
 
 use common_Exception;
+use common_exception_Error;
 use GuzzleHttp\Psr7\Stream;
 use oat\oatbox\filesystem\File;
+use oat\taoQtiTest\models\CompilationDataService;
 use oat\taoQtiTest\models\PhpCodeCompilationDataService;
 use oat\taoQtiTest\models\XmlCompilationDataService;
 use Psr\Http\Message\StreamInterface;
@@ -42,6 +44,59 @@ class XmlAssemblerFileReader extends AssemblerFileReaderAbstract
      * @var File
      */
     private $xmlFile;
+
+    const OPTION_PHP_CODE_COMPILATION_DATA_SERVICE = 'phpCodeCompilationDataService';
+    const OPTION_XML_CODE_COMPILATION_DATA_SERVICE = 'xmlCodeCompilationDataService';
+
+    /**
+     * @var CompilationDataService
+     */
+    private $phpCodeCompilationDataService;
+
+    /**
+     * @var CompilationDataService
+     */
+    private $xmlCodeCompilationDataService;
+
+    /**
+     * @return CompilationDataService
+     * @throws common_exception_Error
+     */
+    private function getPhpCodeCompilationDataService()
+    {
+        if (!$this->phpCodeCompilationDataService) {
+            if ($this->hasOption(self::OPTION_PHP_CODE_COMPILATION_DATA_SERVICE)) {
+                $this->phpCodeCompilationDataService = $this->getOption(self::OPTION_PHP_CODE_COMPILATION_DATA_SERVICE);
+                if (!is_a($this->phpCodeCompilationDataService, CompilationDataService::class)) {
+                    throw new common_exception_Error('Incorrect configuration for the PhpCompilationDataService');
+                }
+            } else {
+                // default data service
+                $this->phpCodeCompilationDataService = new PhpCodeCompilationDataService();
+            }
+        }
+        return $this->phpCodeCompilationDataService;
+    }
+
+    /**
+     * @return CompilationDataService
+     * @throws common_exception_Error
+     */
+    private function getXmlCodeCompilationDataService()
+    {
+        if (!$this->xmlCodeCompilationDataService) {
+            if ($this->hasOption(self::OPTION_XML_CODE_COMPILATION_DATA_SERVICE)) {
+                $this->xmlCodeCompilationDataService = $this->getOption(self::OPTION_XML_CODE_COMPILATION_DATA_SERVICE);
+                if (!is_a($this->xmlCodeCompilationDataService, CompilationDataService::class)) {
+                    throw new common_exception_Error('Incorrect configuration for the XmlCompilationDataService');
+                }
+            } else {
+                // default data service
+                $this->xmlCodeCompilationDataService = new XmlCompilationDataService();
+            }
+        }
+        return $this->xmlCodeCompilationDataService;
+    }
 
     /**
      * @param File $file
@@ -69,10 +124,8 @@ class XmlAssemblerFileReader extends AssemblerFileReaderAbstract
     {
         $fileName = $file->getBasename();
         $fileName = trim($fileName, '.php');
-        $phpDataService = new PhpCodeCompilationDataService();
-        $object = $phpDataService->readCompilationData($directory, $fileName);
-        $xmlDataService = new XmlCompilationDataService();
-        $xmlDataService->writeCompilationData($directory, $fileName, $object);
+        $object = $this->getPhpCodeCompilationDataService()->readCompilationData($directory, $fileName);
+        $this->getXmlCodeCompilationDataService()->writeCompilationData($directory, $fileName, $object);
 
         return $directory->getFile($fileName . '.xml');
     }

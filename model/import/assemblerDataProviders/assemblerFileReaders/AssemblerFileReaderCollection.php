@@ -19,56 +19,49 @@
  * @author Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters;
+namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\assemblerFileReaders;
 
 
 use common_exception_Error;
 use GuzzleHttp\Psr7\Stream;
 use oat\oatbox\filesystem\File;
-use Psr\Http\Message\StreamInterface;
 use tao_models_classes_service_StorageDirectory;
 
 class AssemblerFileReaderCollection extends AssemblerFileReaderAbstract
 {
     /**
      * List of readers
-     * @var array AssemblerFileReaderInterface[]
+     * @var string stored array of AssemblerFileReaderInterface[]
      */
-    private $readers;
+    const OPTION_FILE_READERS = 'fileReaders';
 
     /**
-     * AssemblerFileReaderCollection constructor.
-     * @param array $readers
      * @throws common_exception_Error
+     * @return array
      */
-    public function __construct(array $readers)
+    public function getReaders()
     {
-        if (!count($readers)) {
+        $readers = $this->getOption(self::OPTION_FILE_READERS);
+        if (!is_array($readers) || !count($readers)) {
             throw new common_exception_Error('Readers are not configured for the AssemblerFileReaderCollection');
         }
 
         foreach ($readers as $reader) {
             if (!($reader instanceof AssemblerFileReaderInterface)) {
+                $readerStr = is_object($reader) ? get_class($reader) : $reader;
                 throw new common_exception_Error(
-                    sprintf('All readers of the AssemblerFileReaderCollection have to implement interface %s, reader: %s incorrect', AssemblerFileReaderInterface::class, get_class($reader)));
+                    sprintf('All readers of the AssemblerFileReaderCollection have to implement interface %s, reader: %s incorrect', AssemblerFileReaderInterface::class, (string) $readerStr));
             }
         }
 
-        $this->readers = $readers;
-    }
-
-    /**
-     * @return array
-     */
-    public function getReaders()
-    {
-        return $this->readers;
+        return $readers;
     }
 
     /**
      * @param File $file
      * @param tao_models_classes_service_StorageDirectory $directory
-     * @return Stream|StreamInterface|void
+     * @return Stream|null
+     * @throws common_exception_Error
      */
     protected function stream(File $file, tao_models_classes_service_StorageDirectory $directory)
     {
@@ -77,11 +70,14 @@ class AssemblerFileReaderCollection extends AssemblerFileReaderAbstract
         foreach ($this->getReaders() as $reader) {
             $this->propagate($reader);
             $stream = $reader->getFileStream($file, $directory);
-            $file = $reader->getFile();
+            $this->file = $reader->getFile();
         }
         return $stream;
     }
 
+    /**
+     * @throws common_exception_Error
+     */
     public function clean()
     {
         /** @var AssemblerFileReaderAbstract $reader */

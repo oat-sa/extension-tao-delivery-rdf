@@ -19,7 +19,7 @@
  * @author Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters;
+namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\assemblerFileReaders;
 
 
 use GuzzleHttp\Psr7\Stream;
@@ -47,7 +47,7 @@ abstract class AssemblerFileReaderAbstract extends ConfigurableService implement
      */
     public function getFileStream(File $file, tao_models_classes_service_StorageDirectory $directory) {
         $this->file = $file;
-        $this->stream = $this->stream($this->file, $directory);
+        $this->stream = $this->stream($this->getFile(), $directory);
         return $this->stream;
     }
 
@@ -64,10 +64,12 @@ abstract class AssemblerFileReaderAbstract extends ConfigurableService implement
      * @return void
      */
     public function clean() {
-        // clean reader and close stream handler
-        $this->stream->close();
-        $this->stream = null;
-        $this->file = null;
+        if ($this->stream) {
+            // clean reader and close stream handler
+            $this->stream->close();
+            $this->stream = null;
+            $this->file = null;
+        }
     }
 
     /**
