@@ -35,4 +35,12 @@ abstract class AbstractServiceCallConverter implements ServiceCallConverterInter
     {
         return tao_models_classes_service_ServiceCall::fromResource($resource);
     }
+
+    /**
+     * To use in the configuration
+     * @return string
+     */
+    public function __toPhpCode() {
+        return 'new '.get_class($this).'()';
+    }
 }

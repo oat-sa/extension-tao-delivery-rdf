@@ -19,30 +19,15 @@
  * @author Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters;
+namespace oat\taoDeliveryRdf\model\import\assemblerDataProviders;
 
 
-use core_kernel_classes_Resource;
 use oat\oatbox\PhpSerializable;
-use tao_models_classes_service_ServiceCall;
+use tao_models_classes_export_RdfExporter;
 
-interface ServiceCallConverterInterface extends PhpSerializable
+class ConfigurableRdfExporter extends tao_models_classes_export_RdfExporter implements PhpSerializable
 {
-    /**
-     * @param string $runtime
-     * @return tao_models_classes_service_ServiceCall
-     */
-    public function getServiceCallFromString($runtime);
-
-    /**
-     * @param tao_models_classes_service_ServiceCall $serviceCall
-     * @return string
-     */
-    public function convertServiceCallToString(tao_models_classes_service_ServiceCall $serviceCall);
-
-    /**
-     * @param core_kernel_classes_Resource $resource
-     * @return tao_models_classes_service_ServiceCall
-     */
-    public function getServiceCallFromResource(core_kernel_classes_Resource $resource);
+    public function __toPhpCode() {
+        return 'new '.get_class($this).'()';
+    }
 }
