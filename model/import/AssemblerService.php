@@ -370,7 +370,7 @@ class AssemblerService extends ConfigurableService implements AssemblerServiceIn
         while ($iterator->valid()) {
             /** @var File $file */
             $file = $iterator->current();
-            tao_helpers_File::addFilesToZip($toArchive, $reader->getFileStream($file, $directory), $directory->getPrefix() . $file->getBasename());
+            tao_helpers_File::addFilesToZip($toArchive, $reader->getFileStream($file, $directory), $directory->getPrefix() .'/'. $file->getBasename());
             $reader->clean();
             $iterator->next();
         }

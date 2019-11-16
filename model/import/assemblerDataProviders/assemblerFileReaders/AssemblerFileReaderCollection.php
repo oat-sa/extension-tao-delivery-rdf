@@ -84,6 +84,7 @@ class AssemblerFileReaderCollection extends AssemblerFileReaderAbstract
         foreach ($this->getReaders() as $reader) {
             $reader->clean();
         }
+        $this->stream = null;
     }
 
 }
