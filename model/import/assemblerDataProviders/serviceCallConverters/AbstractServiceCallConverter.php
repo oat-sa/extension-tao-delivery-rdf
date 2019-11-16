@@ -33,6 +33,6 @@ abstract class AbstractServiceCallConverter implements ServiceCallConverterInter
      */
     public function getServiceCallFromResource(core_kernel_classes_Resource $resource)
     {
-        tao_models_classes_service_ServiceCall::fromResource($resource);
+        return tao_models_classes_service_ServiceCall::fromResource($resource);
     }
 }

@@ -3,7 +3,7 @@
  * AssemblerService configuration
  */
 
-use oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters\AssemblerFileReader;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\assemblerFileReaders\AssemblerFileReader;
 use oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters\SerializedServiceCallConverter;
 use oat\taoDeliveryRdf\model\import\AssemblerService;
 

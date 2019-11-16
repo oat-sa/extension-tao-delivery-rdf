@@ -30,7 +30,7 @@ use oat\generis\model\kernel\uri\UriProvider;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\File;
-use oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters\AssemblerFileReader;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\assemblerFileReaders\AssemblerFileReader;
 use oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters\ServiceCallConverterInterface;
 use tao_helpers_File;
 use tao_models_classes_export_RdfExporter;
