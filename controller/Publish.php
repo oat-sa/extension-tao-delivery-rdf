@@ -19,13 +19,16 @@
  */
 namespace oat\taoDeliveryRdf\controller;
 
+use Exception;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use RuntimeException;
 use \tao_helpers_Uri;
+use taoTests_models_classes_TestsService;
 
 /**
  * Controller to publish delivery by test
@@ -55,24 +58,26 @@ class Publish extends \tao_actions_SaSModule
 
     public function publish(){
         try {
-            $testUri = $this->getRequestParameter('testUri');
-            $classUri = $this->getRequestParameter('classUri');
+            $parsedBody = $this->getPsrRequest()->getParsedBody();
+            $testUri = $parsedBody['testUri'] ?? null;
+            $classUri = $parsedBody['classUri'] ?? null;
             $test = $this->getResource($testUri);
 
-            $testService = \taoTests_models_classes_TestsService::singleton();
+            /** @var taoTests_models_classes_TestsService $testService */
+            $testService = $this->getServiceLocator()->get(taoTests_models_classes_TestsService::class);
             $testItems = $testService->getTestItems($test);
             if (empty($testItems)) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     __('The test "%s" does not contain any items and cannot be published.', $test->getLabel())
                 );
             }
 
             $deliveryClass = $this->getClass($classUri);
             /** @var DeliveryFactory $deliveryFactoryResources */
-            $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+            $deliveryFactoryResources = $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);
             $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray([OntologyRdfs::RDFS_LABEL => 'new delivery']);
             return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             return $this->returnJson([
                 'success' => false,
                 'errorMsg' => $e instanceof \common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
