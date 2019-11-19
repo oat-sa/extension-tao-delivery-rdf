@@ -19,6 +19,7 @@
  */
 namespace oat\taoDeliveryRdf\controller;
 
+use common_exception_UserReadableException as UserReadableException;
 use Exception;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
@@ -28,7 +29,7 @@ use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use RuntimeException;
 use \tao_helpers_Uri;
-use taoTests_models_classes_TestsService;
+use taoTests_models_classes_TestsService as TestsService;
 
 /**
  * Controller to publish delivery by test
@@ -63,8 +64,7 @@ class Publish extends \tao_actions_SaSModule
             $classUri = $parsedBody['classUri'] ?? null;
             $test = $this->getResource($testUri);
 
-            /** @var taoTests_models_classes_TestsService $testService */
-            $testService = $this->getServiceLocator()->get(taoTests_models_classes_TestsService::class);
+            $testService = $this->getTestService();
             $testItems = $testService->getTestItems($test);
             if (empty($testItems)) {
                 throw new RuntimeException(
@@ -73,16 +73,31 @@ class Publish extends \tao_actions_SaSModule
             }
 
             $deliveryClass = $this->getClass($classUri);
-            /** @var DeliveryFactory $deliveryFactoryResources */
-            $deliveryFactoryResources = $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);
+            $deliveryFactoryResources = $this->getDeliveryFactory();
             $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray([OntologyRdfs::RDFS_LABEL => 'new delivery']);
             return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
         } catch(Exception $e) {
             return $this->returnJson([
                 'success' => false,
-                'errorMsg' => $e instanceof \common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
+                'errorMsg' => $e instanceof UserReadableException ? $e->getUserMessage() : $e->getMessage(),
                 'errorCode' => $e->getCode(),
             ]);
         }
+    }
+
+    /**
+     * @return TestsService
+     */
+    private function getTestService()
+    {
+        return $this->getServiceLocator()->get(TestsService::class);
+    }
+
+    /**
+     * @return DeliveryFactory
+     */
+    private function getDeliveryFactory()
+    {
+        return $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);;
     }
 }
