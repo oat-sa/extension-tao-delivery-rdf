@@ -38,7 +38,7 @@ use oat\oatbox\filesystem\File;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\log\LoggerService;
 use oat\tao\model\service\ServiceFileStorage;
-use oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters\AssemblerFileReaderInterface;
+use oat\taoDeliveryRdf\model\import\assemblerDataProviders\assemblerFileReaders\AssemblerFileReaderInterface;
 use oat\taoDeliveryRdf\model\import\assemblerDataProviders\serviceCallConverters\ServiceCallConverterInterface;
 use oat\taoDeliveryRdf\model\import\AssemblerService;
 use org\bovigo\vfs\vfsStream;
@@ -128,7 +128,7 @@ class AssemblerServiceTest extends TestCase
         $serviceCallConverterMock->method('getServiceCallFromResource')->willReturn($serviceCallMock);
 
         /** @var AssemblerFileReaderInterface|MockObject $fileReaderMock */
-        $fileReaderMock = $this->getMock(AssemblerFileReaderInterface::class, ['getFileStream', 'clean']);
+        $fileReaderMock = $this->getMock(AssemblerFileReaderInterface::class);
         $streamMock = $this->getMock(Stream::class, [], [], '', false);
         $fileReaderMock->method('getFileStream')->willReturn($streamMock);
 
