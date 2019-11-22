@@ -95,6 +95,9 @@ define([
                 refreshTree(testUri);
             })
             .on('error', function(err){
+                if (err && err.errorMsg) {
+                    err = err.errorMsg;
+                }
                 feedback().error(err);
             });
         }
