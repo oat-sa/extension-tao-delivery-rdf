@@ -20,8 +20,6 @@
 namespace oat\taoDeliveryRdf\model\export;
 
 use oat\oatbox\extension\AbstractAction;
-use oat\oatbox\service\ServiceManager;
-use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 
 /**
  * Exports the specified Assembly Class
@@ -53,7 +51,8 @@ class ExportAssemblyClass extends AbstractAction
         $dir = rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
         
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Exporting %s', $deliveryClass->getLabel()));
-        $assembler = $this->getServiceLocator()->get(AssemblerServiceInterface::SERVICE_ID);
+        /** @var AssemblyExporterService $assembler */
+        $assembler = $this->getServiceLocator()->get(AssemblyExporterService::class);
         foreach ($deliveryClass->getInstances(true) as $delivery) {
             $destFile = $dir.\tao_helpers_File::getSafeFileName($delivery->getLabel()).'.zip';
             $tmpFile = $assembler->exportCompiledDelivery($delivery);

@@ -22,8 +22,8 @@ namespace oat\taoDeliveryRdf\scripts\tools;
 use common_report_Report as Report;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\script\ScriptAction;
-use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoDeliveryRdf\model\import\AssemblyImporterService;
 use oat\taoDeliveryRdf\model\import\AssemblyImportFailedException;
 
 class ImportDeliveryAssembly extends ScriptAction
@@ -86,8 +86,8 @@ class ImportDeliveryAssembly extends ScriptAction
         try {
             $file = $this->getOption(self::OPTION_ASSEMBLY_FILE);
             $importClass = $this->getImportClass();
-            /** @var AssemblerServiceInterface $importer */
-            $importer = $this->getServiceLocator()->get(AssemblerServiceInterface::SERVICE_ID);
+            /** @var AssemblyImporterService $importer */
+            $importer = $this->getServiceLocator()->get(AssemblyImporterService::class);
             $useOriginalUri = $this->hasOption(self::OPTION_USE_ORIGINAL_URI);
 
             $importReport = $importer->importDelivery($importClass, $file, $useOriginalUri);
