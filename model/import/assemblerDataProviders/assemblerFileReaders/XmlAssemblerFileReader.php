@@ -124,10 +124,18 @@ class XmlAssemblerFileReader extends AssemblerFileReaderAbstract
     {
         $fileName = $file->getBasename();
         $fileName = trim($fileName, '.php');
+
+        $xmlPath = $fileName . '.xml';
+        $file = $directory->getFile($xmlPath);
+        // renew xml from php if exists
+        if ($file->exists()) {
+            $file->delete();
+        }
+
         $object = $this->getPhpCodeCompilationDataService()->readCompilationData($directory, $fileName);
         $this->getXmlCodeCompilationDataService()->writeCompilationData($directory, $fileName, $object);
 
-        return $directory->getFile($fileName . '.xml');
+        return $directory->getFile($xmlPath);
     }
 
     public function clean()

@@ -69,7 +69,7 @@ class AssemblerFileReaderCollection extends AssemblerFileReaderAbstract
         /** @var AssemblerFileReaderAbstract $reader */
         foreach ($this->getReaders() as $reader) {
             $this->propagate($reader);
-            $stream = $reader->getFileStream($file, $directory);
+            $stream = $reader->getFileStream($this->getFile(), $directory);
             $this->file = $reader->getFile();
         }
         return $stream;
