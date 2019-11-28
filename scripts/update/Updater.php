@@ -21,7 +21,6 @@
 namespace oat\taoDeliveryRdf\scripts\update;
 
 use oat\oatbox\event\EventManager;
-use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\tao\model\user\TaoRoles;
@@ -31,12 +30,10 @@ use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionReactivated;
 use oat\taoDeliveryRdf\helper\SessionStateHelper;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
-use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
-use oat\taoDeliveryRdf\model\import\AssemblerService;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
@@ -192,22 +189,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('4.7.0');
         }
 
-        $this->skip('4.7.0', '4.14.0');
-
-        if ($this->isVersion('4.14.0')) {
-            $serviceManager = $this->getServiceManager();
-
-            $defaultFileSystemId = 'deliveryAssemblyExport';
-            /** @var FileSystemService $service */
-            $service = $serviceManager->get(FileSystemService::SERVICE_ID);
-            $service->createFileSystem($defaultFileSystemId);
-            $serviceManager->register(FileSystemService::SERVICE_ID, $service);
-
-            $assemblerService = new AssemblerService([AssemblerService::OPTION_FILESYSTEM_ID => $defaultFileSystemId]);
-            $serviceManager->register(AssemblerServiceInterface::SERVICE_ID, $assemblerService);
-
-            $this->setVersion('5.0.0');
-        }
+        $this->skip('4.7.0', '5.0.0');
 
         if ($this->isVersion('5.0.0')) {
             // To avoid breaking the updater, this part has been moved in advance
@@ -259,5 +241,11 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('7.6.0', '9.0.1');
+
+        if ($this->isVersion('9.0.1')) {
+            $this->getServiceManager()->unregister('taoDeliveryRdf/AssemblerService');
+
+            $this->setVersion('10.0.0');
+        }
     }
 }
