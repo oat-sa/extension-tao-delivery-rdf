@@ -17,7 +17,6 @@ use tao_models_classes_service_FileStorage;
 use tao_models_classes_service_ServiceCall;
 use tao_models_classes_export_RdfExporter;
 use oat\generis\model\OntologyAwareTrait;
-use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
@@ -27,11 +26,7 @@ class AssemblyExporterService extends ConfigurableService
     use LoggerAwareTrait;
     use OntologyAwareTrait;
 
-    const SERVICE_ID = 'taoDeliveryRdf/AssemblyExporterService';
-
     const MANIFEST_FILE = 'manifest.json';
-
-    const OPTION_FILESYSTEM_ID = 'filesystemId';
 
     /**
      * Export Compiled Delivery
@@ -40,13 +35,12 @@ class AssemblyExporterService extends ConfigurableService
      * the compiled delivery will be stored in the 'taoDelivery' shared file system, at $fsExportPath location.
      *
      * @param core_kernel_classes_Resource $compiledDelivery
-     * @param string $fsExportPath (optional) A relative path to use to store the compiled delivery into the 'taoDelivery' shared file system.
      * @return string The path to the compiled delivery on the local file system OR the 'taoDelivery' shared file system, depending on whether $fsExportPath is set.
      *
      * @throws common_Exception
      * @throws core_kernel_classes_EmptyProperty
      */
-    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery, $fsExportPath = '')
+    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery)
     {
         $this->logDebug("Exporting Delivery Assembly '" . $compiledDelivery->getUri() . "'...");
 
@@ -69,16 +63,6 @@ class AssemblyExporterService extends ConfigurableService
 
         $this->doExportCompiledDelivery($path, $compiledDelivery, $zipArchive);
         $zipArchive->close();
-
-        if (!empty($fsExportPath)) {
-            $this->logDebug("Writing Delivery Assembly '" . $compiledDelivery->getUri() . "' into shared file system at location '${fsExportPath}'...");
-            $fsExportPath = trim($fsExportPath);
-            $fsExportPath = ltrim($fsExportPath,"/\\");
-
-            $zipArchiveHandler = fopen($path, 'r');
-            $this->getExportDirectory()->getFile($fsExportPath)->put($zipArchiveHandler);
-            fclose($zipArchiveHandler);
-        }
 
         return $path;
     }
@@ -147,17 +131,5 @@ class AssemblyExporterService extends ConfigurableService
     protected function getFileSource(\tao_models_classes_service_StorageDirectory $directory, $file)
     {
         return $directory->readPsrStream($file);
-    }
-
-    /**
-     * @return \oat\oatbox\filesystem\Directory
-     */
-    private function getExportDirectory()
-    {
-        /** @var FileSystemService $fileSystemService */
-        $fileSystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
-        $fileSystem = $fileSystemService->getDirectory($this->getOption(self::OPTION_FILESYSTEM_ID));
-
-        return $fileSystem;
     }
 }
