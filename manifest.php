@@ -30,8 +30,8 @@ return array(
   'description' => 'Manages deliveries using the ontology',
   'license'     => 'GPL-2.0',
   'version'     => '9.1.0',
-    'author'      => 'Open Assessment Technologies SA',
-    'requires'    => array(
+  'author'      => 'Open Assessment Technologies SA',
+  'requires'    => array(
         'generis'     => '>=12.5.0',
         'tao'         => '>=36.1.0',
         'taoGroups'   => '>=4.0.0',
