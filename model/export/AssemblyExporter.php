@@ -22,7 +22,6 @@ namespace oat\taoDeliveryRdf\model\export;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use oat\oatbox\service\ServiceManager;
-use oat\taoDeliveryRdf\model\AssemblerServiceInterface;
 use oat\taoDeliveryRdf\view\form\export\ExportForm;
 /**
  * tao delivery assembly exporter
@@ -67,7 +66,7 @@ class AssemblyExporter implements \tao_models_classes_export_ExportHandler
         }
         
         $delivery = new core_kernel_classes_Resource($formValues['exportInstance']);
-        $path = ServiceManager::getServiceManager()->get(AssemblerServiceInterface::SERVICE_ID)->exportCompiledDelivery($delivery);
+        $path = ServiceManager::getServiceManager()->get(AssemblyExporterService::class)->exportCompiledDelivery($delivery);
 
         return $path;
     }
