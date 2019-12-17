@@ -22,6 +22,7 @@ namespace oat\taoDeliveryRdf\model\export;
 
 use oat\oatbox\extension\AbstractAction;
 use common_report_Report as Report;
+use oat\taoDeliveryRdf\model\assembly\AssemblyFilesReader;
 
 /**
  * Exports the specified Assembly
@@ -51,7 +52,7 @@ class ExportAssembly extends AbstractAction
         $file = array_shift($params);
 
         /** @var AssemblyExporterService $assemblyExporter */
-        $assemblyExporter = $this->getServiceLocator()->get(AssemblyExporterService::class);
+        $assemblyExporter = $this->getServiceLocator()->get(AssemblyExporterService::SERVICE_ID);
         $tmpFile = $assemblyExporter->exportCompiledDelivery($delivery);
         \tao_helpers_File::move($tmpFile, $file);
         $finalReport = new Report(Report::TYPE_SUCCESS, __('Exported %1$s to %2$s', $delivery->getLabel(), $file));

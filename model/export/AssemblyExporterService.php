@@ -28,12 +28,14 @@ use tao_helpers_Export;
 use tao_helpers_File;
 use core_kernel_classes_Resource;
 use common_ext_ExtensionsManager;
-use tao_models_classes_service_FileStorage;
 use tao_models_classes_service_ServiceCall;
 use tao_models_classes_export_RdfExporter;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\service\ServiceFileStorage;
+use oat\taoDeliveryRdf\model\assembly\AssemblyFilesReader;
+use oat\taoDeliveryRdf\model\assembly\AssemblyFilesReaderInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 class AssemblyExporterService extends ConfigurableService
@@ -41,7 +43,40 @@ class AssemblyExporterService extends ConfigurableService
     use LoggerAwareTrait;
     use OntologyAwareTrait;
 
+    const SERVICE_ID = 'taoDeliveryRdf/AssemblyExporterService';
+    const OPTION_ASSEMBLY_FILES_READER = 'assembly_files_reader';
+    const OPTION_RDF_EXPORTER = 'rdf_exporter';
     const MANIFEST_FILE = 'manifest.json';
+
+    /**
+     * @var AssemblyFilesReaderInterface
+     */
+    private $assemblyFilesReader;
+
+    /**
+     * @var tao_models_classes_export_RdfExporter
+     */
+    private $rdfExporter;
+
+    /**
+     * AssemblyExporterService constructor.
+     * @param array $options
+     */
+    public function __construct($options = array())
+    {
+        parent::__construct($options);
+
+        $this->assemblyFilesReader = $this->getOption(self::OPTION_ASSEMBLY_FILES_READER);
+        if (!$this->assemblyFilesReader instanceof AssemblyFilesReaderInterface) {
+            throw new \InvalidArgumentException(sprintf('%s option value must be an instance of %s', self::OPTION_ASSEMBLY_FILES_READER, AssemblyFilesReaderInterface::class));
+        }
+
+        $this->rdfExporter = $this->getOption(self::OPTION_RDF_EXPORTER);
+        if (!$this->rdfExporter instanceof tao_models_classes_export_RdfExporter) {
+            throw new \InvalidArgumentException('%s option value must be an instance of %s', self::OPTION_RDF_EXPORTER, tao_models_classes_export_RdfExporter::class);
+        }
+    }
+
 
     /**
      * Export Compiled Delivery
@@ -109,26 +144,23 @@ class AssemblyExporterService extends ConfigurableService
         );
         $directories = $compiledDelivery->getPropertyValues($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
-            $directory = tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
-            $files = $directory->getIterator();
-            foreach ($files as $file) {
-                $source = $this->getFileSource($directory, $file);
-                tao_helpers_File::addFilesToZip($zipArchive, $source, $directory->getRelativePath() . $file);
+            $directory = $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID)->getDirectoryById($id);
+            $assemblyFilesReader = $this->getServiceLocator()->get(AssemblyFilesReader::class);
+            foreach ($assemblyFilesReader->getFiles($directory) as $filePath => $fileStream) {
+                tao_helpers_File::addFilesToZip($zipArchive, $fileStream, $filePath);
             }
-            $data['dir'][$id] = $directory->getRelativePath();
+            $data['dir'][$id] = $directory->getPrefix();
         }
 
         $runtime = $compiledDelivery->getUniquePropertyValue($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
         $serviceCall = tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
 
-        $rdfExporter = new tao_models_classes_export_RdfExporter();
-        $rdfdata = $rdfExporter->getRdfString(array($compiledDelivery));
-        if (!$zipArchive->addFromString('delivery.rdf', $rdfdata)) {
+        $rdfData = $this->rdfExporter->getRdfString(array($compiledDelivery));
+        if (!$zipArchive->addFromString('delivery.rdf', $rdfData)) {
             throw new common_Exception('Unable to add metadata to exported delivery assembly');
         }
         $data['meta'] = 'delivery.rdf';
-
 
         $content = json_encode($data);
         if (!$zipArchive->addFromString(self::MANIFEST_FILE, $content)) {
@@ -136,15 +168,5 @@ class AssemblyExporterService extends ConfigurableService
             unlink($path);
             throw new common_Exception('Unable to add manifest to exported delivery assembly');
         }
-    }
-
-    /**
-     * @param \tao_models_classes_service_StorageDirectory $directory
-     * @param string $file
-     * @return \Psr\Http\Message\StreamInterface
-     */
-    protected function getFileSource(\tao_models_classes_service_StorageDirectory $directory, $file)
-    {
-        return $directory->readPsrStream($file);
     }
 }
