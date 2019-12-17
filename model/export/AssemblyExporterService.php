@@ -26,7 +26,6 @@ use core_kernel_classes_EmptyProperty;
 use tao_helpers_Display;
 use tao_helpers_Export;
 use tao_helpers_File;
-use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use common_ext_ExtensionsManager;
 use tao_models_classes_service_FileStorage;
@@ -108,7 +107,7 @@ class AssemblyExporterService extends ConfigurableService
             'label' => $compiledDelivery->getLabel(),
             'version' => $taoDeliveryVersion
         );
-        $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
+        $directories = $compiledDelivery->getPropertyValues($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
             $directory = tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
             $files = $directory->getIterator();
@@ -119,7 +118,7 @@ class AssemblyExporterService extends ConfigurableService
             $data['dir'][$id] = $directory->getRelativePath();
         }
 
-        $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
+        $runtime = $compiledDelivery->getUniquePropertyValue($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
         $serviceCall = tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
 
