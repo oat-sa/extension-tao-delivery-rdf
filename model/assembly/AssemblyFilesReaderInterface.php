@@ -19,6 +19,7 @@
 
 namespace oat\taoDeliveryRdf\model\assembly;
 
+use Generator;
 use tao_models_classes_service_StorageDirectory;
 
 interface AssemblyFilesReaderInterface
@@ -28,7 +29,7 @@ interface AssemblyFilesReaderInterface
     /**
      * @param tao_models_classes_service_StorageDirectory $directory
      *
-     * @return array Array in format $filePath => StreamInterface
+     * @return Generator In format $filePath => StreamInterface
      */
     public function getFiles(tao_models_classes_service_StorageDirectory $directory);
 }

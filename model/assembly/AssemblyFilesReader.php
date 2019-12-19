@@ -19,6 +19,7 @@
 
 namespace oat\taoDeliveryRdf\model\assembly;
 
+use Generator;
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
@@ -28,7 +29,7 @@ class AssemblyFilesReader extends ConfigurableService implements AssemblyFilesRe
 {
     /**
      * @param tao_models_classes_service_StorageDirectory $directory
-     * @return \Generator|array In format $filePath => StreamInterface
+     * @return Generator In format $filePath => StreamInterface
      */
     public function getFiles(tao_models_classes_service_StorageDirectory $directory)
     {
@@ -37,7 +38,7 @@ class AssemblyFilesReader extends ConfigurableService implements AssemblyFilesRe
         /* @var $file File */
         foreach ($iterator as $file) {
             if (strpos($file->getBasename(), $compiledTestFilename) !== false) {
-                $file = $this->getServiceLocator()->get(CompiledTestConverterService::class)->convertPhpToXml($file, $directory);
+                $file = $this->getServiceLocator()->get(CompiledTestConverterService::SERVICE_ID)->convertPhpToXml($file, $directory);
                 $fileStream = $file->readPsrStream();
                 $file->delete();
             } else {
