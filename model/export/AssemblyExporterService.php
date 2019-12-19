@@ -66,8 +66,7 @@ class AssemblyExporterService extends ConfigurableService
     {
         parent::__construct($options);
 
-        $this->assemblyFilesReader = $this->getOption(self::OPTION_ASSEMBLY_FILES_READER);
-        if (!$this->assemblyFilesReader instanceof AssemblyFilesReaderInterface) {
+        if (!$this->getOption(self::OPTION_ASSEMBLY_FILES_READER) instanceof AssemblyFilesReaderInterface) {
             throw new \InvalidArgumentException(sprintf('%s option value must be an instance of %s', self::OPTION_ASSEMBLY_FILES_READER, AssemblyFilesReaderInterface::class));
         }
 
@@ -76,7 +75,6 @@ class AssemblyExporterService extends ConfigurableService
             throw new \InvalidArgumentException('%s option value must be an instance of %s', self::OPTION_RDF_EXPORTER, tao_models_classes_export_RdfExporter::class);
         }
     }
-
 
     /**
      * Export Compiled Delivery
@@ -145,8 +143,7 @@ class AssemblyExporterService extends ConfigurableService
         $directories = $compiledDelivery->getPropertyValues($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
             $directory = $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID)->getDirectoryById($id);
-            $assemblyFilesReader = $this->getServiceLocator()->get(AssemblyFilesReader::class);
-            foreach ($assemblyFilesReader->getFiles($directory) as $filePath => $fileStream) {
+            foreach ($this->getAssemblyFilesReader()->getFiles($directory) as $filePath => $fileStream) {
                 tao_helpers_File::addFilesToZip($zipArchive, $fileStream, $filePath);
             }
             $data['dir'][$id] = $directory->getPrefix();
@@ -168,5 +165,18 @@ class AssemblyExporterService extends ConfigurableService
             unlink($path);
             throw new common_Exception('Unable to add manifest to exported delivery assembly');
         }
+    }
+
+    /**
+     * @return AssemblyFilesReaderInterface
+     */
+    private function getAssemblyFilesReader()
+    {
+        if ($this->assemblyFilesReader instanceof AssemblyFilesReaderInterface) {
+            return $this->assemblyFilesReader;
+        }
+        $this->assemblyFilesReader = $this->getOption(self::OPTION_ASSEMBLY_FILES_READER);
+
+        return $this->propagate($this->assemblyFilesReader);
     }
 }
