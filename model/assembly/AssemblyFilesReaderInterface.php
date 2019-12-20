@@ -24,12 +24,18 @@ use tao_models_classes_service_StorageDirectory;
 
 interface AssemblyFilesReaderInterface
 {
-    const SERVICE_ID = 'taoDeliveryRdf/AssemblyFilesReaderInterface';
-
     /**
      * @param tao_models_classes_service_StorageDirectory $directory
      *
      * @return Generator In format $filePath => StreamInterface
      */
     public function getFiles(tao_models_classes_service_StorageDirectory $directory);
+
+    /**
+     * Set converter service if compiled test file should be converted to another format.
+     *
+     * @param CompiledTestConverterService $compiledTestConverter
+     * @return void
+     */
+    public function setCompiledTestConverter(CompiledTestConverterService $compiledTestConverter);
 }

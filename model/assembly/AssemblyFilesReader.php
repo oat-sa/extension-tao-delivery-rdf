@@ -29,16 +29,30 @@ use tao_models_classes_service_StorageDirectory;
 class AssemblyFilesReader extends ConfigurableService implements AssemblyFilesReaderInterface
 {
     /**
+     * @var CompiledTestConverterService
+     */
+    private $compiledTestConverter = null;
+
+    /**
+     * @param CompiledTestConverterService $compiledTestConverter
+     */
+    public function setCompiledTestConverter(CompiledTestConverterService $compiledTestConverter)
+    {
+        $this->compiledTestConverter = $compiledTestConverter;
+    }
+
+    /**
      * @param tao_models_classes_service_StorageDirectory $directory
      * @return Generator In format $filePath => StreamInterface
+     * @throws \common_Exception
      */
     public function getFiles(tao_models_classes_service_StorageDirectory $directory)
     {
         $iterator = $directory->getFlyIterator(Directory::ITERATOR_FILE | Directory::ITERATOR_RECURSIVE);
         /* @var $file File */
         foreach ($iterator as $file) {
-            if ($this->isCompiledTestFile($file)) {
-                $file = $this->getServiceLocator()->get(CompiledTestConverterService::SERVICE_ID)->convertPhpToXml($file, $directory);
+            if ($this->isCompiledTestFile($file) && $this->compiledTestConverter !== null) {
+                $file = $this->compiledTestConverter->convert($file, $directory);
                 $fileStream = $file->readPsrStream();
                 $file->delete();
             } else {
@@ -55,8 +69,6 @@ class AssemblyFilesReader extends ConfigurableService implements AssemblyFilesRe
      */
     private function isCompiledTestFile(File $file)
     {
-        $compiledTestFilename = taoQtiTest_models_classes_QtiTestService::TEST_COMPILED_FILENAME . '.php';
-
-        return strpos($file->getBasename(), $compiledTestFilename) !== false;
+        return strpos($file->getBasename(), taoQtiTest_models_classes_QtiTestService::TEST_COMPILED_FILENAME) !== false;
     }
 }
