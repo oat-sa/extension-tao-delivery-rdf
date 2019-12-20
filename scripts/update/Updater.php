@@ -245,7 +245,7 @@ class Updater extends \common_ext_ExtensionUpdater {
         if ($this->isVersion('9.0.1')) {
             $this->getServiceManager()->unregister('taoDeliveryRdf/AssemblerService');
 
-            $this->setVersion('9.1.0');
+            $this->setVersion('9.1.1');
         }
     }
 }
