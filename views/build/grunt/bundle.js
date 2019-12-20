@@ -31,6 +31,7 @@ module.exports = function(grunt) {
                 options : {
                     extension : 'taoDeliveryRdf',
                     outputDir : 'loader',
+                    paths: require('./paths.json'),
                     bundles : [{
                         name : 'taoDeliveryRdf',
                         default : true,
