@@ -19,90 +19,63 @@
 
 namespace oat\taoDeliveryRdf\model\assembly;
 
-use InvalidArgumentException;
+use common_Exception;
 use tao_models_classes_service_StorageDirectory;
 use oat\oatbox\filesystem\File;
-use oat\oatbox\service\ConfigurableService;
 use oat\taoQtiTest\models\CompilationDataService;
-use oat\taoQtiTest\models\PhpCodeCompilationDataService;
-use oat\taoQtiTest\models\XmlCompilationDataService;
 
-class CompiledTestConverterService extends ConfigurableService
+class CompiledTestConverterService
 {
-    const SERVICE_ID = 'taoDeliveryRdf/CompiledTestConverterService';
-
-    const OPTION_PHP_COMPILATION_SERVICE = 'php_compilation_service';
-    const OPTION_XML_COMPILATION_SERVICE = 'xml_compilation_service';
+    /**
+     * @var CompilationDataService
+     */
+    private $compilationDataReader = null;
 
     /**
      * @var CompilationDataService
      */
-    private $phpCompilationService = null;
-
-    /**
-     * @var CompilationDataService
-     */
-    private $xmlCompilationService = null;
+    private $compilationDataWriter = null;
 
     /**
      * CompiledTestConverterService constructor.
-     * @param array $options
+     * @param CompilationDataService $compilationDataReader
+     * @param CompilationDataService $compilationDataWriter
      */
-    public function __construct($options = array())
+    public function __construct(CompilationDataService $compilationDataReader, CompilationDataService $compilationDataWriter)
     {
-        parent::__construct($options);
-
-        $this->phpCompilationService = $this->getOption(self::OPTION_PHP_COMPILATION_SERVICE);
-        if (!$this->phpCompilationService instanceof PhpCodeCompilationDataService) {
-            throw new InvalidArgumentException(sprintf('%s option must be an instance of %s', self::OPTION_PHP_COMPILATION_SERVICE,  PhpCodeCompilationDataService::class));
-        }
-
-        $this->xmlCompilationService = $this->getOption(self::OPTION_XML_COMPILATION_SERVICE);
-        if (!$this->xmlCompilationService instanceof XmlCompilationDataService) {
-            throw new InvalidArgumentException(sprintf('%s option must be an instance of %s', self::OPTION_XML_COMPILATION_SERVICE, XmlCompilationDataService::class));
-        }
+        $this->compilationDataReader = $compilationDataReader;
+        $this->compilationDataWriter = $compilationDataWriter;
     }
 
     /**
      * @param File                                          $file
      * @param tao_models_classes_service_StorageDirectory   $directory
      * @return File
-     * @throws \common_Exception
+     * @throws common_Exception
      */
-    public function convertPhpToXml(File $file, tao_models_classes_service_StorageDirectory $directory)
+    public function convert(File $file, tao_models_classes_service_StorageDirectory $directory)
     {
         $fileName = pathinfo($file->getBasename(), PATHINFO_FILENAME);
-        $xmlFile = $directory->getFile($fileName . '.xml');
-        if ($xmlFile->exists()) {
-            $xmlFile->delete();
-        }
+        $resultFile = $this->getNewFile($directory, $fileName);
 
-        $object = $this->phpCompilationService->readCompilationData($directory, $fileName);
-        $this->xmlCompilationService->writeCompilationData($directory, $fileName, $object);
+        $object = $this->compilationDataReader->readCompilationData($directory, $fileName);
+        $this->compilationDataWriter->writeCompilationData($directory, $fileName, $object);
 
-        return $xmlFile;
+        return $resultFile;
     }
 
     /**
-     * @param File                                          $file
-     * @param tao_models_classes_service_StorageDirectory   $directory
+     * @param tao_models_classes_service_StorageDirectory $directory
+     * @param string $outputFileName
      * @return File
-     * @throws \common_Exception
      */
-    public function convertXmlToPhp(File $file, tao_models_classes_service_StorageDirectory $directory)
+    private function getNewFile(tao_models_classes_service_StorageDirectory $directory, $outputFileName)
     {
-        $fileName = pathinfo($file->getBasename(), PATHINFO_FILENAME);
-
-        $phpPath = $fileName . '.php';
-        $phpFile = $directory->getFile($phpPath);
-
-        if ($phpFile->exists()) {
-            $phpFile->delete();
+        $outputFileName .= '.' . $this->compilationDataWriter->getOutputFileType();
+        $resultFile = $directory->getFile($outputFileName);
+        if ($resultFile->exists()) {
+            $resultFile->delete();
         }
-
-        $object = $this->xmlCompilationService->readCompilationData($directory, $fileName);
-        $this->phpCompilationService->writeCompilationData($directory, $phpPath, $object);
-
-        return $phpFile;
+        return $resultFile;
     }
 }
