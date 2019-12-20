@@ -24,7 +24,7 @@ use tao_models_classes_service_StorageDirectory;
 
 interface AssemblyFilesReaderInterface
 {
-    const SERVICE_ID = 'taoDeliveryRdf';
+    const SERVICE_ID = 'taoDeliveryRdf/AssemblyFilesReaderInterface';
 
     /**
      * @param tao_models_classes_service_StorageDirectory $directory

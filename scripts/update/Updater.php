@@ -20,6 +20,7 @@
  */
 namespace oat\taoDeliveryRdf\scripts\update;
 
+use tao_models_classes_export_RdfExporter;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\taskQueue\TaskLogInterface;
@@ -262,7 +263,7 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $assemblyExporterService = new AssemblyExporterService([
                 AssemblyExporterService::OPTION_ASSEMBLY_FILES_READER   => new AssemblyFilesReader(),
-                AssemblyExporterService::OPTION_RDF_EXPORTER            => new \tao_models_classes_export_RdfExporter()
+                AssemblyExporterService::OPTION_RDF_EXPORTER            => new tao_models_classes_export_RdfExporter()
             ]);
             $this->getServiceManager()->register(AssemblyExporterService::SERVICE_ID, $assemblyExporterService);
 

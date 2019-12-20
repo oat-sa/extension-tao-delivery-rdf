@@ -20,6 +20,7 @@
 namespace oat\taoDeliveryRdf\model\assembly;
 
 use Generator;
+use taoQtiTest_models_classes_QtiTestService;
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
@@ -33,11 +34,10 @@ class AssemblyFilesReader extends ConfigurableService implements AssemblyFilesRe
      */
     public function getFiles(tao_models_classes_service_StorageDirectory $directory)
     {
-        $compiledTestFilename = 'compact-test.php';
         $iterator = $directory->getFlyIterator(Directory::ITERATOR_FILE | Directory::ITERATOR_RECURSIVE);
         /* @var $file File */
         foreach ($iterator as $file) {
-            if (strpos($file->getBasename(), $compiledTestFilename) !== false) {
+            if ($this->isCompiledTestFile($file)) {
                 $file = $this->getServiceLocator()->get(CompiledTestConverterService::SERVICE_ID)->convertPhpToXml($file, $directory);
                 $fileStream = $file->readPsrStream();
                 $file->delete();
@@ -47,5 +47,16 @@ class AssemblyFilesReader extends ConfigurableService implements AssemblyFilesRe
 
             yield $file->getPrefix() => $fileStream;
         }
+    }
+
+    /**
+     * @param File $file
+     * @return bool
+     */
+    private function isCompiledTestFile(File $file)
+    {
+        $compiledTestFilename = taoQtiTest_models_classes_QtiTestService::TEST_COMPILED_FILENAME . '.php';
+
+        return strpos($file->getBasename(), $compiledTestFilename) !== false;
     }
 }

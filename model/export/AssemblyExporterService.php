@@ -21,6 +21,7 @@ namespace oat\taoDeliveryRdf\model\export;
 
 use ZipArchive;
 use Exception;
+use InvalidArgumentException;
 use common_Exception;
 use core_kernel_classes_EmptyProperty;
 use tao_helpers_Display;
@@ -34,7 +35,6 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\service\ServiceFileStorage;
-use oat\taoDeliveryRdf\model\assembly\AssemblyFilesReader;
 use oat\taoDeliveryRdf\model\assembly\AssemblyFilesReaderInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
@@ -44,9 +44,12 @@ class AssemblyExporterService extends ConfigurableService
     use OntologyAwareTrait;
 
     const SERVICE_ID = 'taoDeliveryRdf/AssemblyExporterService';
+
     const OPTION_ASSEMBLY_FILES_READER = 'assembly_files_reader';
     const OPTION_RDF_EXPORTER = 'rdf_exporter';
-    const MANIFEST_FILE = 'manifest.json';
+
+    const MANIFEST_FILENAME = 'manifest.json';
+    const DELIVERY_RDF_FILENAME = 'delivery.rdf';
 
     /**
      * @var AssemblyFilesReaderInterface
@@ -67,12 +70,12 @@ class AssemblyExporterService extends ConfigurableService
         parent::__construct($options);
 
         if (!$this->getOption(self::OPTION_ASSEMBLY_FILES_READER) instanceof AssemblyFilesReaderInterface) {
-            throw new \InvalidArgumentException(sprintf('%s option value must be an instance of %s', self::OPTION_ASSEMBLY_FILES_READER, AssemblyFilesReaderInterface::class));
+            throw new InvalidArgumentException(sprintf('%s option value must be an instance of %s', self::OPTION_ASSEMBLY_FILES_READER, AssemblyFilesReaderInterface::class));
         }
 
         $this->rdfExporter = $this->getOption(self::OPTION_RDF_EXPORTER);
         if (!$this->rdfExporter instanceof tao_models_classes_export_RdfExporter) {
-            throw new \InvalidArgumentException('%s option value must be an instance of %s', self::OPTION_RDF_EXPORTER, tao_models_classes_export_RdfExporter::class);
+            throw new InvalidArgumentException('%s option value must be an instance of %s', self::OPTION_RDF_EXPORTER, tao_models_classes_export_RdfExporter::class);
         }
     }
 
@@ -154,13 +157,13 @@ class AssemblyExporterService extends ConfigurableService
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
 
         $rdfData = $this->rdfExporter->getRdfString(array($compiledDelivery));
-        if (!$zipArchive->addFromString('delivery.rdf', $rdfData)) {
+        if (!$zipArchive->addFromString(self::DELIVERY_RDF_FILENAME, $rdfData)) {
             throw new common_Exception('Unable to add metadata to exported delivery assembly');
         }
-        $data['meta'] = 'delivery.rdf';
+        $data['meta'] = self::DELIVERY_RDF_FILENAME;
 
         $content = json_encode($data);
-        if (!$zipArchive->addFromString(self::MANIFEST_FILE, $content)) {
+        if (!$zipArchive->addFromString(self::MANIFEST_FILENAME, $content)) {
             $zipArchive->close();
             unlink($path);
             throw new common_Exception('Unable to add manifest to exported delivery assembly');
