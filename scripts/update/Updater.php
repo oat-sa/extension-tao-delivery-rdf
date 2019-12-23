@@ -258,7 +258,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             ]);
             $this->getServiceManager()->register(AssemblyExporterService::SERVICE_ID, $assemblyExporterService);
 
-            $this->setVersion('9.2.0');
+            $this->setVersion('10.0.0');
         }
     }
 }
