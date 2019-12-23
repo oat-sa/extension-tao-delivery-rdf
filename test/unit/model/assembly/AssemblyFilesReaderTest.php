@@ -36,21 +36,11 @@ class AssemblyFilesReaderTest extends TestCase
      */
     private $object;
 
-    /**
-     * @var CompiledTestConverterService|MockObject
-     */
-    private $testConverterMock;
-
     protected function setUp()
     {
         parent::setUp();
-        $this->testConverterMock = $this->createMock(CompiledTestConverterService::class);
 
-        $slMock = $this->getServiceLocatorMock([
-            CompiledTestConverterService::SERVICE_ID => $this->testConverterMock,
-        ]);
         $this->object = new AssemblyFilesReader();
-        $this->object->setServiceLocator($slMock);
     }
 
     public function testGetFilesEmptyDirectoryReturnsEmptyGenerator()
@@ -89,28 +79,31 @@ class AssemblyFilesReaderTest extends TestCase
         $this->assertInstanceOf(StreamInterface::class, $result->current(), 'Returned iterator value must be an instance of StreamInterface.');
     }
 
-    public function testGetFilesConvertsCompiledPhpTestToXml()
+    public function testGetFilesConvertsCompiledTestFile()
     {
-        $expectedFilePath = 'compact-test.xml';
+        $expectedFilePath = 'compact-test.EXT2';
 
-        $phpFileMock = $this->createMock(File::class);
-        $phpFileMock->method('getBasename')
-            ->willReturn('compact-test.php');
+        $originalTestFileMock = $this->createMock(File::class);
+        $originalTestFileMock->method('getBasename')
+            ->willReturn('compact-test.EXT1');
 
-        $xmlFileMock = $this->createMock(File::class);
-        $xmlFileMock->method('getPrefix')
+        $convertedTestFileMock = $this->createMock(File::class);
+        $convertedTestFileMock->method('getPrefix')
             ->willReturn($expectedFilePath);
-        $xmlFileMock->method('readPsrStream')
+        $convertedTestFileMock->method('readPsrStream')
             ->willReturn($this->createMock(StreamInterface::class));
 
-        $this->testConverterMock->method('convertPhpToXml')
-            ->willReturn($xmlFileMock);
+        $testConverterMock = $this->createMock(CompiledTestConverterService::class);
+        $testConverterMock->method('convert')
+            ->willReturn($convertedTestFileMock);
+        $this->object->setCompiledTestConverter($testConverterMock);
 
         $directoryMock = $this->createMock(tao_models_classes_service_StorageDirectory::class);
         $directoryMock->method('getFlyIterator')
-            ->willReturn(new ArrayIterator([$phpFileMock]));
+            ->willReturn(new ArrayIterator([$originalTestFileMock]));
 
         $result = $this->object->getFiles($directoryMock);
+
         $this->assertInstanceOf(Generator::class, $result, 'Files reader must return an instance type of Generator.');
         $this->assertEquals($expectedFilePath, $result->key(), 'Returned converted file path must be as expected.');
         $this->assertInstanceOf(StreamInterface::class, $result->current(), 'Returned iterator value must be an instance of StreamInterface.');
