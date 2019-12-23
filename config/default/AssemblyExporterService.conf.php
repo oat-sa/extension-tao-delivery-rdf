@@ -1,6 +1,5 @@
 <?php
 
-use tao_models_classes_export_RdfExporter;
 use oat\taoDeliveryRdf\model\export\AssemblyExporterService;
 use oat\taoDeliveryRdf\model\assembly\AssemblyFilesReader;
 

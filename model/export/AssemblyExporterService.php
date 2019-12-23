@@ -19,6 +19,7 @@
 
 namespace oat\taoDeliveryRdf\model\export;
 
+use oat\taoDeliveryRdf\model\assembly\CompiledTestConverterFactory;
 use ZipArchive;
 use Exception;
 use InvalidArgumentException;
@@ -36,6 +37,7 @@ use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\service\ServiceFileStorage;
 use oat\taoDeliveryRdf\model\assembly\AssemblyFilesReaderInterface;
+use oat\taoDeliveryRdf\model\assembly\UnsupportedCompiledTestFormatException;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 class AssemblyExporterService extends ConfigurableService
@@ -86,12 +88,14 @@ class AssemblyExporterService extends ConfigurableService
      * the compiled delivery will be stored in the 'taoDelivery' shared file system, at $fsExportPath location.
      *
      * @param core_kernel_classes_Resource $compiledDelivery
+     * @param string $outputTestFormat Format compiled test file in output assembly package.
+     *
      * @return string The path to the compiled delivery on the local file system OR the 'taoDelivery' shared file system, depending on whether $fsExportPath is set.
      *
      * @throws common_Exception
      * @throws core_kernel_classes_EmptyProperty
      */
-    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery)
+    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery, $outputTestFormat)
     {
         $this->logDebug("Exporting Delivery Assembly '" . $compiledDelivery->getUri() . "'...");
 
@@ -112,6 +116,7 @@ class AssemblyExporterService extends ConfigurableService
             throw new Exception('Unable to create archive at '.$path);
         }
 
+        $this->setupCompiledTestConverter($outputTestFormat);
         $this->doExportCompiledDelivery($path, $compiledDelivery, $zipArchive);
         $zipArchive->close();
 
@@ -146,7 +151,7 @@ class AssemblyExporterService extends ConfigurableService
         $directories = $compiledDelivery->getPropertyValues($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
             $directory = $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID)->getDirectoryById($id);
-            foreach ($this->getAssemblyFilesReader()->getFiles($directory) as $filePath => $fileStream) {
+            foreach ($this->assemblyFilesReader->getFiles($directory) as $filePath => $fileStream) {
                 tao_helpers_File::addFilesToZip($zipArchive, $fileStream, $filePath);
             }
             $data['dir'][$id] = $directory->getPrefix();
@@ -171,15 +176,29 @@ class AssemblyExporterService extends ConfigurableService
     }
 
     /**
+     * @param string $outputTestFormat
+     * @return void
+     *
+     * @throws UnsupportedCompiledTestFormatException
+     */
+    private function setupCompiledTestConverter($outputTestFormat)
+    {
+        /** @var CompiledTestConverterFactory $compiledTestConverterFactory */
+        $compiledTestConverterFactory = $this->getServiceLocator()->get(CompiledTestConverterFactory::class);
+        $converter = $compiledTestConverterFactory->createConverter($outputTestFormat);
+
+        $this->getAssemblyFilesReader()->setCompiledTestConverter($converter);
+    }
+
+    /**
      * @return AssemblyFilesReaderInterface
      */
     private function getAssemblyFilesReader()
     {
-        if ($this->assemblyFilesReader instanceof AssemblyFilesReaderInterface) {
-            return $this->assemblyFilesReader;
+        if (!$this->assemblyFilesReader instanceof AssemblyFilesReaderInterface) {
+            $this->assemblyFilesReader = $this->getOption(self::OPTION_ASSEMBLY_FILES_READER);
         }
-        $this->assemblyFilesReader = $this->getOption(self::OPTION_ASSEMBLY_FILES_READER);
 
-        return $this->propagate($this->assemblyFilesReader);
+        return $this->assemblyFilesReader;
     }
 }
