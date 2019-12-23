@@ -32,7 +32,6 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionReactivated;
 use oat\taoDeliveryRdf\helper\SessionStateHelper;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\model\assembly\AssemblyFilesReader;
-use oat\taoDeliveryRdf\model\assembly\CompiledTestConverterService;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
@@ -42,8 +41,6 @@ use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
 use oat\taoDelivery\model\RuntimeService;
-use oat\taoQtiTest\models\PhpCodeCompilationDataService;
-use oat\taoQtiTest\models\XmlCompilationDataService;
 
 /**
  ** @author Joel Bout <joel@taotesting.com>
@@ -255,12 +252,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         if ($this->isVersion('9.1.0')) {
-            $compiledTestConverterService = new CompiledTestConverterService([
-                CompiledTestConverterService::OPTION_PHP_COMPILATION_SERVICE => new PhpCodeCompilationDataService(),
-                CompiledTestConverterService::OPTION_XML_COMPILATION_SERVICE => new XmlCompilationDataService()
-            ]);
-            $this->getServiceManager()->register(CompiledTestConverterService::SERVICE_ID, $compiledTestConverterService);
-
             $assemblyExporterService = new AssemblyExporterService([
                 AssemblyExporterService::OPTION_ASSEMBLY_FILES_READER   => new AssemblyFilesReader(),
                 AssemblyExporterService::OPTION_RDF_EXPORTER            => new tao_models_classes_export_RdfExporter()
