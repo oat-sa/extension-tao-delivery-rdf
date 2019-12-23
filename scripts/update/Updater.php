@@ -247,6 +247,6 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $this->setVersion('9.1.0');
         }
-        $this->skip('9.1.0', '9.1.1');
+        $this->skip('9.1.0', '9.2.0');
     }
 }
