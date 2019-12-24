@@ -29,7 +29,7 @@ return array(
   'label'       => 'Delivery Management',
   'description' => 'Manages deliveries using the ontology',
   'license'     => 'GPL-2.0',
-  'version'     => '9.1.1',
+  'version'     => '9.2.0',
 	'author'      => 'Open Assessment Technologies SA',
 	'requires'    => array(
         'generis'     => '>=12.5.0',
