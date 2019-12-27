@@ -28,6 +28,12 @@ use common_report_Report as Report;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\script\ScriptAction;
 
+/**
+ * php index.php "oat\taoDeliveryRdf\scripts\tools\ExportDeliveryAssembly" -uri deliveryUri -out ~/path.zip
+ *
+ * Class ExportDeliveryAssembly
+ * @package oat\taoDeliveryRdf\scripts\tools
+ */
 class ExportDeliveryAssembly extends ScriptAction
 {
     use OntologyAwareTrait;
