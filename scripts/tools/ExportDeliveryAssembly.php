@@ -67,7 +67,7 @@ class ExportDeliveryAssembly extends ScriptAction
                 'required' => false,
                 'defaultValue' => CompiledTestConverterFactory::COMPILED_TEST_FORMAT_XML,
                 'longPrefix' => self::OPTION_OUTPUT_TEST_FORMAT,
-                'description' => 'Use delivery URI from assembly package.',
+                'description' => 'Output format for compiled test data file.',
             ],
             self::OPTION_OUTPUT_FILEPATH => [
                 'prefix' => 'out',
