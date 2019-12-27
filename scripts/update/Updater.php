@@ -250,8 +250,9 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $this->setVersion('9.1.0');
         }
+        $this->skip('9.1.0', '9.2.0');
 
-        if ($this->isVersion('9.1.0')) {
+        if ($this->isVersion('9.2.0')) {
             $assemblyExporterService = new AssemblyExporterService([
                 AssemblyExporterService::OPTION_ASSEMBLY_FILES_READER   => new AssemblyFilesReader(),
                 AssemblyExporterService::OPTION_RDF_EXPORTER            => new tao_models_classes_export_RdfExporter()
