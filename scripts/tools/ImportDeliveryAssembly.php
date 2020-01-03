@@ -26,6 +26,15 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\import\AssemblyImporterService;
 use oat\taoDeliveryRdf\model\import\AssemblyImportFailedException;
 
+/**
+ * php index.php "oat\taoDeliveryRdf\scripts\tools\ImportDeliveryAssembly" -f ~/Documents/file.zip
+ * Options:
+ *  -uri // will be used same uri for the delivery as in the package
+ *  -class // import to the class
+ *
+ * Class ImportDeliveryAssembly
+ * @package oat\taoDeliveryRdf\scripts\tools
+ */
 class ImportDeliveryAssembly extends ScriptAction
 {
     use OntologyAwareTrait;

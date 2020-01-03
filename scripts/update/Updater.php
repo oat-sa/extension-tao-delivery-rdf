@@ -20,6 +20,7 @@
  */
 namespace oat\taoDeliveryRdf\scripts\update;
 
+use tao_models_classes_export_RdfExporter;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\taskQueue\TaskLogInterface;
@@ -30,10 +31,12 @@ use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionReactivated;
 use oat\taoDeliveryRdf\helper\SessionStateHelper;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\model\assembly\AssemblyFilesReader;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
+use oat\taoDeliveryRdf\model\export\AssemblyExporterService;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
@@ -247,5 +250,18 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $this->setVersion('9.1.0');
         }
+        $this->skip('9.1.0', '9.2.0');
+
+        if ($this->isVersion('9.2.0')) {
+            $assemblyExporterService = new AssemblyExporterService([
+                AssemblyExporterService::OPTION_ASSEMBLY_FILES_READER   => new AssemblyFilesReader(),
+                AssemblyExporterService::OPTION_RDF_EXPORTER            => new tao_models_classes_export_RdfExporter()
+            ]);
+            $this->getServiceManager()->register(AssemblyExporterService::SERVICE_ID, $assemblyExporterService);
+
+            $this->setVersion('10.0.0');
+        }
+
+        $this->skip('10.0.0', '10.0.1');
     }
 }

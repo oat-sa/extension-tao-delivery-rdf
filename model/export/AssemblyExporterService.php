@@ -19,22 +19,25 @@
 
 namespace oat\taoDeliveryRdf\model\export;
 
+use oat\taoDeliveryRdf\model\assembly\CompiledTestConverterFactory;
 use ZipArchive;
 use Exception;
+use InvalidArgumentException;
 use common_Exception;
 use core_kernel_classes_EmptyProperty;
 use tao_helpers_Display;
 use tao_helpers_Export;
 use tao_helpers_File;
-use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use common_ext_ExtensionsManager;
-use tao_models_classes_service_FileStorage;
 use tao_models_classes_service_ServiceCall;
 use tao_models_classes_export_RdfExporter;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\service\ServiceFileStorage;
+use oat\taoDeliveryRdf\model\assembly\AssemblyFilesReaderInterface;
+use oat\taoDeliveryRdf\model\assembly\UnsupportedCompiledTestFormatException;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 class AssemblyExporterService extends ConfigurableService
@@ -42,7 +45,41 @@ class AssemblyExporterService extends ConfigurableService
     use LoggerAwareTrait;
     use OntologyAwareTrait;
 
-    const MANIFEST_FILE = 'manifest.json';
+    const SERVICE_ID = 'taoDeliveryRdf/AssemblyExporterService';
+
+    const OPTION_ASSEMBLY_FILES_READER = 'assembly_files_reader';
+    const OPTION_RDF_EXPORTER = 'rdf_exporter';
+
+    const MANIFEST_FILENAME = 'manifest.json';
+    const DELIVERY_RDF_FILENAME = 'delivery.rdf';
+
+    /**
+     * @var AssemblyFilesReaderInterface
+     */
+    private $assemblyFilesReader;
+
+    /**
+     * @var tao_models_classes_export_RdfExporter
+     */
+    private $rdfExporter;
+
+    /**
+     * AssemblyExporterService constructor.
+     * @param array $options
+     */
+    public function __construct($options = array())
+    {
+        parent::__construct($options);
+
+        if (!$this->getOption(self::OPTION_ASSEMBLY_FILES_READER) instanceof AssemblyFilesReaderInterface) {
+            throw new InvalidArgumentException(sprintf('%s option value must be an instance of %s', self::OPTION_ASSEMBLY_FILES_READER, AssemblyFilesReaderInterface::class));
+        }
+
+        $this->rdfExporter = $this->getOption(self::OPTION_RDF_EXPORTER);
+        if (!$this->rdfExporter instanceof tao_models_classes_export_RdfExporter) {
+            throw new InvalidArgumentException('%s option value must be an instance of %s', self::OPTION_RDF_EXPORTER, tao_models_classes_export_RdfExporter::class);
+        }
+    }
 
     /**
      * Export Compiled Delivery
@@ -51,12 +88,14 @@ class AssemblyExporterService extends ConfigurableService
      * the compiled delivery will be stored in the 'taoDelivery' shared file system, at $fsExportPath location.
      *
      * @param core_kernel_classes_Resource $compiledDelivery
+     * @param string $outputTestFormat Format compiled test file in output assembly package.
+     *
      * @return string The path to the compiled delivery on the local file system OR the 'taoDelivery' shared file system, depending on whether $fsExportPath is set.
      *
      * @throws common_Exception
      * @throws core_kernel_classes_EmptyProperty
      */
-    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery)
+    public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery, $outputTestFormat)
     {
         $this->logDebug("Exporting Delivery Assembly '" . $compiledDelivery->getUri() . "'...");
 
@@ -77,6 +116,7 @@ class AssemblyExporterService extends ConfigurableService
             throw new Exception('Unable to create archive at '.$path);
         }
 
+        $this->setupCompiledTestConverter($outputTestFormat);
         $this->doExportCompiledDelivery($path, $compiledDelivery, $zipArchive);
         $zipArchive->close();
 
@@ -108,31 +148,27 @@ class AssemblyExporterService extends ConfigurableService
             'label' => $compiledDelivery->getLabel(),
             'version' => $taoDeliveryVersion
         );
-        $directories = $compiledDelivery->getPropertyValues(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
+        $directories = $compiledDelivery->getPropertyValues($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
-            $directory = tao_models_classes_service_FileStorage::singleton()->getDirectoryById($id);
-            $files = $directory->getIterator();
-            foreach ($files as $file) {
-                $source = $this->getFileSource($directory, $file);
-                tao_helpers_File::addFilesToZip($zipArchive, $source, $directory->getRelativePath() . $file);
+            $directory = $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID)->getDirectoryById($id);
+            foreach ($this->assemblyFilesReader->getFiles($directory) as $filePath => $fileStream) {
+                tao_helpers_File::addFilesToZip($zipArchive, $fileStream, $filePath);
             }
-            $data['dir'][$id] = $directory->getRelativePath();
+            $data['dir'][$id] = $directory->getPrefix();
         }
 
-        $runtime = $compiledDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
+        $runtime = $compiledDelivery->getUniquePropertyValue($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
         $serviceCall = tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
 
-        $rdfExporter = new tao_models_classes_export_RdfExporter();
-        $rdfdata = $rdfExporter->getRdfString(array($compiledDelivery));
-        if (!$zipArchive->addFromString('delivery.rdf', $rdfdata)) {
+        $rdfData = $this->rdfExporter->getRdfString(array($compiledDelivery));
+        if (!$zipArchive->addFromString(self::DELIVERY_RDF_FILENAME, $rdfData)) {
             throw new common_Exception('Unable to add metadata to exported delivery assembly');
         }
-        $data['meta'] = 'delivery.rdf';
-
+        $data['meta'] = self::DELIVERY_RDF_FILENAME;
 
         $content = json_encode($data);
-        if (!$zipArchive->addFromString(self::MANIFEST_FILE, $content)) {
+        if (!$zipArchive->addFromString(self::MANIFEST_FILENAME, $content)) {
             $zipArchive->close();
             unlink($path);
             throw new common_Exception('Unable to add manifest to exported delivery assembly');
@@ -140,12 +176,29 @@ class AssemblyExporterService extends ConfigurableService
     }
 
     /**
-     * @param \tao_models_classes_service_StorageDirectory $directory
-     * @param string $file
-     * @return \Psr\Http\Message\StreamInterface
+     * @param string $outputTestFormat
+     * @return void
+     *
+     * @throws UnsupportedCompiledTestFormatException
      */
-    protected function getFileSource(\tao_models_classes_service_StorageDirectory $directory, $file)
+    private function setupCompiledTestConverter($outputTestFormat)
     {
-        return $directory->readPsrStream($file);
+        /** @var CompiledTestConverterFactory $compiledTestConverterFactory */
+        $compiledTestConverterFactory = $this->getServiceLocator()->get(CompiledTestConverterFactory::class);
+        $converter = $compiledTestConverterFactory->createConverter($outputTestFormat);
+
+        $this->getAssemblyFilesReader()->setCompiledTestConverter($converter);
+    }
+
+    /**
+     * @return AssemblyFilesReaderInterface
+     */
+    private function getAssemblyFilesReader()
+    {
+        if (!$this->assemblyFilesReader instanceof AssemblyFilesReaderInterface) {
+            $this->assemblyFilesReader = $this->getOption(self::OPTION_ASSEMBLY_FILES_READER);
+        }
+
+        return $this->assemblyFilesReader;
     }
 }

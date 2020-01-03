@@ -57,8 +57,6 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
             throw new \common_exception_MissingParameter('Missing parameter `test` in ' . self::class);
         }
 
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
-
         if (isset($params['deliveryClass'])) {
             $deliveryClass = $this->getClass($params['deliveryClass']);
             if (!$deliveryClass->exists()) {
@@ -73,7 +71,7 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
 
         $deliveryResource =  \core_kernel_classes_ResourceFactory::create($deliveryClass);
 
-        if ($params['initialProperties']) {
+        if (isset($params['initialProperties'])) {
             // Setting "Sync to remote..." if enabled
             /** @var DeliveryFactory $deliveryFactoryResources */
             $deliveryFactoryResources = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
@@ -92,7 +90,7 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         }
 
         /** @var DeliveryFactory $deliveryFactory */
-        $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
+        $deliveryFactory = $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);
 
         $report = $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
         if ($report->getType() === \common_report_Report::TYPE_ERROR ) {

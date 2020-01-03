@@ -33,21 +33,11 @@ class DeliveryAssemblyWrapperService extends ConfigurableService implements Deli
     private $deliveryAssemblyService;
 
     /**
-     * DeliveryAssemblyWrapperService constructor.
-     * @param array $options
-     */
-    public function __construct(array $options = array())
-    {
-        parent::__construct($options);
-
-        $this->deliveryAssemblyService = DeliveryAssemblyService::singleton();
-    }
-
-    /**
      * @inheritdoc
      */
     public function deleteDeliveryData(DeliveryDeleteRequest $request)
     {
-        return $this->deliveryAssemblyService->deleteInstance($request->getDeliveryResource());
+        $service = $this->getServiceLocator()->get(DeliveryAssemblyWrapperService::class);
+        return $service->deleteInstance($request->getDeliveryResource());
     }
 }
