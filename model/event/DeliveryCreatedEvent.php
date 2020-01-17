@@ -23,8 +23,6 @@ use oat\tao\model\webhooks\WebhookSerializableEventInterface;
 
 class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSerializableEventInterface
 {
-    private const WEBHOOK_EVENT_NAME = 'DeliveryCreatedEvent';
-
     /**
      * @param String $deliveryUri
      */
@@ -61,7 +59,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
      */
     public function getWebhookEventName()
     {
-        return self::WEBHOOK_EVENT_NAME;
+        return 'DeliveryCreatedEvent';
     }
 
     /**
