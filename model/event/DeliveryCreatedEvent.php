@@ -19,12 +19,10 @@
  */
 namespace oat\taoDeliveryRdf\model\event;
 
-use JsonSerializable;
-use oat\oatbox\event\Event;
+use oat\tao\model\webhooks\WebhookSerializableEventInterface;
 
-class DeliveryCreatedEvent extends AbstractDeliveryEvent
+class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSerializableEventInterface
 {
-
     /**
      * @param String $deliveryUri
      */
@@ -53,6 +51,24 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent
     {
         return [
             'delivery' => $this->deliveryUri
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebhookEventName()
+    {
+        return 'DeliveryCreatedEvent';
+    }
+
+    /**
+     * @return array
+     */
+    public function serializeForWebhook()
+    {
+        return [
+            'delivery_id' => $this->deliveryUri
         ];
     }
 }
