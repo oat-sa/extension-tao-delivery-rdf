@@ -17,10 +17,12 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
+
 namespace oat\taoDeliveryRdf\model;
 
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
+use oat\oatbox\log\LoggerService;
 use oat\oatbox\service\ConfigurableService;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
@@ -28,6 +30,7 @@ use oat\tao\helpers\form\ValidationRuleRegistry;
 use oat\oatbox\event\EventManager;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDelivery\model\container\delivery\ContainerProvider;
+use tao_models_classes_service_ServiceCall;
 
 /**
  * Services to manage Deliveries
@@ -90,7 +93,7 @@ class DeliveryFactory extends ConfigurableService
             $propertyValues = $test->getPropertyValues($testPropretyInstance);
 
             if ($validationValue == 'notEmpty' && empty($propertyValues)) {
-                $report = \common_report_Report::createFailure(__('Test publishing failed because "%s" is empty.', $testPropretyInstance->getLabel()));
+                $report = \common_report_Report ::createFailure(__('Test publishing failed because "%s" is empty.', $testPropretyInstance->getLabel()));
 
                 return $report;
             }
@@ -110,11 +113,11 @@ class DeliveryFactory extends ConfigurableService
         if ($report->getType() == \common_report_Report::TYPE_SUCCESS) {
             $serviceCall = $report->getData();
 
-            $properties = array(
+            $properties = [
                 OntologyRdfs::RDFS_LABEL => $label,
                 DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
                 DeliveryAssemblyService::PROPERTY_ORIGIN => $test,
-            );
+            ];
 
             foreach ($this->getOption(self::OPTION_PROPERTIES) as $deliveryProperty => $testProperty) {
                 $properties[$deliveryProperty] = $test->getPropertyValues(new \core_kernel_classes_Property($testProperty));
@@ -134,6 +137,7 @@ class DeliveryFactory extends ConfigurableService
     /**
      * @param $values
      * @param core_kernel_classes_Resource $delivery
+     *
      * @return core_kernel_classes_Resource
      */
     public function setInitialProperties($values, core_kernel_classes_Resource $delivery)
@@ -152,6 +156,7 @@ class DeliveryFactory extends ConfigurableService
 
     /**
      * @param \Request $request
+     *
      * @return array
      */
     public function getInitialPropertiesFromRequest(\Request $request)
@@ -163,7 +168,7 @@ class DeliveryFactory extends ConfigurableService
             if (isset($initialPropertiesMap[$parameter]) && $value) {
                 $config = $initialPropertiesMap[$parameter];
                 $values = $config[self::OPTION_INITIAL_PROPERTIES_MAP_VALUES];
-                if(isset($values[$value])) {
+                if (isset($values[$value])) {
                     $initialProperties[$config[self::OPTION_INITIAL_PROPERTIES_MAP_URI]] = $values[$value];
                 }
             }
@@ -173,6 +178,7 @@ class DeliveryFactory extends ConfigurableService
 
     /**
      * @param array $properties
+     *
      * @return array
      */
     public function getInitialPropertiesFromArray($properties)
@@ -216,7 +222,7 @@ class DeliveryFactory extends ConfigurableService
         }
 
         $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
-        $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
+        $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance));
         return $compilationInstance;
     }
 }

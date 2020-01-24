@@ -19,25 +19,45 @@
 
 namespace oat\taoDeliveryRdf\test\unit\model\event;
 
+use core_kernel_classes_Container;
+use core_kernel_classes_Resource;
+use oat\generis\test\MockObject;
 use oat\generis\test\TestCase;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 
 class DeliveryCreatedEventTest extends TestCase
 {
-    private const DELIVERY_URI = 'http://uri';
+    private const DELIVERY_URI = 'https://delivery';
+    private const TEST_URI = 'https://test_uri';
+
+    /** @var core_kernel_classes_Resource|MockObject */
+    private $deliveryMock;
+    /** @var core_kernel_classes_Resource|MockObject */
+    private $testResource;
+
+    protected function setUp()
+    {
+        $this->deliveryMock = $this->createMock(core_kernel_classes_Resource::class);
+        $this->testResource = $this->createMock(core_kernel_classes_Resource::class);
+        $this->deliveryMock->method('getUri')->willReturn(self::DELIVERY_URI);
+        $this->deliveryMock->method('getOnePropertyValue')->willReturn($this->testResource);
+        $this->testResource->method('getUri')->willReturn(self::TEST_URI);
+    }
 
     public function testSerializeForWebhook()
     {
-        $event = new DeliveryCreatedEvent(self::DELIVERY_URI);
+        $event = new DeliveryCreatedEvent($this->deliveryMock);
         $result = $event->serializeForWebhook();
 
         $this->assertArrayHasKey('delivery_id', $result);
+        $this->assertArrayHasKey('test_id', $result);
         $this->assertEquals(self::DELIVERY_URI, $result['delivery_id']);
+        $this->assertEquals(self::TEST_URI, $result['test_id']);
     }
 
     public function testJsonSerialize()
     {
-        $event = new DeliveryCreatedEvent(self::DELIVERY_URI);
+        $event = new DeliveryCreatedEvent($this->deliveryMock);
         $result = $event->jsonSerialize();
         $this->assertArrayHasKey('delivery', $result);
         $this->assertEquals($result['delivery'], self::DELIVERY_URI);
@@ -45,7 +65,7 @@ class DeliveryCreatedEventTest extends TestCase
 
     public function testGetName()
     {
-        $event = new DeliveryCreatedEvent(self::DELIVERY_URI);
+        $event = new DeliveryCreatedEvent($this->deliveryMock);
         $result = $event->getName();
 
         $this->assertEquals($result, DeliveryCreatedEvent::class);
@@ -53,7 +73,7 @@ class DeliveryCreatedEventTest extends TestCase
 
     public function testGetWebhookEventName()
     {
-        $event = new DeliveryCreatedEvent(self::DELIVERY_URI);
+        $event = new DeliveryCreatedEvent($this->deliveryMock);
         $result = $event->getWebhookEventName();
         $this->assertEquals('DeliveryCreatedEvent', $result);
     }

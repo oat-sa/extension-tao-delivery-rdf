@@ -19,16 +19,24 @@
  */
 namespace oat\taoDeliveryRdf\model\event;
 
+use core_kernel_classes_Resource;
 use oat\tao\model\webhooks\WebhookSerializableEventInterface;
 
 class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSerializableEventInterface
 {
+    private $testUri;
+
     /**
-     * @param String $deliveryUri
+     * @param string $deliveryUri
+     * @param string $testUri
+     *
+     * @throws \core_kernel_persistence_Exception
      */
-    public function __construct($deliveryUri)
+    public function __construct(core_kernel_classes_Resource $delivery)
     {
-        $this->deliveryUri = $deliveryUri;
+        $testProperty = new \core_kernel_classes_Property('http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin');
+        $this->deliveryUri = $delivery->getUri();
+        $this->testUri = $delivery->getOnePropertyValue($testProperty)->getUri();
     }
 
     /**
@@ -50,7 +58,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
     public function jsonSerialize()
     {
         return [
-            'delivery' => $this->deliveryUri
+            'delivery' => $this->deliveryUri,
         ];
     }
 
@@ -68,7 +76,8 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
     public function serializeForWebhook()
     {
         return [
-            'delivery_id' => $this->deliveryUri
+            'delivery_id' => $this->deliveryUri,
+            'test_id' => $this->testUri,
         ];
     }
 }
