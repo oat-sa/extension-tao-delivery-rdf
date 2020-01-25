@@ -67,7 +67,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
      */
     public function getWebhookEventName()
     {
-        return 'DeliveryCreatedEvent';
+        return 'delivery-published';
     }
 
     /**
@@ -76,8 +76,8 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
     public function serializeForWebhook()
     {
         return [
-            'delivery_id' => $this->deliveryUri,
-            'test_id' => $this->testUri,
+            'deliveryId' => $this->deliveryUri,
+            'testId' => $this->testUri,
         ];
     }
 }

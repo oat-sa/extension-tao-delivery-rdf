@@ -48,10 +48,10 @@ class DeliveryCreatedEventTest extends TestCase
         $event = new DeliveryCreatedEvent($this->deliveryMock);
         $result = $event->serializeForWebhook();
 
-        $this->assertArrayHasKey('delivery_id', $result);
-        $this->assertArrayHasKey('test_id', $result);
-        $this->assertEquals(self::DELIVERY_URI, $result['delivery_id']);
-        $this->assertEquals(self::TEST_URI, $result['test_id']);
+        $this->assertArrayHasKey('deliveryId', $result);
+        $this->assertArrayHasKey('testId', $result);
+        $this->assertEquals(self::DELIVERY_URI, $result['deliveryId']);
+        $this->assertEquals(self::TEST_URI, $result['testId']);
     }
 
     public function testJsonSerialize()
@@ -74,6 +74,6 @@ class DeliveryCreatedEventTest extends TestCase
     {
         $event = new DeliveryCreatedEvent($this->deliveryMock);
         $result = $event->getWebhookEventName();
-        $this->assertEquals('DeliveryCreatedEvent', $result);
+        $this->assertEquals('delivery-published', $result);
     }
 }
