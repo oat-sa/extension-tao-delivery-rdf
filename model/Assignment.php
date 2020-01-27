@@ -1,4 +1,5 @@
 <?php
+
 namespace oat\taoDeliveryRdf\model;
 
 use oat\taoDelivery\model\Assignment as BaseAssignment;
@@ -22,7 +23,7 @@ class Assignment extends BaseAssignment
     
     /**
      * Get the display order.
-     * 
+     *
      * @return int
      */
     public function getDisplayOrder()

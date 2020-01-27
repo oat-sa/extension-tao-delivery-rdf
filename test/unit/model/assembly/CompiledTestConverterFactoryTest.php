@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,12 +37,9 @@ class CompiledTestConverterFactoryTest extends TestCase
      * @var CompiledTestConverterFactory
      */
     private $object;
-
-
     protected function setUp()
     {
         parent::setUp();
-
         $this->object = new CompiledTestConverterFactory();
     }
 
@@ -52,14 +50,12 @@ class CompiledTestConverterFactoryTest extends TestCase
     public function testCreateConverterFailsIfParameterNotString($outputTestFormat)
     {
         $this->expectException(InvalidArgumentException::class);
-
         $this->object->createConverter($outputTestFormat);
     }
 
     public function testCreateConverterFailsIfFormatNotSupported()
     {
         $this->expectException(UnsupportedCompiledTestFormatException::class);
-
         $unsupportedFormat = 'CUSTOM_FORMAT';
         $this->object->createConverter($unsupportedFormat);
     }
@@ -77,16 +73,12 @@ class CompiledTestConverterFactoryTest extends TestCase
             LoggerService::SERVICE_ID => $this->createMock(LoggerService::class),
         ]);
         $this->object->setServiceLocator($slMock);
-
         $result = $this->object->createConverter($outputTestFormat);
-
         $this->assertInstanceOf(CompiledTestConverterService::class, $result, 'Factory must create a test converter instance of required type.');
-
         // Assert that correct implementation of CompilationDataService was initialized by factory based on input parameter.
         $reflectionProperty = new \ReflectionProperty(get_class($result), 'compilationDataWriter');
         $reflectionProperty->setAccessible(true);
         $outputCompilationService = $reflectionProperty->getValue($result);
-
         $this->assertInstanceOf($expectedCompilationImplementation, $outputCompilationService, 'Factory must create a compiled test converter with correct "compilationDataWriter" implementation.');
     }
 

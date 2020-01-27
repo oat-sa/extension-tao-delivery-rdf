@@ -1,10 +1,10 @@
 <?php
+
 /**
  * Copyright (c) 2017 Open Assessment Technologies, S.A.
  *
  * @author A.Zagovorichev, <zagovorichev@1pt.com>
  */
-
 
 namespace oat\taoDeliveryRdf\scripts\tools;
 
@@ -178,12 +178,12 @@ class jMeterCleaner extends AbstractAction
              */
             if (!$counted) {
                 $row = [];
-                $row[] = $testTaker->getUri() . ' ('.$testTaker->getLabel().')';
+                $row[] = $testTaker->getUri() . ' (' . $testTaker->getLabel() . ')';
                 $row[] = $delivery->getUri();
                 $row[] = $execution->getIdentifier();
                 $src[] = $row;
             } else {
-                $ttLabel = $testTaker->getUri() . ' ('.$testTaker->getLabel().')';
+                $ttLabel = $testTaker->getUri() . ' (' . $testTaker->getLabel() . ')';
                 if (isset($src[$ttLabel])) {
                     if (isset($src[$ttLabel][$delivery->getUri()])) {
                         $src[$ttLabel][$delivery->getUri()]++;
@@ -303,7 +303,7 @@ class jMeterCleaner extends AbstractAction
             if (!count($ttData)) {
                 $this->report->add(\common_report_Report::createFailure('TestTaker with id [' . $testTaker->getUri() . '] has not been found'));
                 return false;
-            } elseif($delivery) {
+            } elseif ($delivery) {
                 $hasDelivery = false;
                 foreach ($ttData as $row) {
                     if ($row[1] == $delivery->getUri()) {
@@ -373,7 +373,7 @@ class jMeterCleaner extends AbstractAction
 
         // delete deliveries results
         $deliveries = [];
-        foreach ($ttData  as $row) {
+        foreach ($ttData as $row) {
             if (isset($row[1])) {
                 $deliveries[] = $row[1];
             }
@@ -397,7 +397,7 @@ class jMeterCleaner extends AbstractAction
     {
         $data = $this->getCountersByUsers();
         foreach ($data as $row) {
-            if ( $pos = mb_strpos($row[0], '(' . $labelBeginWith) ) {
+            if ($pos = mb_strpos($row[0], '(' . $labelBeginWith)) {
                 $uri = trim(mb_substr($row[0], 0, $pos));
                 $testTaker = $this->getResource($uri);
                 $this->cleanTestTakersExecutions($testTaker);
@@ -420,7 +420,7 @@ class jMeterCleaner extends AbstractAction
     {
         if (in_array('--clean-user-with-his-deliveries', $this->params)) {
             foreach ($ttData as $executionRow) {
-                if (isset($executionRow[1])){
+                if (isset($executionRow[1])) {
                     $this->deleteDelivery($this->getResource($executionRow[1]));
                 }
             }
@@ -436,7 +436,8 @@ class jMeterCleaner extends AbstractAction
         $this->report->add(\common_report_Report::createSuccess('TestTaker deleted'));
     }
 
-    private function removeResults(array $deliveries){
+    private function removeResults(array $deliveries)
+    {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
         try {
             // results rds
@@ -450,10 +451,8 @@ class jMeterCleaner extends AbstractAction
                     $report->setType(\common_report_Report::TYPE_ERROR);
                     $report->setMessage('Cannot cleanup results for ' . $deliveryId['deliveryResultIdentifier']);
                 }
-
             }
             $report->setMessage('Removed ' . $count . ' on ' . count($deliveryIds) . ' RDS results');
-
         } catch (\common_Exception $e) {
             $report->setType(\common_report_Report::TYPE_ERROR);
             $report->setMessage('Cannot cleanup Results: ' . $e->getMessage());
@@ -462,7 +461,8 @@ class jMeterCleaner extends AbstractAction
         return $report;
     }
 
-    private function removeDeliveryExecutions($userUri){
+    private function removeDeliveryExecutions($userUri)
+    {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
 
         // deliveryExecutions
@@ -472,24 +472,23 @@ class jMeterCleaner extends AbstractAction
             $persistenceOption = $deliveryService->getOption(KeyValueService::OPTION_PERSISTENCE);
             $persistence = \common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
             $count = 0;
-            foreach ($persistence->keys('kve_*'.$userUri.'*') as $key) {
+            foreach ($persistence->keys('kve_*' . $userUri . '*') as $key) {
                 if (substr($key, 0, 4) == 'kve_') {
                     $persistence->del($key);
                     $count++;
                 }
             }
-            $report->setMessage('Removed ' . $count . ' key-value delivery executions of '. $userUri);
+            $report->setMessage('Removed ' . $count . ' key-value delivery executions of ' . $userUri);
         } elseif ($deliveryService instanceof OntologyDeliveryExecution) {
             $count = 0;
             $deliveryExecutionClass = new \core_kernel_classes_Class(OntologyDeliveryExecution::CLASS_URI);
-            $deliveryExecutions = $deliveryExecutionClass->searchInstances( [OntologyDeliveryExecution::PROPERTY_SUBJECT => $userUri]);
+            $deliveryExecutions = $deliveryExecutionClass->searchInstances([OntologyDeliveryExecution::PROPERTY_SUBJECT => $userUri]);
             /** @var  \core_kernel_classes_Class $deliveryExecution */
             foreach ($deliveryExecutions as $deliveryExecution) {
                 $deliveryExecution->delete(true);
                 $count++;
             }
-            $report->setMessage('Removed ' . $count . ' ontology delivery executions of '. $userUri);
-
+            $report->setMessage('Removed ' . $count . ' ontology delivery executions of ' . $userUri);
         } else {
             $report->setType(\common_report_Report::TYPE_ERROR);
             $report->setMessage('Cannot cleanup delivery executions from ' . get_class($deliveryService));
@@ -498,19 +497,20 @@ class jMeterCleaner extends AbstractAction
         return $report;
     }
 
-    private function removeServiceState($userUri){
+    private function removeServiceState($userUri)
+    {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
         // service states
         $persistence = \common_persistence_KeyValuePersistence::getPersistence(\tao_models_classes_service_StateStorage::PERSISTENCE_ID);
         if ($persistence instanceof \common_persistence_AdvKeyValuePersistence) {
             $count = 0;
-            foreach ($persistence->keys('tao:state:'.$userUri.'*') as $key) {
+            foreach ($persistence->keys('tao:state:' . $userUri . '*') as $key) {
                 if (substr($key, 0, 10) == 'tao:state:') {
                     $persistence->del($key);
                     $count++;
                 }
             }
-            $report->setMessage('Removed ' . $count . ' states '. $userUri);
+            $report->setMessage('Removed ' . $count . ' states ' . $userUri);
         } elseif ($persistence instanceof \common_persistence_KeyValuePersistence) {
             try {
                 if ($persistence->purge()) {
@@ -520,7 +520,6 @@ class jMeterCleaner extends AbstractAction
                 $report->setType(\common_report_Report::TYPE_ERROR);
                 $report->setMessage($e->getMessage());
             }
-
         } else {
             $report->setType(\common_report_Report::TYPE_ERROR);
             $report->setMessage('Cannot cleanup states from ' . get_class($persistence));

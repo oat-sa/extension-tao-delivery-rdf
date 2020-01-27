@@ -18,8 +18,8 @@
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
-namespace oat\taoDeliveryRdf\model;
 
+namespace oat\taoDeliveryRdf\model;
 
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDelete;

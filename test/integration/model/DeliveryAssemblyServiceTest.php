@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,7 +26,7 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use Prophecy\Argument;
 use oat\generis\test\MockObject;
 
-require_once dirname(__FILE__) .'/../../../../tao/includes/raw_start.php';
+require_once dirname(__FILE__) . '/../../../../tao/includes/raw_start.php';
 
 class DeliveryAssemblyServiceTest extends FileStorageTestCase
 {
@@ -46,7 +47,7 @@ class DeliveryAssemblyServiceTest extends FileStorageTestCase
 
         $deliveryAssemblyServiceMock = $this->getMockBuilder(DeliveryAssemblyService::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('deleteDeliveryRuntime', 'deleteDeliveryDirectory'))
+            ->setMethods(['deleteDeliveryRuntime', 'deleteDeliveryDirectory'])
             ->getMock();
 
         $deliveryAssemblyServiceMock
@@ -117,7 +118,7 @@ class DeliveryAssemblyServiceTest extends FileStorageTestCase
      * @param array $instanceToDelete
      * @return object
      */
-    protected function getDelivery($instanceToDelete=[])
+    protected function getDelivery($instanceToDelete = [])
     {
         $smProphecy = $this->prophesize(\core_kernel_classes_Resource::class);
         $smProphecy->getPropertyValues(Argument::any())->willReturn($instanceToDelete);
@@ -134,7 +135,7 @@ class DeliveryAssemblyServiceTest extends FileStorageTestCase
     {
         return $this->getMockBuilder(DeliveryAssemblyService::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('getRootClass', 'getFileStorage'))
+            ->setMethods(['getRootClass', 'getFileStorage'])
             ->getMock();
     }
 

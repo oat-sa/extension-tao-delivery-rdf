@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,10 +45,11 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 class DeliveryExecutionArchive extends AbstractAction
 {
     use OntologyAwareTrait;
+
     /**
      * @var array Available script modes
      */
-    static public $options = ['list', 'archive', 'unarchive', 'delete'];
+    public static $options = ['list', 'archive', 'unarchive', 'delete'];
 
     /**
      * @var Report
@@ -70,7 +72,6 @@ class DeliveryExecutionArchive extends AbstractAction
 
         try {
             $this->process();
-
         } catch (\Exception $e) {
             $this->helpAction($e->getMessage());
         }
@@ -110,9 +111,9 @@ class DeliveryExecutionArchive extends AbstractAction
         }
 
         $time_end = microtime(true);
-        $execution_time = ($time_end - $time_start)/60;
+        $execution_time = ($time_end - $time_start) / 60;
 
-        $this->report->add(new Report(Report::TYPE_INFO, 'Time:' . round($execution_time, 4) .' Minutes.' ));
+        $this->report->add(new Report(Report::TYPE_INFO, 'Time:' . round($execution_time, 4) . ' Minutes.'));
     }
 
     /**
@@ -120,7 +121,7 @@ class DeliveryExecutionArchive extends AbstractAction
      */
     private function listAction()
     {
-        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
+        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
         $deliveries = $deliveryClass->getInstances(true);
         $result = [];
         foreach ($deliveries as $delivery) {
@@ -144,7 +145,7 @@ class DeliveryExecutionArchive extends AbstractAction
             'Unarchived deliveries:'
         );
 
-        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
+        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
         $deliveries = $deliveryClass->searchInstances([
             new Filter(DeliveryAssemblyService::PROPERTY_DELIVERY_TIME, null, FilterOperator::createIsNotNull())
         ]);
@@ -157,11 +158,11 @@ class DeliveryExecutionArchive extends AbstractAction
         foreach ($deliveries as $compiledDelivery) {
             try {
                 $fileName = $archiveService->unArchive($compiledDelivery, $this->isForced());
-                $this->report->add(new Report(Report::TYPE_SUCCESS, 'Delivery '.$this->deliveryDescription($compiledDelivery).' unarchived completed: ' .$fileName  ));
-            }catch (DeliveryArchiveNotExistingException $exception) {
-                $this->report->add(new Report(Report::TYPE_ERROR,  'Delivery '.$this->deliveryDescription($compiledDelivery).' '. $exception->getMessage()));
-            }catch (DeliveryZipException $exception) {
-                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery '.$this->deliveryDescription($compiledDelivery).' '. $exception->getMessage()));
+                $this->report->add(new Report(Report::TYPE_SUCCESS, 'Delivery ' . $this->deliveryDescription($compiledDelivery) . ' unarchived completed: ' . $fileName));
+            } catch (DeliveryArchiveNotExistingException $exception) {
+                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery ' . $this->deliveryDescription($compiledDelivery) . ' ' . $exception->getMessage()));
+            } catch (DeliveryZipException $exception) {
+                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery ' . $this->deliveryDescription($compiledDelivery) . ' ' . $exception->getMessage()));
             }
         }
     }
@@ -177,7 +178,7 @@ class DeliveryExecutionArchive extends AbstractAction
             'Archived deliveries:'
         );
 
-        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
+        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
         $deliveries = $deliveryClass->searchInstances([
             new Filter(DeliveryAssemblyService::PROPERTY_DELIVERY_TIME, null, FilterOperator::createIsNotNull())
         ]);
@@ -189,11 +190,11 @@ class DeliveryExecutionArchive extends AbstractAction
         foreach ($deliveries as $compiledDelivery) {
             try {
                 $fileName = $archiveService->archive($compiledDelivery, $this->isForced());
-                $this->report->add(new Report(Report::TYPE_SUCCESS, 'Delivery '.$this->deliveryDescription($compiledDelivery).' archive created: ' .$fileName));
+                $this->report->add(new Report(Report::TYPE_SUCCESS, 'Delivery ' . $this->deliveryDescription($compiledDelivery) . ' archive created: ' . $fileName));
             } catch (DeliverArchiveExistingException $exception) {
-                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery '.$this->deliveryDescription($compiledDelivery).' '. $exception->getMessage() . ' use --force to regenerate'  ));
+                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery ' . $this->deliveryDescription($compiledDelivery) . ' ' . $exception->getMessage() . ' use --force to regenerate'));
             } catch (DeliveryZipException $exception) {
-                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery '.$this->deliveryDescription($compiledDelivery).' '. $exception->getMessage()));
+                $this->report->add(new Report(Report::TYPE_ERROR, 'Delivery ' . $this->deliveryDescription($compiledDelivery) . ' ' . $exception->getMessage()));
             }
         }
     }
@@ -209,7 +210,7 @@ class DeliveryExecutionArchive extends AbstractAction
             'Deleted Archived deliveries:'
         );
 
-        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI );
+        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
         $deliveries = $deliveryClass->searchInstances([
             new Filter(DeliveryAssemblyService::PROPERTY_DELIVERY_TIME, null, FilterOperator::createIsNotNull())
         ]);
@@ -221,7 +222,7 @@ class DeliveryExecutionArchive extends AbstractAction
         foreach ($deliveries as $compiledDelivery) {
             $fileName = $archiveService->deleteArchive($compiledDelivery);
 
-            $this->report->add(new Report(Report::TYPE_SUCCESS, 'Delivery '.$this->deliveryDescription($compiledDelivery).' archive deleted: ' .$fileName  ));
+            $this->report->add(new Report(Report::TYPE_SUCCESS, 'Delivery ' . $this->deliveryDescription($compiledDelivery) . ' archive deleted: ' . $fileName));
         }
     }
 

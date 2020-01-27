@@ -21,7 +21,6 @@
 
 namespace oat\taoDeliveryRdf\scripts\tools;
 
-
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\filesystem\FileSystemService;
@@ -29,6 +28,7 @@ use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use oat\taoDeliveryRdf\model\DeliveryArchiveService;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
+
 /**
  * Class RegisterDeliveryArchiveEvent
  *
@@ -76,7 +76,9 @@ class UnRegisterDeliveryArchive extends AbstractAction
             $this->registerService(DeliveryDeleteService::SERVICE_ID, $deliveryDeleteService);
         }
         
-        return new \common_report_Report(\common_report_Report::TYPE_SUCCESS,
-            DeliveryArchiveService::BUCKET_DIRECTORY . ' unregister and event detached');
+        return new \common_report_Report(
+            \common_report_Report::TYPE_SUCCESS,
+            DeliveryArchiveService::BUCKET_DIRECTORY . ' unregister and event detached'
+        );
     }
 }

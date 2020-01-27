@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,17 +31,15 @@ class CompiledTestConverterService
      * @var CompilationDataService
      */
     private $compilationDataReader = null;
-
     /**
-     * @var CompilationDataService
-     */
+         * @var CompilationDataService
+         */
     private $compilationDataWriter = null;
-
     /**
-     * CompiledTestConverterService constructor.
-     * @param CompilationDataService $compilationDataReader
-     * @param CompilationDataService $compilationDataWriter
-     */
+         * CompiledTestConverterService constructor.
+         * @param CompilationDataService $compilationDataReader
+         * @param CompilationDataService $compilationDataWriter
+         */
     public function __construct(CompilationDataService $compilationDataReader, CompilationDataService $compilationDataWriter)
     {
         $this->compilationDataReader = $compilationDataReader;
@@ -57,10 +56,8 @@ class CompiledTestConverterService
     {
         $fileName = pathinfo($file->getBasename(), PATHINFO_FILENAME);
         $resultFile = $this->getNewFile($directory, $fileName);
-
         $object = $this->compilationDataReader->readCompilationData($directory, $fileName);
         $this->compilationDataWriter->writeCompilationData($directory, $fileName, $object);
-
         return $resultFile;
     }
 

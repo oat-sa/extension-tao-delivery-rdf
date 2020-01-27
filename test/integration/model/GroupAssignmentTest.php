@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,6 +18,7 @@
  * Copyright (c) 2014 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
+
 namespace oat\taoDeliveryRdf\test\integration\model;
 
 use oat\tao\test\TaoPhpUnitTestRunner;
@@ -42,7 +44,8 @@ class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
      * @param array $data
      * @param string $dataName
      */
-    public function __construct($name = null, array $data = array(), $dataName = '') {
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
         parent::__construct($name, $data, $dataName);
         common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
     }
@@ -66,7 +69,7 @@ class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
     {
         $resourceMock = $this->getMockBuilder('core_kernel_classes_Resource')
             ->setMockClassName('FakeResource')
-            ->setConstructorArgs(array($uri))
+            ->setConstructorArgs([$uri])
             ->getMock();
 
         return $resourceMock;
@@ -82,27 +85,27 @@ class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
         $delivery = $this->getResourceMock('fakerDeliveryAssembly');
         $delivery->method('getPropertiesValues')->willReturn($properties);
 
-        $result = $this->invokeProtectedMethod($this->service, 'hasDeliveryGuestAccess' , array($delivery));
+        $result = $this->invokeProtectedMethod($this->service, 'hasDeliveryGuestAccess', [$delivery]);
         $this->assertEquals($expected, $result);
     }
 
     public function hasDeliveryGuestAccessProvider()
     {
-        return array(
-            'positive' => array(
-                array(
-                    DeliveryContainerService::PROPERTY_ACCESS_SETTINGS  => array(
+        return [
+            'positive' => [
+                [
+                    DeliveryContainerService::PROPERTY_ACCESS_SETTINGS  => [
                         new \core_kernel_classes_Resource(DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS)
-                    )
-                ),
+                    ]
+                ],
                 true
-            ),
-            'negative' => array(
-                array(
-                    DeliveryContainerService::PROPERTY_ACCESS_SETTINGS  => array()
-                ),
+            ],
+            'negative' => [
+                [
+                    DeliveryContainerService::PROPERTY_ACCESS_SETTINGS  => []
+                ],
                 false
-            )
-        );
+            ]
+        ];
     }
 }

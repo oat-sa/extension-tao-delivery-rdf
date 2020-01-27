@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  * @author Christophe Noël <christophe@taotesting.com>
  */
+
 namespace oat\taoDeliveryRdf\helper;
 
 use oat\oatbox\service\ServiceManager;
@@ -41,12 +43,13 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
      * Data is stored as a coma-separated list of active test runner features ids
      * ex: progressBar,accessibility,security
      */
-    public function feed() {
+    public function feed()
+    {
         $activeFeatures = [];
 
-        $expression = "/^".preg_quote($this->name, "/")."(.)*[0-9]+$/";
-        foreach($_POST as $key => $value){
-            if(preg_match($expression, $key)){
+        $expression = "/^" . preg_quote($this->name, "/") . "(.)*[0-9]+$/";
+        foreach ($_POST as $key => $value) {
+            if (preg_match($expression, $key)) {
                 $activeFeatures[] = $value;
             }
         }
@@ -71,7 +74,7 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
         $i = 0;
 
         if (count($allFeatures) > 0) {
-            foreach($allFeatures as $feature){
+            foreach ($allFeatures as $feature) {
                 $choicesList[] = [
                     "title"     => $feature->getDescription(),
                     "value"     => $feature->getId(),
@@ -84,10 +87,10 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
         }
 
         $tpl = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf')->getDir() . self::WIDGET_TPL ;
-        $templateRenderer = new \taoItems_models_classes_TemplateRenderer($tpl, array(
+        $templateRenderer = new \taoItems_models_classes_TemplateRenderer($tpl, [
             'propLabel'   => _dh($this->getDescription()),
             'choicesList' => $choicesList
-        ));
+        ]);
 
         return $templateRenderer->render();
     }

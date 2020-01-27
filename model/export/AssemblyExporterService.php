@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,34 +44,29 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 class AssemblyExporterService extends ConfigurableService
 {
     use LoggerAwareTrait;
-    use OntologyAwareTrait;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          use OntologyAwareTrait;
+
 
     const SERVICE_ID = 'taoDeliveryRdf/AssemblyExporterService';
-
     const OPTION_ASSEMBLY_FILES_READER = 'assembly_files_reader';
     const OPTION_RDF_EXPORTER = 'rdf_exporter';
-
     const MANIFEST_FILENAME = 'manifest.json';
     const DELIVERY_RDF_FILENAME = 'delivery.rdf';
-
     /**
-     * @var AssemblyFilesReaderInterface
-     */
+         * @var AssemblyFilesReaderInterface
+         */
     private $assemblyFilesReader;
-
     /**
-     * @var tao_models_classes_export_RdfExporter
-     */
+         * @var tao_models_classes_export_RdfExporter
+         */
     private $rdfExporter;
-
     /**
-     * AssemblyExporterService constructor.
-     * @param array $options
-     */
-    public function __construct($options = array())
+         * AssemblyExporterService constructor.
+         * @param array $options
+         */
+    public function __construct($options = [])
     {
         parent::__construct($options);
-
         if (!$this->getOption(self::OPTION_ASSEMBLY_FILES_READER) instanceof AssemblyFilesReaderInterface) {
             throw new InvalidArgumentException(sprintf('%s option value must be an instance of %s', self::OPTION_ASSEMBLY_FILES_READER, AssemblyFilesReaderInterface::class));
         }
@@ -98,9 +94,8 @@ class AssemblyExporterService extends ConfigurableService
     public function exportCompiledDelivery(core_kernel_classes_Resource $compiledDelivery, $outputTestFormat)
     {
         $this->logDebug("Exporting Delivery Assembly '" . $compiledDelivery->getUri() . "'...");
-
-        $fileName = tao_helpers_Display::textCleaner($compiledDelivery->getLabel()).'.zip';
-        $path = tao_helpers_File::concat(array(tao_helpers_Export::getExportPath(), $fileName));
+        $fileName = tao_helpers_Display::textCleaner($compiledDelivery->getLabel()) . '.zip';
+        $path = tao_helpers_File::concat([tao_helpers_Export::getExportPath(), $fileName]);
         if (!tao_helpers_File::securityCheck($path, true)) {
             throw new Exception('Unauthorized file name');
         }
@@ -113,13 +108,12 @@ class AssemblyExporterService extends ConfigurableService
 
         $zipArchive = new ZipArchive();
         if ($zipArchive->open($path, ZipArchive::CREATE) !== true) {
-            throw new Exception('Unable to create archive at '.$path);
+            throw new Exception('Unable to create archive at ' . $path);
         }
 
         $this->setupCompiledTestConverter($outputTestFormat);
         $this->doExportCompiledDelivery($path, $compiledDelivery, $zipArchive);
         $zipArchive->close();
-
         return $path;
     }
 
@@ -142,12 +136,11 @@ class AssemblyExporterService extends ConfigurableService
     protected function doExportCompiledDelivery($path, core_kernel_classes_Resource $compiledDelivery, ZipArchive $zipArchive)
     {
         $taoDeliveryVersion = common_ext_ExtensionsManager::singleton()->getInstalledVersion('taoDelivery');
-
-        $data = array(
-            'dir' => array(),
+        $data = [
+            'dir' => [],
             'label' => $compiledDelivery->getLabel(),
             'version' => $taoDeliveryVersion
-        );
+        ];
         $directories = $compiledDelivery->getPropertyValues($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
             $directory = $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID)->getDirectoryById($id);
@@ -160,13 +153,11 @@ class AssemblyExporterService extends ConfigurableService
         $runtime = $compiledDelivery->getUniquePropertyValue($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
         $serviceCall = tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
-
-        $rdfData = $this->rdfExporter->getRdfString(array($compiledDelivery));
+        $rdfData = $this->rdfExporter->getRdfString([$compiledDelivery]);
         if (!$zipArchive->addFromString(self::DELIVERY_RDF_FILENAME, $rdfData)) {
             throw new common_Exception('Unable to add metadata to exported delivery assembly');
         }
         $data['meta'] = self::DELIVERY_RDF_FILENAME;
-
         $content = json_encode($data);
         if (!$zipArchive->addFromString(self::MANIFEST_FILENAME, $content)) {
             $zipArchive->close();
@@ -186,7 +177,6 @@ class AssemblyExporterService extends ConfigurableService
         /** @var CompiledTestConverterFactory $compiledTestConverterFactory */
         $compiledTestConverterFactory = $this->getServiceLocator()->get(CompiledTestConverterFactory::class);
         $converter = $compiledTestConverterFactory->createConverter($outputTestFormat);
-
         $this->getAssemblyFilesReader()->setCompiledTestConverter($converter);
     }
 
