@@ -26,8 +26,6 @@ use \core_kernel_persistence_Exception;
 
 class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSerializableEventInterface
 {
-    const ASSEMBLED_DELIVERY_ORIGIN_URI = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
-
     /**
      * @var core_kernel_classes_Resource
      */
@@ -81,7 +79,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
      */
     public function serializeForWebhook()
     {
-        $testProperty = new \core_kernel_classes_Property(self::ASSEMBLED_DELIVERY_ORIGIN_URI);
+        $testProperty = new \core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
         return [
             'deliveryId' => $this->delivery->getUri(),
             'testId' => $this->delivery->getOnePropertyValue($testProperty)->getUri(),
