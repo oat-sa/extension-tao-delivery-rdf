@@ -24,6 +24,8 @@ use oat\tao\model\webhooks\WebhookSerializableEventInterface;
 
 class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSerializableEventInterface
 {
+    const ASSEMBLED_DELIVERY_ORIGIN_URI = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
+
     private $testUri;
 
     /**
@@ -34,7 +36,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
      */
     public function __construct(core_kernel_classes_Resource $delivery)
     {
-        $testProperty = new \core_kernel_classes_Property('http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin');
+        $testProperty = new \core_kernel_classes_Property(self::ASSEMBLED_DELIVERY_ORIGIN_URI);
         $this->deliveryUri = $delivery->getUri();
         $this->testUri = $delivery->getOnePropertyValue($testProperty)->getUri();
     }
