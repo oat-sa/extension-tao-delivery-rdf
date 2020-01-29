@@ -72,7 +72,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
      */
     public function getWebhookEventName()
     {
-        return self::class;
+        return 'DeliveryCreatedEvent';
     }
 
     /**
