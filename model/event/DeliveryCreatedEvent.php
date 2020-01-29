@@ -17,16 +17,21 @@
  * Copyright (c) 2016 (original work) Open Assessment Technologies SA
  *
  */
+
 namespace oat\taoDeliveryRdf\model\event;
 
 use core_kernel_classes_Resource;
 use oat\tao\model\webhooks\WebhookSerializableEventInterface;
+use \core_kernel_persistence_Exception;
 
 class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSerializableEventInterface
 {
     const ASSEMBLED_DELIVERY_ORIGIN_URI = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
 
-    private $testUri;
+    /**
+     * @var core_kernel_classes_Resource
+     */
+    private $delivery;
 
     /**
      * @param string $deliveryUri
@@ -36,9 +41,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
      */
     public function __construct(core_kernel_classes_Resource $delivery)
     {
-        $testProperty = new \core_kernel_classes_Property(self::ASSEMBLED_DELIVERY_ORIGIN_URI);
-        $this->deliveryUri = $delivery->getUri();
-        $this->testUri = $delivery->getOnePropertyValue($testProperty)->getUri();
+        $this->delivery = $delivery;
     }
 
     /**
@@ -47,7 +50,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
      */
     public function getName()
     {
-        return get_class($this);
+        return self::class;
     }
 
     /**
@@ -60,7 +63,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
     public function jsonSerialize()
     {
         return [
-            'delivery' => $this->deliveryUri,
+            'delivery' => $this->delivery->getUri(),
         ];
     }
 
@@ -69,17 +72,19 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
      */
     public function getWebhookEventName()
     {
-        return 'delivery-published';
+        return self::class;
     }
 
     /**
      * @return array
+     * @throws core_kernel_persistence_Exception
      */
     public function serializeForWebhook()
     {
+        $testProperty = new \core_kernel_classes_Property(self::ASSEMBLED_DELIVERY_ORIGIN_URI);
         return [
-            'deliveryId' => $this->deliveryUri,
-            'testId' => $this->testUri,
+            'deliveryId' => $this->delivery->getUri(),
+            'testId' => $this->delivery->getOnePropertyValue($testProperty)->getUri(),
         ];
     }
 }

@@ -74,6 +74,6 @@ class DeliveryCreatedEventTest extends TestCase
     {
         $event = new DeliveryCreatedEvent($this->deliveryMock);
         $result = $event->getWebhookEventName();
-        $this->assertEquals('delivery-published', $result);
+        $this->assertEquals(DeliveryCreatedEvent::class, $result);
     }
 }
