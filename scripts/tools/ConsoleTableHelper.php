@@ -1,13 +1,12 @@
 <?php
+
 /**
  * Copyright (c) 2017 Open Assessment Technologies, S.A.
  *
  * @author A.Zagovorichev, <zagovorichev@1pt.com>
  */
 
-
 namespace oat\taoDeliveryRdf\scripts\tools;
-
 
 class ConsoleTableHelper
 {
@@ -97,9 +96,10 @@ class ConsoleTableHelper
         return $tableReport;
     }
 
-    private function recountColSizer(array $row) {
+    private function recountColSizer(array $row)
+    {
         foreach ($row as $key => $val) {
-            $length = mb_strlen($val) + $this->indent*2;
+            $length = mb_strlen($val) + $this->indent * 2;
             if (!isset($this->columnSizer[$key]) || $this->columnSizer[$key] < $length) {
                 $this->columnSizer[$key] = $length;
             }
@@ -113,7 +113,7 @@ class ConsoleTableHelper
             if ($key) {
                 $row .= '╤';
             }
-            for ($i=0; $i<$size; $i++) {
+            for ($i = 0; $i < $size; $i++) {
                 $row .= '═';
             }
         }
@@ -128,7 +128,7 @@ class ConsoleTableHelper
             if ($key) {
                 $row .= '╧';
             }
-            for ($i=0; $i<$size; $i++) {
+            for ($i = 0; $i < $size; $i++) {
                 $row .= '═';
             }
         }
@@ -143,7 +143,7 @@ class ConsoleTableHelper
             if ($key) {
                 $row .= '┽';
             }
-            for ($i=0; $i<$size; $i++) {
+            for ($i = 0; $i < $size; $i++) {
                 $row .= '─';
             }
         }
@@ -163,7 +163,7 @@ class ConsoleTableHelper
                 $str .= str_pad('', $this->indent) . $val;
                 $length = mb_strlen($val);
                 if ($length + $this->indent < $this->columnSizer[$key]) {
-                    $str .= str_pad('', $this->columnSizer[$key] - $length - $this->indent*2);
+                    $str .= str_pad('', $this->columnSizer[$key] - $length - $this->indent * 2);
                 }
                 $str .= str_pad('', $this->indent);
             }

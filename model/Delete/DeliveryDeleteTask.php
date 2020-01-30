@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,8 +39,8 @@ class DeliveryDeleteTask extends AbstractAction implements \JsonSerializable
         /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = $this->getServiceManager()->get(QueueDispatcher::SERVICE_ID);
 
-        $report = \common_report_Report::createInfo('Deleting delivery: '. $params['deliveryId']);
-        try{
+        $report = \common_report_Report::createInfo('Deleting delivery: ' . $params['deliveryId']);
+        try {
             /** @var DeliveryDeleteService $deleteDeliveryService */
             $deleteDeliveryService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
             $request = new DeliveryDeleteRequest($params['deliveryId']);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,11 +36,9 @@ class AssemblyFilesReaderTest extends TestCase
      * @var AssemblyFilesReader
      */
     private $object;
-
     protected function setUp()
     {
         parent::setUp();
-
         $this->object = new AssemblyFilesReader();
     }
 
@@ -47,13 +46,10 @@ class AssemblyFilesReaderTest extends TestCase
     {
         $expectedFilesCount = 0;
         $iterator = $this->getFilesIterator([]);
-
         $directoryMock = $this->createMock(tao_models_classes_service_StorageDirectory::class);
         $directoryMock->method('getFlyIterator')
             ->willReturn($iterator);
-
         $result = $this->object->getFiles($directoryMock);
-
         $this->assertInstanceOf(Generator::class, $result);
         $this->assertEquals($expectedFilesCount, count(iterator_to_array($result)), 'Number of returned files for empty directory must be 0.');
     }
@@ -62,18 +58,14 @@ class AssemblyFilesReaderTest extends TestCase
     {
         $expectedFilePath1 = 'file/prefix1';
         $expectedFilePath2 = 'file/prefix2';
-
         $iterator = $this->getFilesIterator([$expectedFilePath1, $expectedFilePath2]);
         $directoryMock = $this->createMock(tao_models_classes_service_StorageDirectory::class);
         $directoryMock->method('getFlyIterator')
             ->willReturn($iterator);
-
         $result = $this->object->getFiles($directoryMock);
-
         $this->assertInstanceOf(Generator::class, $result, 'Files reader must return an instance type of Generator.');
         $this->assertEquals($expectedFilePath1, $result->key(), 'Returned file path must be as expected.');
         $this->assertInstanceOf(StreamInterface::class, $result->current(), 'Returned iterator value must be an instance of StreamInterface.');
-
         $result->next();
         $this->assertEquals($expectedFilePath2, $result->key(), 'Returned file path must be as expected.');
         $this->assertInstanceOf(StreamInterface::class, $result->current(), 'Returned iterator value must be an instance of StreamInterface.');
@@ -82,28 +74,22 @@ class AssemblyFilesReaderTest extends TestCase
     public function testGetFilesConvertsCompiledTestFile()
     {
         $expectedFilePath = 'compact-test.EXT2';
-
         $originalTestFileMock = $this->createMock(File::class);
         $originalTestFileMock->method('getBasename')
             ->willReturn('compact-test.EXT1');
-
         $convertedTestFileMock = $this->createMock(File::class);
         $convertedTestFileMock->method('getPrefix')
             ->willReturn($expectedFilePath);
         $convertedTestFileMock->method('readPsrStream')
             ->willReturn($this->createMock(StreamInterface::class));
-
         $testConverterMock = $this->createMock(CompiledTestConverterService::class);
         $testConverterMock->method('convert')
             ->willReturn($convertedTestFileMock);
         $this->object->setCompiledTestConverter($testConverterMock);
-
         $directoryMock = $this->createMock(tao_models_classes_service_StorageDirectory::class);
         $directoryMock->method('getFlyIterator')
             ->willReturn(new ArrayIterator([$originalTestFileMock]));
-
         $result = $this->object->getFiles($directoryMock);
-
         $this->assertInstanceOf(Generator::class, $result, 'Files reader must return an instance type of Generator.');
         $this->assertEquals($expectedFilePath, $result->key(), 'Returned converted file path must be as expected.');
         $this->assertInstanceOf(StreamInterface::class, $result->current(), 'Returned iterator value must be an instance of StreamInterface.');
@@ -122,7 +108,6 @@ class AssemblyFilesReaderTest extends TestCase
                 ->willReturn($filePath);
             $fileMock->method('readPsrStream')
                 ->willReturn($this->createMock(StreamInterface::class));
-
             $files[] = $fileMock;
         }
 

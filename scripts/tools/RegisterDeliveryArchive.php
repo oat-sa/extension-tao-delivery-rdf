@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -81,7 +82,9 @@ class RegisterDeliveryArchive extends AbstractAction
 
         $this->registerService(DeliveryDeleteService::SERVICE_ID, $deliveryDeleteService);
 
-        return new \common_report_Report(\common_report_Report::TYPE_SUCCESS,
-            DeliveryArchiveService::BUCKET_DIRECTORY . ' directory created and event attached');
+        return new \common_report_Report(
+            \common_report_Report::TYPE_SUCCESS,
+            DeliveryArchiveService::BUCKET_DIRECTORY . ' directory created and event attached'
+        );
     }
 }

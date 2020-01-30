@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,12 +31,11 @@ interface AssemblyFilesReaderInterface
      * @return Generator In format $filePath => StreamInterface
      */
     public function getFiles(tao_models_classes_service_StorageDirectory $directory);
-
     /**
-     * Set converter service if compiled test file should be converted to another format.
-     *
-     * @param CompiledTestConverterService $compiledTestConverter
-     * @return void
-     */
+         * Set converter service if compiled test file should be converted to another format.
+         *
+         * @param CompiledTestConverterService $compiledTestConverter
+         * @return void
+         */
     public function setCompiledTestConverter(CompiledTestConverterService $compiledTestConverter);
 }

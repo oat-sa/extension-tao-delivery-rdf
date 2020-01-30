@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -66,7 +67,7 @@ class DeliveryDeleteService extends ConfigurableService
     {
         $delivery = $request->getDeliveryResource();
 
-        $this->report = common_report_Report::createInfo('Deleting Delivery: '. $delivery->getUri());
+        $this->report = common_report_Report::createInfo('Deleting Delivery: ' . $delivery->getUri());
         $executions   = $this->getDeliveryExecutions($delivery);
 
         $executionsLimit = $this->hasOption(self::OPTION_LIMIT_DELIVERY_EXECUTIONS)
@@ -99,7 +100,7 @@ class DeliveryDeleteService extends ConfigurableService
             foreach ($results as $result) {
                 $executions[] = $serviceProxy->getDeliveryExecution($result['deliveryResultIdentifier']);
             }
-        } else{
+        } else {
             $executions = $serviceProxy->getExecutionsByDelivery($deliveryResource);
         }
 
@@ -124,18 +125,18 @@ class DeliveryDeleteService extends ConfigurableService
         $services = $this->getDeliveryDeleteService();
 
         foreach ($services as $service) {
-            try{
+            try {
                 $deleted = $service->deleteDeliveryData($request);
                 if ($deleted) {
                     $this->report->add(common_report_Report::createSuccess(
-                        'Delete delivery Service: '. get_class($service) . ' data has been deleted.')
-                    );
+                        'Delete delivery Service: ' . get_class($service) . ' data has been deleted.'
+                    ));
                 } else {
                     $this->report->add(common_report_Report::createInfo(
-                        'Delete delivery Service: '. get_class($service) . ' data has nothing to delete.')
-                    );
+                        'Delete delivery Service: ' . get_class($service) . ' data has nothing to delete.'
+                    ));
                 }
-            }catch (\Exception $exception){
+            } catch (\Exception $exception) {
                 $this->report->add(common_report_Report::createInfo(
                     $exception->getMessage()
                 ));
@@ -196,9 +197,9 @@ class DeliveryDeleteService extends ConfigurableService
     {
         /** @var TestSessionService $testSessionService */
         $testSessionService = $this->getServiceLocator()->get(TestSessionService::SERVICE_ID);
-        try{
+        try {
             $session = $testSessionService->getTestSession($execution, false);
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             $session = null;
         }
 
@@ -220,7 +221,7 @@ class DeliveryDeleteService extends ConfigurableService
         $deliveryExecutionDeleteService = $this->getServiceLocator()->get(DeliveryExecutionDeleteService::SERVICE_ID);
 
         foreach ($executions as $execution) {
-            try{
+            try {
                 $requestDeleteExecution = $this->buildDeliveryExecutionDeleteRequest(
                     $delivery,
                     $execution
@@ -229,7 +230,7 @@ class DeliveryDeleteService extends ConfigurableService
                 $deliveryExecutionDeleteService->execute($requestDeleteExecution);
                 $this->report->add($deliveryExecutionDeleteService->getReport());
             } catch (\Exception $exception) {
-                $this->report->add(common_report_Report::createFailure('Failing deleting execution: '. $execution->getIdentifier()));
+                $this->report->add(common_report_Report::createFailure('Failing deleting execution: ' . $execution->getIdentifier()));
                 $this->report->add(common_report_Report::createFailure($exception->getMessage()));
             }
         }

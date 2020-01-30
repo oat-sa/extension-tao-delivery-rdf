@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,8 +36,7 @@ use tao_models_classes_service_FileStorage;
 use tao_models_classes_service_StorageDirectory;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDelete;
 
-class DeliveryArchiveService extends ConfigurableService
-    implements DeliveryArchiveServiceInterface, DeliveryDelete
+class DeliveryArchiveService extends ConfigurableService implements DeliveryArchiveServiceInterface, DeliveryDelete
 {
     use OntologyAwareTrait;
 
@@ -93,7 +93,7 @@ class DeliveryArchiveService extends ConfigurableService
 
         $zip = new \ZipArchive();
         if (($errorCode = $zip->open($localZipName, \ZipArchive::CREATE)) !== true) {
-            throw new DeliveryZipException('Cannot open zip archive: '. $localZipName . ' error code: '. $errorCode);
+            throw new DeliveryZipException('Cannot open zip archive: ' . $localZipName . ' error code: ' . $errorCode);
         }
 
         $directories = $compiledDelivery->getPropertyValues(
@@ -139,10 +139,10 @@ class DeliveryArchiveService extends ConfigurableService
 
         $zip = new \ZipArchive();
         if (($errorCode = $zip->open($zipPath, \ZipArchive::CREATE)) !== true) {
-            throw new DeliveryZipException('Cannot open zip archive: '. $zipPath . ' error code: '. $errorCode);
+            throw new DeliveryZipException('Cannot open zip archive: ' . $zipPath . ' error code: ' . $errorCode);
         }
 
-        if ($force || !$this->isArchivedProcessed($zip, $fileName)){
+        if ($force || !$this->isArchivedProcessed($zip, $fileName)) {
             $this->copyFromZip($zip);
             $this->setArchiveProcessed($zip, $fileName);
             $zip->close();
@@ -190,8 +190,7 @@ class DeliveryArchiveService extends ConfigurableService
         /** @var FileSystemService $fileSystem */
         $fileSystem = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
 
-        for ($index = 0; $index < $zip->numFiles; ++$index)
-        {
+        for ($index = 0; $index < $zip->numFiles; ++$index) {
             $zipEntryName = $zip->getNameIndex($index);
             if (!$this->isZipDirectory($zipEntryName)) {
                 $parts = explode('/', $zipEntryName);
@@ -298,7 +297,7 @@ class DeliveryArchiveService extends ConfigurableService
      */
     private function generateNewTmpPath($fileName)
     {
-        $folder = sys_get_temp_dir().DIRECTORY_SEPARATOR."tmp".md5($fileName. uniqid('', true)).DIRECTORY_SEPARATOR;
+        $folder = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "tmp" . md5($fileName . uniqid('', true)) . DIRECTORY_SEPARATOR;
 
         if (!file_exists($folder)) {
             mkdir($folder);

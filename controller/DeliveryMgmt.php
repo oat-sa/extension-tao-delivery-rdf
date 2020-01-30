@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -175,13 +176,13 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
         // define the subjects excluded from the current delivery
         $property = $this->getProperty(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS);
-        $excluded = array();
+        $excluded = [];
         foreach ($assembly->getPropertyValues($property) as $uri) {
             $user = $this->getResource($uri);
             $excluded[$uri] = $user->getLabel();
         }
 
-        $assigned = array();
+        $assigned = [];
         foreach ($this->getServiceLocator()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($assembly->getUri()) as $userId) {
             if (!in_array($userId, array_keys($excluded))) {
                 $user = $this->getResource($userId);
@@ -211,13 +212,13 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
 
         $assembly = $this->getCurrentInstance();
-        $success = $assembly->editPropertyValues($this->getProperty(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS),$jsonArray);
+        $success = $assembly->editPropertyValues($this->getProperty(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS), $jsonArray);
 
         $this->getEventManager()->trigger(new DeliveryUpdatedEvent($assembly->getUri(), [DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS => $jsonArray]));
 
-        $this->returnJson(array(
-        	'saved' => $success
-        ));
+        $this->returnJson([
+            'saved' => $success
+        ]);
     }
 
     public function wizard()
@@ -225,7 +226,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $this->defaultData();
 
         try {
-            $formContainer = new WizardForm(array('class' => $this->getCurrentClass()));
+            $formContainer = new WizardForm(['class' => $this->getCurrentClass()]);
             $myForm = $formContainer->getForm();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
@@ -236,7 +237,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                     $deliveryFactoryResources = $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);
                     $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray($myForm->getValues());
                     return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
-                }catch(\Exception $e){
+                } catch (\Exception $e) {
                     return $this->returnJson([
                         'success' => false,
                         'errorMsg' => $e instanceof \common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
@@ -248,7 +249,6 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                 $this->setData('formTitle', __('Create a new delivery'));
                 $this->setView('form.tpl', 'tao');
             }
-
         } catch (NoTestsException $e) {
             $this->setView('DeliveryMgmt/wizard_error.tpl');
         }
@@ -269,7 +269,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $search = $this->getServiceLocator()->get(ComplexSearchService::SERVICE_ID);
 
         $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder , TaoOntology::CLASS_URI_TEST, true)
+        $query = $search->searchType($queryBuilder, TaoOntology::CLASS_URI_TEST, true)
             ->add(OntologyRdfs::RDFS_LABEL)
             ->contains($q);
 

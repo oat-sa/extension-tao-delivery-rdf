@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,6 +18,7 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
+
 namespace oat\taoDeliveryRdf\model;
 
 use oat\generis\model\OntologyAwareTrait;
@@ -78,9 +80,10 @@ class DeliveryFactory extends ConfigurableService
      * @param core_kernel_classes_Resource $deliveryResource
      * @return \common_report_Report
      */
-    public function create(core_kernel_classes_Class $deliveryClass, core_kernel_classes_Resource $test, $label = '', core_kernel_classes_Resource $deliveryResource = null) {
+    public function create(core_kernel_classes_Class $deliveryClass, core_kernel_classes_Resource $test, $label = '', core_kernel_classes_Resource $deliveryResource = null)
+    {
 
-        \common_Logger::i('Creating '.$label.' with '.$test->getLabel().' under '.$deliveryClass->getLabel());
+        \common_Logger::i('Creating ' . $label . ' with ' . $test->getLabel() . ' under ' . $deliveryClass->getLabel());
 
         // checking on properties
         foreach ($this->getOption(self::OPTION_PROPERTIES) as $deliveryProperty => $testProperty) {
@@ -110,11 +113,11 @@ class DeliveryFactory extends ConfigurableService
         if ($report->getType() == \common_report_Report::TYPE_SUCCESS) {
             $serviceCall = $report->getData();
 
-            $properties = array(
+            $properties = [
                 OntologyRdfs::RDFS_LABEL => $label,
                 DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => $storage->getSpawnedDirectoryIds(),
                 DeliveryAssemblyService::PROPERTY_ORIGIN => $test,
-            );
+            ];
 
             foreach ($this->getOption(self::OPTION_PROPERTIES) as $deliveryProperty => $testProperty) {
                 $properties[$deliveryProperty] = $test->getPropertyValues(new \core_kernel_classes_Property($testProperty));
@@ -163,7 +166,7 @@ class DeliveryFactory extends ConfigurableService
             if (isset($initialPropertiesMap[$parameter]) && $value) {
                 $config = $initialPropertiesMap[$parameter];
                 $values = $config[self::OPTION_INITIAL_PROPERTIES_MAP_VALUES];
-                if(isset($values[$value])) {
+                if (isset($values[$value])) {
                     $initialProperties[$config[self::OPTION_INITIAL_PROPERTIES_MAP_URI]] = $values[$value];
                 }
             }
@@ -196,8 +199,12 @@ class DeliveryFactory extends ConfigurableService
      * @param string $containerParam
      * @param array $properties
      */
-    protected function createDeliveryResource(core_kernel_classes_Class $deliveryClass, \tao_models_classes_service_ServiceCall $serviceCall,
-        $container, $properties = array()) {
+    protected function createDeliveryResource(
+        core_kernel_classes_Class $deliveryClass,
+        \tao_models_classes_service_ServiceCall $serviceCall,
+        $container,
+        $properties = []
+    ) {
 
         $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_TIME]      = time();
         $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME]   = $serviceCall->toOntology();

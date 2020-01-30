@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,6 +18,7 @@
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
  *
  */
+
 namespace oat\taoDeliveryRdf\controller;
 
 use common_exception_UserReadableException as UserReadableException;
@@ -48,7 +50,8 @@ class Publish extends \tao_actions_SaSModule
         return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
     }
 
-    public function index(){
+    public function index()
+    {
         $testUri = tao_helpers_Uri::decode($this->getRequestParameter('uri'));
         $test = $this->getResource($testUri);
         $this->setData('label', $test->getLabel());
@@ -57,7 +60,8 @@ class Publish extends \tao_actions_SaSModule
         $this->setView('Publish/index.tpl');
     }
 
-    public function publish(){
+    public function publish()
+    {
         try {
             $parsedBody = $this->getPsrRequest()->getParsedBody();
             $testUri = $parsedBody['testUri'] ?? null;
@@ -76,7 +80,7 @@ class Publish extends \tao_actions_SaSModule
             $deliveryFactoryResources = $this->getDeliveryFactory();
             $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray([OntologyRdfs::RDFS_LABEL => 'new delivery']);
             return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return $this->returnJson([
                 'success' => false,
                 'errorMsg' => $e instanceof UserReadableException ? $e->getUserMessage() : $e->getMessage(),
@@ -98,6 +102,7 @@ class Publish extends \tao_actions_SaSModule
      */
     private function getDeliveryFactory()
     {
-        return $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);;
+        return $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);
+        ;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,11 +20,12 @@
  * @author Christophe Noël <christophe@taotesting.com>
  *
  */
+
 ?>
-<?php if (count($choicesList) > 0): ?>
+<?php if (count($choicesList) > 0) : ?>
     <span class='form_desc'><?= $propLabel ?></span>
     <div class="form_radlst form_checklst">
-        <?php foreach($choicesList as $choice): ?>
+        <?php foreach ($choicesList as $choice) : ?>
             <input type="checkbox" title="<?= $choice['title'] ?>" value="<?= $choice['value'] ?>" name="<?= $choice['id'] ?>" id="<?= $choice['id'] ?>"<?= $choice['checked'] ?> />&nbsp;
             <label class="elt_desc" for="<?= $choice['id'] ?>" title="<?= $choice['title'] ?>"><?= $choice['label'] ?></label><br />
         <?php endforeach?>

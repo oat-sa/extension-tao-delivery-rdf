@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -47,7 +48,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
     const OPTION_FILE = 'file';
     const OPTION_IMPORTER = 'importer';
     const OPTION_CUSTOM = 'custom';
-    const OPTION_DELIVERY_LABEL= 'delivery-class-label';
+    const OPTION_DELIVERY_LABEL = 'delivery-class-label';
 
     /**
      * @param $params
@@ -71,7 +72,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
                     $test = $r->getData()->rdfsResource;
                 }
             } else {
-                throw new \common_Exception($file->getBasename() . ' Unable to import test with message '. $report->getMessage());
+                throw new \common_Exception($file->getBasename() . ' Unable to import test with message ' . $report->getMessage());
             }
 
             $label = 'Delivery of ' . $test->getLabel();
@@ -119,10 +120,10 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
     protected function checkParams(array $params)
     {
         if (!isset($params[self::OPTION_FILE])) {
-            throw new \common_exception_MissingParameter('Missing parameter `'.self::OPTION_FILE.'` in ' . self::class);
+            throw new \common_exception_MissingParameter('Missing parameter `' . self::OPTION_FILE . '` in ' . self::class);
         }
         if (!isset($params[self::OPTION_IMPORTER])) {
-            throw new \common_exception_MissingParameter('Missing parameter `'.self::OPTION_IMPORTER.'` in ' . self::class);
+            throw new \common_exception_MissingParameter('Missing parameter `' . self::OPTION_IMPORTER . '` in ' . self::class);
         }
 
         $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
@@ -195,6 +196,4 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
             self::OPTION_DELIVERY_LABEL => $deliveryClassLabel,
         ], null, null, true);
     }
-
-
 }

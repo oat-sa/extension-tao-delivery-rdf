@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -92,7 +93,7 @@ class RestDelivery extends \tao_actions_RestController
             $deliveryFactoryService = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
             $initialProperties = $deliveryFactoryService->getInitialPropertiesFromRequest($this->getRequest());
             $delivery = $deliveryFactoryService->setInitialProperties($initialProperties, $delivery);
-            $this->returnSuccess(array('delivery' => $delivery->getUri()));
+            $this->returnSuccess(['delivery' => $delivery->getUri()]);
         } catch (\Exception $e) {
             $this->returnFailure($e);
         }
@@ -178,9 +179,9 @@ class RestDelivery extends \tao_actions_RestController
                 $response[] = ['delivery' => $delivery->getUri()];
             }
             $this->returnSuccess($response);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
                 $this->returnFailure($e);
-            }
+        }
     }
 
     /**
@@ -216,7 +217,7 @@ class RestDelivery extends \tao_actions_RestController
                 $result['common_report_Report'] = $report;
             }
             return $this->returnSuccess($result);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->returnFailure($e);
         }
     }
@@ -376,7 +377,7 @@ class RestDelivery extends \tao_actions_RestController
     {
         if ($taskLogEntity->getStatus()->isCreated()) {
             return 'In Progress';
-        } else if ($taskLogEntity->getStatus()->isCompleted()){
+        } elseif ($taskLogEntity->getStatus()->isCompleted()) {
             return 'Success';
         }
 
@@ -453,8 +454,10 @@ class RestDelivery extends \tao_actions_RestController
         // If an uri is provided, check if it's an existing delivery class
         if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_URI)) {
             $deliveryClass = $this->getClass($this->getRequestParameter(self::REST_DELIVERY_CLASS_URI));
-            if ($deliveryClass == $rootDeliveryClass
-                || ($deliveryClass->exists() && $deliveryClass->isSubClassOf($rootDeliveryClass))) {
+            if (
+                $deliveryClass == $rootDeliveryClass
+                || ($deliveryClass->exists() && $deliveryClass->isSubClassOf($rootDeliveryClass))
+            ) {
                 return $deliveryClass;
             }
             throw new \common_Exception(__('Delivery class uri provided is not a valid delivery class.'));
@@ -489,8 +492,10 @@ class RestDelivery extends \tao_actions_RestController
                     foreach ($result as $raw) {
                         $availableClasses[] = $raw->getUri();
                     }
-                    throw new \common_exception_NotFound(__('Multiple delivery class found for label "%s": %s',
-                        $label, implode(',',$availableClasses)
+                    throw new \common_exception_NotFound(__(
+                        'Multiple delivery class found for label "%s": %s',
+                        $label,
+                        implode(',', $availableClasses)
                     ));
             }
         }

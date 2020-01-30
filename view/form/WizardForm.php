@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -50,9 +51,8 @@ class WizardForm extends \tao_helpers_form_FormContainer
         $this->form->setDecorators([
             'actions-bottom' => new \tao_helpers_form_xhtml_TagWrapper(['tag' => 'div', 'cssClass' => 'form-toolbar']),
         ]);
-        $this->form->setActions(array(), 'top');
-        $this->form->setActions(array($createElt), 'bottom');
-
+        $this->form->setActions([], 'top');
+        $this->form->setActions([$createElt], 'bottom');
     }
 
     /**
@@ -108,7 +108,6 @@ class WizardForm extends \tao_helpers_form_FormContainer
                 $this->form->addElement($element);
             }
         }
-
     }
 
     /**r

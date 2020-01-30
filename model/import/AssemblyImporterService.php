@@ -1,22 +1,24 @@
 <?php
-/**  
+
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- * 
+ *
  */
+
 namespace oat\taoDeliveryRdf\model\import;
 
 use common_Utils;
@@ -35,7 +37,7 @@ use oat\generis\model\OntologyRdf;
 /**
  * AssemblyImporterService Class.
  *
- * Im- and export a compiled delivery 
+ * Im- and export a compiled delivery
  *
  * @access public
  * @package taoDeliveryRdf
@@ -72,7 +74,7 @@ class AssemblyImporterService extends ConfigurableService
             $deliveryUri = $this->getDeliveryUri($useOriginalUri, $tmpImportFolder);
             $delivery = $this->importDeliveryResource($deliveryClass, $deliveryUri, $tmpImportFolder);
 
-            $report = common_report_Report::createSuccess(__('Delivery "%s" successfully imported',$delivery->getUri()), $delivery);
+            $report = common_report_Report::createSuccess(__('Delivery "%s" successfully imported', $delivery->getUri()), $delivery);
 
             return $report;
         } catch (AssemblyImportFailedException $e) {
@@ -112,11 +114,11 @@ class AssemblyImporterService extends ConfigurableService
     protected function getAdditionalProperties(FileIterator $rdfIterator)
     {
         $properties = [];
-        $blacklist = array(OntologyRdf::RDF_TYPE);
+        $blacklist = [OntologyRdf::RDF_TYPE];
         foreach ($rdfIterator as $triple) {
             if (!in_array($triple->predicate, $blacklist)) {
                 if (!isset($properties[$triple->predicate])) {
-                    $properties[$triple->predicate] = array();
+                    $properties[$triple->predicate] = [];
                 }
                 $properties[$triple->predicate][] = $triple->object;
             }
@@ -157,12 +159,12 @@ class AssemblyImporterService extends ConfigurableService
         $serviceCall    = \tao_models_classes_service_ServiceCall::fromString(base64_decode($manifest['runtime']));
 
         $properties = $this->getAdditionalProperties($this->getRdfResourceIterator($tmpImportFolder));
-        $properties = array_merge($properties, array(
+        $properties = array_merge($properties, [
             OntologyRdfs::RDFS_LABEL                          => $label,
             DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY => array_keys($dirs),
             DeliveryAssemblyService::PROPERTY_DELIVERY_TIME      => time(),
             DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME   => $serviceCall->toOntology(),
-        ));
+        ]);
 
         $delivery = $this->getResource($deliveryUri);
         if ($delivery->exists()) {
