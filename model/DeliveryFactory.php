@@ -23,6 +23,7 @@ namespace oat\taoDeliveryRdf\model;
 
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
+use oat\oatbox\log\LoggerService;
 use oat\oatbox\service\ConfigurableService;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
@@ -30,6 +31,7 @@ use oat\tao\helpers\form\ValidationRuleRegistry;
 use oat\oatbox\event\EventManager;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDelivery\model\container\delivery\ContainerProvider;
+use tao_models_classes_service_ServiceCall;
 
 /**
  * Services to manage Deliveries
@@ -137,6 +139,7 @@ class DeliveryFactory extends ConfigurableService
     /**
      * @param $values
      * @param core_kernel_classes_Resource $delivery
+     *
      * @return core_kernel_classes_Resource
      */
     public function setInitialProperties($values, core_kernel_classes_Resource $delivery)
@@ -155,6 +158,7 @@ class DeliveryFactory extends ConfigurableService
 
     /**
      * @param \Request $request
+     *
      * @return array
      */
     public function getInitialPropertiesFromRequest(\Request $request)
@@ -176,6 +180,7 @@ class DeliveryFactory extends ConfigurableService
 
     /**
      * @param array $properties
+     *
      * @return array
      */
     public function getInitialPropertiesFromArray($properties)
@@ -223,7 +228,7 @@ class DeliveryFactory extends ConfigurableService
         }
 
         $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
-        $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance->getUri()));
+        $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance));
         return $compilationInstance;
     }
 }
