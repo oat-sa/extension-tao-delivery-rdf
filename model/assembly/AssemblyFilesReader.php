@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,10 +33,9 @@ class AssemblyFilesReader extends ConfigurableService implements AssemblyFilesRe
      * @var CompiledTestConverterService
      */
     private $compiledTestConverter = null;
-
     /**
-     * @param CompiledTestConverterService $compiledTestConverter
-     */
+         * @param CompiledTestConverterService $compiledTestConverter
+         */
     public function setCompiledTestConverter(CompiledTestConverterService $compiledTestConverter)
     {
         $this->compiledTestConverter = $compiledTestConverter;

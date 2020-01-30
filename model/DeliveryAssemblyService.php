@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,6 +18,7 @@
  * Copyright (c) 2016 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
+
 namespace oat\taoDeliveryRdf\model;
 
 use core_kernel_classes_Resource;
@@ -91,8 +93,9 @@ class DeliveryAssemblyService extends OntologyClassService
      * @param array $properties
      * @return \core_kernel_classes_Resource
      */
-    public function createAssemblyFromServiceCall(core_kernel_classes_Class $deliveryClass, tao_models_classes_service_ServiceCall $serviceCall, $properties = array()) {
-        throw new \common_exception_Error("Call to deprecated ".__FUNCTION__);
+    public function createAssemblyFromServiceCall(core_kernel_classes_Class $deliveryClass, tao_models_classes_service_ServiceCall $serviceCall, $properties = [])
+    {
+        throw new \common_exception_Error("Call to deprecated " . __FUNCTION__);
     }
 
     /**
@@ -100,7 +103,8 @@ class DeliveryAssemblyService extends OntologyClassService
      *
      * @return array
      */
-    public function getAllAssemblies() {
+    public function getAllAssemblies()
+    {
         return $this->getRootClass()->getInstances(true);
     }
 
@@ -111,11 +115,11 @@ class DeliveryAssemblyService extends OntologyClassService
      */
     public function deleteInstance(core_kernel_classes_Resource $assembly)
     {
-        if ($this->deleteDeliveryRuntime($assembly)===false) {
+        if ($this->deleteDeliveryRuntime($assembly) === false) {
             \common_Logger::i('Fail to delete runtimes assembly, process aborted');
         }
 
-        if ($this->deleteDeliveryDirectory($assembly)===false) {
+        if ($this->deleteDeliveryDirectory($assembly) === false) {
             \common_Logger::i('Fail to delete directories assembly, process aborted');
         }
 
@@ -163,14 +167,14 @@ class DeliveryAssemblyService extends OntologyClassService
         $directories = $assembly->getPropertyValues(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_DIRECTORY));
 
         foreach ($directories as $directory) {
-            $instances = $this->getRootClass()->getInstances(true, array(self::PROPERTY_DELIVERY_DIRECTORY => $directory));
+            $instances = $this->getRootClass()->getInstances(true, [self::PROPERTY_DELIVERY_DIRECTORY => $directory]);
             unset($instances[$assembly->getUri()]);
             if (empty($instances)) {
                 $success = $this->getFileStorage()->deleteDirectoryById($directory) ? $success : false;
                 $deleted++;
             }
         }
-        \common_Logger::i('(' . (int) $deleted. ') deletions for delivery assembly: ' . $assembly->getUri());
+        \common_Logger::i('(' . (int) $deleted . ') deletions for delivery assembly: ' . $assembly->getUri());
         return $success;
     }
 
@@ -180,7 +184,8 @@ class DeliveryAssemblyService extends OntologyClassService
      * @param core_kernel_classes_Resource $assembly
      * @return tao_models_classes_service_ServiceCall
      */
-    public function getRuntime( core_kernel_classes_Resource $assembly) {
+    public function getRuntime(core_kernel_classes_Resource $assembly)
+    {
         return $this->getServiceLocator()->get(RuntimeService::SERVICE_ID)->getRuntime($assembly->getUri());
     }
 
@@ -190,7 +195,8 @@ class DeliveryAssemblyService extends OntologyClassService
      * @param core_kernel_classes_Resource $assembly
      * @return string
      */
-    public function getCompilationDate( core_kernel_classes_Resource $assembly) {
+    public function getCompilationDate(core_kernel_classes_Resource $assembly)
+    {
         return (string)$assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_TIME));
     }
 
@@ -200,7 +206,8 @@ class DeliveryAssemblyService extends OntologyClassService
      * @throws \common_Exception
      * @throws \core_kernel_classes_EmptyProperty
      */
-    public function getOrigin( core_kernel_classes_Resource $assembly) {
+    public function getOrigin(core_kernel_classes_Resource $assembly)
+    {
         return $assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_ORIGIN));
     }
 }

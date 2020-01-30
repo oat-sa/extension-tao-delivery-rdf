@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,6 +18,7 @@
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
  *
  */
+
 namespace oat\taoDeliveryRdf\controller;
 
 use common_session_SessionManager;
@@ -34,15 +36,15 @@ use oat\taoDelivery\models\classes\ReturnUrlService;
 class Guest extends DeliveryServer
 {
     /**
-	 * Init guest session and redirect to module index
-	 */
-	public function guest()
-	{
-		common_session_SessionManager::endSession();
-		$session = new GuestTestTakerSession();
-		common_session_SessionManager::startSession($session);
+     * Init guest session and redirect to module index
+     */
+    public function guest()
+    {
+        common_session_SessionManager::endSession();
+        $session = new GuestTestTakerSession();
+        common_session_SessionManager::startSession($session);
 
         $returnUrl = $this->getServiceLocator()->get(ReturnUrlService::SERVICE_ID)->getReturnUrl();
-		$this->redirect($returnUrl);
-	}
+        $this->redirect($returnUrl);
+    }
 }

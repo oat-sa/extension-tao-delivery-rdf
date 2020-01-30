@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoDeliveryRdf\scripts;
 
 //Load extension to define necessary constants.
@@ -49,7 +51,7 @@ class cleanDeliveryExecutions extends AbstractAction
 
         $this->verifyParams($params);
 
-        if($this->finalReport->containsError()){
+        if ($this->finalReport->containsError()) {
             return $this->finalReport;
         }
 
@@ -64,19 +66,20 @@ class cleanDeliveryExecutions extends AbstractAction
         return $this->finalReport;
     }
 
-    protected function verifyParams($params){
+    protected function verifyParams($params)
+    {
         $this->finalReport = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
 
         $class_uri = array_shift($params);
 
         $deliveryRootClass = DeliveryAssemblyService::singleton()->getRootClass();
-        if(is_null($class_uri)){
+        if (is_null($class_uri)) {
             $deliveryClass = $deliveryRootClass;
-        } else{
+        } else {
             $deliveryClass = new \core_kernel_classes_Class($class_uri);
-            if(!$deliveryClass->isSubClassOf($deliveryRootClass)){
+            if (!$deliveryClass->isSubClassOf($deliveryRootClass)) {
                 $msg = "Usage: php index.php '" . __CLASS__ . "' [CLASS_URI]" . PHP_EOL;
-                $msg .= "CLASS_URI : a valid delivery class uri". PHP_EOL . PHP_EOL;
+                $msg .= "CLASS_URI : a valid delivery class uri" . PHP_EOL . PHP_EOL;
                 $msg .= "Uri : " . $class_uri . " is not a valid delivery class" . PHP_EOL;
                 $this->finalReport->add(\common_report_Report::createFailure($msg));
             }
@@ -84,7 +87,8 @@ class cleanDeliveryExecutions extends AbstractAction
         $this->deliveryClass = $deliveryClass;
     }
 
-    protected function removeResults(){
+    protected function removeResults()
+    {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
         try {
             // results rds
@@ -98,13 +102,12 @@ class cleanDeliveryExecutions extends AbstractAction
                     $report->setType(\common_report_Report::TYPE_ERROR);
                     $report->setMessage('Cannot cleanup results for ' . $deliveryId['deliveryResultIdentifier']);
                 }
-
             }
             $report->setMessage('Removed ' . $count . ' on ' . count($deliveryIds) . ' RDS results');
 
 
             // results redis
-            try{
+            try {
                 /** @var KeyValueResultStorage $kvResultService */
                 $kvStorage = $this->getServiceManager()->get(KeyValueResultStorage::SERVICE_ID);
                 $deliveryIds = $kvStorage->getAllDeliveryIds();
@@ -116,10 +119,9 @@ class cleanDeliveryExecutions extends AbstractAction
                         $report->setType(\common_report_Report::TYPE_ERROR);
                         $report->setMessage('Cannot cleanup results for ' . $deliveryId['deliveryResultIdentifier']);
                     }
-
                 }
                 $report->setMessage('Removed ' . $count . ' on ' . count($deliveryIds) . ' Key Value results');
-            } catch(ServiceNotFoundException $e) {
+            } catch (ServiceNotFoundException $e) {
                 $report->setType(\common_report_Report::TYPE_INFO);
                 $report->setMessage('KeyValue Storage not setup');
             }
@@ -131,7 +133,8 @@ class cleanDeliveryExecutions extends AbstractAction
         $this->finalReport->add($report);
     }
 
-    protected function removeServiceState(){
+    protected function removeServiceState()
+    {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
         // service states
         $persistence = \common_persistence_KeyValuePersistence::getPersistence(\tao_models_classes_service_StateStorage::PERSISTENCE_ID);
@@ -153,7 +156,6 @@ class cleanDeliveryExecutions extends AbstractAction
                 $report->setType(\common_report_Report::TYPE_ERROR);
                 $report->setMessage($e->getMessage());
             }
-
         } else {
             $report->setType(\common_report_Report::TYPE_ERROR);
             $report->setMessage('Cannot cleanup states from ' . get_class($persistence));
@@ -162,7 +164,8 @@ class cleanDeliveryExecutions extends AbstractAction
         $this->finalReport->add($report);
     }
 
-    protected function removeDeliveryExecutions(){
+    protected function removeDeliveryExecutions()
+    {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
 
         // deliveryExecutions
@@ -189,7 +192,6 @@ class cleanDeliveryExecutions extends AbstractAction
                 $count++;
             }
             $report->setMessage('Removed ' . $count . ' ontology delivery executions');
-
         } else {
             $report->setType(\common_report_Report::TYPE_ERROR);
             $report->setMessage('Cannot cleanup delivery executions from ' . get_class($deliveryService));

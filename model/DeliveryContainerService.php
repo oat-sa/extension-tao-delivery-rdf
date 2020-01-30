@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -41,7 +42,7 @@ use oat\generis\model\OntologyAwareTrait;
  *
  * @author Bertrand Chevier <bertrand@taotesting.com>
  */
-class DeliveryContainerService  extends ConfigurableService implements DeliveryContainerServiceInterface
+class DeliveryContainerService extends ConfigurableService implements DeliveryContainerServiceInterface
 {
     use OntologyAwareTrait;
 
@@ -71,9 +72,9 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
             }
         );
         $providers = [];
-        foreach($activeProviders as $provider){
+        foreach ($activeProviders as $provider) {
             $category = $provider->getCategory();
-            if(!isset($providers[$category])){
+            if (!isset($providers[$category])) {
                 $providers[$category] = [];
             }
             $providers[$category][] = $provider;
@@ -143,7 +144,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         //FIXME this shouldn't be a service call anymore, a delivery property instead
         $delivery = $deliveryExecution->getDelivery();
         $runtime = ServiceManager::getServiceManager()->get(AssignmentService::SERVICE_ID)->getRuntime($delivery);
-        $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, array());
+        $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, []);
 
         return $inputParameters['QtiTestDefinition'];
     }
@@ -159,7 +160,7 @@ class DeliveryContainerService  extends ConfigurableService implements DeliveryC
         //FIXME this shouldn't be a service call anymore, a delivery property instead
         $delivery = $deliveryExecution->getDelivery();
         $runtime = ServiceManager::getServiceManager()->get(AssignmentService::SERVICE_ID)->getRuntime($delivery);
-        $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, array());
+        $inputParameters = \tao_models_classes_service_ServiceCallHelper::getInputValues($runtime, []);
 
         return $inputParameters['QtiTestCompilation'];
     }

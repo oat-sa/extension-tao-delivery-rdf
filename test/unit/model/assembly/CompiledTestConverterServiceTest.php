@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,49 +33,39 @@ use qtism\data\QtiComponent;
 class CompiledTestConverterServiceTest extends TestCase
 {
     const FILE_BASE_NAME = 'BASE_NAME.EXT';
-
     /**
-     * @var CompiledTestConverterService
-     */
+         * @var CompiledTestConverterService
+         */
     private $object;
-
     /**
-     * @var PhpCodeCompilationDataService|MockObject
-     */
+         * @var PhpCodeCompilationDataService|MockObject
+         */
     private $compilationDataReaderMock;
-
     /**
-     * @var XmlCompilationDataService|MockObject
-     */
+         * @var XmlCompilationDataService|MockObject
+         */
     private $compilationDataWriterMock;
-
     /**
-     * @var \tao_models_classes_service_StorageDirectory|MockObject
-     */
+         * @var \tao_models_classes_service_StorageDirectory|MockObject
+         */
     private $directoryMock;
-
     /**
-     * @var File|MockObject
-     */
+         * @var File|MockObject
+         */
     private $fileMock;
-
     protected function setUp()
     {
         parent::setUp();
         $this->compilationDataReaderMock = $this->createMock(CompilationDataService::class);
         $this->compilationDataReaderMock->method('readCompilationData')
             ->willReturn($this->createMock(QtiComponent::class));
-
         $this->compilationDataWriterMock = $this->createMock(CompilationDataService::class);
         $this->compilationDataWriterMock->method('readCompilationData')
             ->willReturn($this->createMock(QtiComponent::class));
-
         $this->directoryMock = $this->createMock(tao_models_classes_service_StorageDirectory::class);
-
         $this->fileMock = $this->createMock(File::class);
         $this->fileMock->method('getBasename')
             ->willReturn(self::FILE_BASE_NAME);
-
         $this->object = new CompiledTestConverterService($this->compilationDataReaderMock, $this->compilationDataWriterMock);
     }
 
@@ -86,13 +77,11 @@ class CompiledTestConverterServiceTest extends TestCase
             ->willReturn(true);
         $expectedNewFile->expects($this->once())
             ->method('delete');
-
         $this->compilationDataWriterMock->method('getOutputFileType')
             ->willReturn($expectedNewFileType);
         $this->directoryMock->method('getFile')
             ->with("BASE_NAME.{$expectedNewFileType}")
             ->willReturn($expectedNewFile);
-
         $result = $this->object->convert($this->fileMock, $this->directoryMock);
         $this->assertSame($expectedNewFile, $result, 'Method must return test file converted to PHP.');
     }
@@ -105,14 +94,11 @@ class CompiledTestConverterServiceTest extends TestCase
             ->willReturn(false);
         $expectedPhpFile->expects($this->never())
             ->method('delete');
-
         $this->compilationDataWriterMock->method('getOutputFileType')
             ->willReturn($expectedNewFileType);
-
         $this->directoryMock->method('getFile')
             ->with("BASE_NAME.{$expectedNewFileType}")
             ->willReturn($expectedPhpFile);
-
         $result = $this->object->convert($this->fileMock, $this->directoryMock);
         $this->assertSame($expectedPhpFile, $result, 'Method must return test file converted to PHP.');
     }

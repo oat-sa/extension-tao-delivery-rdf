@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -81,9 +82,10 @@ class DeliveryFactory extends ConfigurableService
      * @param core_kernel_classes_Resource $deliveryResource
      * @return \common_report_Report
      */
-    public function create(core_kernel_classes_Class $deliveryClass, core_kernel_classes_Resource $test, $label = '', core_kernel_classes_Resource $deliveryResource = null) {
+    public function create(core_kernel_classes_Class $deliveryClass, core_kernel_classes_Resource $test, $label = '', core_kernel_classes_Resource $deliveryResource = null)
+    {
 
-        \common_Logger::i('Creating '.$label.' with '.$test->getLabel().' under '.$deliveryClass->getLabel());
+        \common_Logger::i('Creating ' . $label . ' with ' . $test->getLabel() . ' under ' . $deliveryClass->getLabel());
 
         // checking on properties
         foreach ($this->getOption(self::OPTION_PROPERTIES) as $deliveryProperty => $testProperty) {
@@ -202,8 +204,12 @@ class DeliveryFactory extends ConfigurableService
      * @param string $containerParam
      * @param array $properties
      */
-    protected function createDeliveryResource(core_kernel_classes_Class $deliveryClass, \tao_models_classes_service_ServiceCall $serviceCall,
-        $container, $properties = array()) {
+    protected function createDeliveryResource(
+        core_kernel_classes_Class $deliveryClass,
+        \tao_models_classes_service_ServiceCall $serviceCall,
+        $container,
+        $properties = []
+    ) {
 
         $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_TIME]      = time();
         $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME]   = $serviceCall->toOntology();

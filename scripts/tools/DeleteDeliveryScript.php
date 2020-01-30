@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2017 Open Assessment Technologies, S.A.
  *
@@ -69,11 +70,11 @@ class DeleteDeliveryScript extends ScriptAction
         $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
 
         $deliveryId = $this->getOption('delivery');
-        try{
+        try {
             $deliveryDeleteService->execute(new DeliveryDeleteRequest($deliveryId));
             $this->report->add($deliveryDeleteService->getReport());
         } catch (\Exception $exception) {
-            $this->report->add(common_report_Report::createFailure('Failing deleting delivery: '. $deliveryId));
+            $this->report->add(common_report_Report::createFailure('Failing deleting delivery: ' . $deliveryId));
             $this->report->add(common_report_Report::createFailure($exception->getMessage()));
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,12 +32,11 @@ class CompiledTestConverterFactory extends ConfigurableService
     const COMPILED_TEST_FORMAT_XML = 'xml';
     const COMPILED_TEST_FORMAT_PHP = 'php';
     const COMPILED_TEST_FORMAT_PHP_SERIALIZED = 'php_serialized';
-
     /**
-     * @param $outputTestFormat
-     * @return CompiledTestConverterService
-     * @throws UnsupportedCompiledTestFormatException
-     */
+         * @param $outputTestFormat
+         * @return CompiledTestConverterService
+         * @throws UnsupportedCompiledTestFormatException
+         */
     public function createConverter($outputTestFormat)
     {
         if (!is_string($outputTestFormat)) {
@@ -45,7 +45,6 @@ class CompiledTestConverterFactory extends ConfigurableService
 
         $outputCompilationService = $this->getOutputCompilationService($outputTestFormat);
         $systemCompilationService = $this->getServiceLocator()->get(CompilationDataService::SERVICE_ID);
-
         return new CompiledTestConverterService($systemCompilationService, $outputCompilationService);
     }
 
@@ -59,17 +58,17 @@ class CompiledTestConverterFactory extends ConfigurableService
         $outputTestFormat = strtolower(trim($outputTestFormat));
         switch ($outputTestFormat) {
             case self::COMPILED_TEST_FORMAT_PHP:
-                $outputCompilationService = new PhpCodeCompilationDataService();
-                break;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $outputCompilationService = new PhpCodeCompilationDataService();
 
+                break;
             case self::COMPILED_TEST_FORMAT_PHP_SERIALIZED:
-                $outputCompilationService = new PhpSerializationCompilationDataService();
-                break;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $outputCompilationService = new PhpSerializationCompilationDataService();
 
+                break;
             case self::COMPILED_TEST_FORMAT_XML:
-                $outputCompilationService = new XmlCompilationDataService();
-                break;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $outputCompilationService = new XmlCompilationDataService();
 
+                break;
             default:
                 throw new UnsupportedCompiledTestFormatException("Unsupported compiled test format provided: {$outputTestFormat}");
         }

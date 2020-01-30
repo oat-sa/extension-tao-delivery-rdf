@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,11 +19,13 @@
  *
  *
  */
+
 namespace oat\taoDeliveryRdf\scripts\install;
 
 use oat\oatbox\extension\InstallAction;
 use oat\taoDelivery\model\RuntimeService;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
+
 /**
  * Override Runtimeservice
  */

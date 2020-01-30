@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,14 +25,14 @@ use oat\taoDeliveryRdf\scripts\install\RegisterDeliveryAssemblyWrapperService;
 use oat\taoDeliveryRdf\scripts\install\SetUpQueueTasks;
 use oat\taoDeliveryRdf\scripts\install\RegisterFileSystem;
 
-return array(
+return [
   'name'        => 'taoDeliveryRdf',
   'label'       => 'Delivery Management',
   'description' => 'Manages deliveries using the ontology',
   'license'     => 'GPL-2.0',
   'version'     => '10.2.0',
-	'author'      => 'Open Assessment Technologies SA',
-	'requires'    => array(
+    'author'      => 'Open Assessment Technologies SA',
+    'requires'    => [
         'generis'     => '>=12.5.0',
         'tao'         => '>=38.3.1',
         'taoGroups'   => '>=4.0.0',
@@ -39,21 +40,21 @@ return array(
         'taoQtiTest'  => '>=35.4.0',
         'taoDelivery' => '>=13.3.0',
         'taoResultServer' => '>=7.0.0'
-    ),
+    ],
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
-    'acl' => array(
-        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', array('ext'=>'taoDeliveryRdf')),
-        array('grant', \oat\tao\model\user\TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestDelivery')),
-        array('grant', \oat\tao\model\user\TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestTest')),
-        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole','oat\taoDeliveryRdf\controller\Guest@guest'),
-    ),
-    'install' => array(
-        'rdf' => array(
-            __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'ontology'.DIRECTORY_SEPARATOR.'taodelivery.rdf',
-            __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'ontology'.DIRECTORY_SEPARATOR.'widgetdefinitions.rdf'
-        ),
-        'php' => array(
-            __DIR__.DIRECTORY_SEPARATOR."install".DIRECTORY_SEPARATOR.'registerAssignment.php',
+    'acl' => [
+        ['grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', ['ext' => 'taoDeliveryRdf']],
+        ['grant', \oat\tao\model\user\TaoRoles::REST_PUBLISHER, ['ext' => 'taoDeliveryRdf', 'mod' => 'RestDelivery']],
+        ['grant', \oat\tao\model\user\TaoRoles::REST_PUBLISHER, ['ext' => 'taoDeliveryRdf', 'mod' => 'RestTest']],
+        ['grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole','oat\taoDeliveryRdf\controller\Guest@guest'],
+    ],
+    'install' => [
+        'rdf' => [
+            __DIR__ . DIRECTORY_SEPARATOR . "install" . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR . 'taodelivery.rdf',
+            __DIR__ . DIRECTORY_SEPARATOR . "install" . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR . 'widgetdefinitions.rdf'
+        ],
+        'php' => [
+            __DIR__ . DIRECTORY_SEPARATOR . "install" . DIRECTORY_SEPARATOR . 'registerAssignment.php',
             'oat\\taoDeliveryRdf\\install\\RegisterDeliveryContainerService',
             'oat\\taoDeliveryRdf\\scripts\\RegisterEvents',
             RegisterDeliveryFactoryService::class,
@@ -61,21 +62,21 @@ return array(
             SetUpQueueTasks::class,
             RegisterDeliveryAssemblyWrapperService::class,
             RegisterFileSystem::class
-        )
-    ),
+        ]
+    ],
     //'uninstall' => array(),
     'update' => 'oat\\taoDeliveryRdf\\scripts\\update\\Updater',
-    'routes' => array(
+    'routes' => [
         '/taoDeliveryRdf' => 'oat\\taoDeliveryRdf\\controller'
-    ),
-	'constants' => array(
-	    # views directory
-	    "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
+    ],
+    'constants' => [
+        # views directory
+        "DIR_VIEWS" => dirname(__FILE__) . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR,
 
-		#BASE URL (usually the domain root)
-		'BASE_URL' => ROOT_URL.'taoDeliveryRdf/',
-	),
-    'extra' => array(
-        'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
-    )
-);
+        #BASE URL (usually the domain root)
+        'BASE_URL' => ROOT_URL . 'taoDeliveryRdf/',
+    ],
+    'extra' => [
+        'structures' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
+    ]
+];

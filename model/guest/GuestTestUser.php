@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,6 +18,7 @@
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
+
 namespace oat\taoDeliveryRdf\model\guest;
 
 use oat\generis\model\GenerisRdf;
@@ -42,15 +44,15 @@ class GuestTestUser implements User
 
     public function getPropertyValues($property)
     {
-        return array();
+        return [];
     }
 
     public function getRoles()
     {
-        return array(
-			TaoOntology::PROPERTY_INSTANCE_ROLE_DELIVERY => TaoOntology::PROPERTY_INSTANCE_ROLE_DELIVERY,
+        return [
+            TaoOntology::PROPERTY_INSTANCE_ROLE_DELIVERY => TaoOntology::PROPERTY_INSTANCE_ROLE_DELIVERY,
             GenerisRdf::INSTANCE_ROLE_ANONYMOUS => GenerisRdf::INSTANCE_ROLE_ANONYMOUS,
-			TaoOntology::PROPERTY_INSTANCE_ROLE_BASE_USER => TaoOntology::PROPERTY_INSTANCE_ROLE_BASE_USER
-        );
+            TaoOntology::PROPERTY_INSTANCE_ROLE_BASE_USER => TaoOntology::PROPERTY_INSTANCE_ROLE_BASE_USER
+        ];
     }
 }

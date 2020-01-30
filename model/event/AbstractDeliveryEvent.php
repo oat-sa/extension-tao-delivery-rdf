@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,8 +18,8 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA
  *
  */
-namespace oat\taoDeliveryRdf\model\event;
 
+namespace oat\taoDeliveryRdf\model\event;
 
 use oat\oatbox\event\Event;
 
@@ -37,5 +38,4 @@ abstract class AbstractDeliveryEvent implements Event, \JsonSerializable
     {
         return $this->deliveryUri;
     }
-
 }
