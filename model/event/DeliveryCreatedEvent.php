@@ -24,6 +24,7 @@ namespace oat\taoDeliveryRdf\model\event;
 use core_kernel_classes_Resource;
 use oat\tao\model\webhooks\WebhookSerializableEventInterface;
 use \core_kernel_persistence_Exception;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSerializableEventInterface
 {
@@ -40,6 +41,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
      */
     public function __construct(core_kernel_classes_Resource $delivery)
     {
+        $this->deliveryUri = $delivery->getUri();
         $this->delivery = $delivery;
     }
 
@@ -82,7 +84,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
     {
         $testProperty = new \core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
         return [
-            'deliveryId' => $this->delivery->getUri(),
+            'deliveryId' => $this->deliveryUri,
             'testId' => $this->delivery->getOnePropertyValue($testProperty)->getUri(),
         ];
     }
