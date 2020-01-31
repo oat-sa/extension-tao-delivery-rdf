@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoDeliveryRdf\scripts\update;
 
 use tao_models_classes_export_RdfExporter;
@@ -45,7 +47,8 @@ use oat\taoDelivery\model\RuntimeService;
 /**
  ** @author Joel Bout <joel@taotesting.com>
  */
-class Updater extends \common_ext_ExtensionUpdater {
+class Updater extends \common_ext_ExtensionUpdater
+{
 
     /**
      * @param $initialVersion
@@ -53,7 +56,8 @@ class Updater extends \common_ext_ExtensionUpdater {
      * @throws \common_Exception
      * @throws \common_exception_Error
      */
-    public function update($initialVersion) {
+    public function update($initialVersion)
+    {
 
         if ($this->isBetween('0.0.0', '1.1.0')) {
             throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
@@ -64,7 +68,8 @@ class Updater extends \common_ext_ExtensionUpdater {
             AclProxy::applyRule(new AccessRule(
                 AccessRule::GRANT,
                 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
-                array('ext' => 'taoDeliveryRdf')));
+                ['ext' => 'taoDeliveryRdf']
+            ));
             $this->setVersion('1.5.0');
         }
 
@@ -72,7 +77,6 @@ class Updater extends \common_ext_ExtensionUpdater {
 
 
         if ($this->isVersion('1.6.3')) {
-
             OntologyUpdater::syncModels();
 
             $registerService = new RegisterDeliveryContainerService();
@@ -84,7 +88,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('1.7.0', '1.8.1');
 
         if ($this->isVersion('1.8.1')) {
-
             OntologyUpdater::syncModels();
 
             $registerEvents = new RegisterEvents();
@@ -97,7 +100,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('1.9.0', '1.13.1');
 
         if ($this->isVersion('1.13.1')) {
-
             $deliveryFactory = new RegisterDeliveryFactoryService();
             $this->getServiceManager()->propagate($deliveryFactory);
             $deliveryFactory([]);
@@ -169,10 +171,9 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         $this->skip('3.21.0', '3.23.0');
 
-        if ($this->isVersion('3.23.0')){
+        if ($this->isVersion('3.23.0')) {
             OntologyUpdater::syncModels();
             $this->setVersion('3.23.1');
-
         }
 
         $this->skip('3.23.1', '3.29.0');
@@ -187,8 +188,8 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('4.0.0', '4.6.0');
 
         if ($this->isVersion('4.6.0') || $this->isVersion('4.6.0.1')) {
-            AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestDelivery')));
-            AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, array('ext'=>'taoDeliveryRdf', 'mod' => 'RestTest')));
+            AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, ['ext' => 'taoDeliveryRdf', 'mod' => 'RestDelivery']));
+            AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, ['ext' => 'taoDeliveryRdf', 'mod' => 'RestTest']));
             $this->setVersion('4.7.0');
         }
 
@@ -209,12 +210,12 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         $this->skip('5.1.0', '5.2.1');
 
-        if ($this->isVersion('5.2.1')){
-            if (!$this->getServiceManager()->has(DeliveryDeleteService::SERVICE_ID)){
+        if ($this->isVersion('5.2.1')) {
+            if (!$this->getServiceManager()->has(DeliveryDeleteService::SERVICE_ID)) {
                 $deleteService = new DeliveryDeleteService([
-                    'deleteDeliveryDataServices' => array(
+                    'deleteDeliveryDataServices' => [
                         'taoDeliveryRdf/DeliveryAssemblyWrapper'
-                    )
+                    ]
                 ]);
 
                 $this->getServiceManager()->register(DeliveryDeleteService::SERVICE_ID, $deleteService);
@@ -262,6 +263,6 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('10.0.0');
         }
 
-        $this->skip('10.0.0', '10.0.1');
+        $this->skip('10.0.0', '10.2.0');
     }
 }

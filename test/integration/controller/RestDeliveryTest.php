@@ -54,7 +54,7 @@ class RestDeliveryTest extends RestTestRunner
         }
 
         /** @var \common_report_Report $subReport */
-        foreach($report as $subReport) {
+        foreach ($report as $subReport) {
             $test = $subReport->getData();
             $uri = $test->rdfsResource->getUri();
             if (!empty($uri)) {
@@ -74,18 +74,18 @@ class RestDeliveryTest extends RestTestRunner
      * @param bool $testUri
      * @return mixed
      */
-    public function curlDeliveryGenerate($testUri=false)
+    public function curlDeliveryGenerate($testUri = false)
     {
-        if ($testUri===false) {
+        if ($testUri === false) {
             $post_data = ['test' => $this->initDeliveryGeneration()];
-        } elseif ($testUri=='') {
+        } elseif ($testUri == '') {
             $post_data = [];
         } else {
             $post_data = ['test' => $testUri];
         }
 
         $url = $this->host . 'taoDeliveryRdf/RestDelivery/generate';
-        $return = $this->curl($url, CURLOPT_POST, 'data', array(CURLOPT_POSTFIELDS => $post_data));
+        $return = $this->curl($url, CURLOPT_POST, 'data', [CURLOPT_POSTFIELDS => $post_data]);
 
         return json_decode($return, true);
     }
@@ -112,7 +112,7 @@ class RestDeliveryTest extends RestTestRunner
 
     /**
      * @todo fix failed test case. The actual error message is "Unexpected error. Please contact administrator"
-     * 
+     *
      * Test Wrong uri
      * @dataProvider wrongUriProvider
      */
@@ -180,7 +180,7 @@ class RestDeliveryTest extends RestTestRunner
         }
 
         $url = $this->host . 'taoDeliveryRdf/RestDelivery/createClass';
-        $return = $this->curl($url, CURLOPT_POST, 'data', array(CURLOPT_POSTFIELDS => $data));
+        $return = $this->curl($url, CURLOPT_POST, 'data', [CURLOPT_POSTFIELDS => $data]);
 
         return json_decode($return, true);
     }
@@ -296,5 +296,4 @@ class RestDeliveryTest extends RestTestRunner
         $data[GenerisRdf::PROPERTY_USER_PASSWORD] = '12345Admin@@@';
         return $data;
     }
-
 }

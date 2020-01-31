@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,7 +43,6 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
  */
 class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskAwareInterface
 {
-
     use TaskAwareTrait;
     use OntologyAwareTrait;
 
@@ -93,7 +93,7 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
         $deliveryFactory = $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);
 
         $report = $deliveryFactory->create($deliveryClass, $test, $label, $deliveryResource);
-        if ($report->getType() === \common_report_Report::TYPE_ERROR ) {
+        if ($report->getType() === \common_report_Report::TYPE_ERROR) {
             $deliveryResource->delete(true);
         }
 

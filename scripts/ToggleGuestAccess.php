@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoDeliveryRdf\scripts;
 
 use common_report_Report as Report;
@@ -27,7 +29,6 @@ use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\entryPoint\EntryPointService;
 use oat\tao\model\user\TaoRoles;
 use oat\taoDeliveryRdf\model\guest\GuestAccess;
-
 
 /**
  * Class DeactivateGuest
@@ -77,8 +78,6 @@ class ToggleGuestAccess extends AbstractAction
         $this->getServiceManager()->register(EntryPointService::SERVICE_ID, $this->entryPointService);
 
         return $report;
-
-
     }
 
     /**
@@ -89,10 +88,11 @@ class ToggleGuestAccess extends AbstractAction
     {
         $guestAccess = new GuestAccess();
         try {
-            if ($this->entryPointService->deactivateEntryPoint(
-                $guestAccess->getId(),
-                EntryPointService::OPTION_PRELOGIN
-            )
+            if (
+                $this->entryPointService->deactivateEntryPoint(
+                    $guestAccess->getId(),
+                    EntryPointService::OPTION_PRELOGIN
+                )
             ) {
                 $rule = new AccessRule('grant', TaoRoles::ANONYMOUS, 'oat\taoDeliveryRdf\controller\Guest@guest');
                 AclProxy::revokeRule($rule);
@@ -123,5 +123,4 @@ class ToggleGuestAccess extends AbstractAction
             return Report::createFailure($e->getMessage());
         }
     }
-
 }

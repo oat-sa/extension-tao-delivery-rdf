@@ -1,22 +1,24 @@
 <?php
-/**  
+
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- * 
+ *
  */
+
 namespace oat\taoDeliveryRdf\model;
 
 use oat\taoGroups\models\GroupsService;
@@ -54,7 +56,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     public function getAssignments(User $user)
     {
-        $assignments = array();
+        $assignments = [];
         foreach ($this->getAssignmentFactories($user) as $factory) {
             $assignments[] = $factory->toAssignment();
         }
@@ -68,7 +70,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     public function getAssignmentFactories(User $user)
     {
-        $assignments = array();
+        $assignments = [];
 
         $displayAttempts = ($this->hasOption(self::DISPLAY_ATTEMPTS_OPTION)) ? $this->getOption(self::DISPLAY_ATTEMPTS_OPTION) : true;
 
@@ -100,18 +102,18 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     
     
     /**
-     * 
+     *
      * @param string $deliveryId
      * @return array identifiers of the users
      */
     public function getAssignedUsers($deliveryId)
     {
         $groupClass = GroupsService::singleton()->getRootClass();
-        $groups = $groupClass->searchInstances(array(
+        $groups = $groupClass->searchInstances([
             self::PROPERTY_GROUP_DELIVERY => $deliveryId
-        ), array('recursive' => true, 'like' => false));
+        ], ['recursive' => true, 'like' => false]);
         
-        $users = array();
+        $users = [];
         foreach ($groups as $group) {
             foreach (GroupsService::singleton()->getUsers($group) as $user) {
                 $users[] = $user->getUri();
@@ -129,9 +131,9 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     public function onDelete(core_kernel_classes_Resource $delivery)
     {
         $groupClass = GroupsService::singleton()->getRootClass();
-        $assigned = $groupClass->searchInstances(array(
-			self::PROPERTY_GROUP_DELIVERY => $delivery
-        ), array('like' => false, 'recursive' => true));
+        $assigned = $groupClass->searchInstances([
+            self::PROPERTY_GROUP_DELIVERY => $delivery
+        ], ['like' => false, 'recursive' => true]);
         
         $assignationProperty = new core_kernel_classes_Property(self::PROPERTY_GROUP_DELIVERY);
         foreach ($assigned as $groupInstance) {
@@ -145,7 +147,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     public function getDeliveryIdsByUser(User $user)
     {
-        $deliveryUris = array();
+        $deliveryUris = [];
         // check if really available
         foreach (GroupsService::singleton()->getGroups($user) as $group) {
             foreach ($group->getPropertyValues(new \core_kernel_classes_Property(self::PROPERTY_GROUP_DELIVERY)) as $deliveryUri) {
@@ -166,7 +168,8 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      * @param User $user the URI of the user to check
      * @return boolean true if excluded
      */
-    protected function isUserExcluded(\core_kernel_classes_Resource $delivery, User $user){
+    protected function isUserExcluded(\core_kernel_classes_Resource $delivery, User $user)
+    {
         $excludedUsers = $delivery->getPropertyValues(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS));
         return in_array($user->getIdentifier(), $excludedUsers);
     }
@@ -181,10 +184,10 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         $class = new core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
 
         return $class->searchInstances(
-            array(
+            [
                 DeliveryContainerService::PROPERTY_ACCESS_SETTINGS => DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS
-            ),
-            array('recursive' => true)
+            ],
+            ['recursive' => true]
         );
     }
 
@@ -217,19 +220,20 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      * @param User $user
      * @return bool
      */
-    protected function verifyUserAssigned(core_kernel_classes_Resource $delivery, User $user){
+    protected function verifyUserAssigned(core_kernel_classes_Resource $delivery, User $user)
+    {
         $returnValue = false;
     
         //check for guest access mode
-        if($this->isDeliveryGuestUser($user) && $this->hasDeliveryGuestAccess($delivery)){
+        if ($this->isDeliveryGuestUser($user) && $this->hasDeliveryGuestAccess($delivery)) {
             $returnValue = true;
         } else {
             $userGroups = GroupsService::singleton()->getGroups($user);
-            $deliveryGroups = GroupsService::singleton()->getRootClass()->searchInstances(array(
-				self::PROPERTY_GROUP_DELIVERY => $delivery->getUri()
-            ), array(
-                'like'=>false, 'recursive' => true
-            ));
+            $deliveryGroups = GroupsService::singleton()->getRootClass()->searchInstances([
+                self::PROPERTY_GROUP_DELIVERY => $delivery->getUri()
+            ], [
+                'like' => false, 'recursive' => true
+            ]);
             $returnValue = count(array_intersect($userGroups, $deliveryGroups)) > 0 && !$this->isUserExcluded($delivery, $user);
         }
     
@@ -243,17 +247,17 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      * @return bool
      * @throws \common_exception_InvalidArgumentType
      */
-    protected function hasDeliveryGuestAccess(core_kernel_classes_Resource $delivery )
+    protected function hasDeliveryGuestAccess(core_kernel_classes_Resource $delivery)
     {
         $returnValue = false;
     
-        $properties = $delivery->getPropertiesValues(array(
-            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_ACCESS_SETTINGS ),
-        ));
+        $properties = $delivery->getPropertiesValues([
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_ACCESS_SETTINGS),
+        ]);
         $propAccessSettings = current($properties[DeliveryContainerService::PROPERTY_ACCESS_SETTINGS ]);
-        $accessSetting = (!(is_object($propAccessSettings)) or ($propAccessSettings=="")) ? null : $propAccessSettings->getUri();
+        $accessSetting = (!(is_object($propAccessSettings)) or ($propAccessSettings == "")) ? null : $propAccessSettings->getUri();
     
-        if( !is_null($accessSetting) ){
+        if (!is_null($accessSetting)) {
             $returnValue = ($accessSetting === DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS);
         }
     
@@ -275,7 +279,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
             ->getAttempts($delivery->getUri(), $user));
     
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
-            \common_Logger::d("Attempt to start the compiled delivery ".$delivery->getUri(). "without tokens");
+            \common_Logger::d("Attempt to start the compiled delivery " . $delivery->getUri() . "without tokens");
             return false;
         }
         return true;
@@ -287,10 +291,10 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     protected function verifyTime(core_kernel_classes_Resource $delivery)
     {
-        $deliveryProps = $delivery->getPropertiesValues(array(
+        $deliveryProps = $delivery->getPropertiesValues([
             DeliveryContainerService::PROPERTY_START,
             DeliveryContainerService::PROPERTY_END,
-        ));
+        ]);
         
         $startExec = empty($deliveryProps[DeliveryContainerService::PROPERTY_START])
             ? null
@@ -299,10 +303,10 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
             ? null
             : (string)current($deliveryProps[DeliveryContainerService::PROPERTY_END]);
         
-        $startDate  =    date_create('@'.$startExec);
-        $endDate    =    date_create('@'.$stopExec);
+        $startDate  =    date_create('@' . $startExec);
+        $endDate    =    date_create('@' . $stopExec);
         if (!$this->areWeInRange($startDate, $endDate)) {
-            \common_Logger::d("Attempt to start the compiled delivery ".$delivery->getUri(). " at the wrong date");
+            \common_Logger::d("Attempt to start the compiled delivery " . $delivery->getUri() . " at the wrong date");
             return false;
         }
         return true;
@@ -314,23 +318,25 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      * @param type $endDate
      * @return boolean true if in range
      */
-    protected function areWeInRange($startDate, $endDate){
+    protected function areWeInRange($startDate, $endDate)
+    {
         return (empty($startDate) || date_create() >= $startDate)
         && (empty($endDate) || date_create() <= $endDate);
     }
     
     /**
      * Order Assignments of a given user.
-     * 
+     *
      * By default, this method relies on the taoDelivery:DisplayOrder property
      * to order the assignments (Ascending order). However, implementers extending
      * the GroupAssignment class are encouraged to override this method if they need
      * another behaviour.
-     * 
+     *
      * @param array $assignments An array of assignments.
      * @return array The $assignments array ordered.
      */
-    protected function orderAssignments(array $assignments) {
+    protected function orderAssignments(array $assignments)
+    {
         usort($assignments, function ($a, $b) {
             return $a->getDisplayOrder() - $b->getDisplayOrder();
         });

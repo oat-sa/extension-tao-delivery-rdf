@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -64,7 +65,7 @@ class CleanFailedCompiledDeliveriesScript extends ScriptAction
         $deliveryAssemblyService = DeliveryAssemblyService::singleton();
 
         $queryBuilder = $search->query();
-        $query = $search->searchType($queryBuilder, $deliveryAssemblyService->getRootClass()->getUri(),true);
+        $query = $search->searchType($queryBuilder, $deliveryAssemblyService->getRootClass()->getUri(), true);
         $queryBuilder->setCriteria($query);
         $searchResult = $search->getGateway()->search($queryBuilder);
 
@@ -84,7 +85,7 @@ class CleanFailedCompiledDeliveriesScript extends ScriptAction
         /** @var \core_kernel_classes_Resource $failedDelivery */
         foreach ($failedDeliveries as $failedDelivery) {
             $failedDelivery->delete(true);
-            $report->add(common_report_Report::createSuccess('Delivery deleted:'. $failedDelivery->getUri()));
+            $report->add(common_report_Report::createSuccess('Delivery deleted:' . $failedDelivery->getUri()));
         }
 
         return $report;

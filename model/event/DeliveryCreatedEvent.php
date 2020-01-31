@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,20 +18,29 @@
  * Copyright (c) 2016 (original work) Open Assessment Technologies SA
  *
  */
+
 namespace oat\taoDeliveryRdf\model\event;
 
-use JsonSerializable;
-use oat\oatbox\event\Event;
+use core_kernel_classes_Resource;
+use oat\tao\model\webhooks\WebhookSerializableEventInterface;
+use \core_kernel_persistence_Exception;
 
-class DeliveryCreatedEvent extends AbstractDeliveryEvent
+class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSerializableEventInterface
 {
+    /**
+     * @var core_kernel_classes_Resource
+     */
+    private $delivery;
 
     /**
-     * @param String $deliveryUri
+     * @param string $deliveryUri
+     * @param string $testUri
+     *
+     * @throws \core_kernel_persistence_Exception
      */
-    public function __construct($deliveryUri)
+    public function __construct(core_kernel_classes_Resource $delivery)
     {
-        $this->deliveryUri = $deliveryUri;
+        $this->delivery = $delivery;
     }
 
     /**
@@ -39,7 +49,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent
      */
     public function getName()
     {
-        return get_class($this);
+        return self::class;
     }
 
     /**
@@ -52,7 +62,28 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent
     public function jsonSerialize()
     {
         return [
-            'delivery' => $this->deliveryUri
+            'delivery' => $this->delivery->getUri(),
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebhookEventName()
+    {
+        return 'DeliveryCreatedEvent';
+    }
+
+    /**
+     * @return array
+     * @throws core_kernel_persistence_Exception
+     */
+    public function serializeForWebhook()
+    {
+        $testProperty = new \core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
+        return [
+            'deliveryId' => $this->delivery->getUri(),
+            'testId' => $this->delivery->getOnePropertyValue($testProperty)->getUri(),
         ];
     }
 }

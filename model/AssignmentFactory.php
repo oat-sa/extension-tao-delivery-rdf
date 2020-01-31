@@ -1,22 +1,24 @@
 <?php
-/**  
+
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- * 
+ *
  */
+
 namespace oat\taoDeliveryRdf\model;
 
 use oat\oatbox\user\User;
@@ -25,6 +27,7 @@ use oat\taoDelivery\model\AttemptServiceInterface;
 use tao_helpers_Date;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
+
 /**
  * Service to manage the assignment of users to deliveries
  *
@@ -67,24 +70,24 @@ class AssignmentFactory implements ServiceLocatorAwareInterface
     
     protected function getLabel()
     {
-        return $this->delivery->getLabel();    
+        return $this->delivery->getLabel();
     }
     
     protected function getDescription()
     {
-        $deliveryProps = $this->delivery->getPropertiesValues(array(
+        $deliveryProps = $this->delivery->getPropertiesValues([
             new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_MAX_EXEC),
             new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_START),
             new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_END),
-        ));
+        ]);
         
         $propMaxExec = current($deliveryProps[DeliveryContainerService::PROPERTY_MAX_EXEC]);
         $propStartExec = current($deliveryProps[DeliveryContainerService::PROPERTY_START]);
         $propEndExec = current($deliveryProps[DeliveryContainerService::PROPERTY_END]);
         
-        $startTime = (!(is_object($propStartExec)) or ($propStartExec=="")) ? null : $propStartExec->literal;
-        $endTime = (!(is_object($propEndExec)) or ($propEndExec=="")) ? null : $propEndExec->literal;
-        $maxExecs = (!(is_object($propMaxExec)) or ($propMaxExec=="")) ? 0 : $propMaxExec->literal;
+        $startTime = (!(is_object($propStartExec)) or ($propStartExec == "")) ? null : $propStartExec->literal;
+        $endTime = (!(is_object($propEndExec)) or ($propEndExec == "")) ? null : $propEndExec->literal;
+        $maxExecs = (!(is_object($propMaxExec)) or ($propMaxExec == "")) ? 0 : $propMaxExec->literal;
         
         $countExecs = count($this->getServiceLocator()->get(AttemptServiceInterface::SERVICE_ID)
             ->getAttempts($this->delivery->getUri(), $this->user));
@@ -111,35 +114,39 @@ class AssignmentFactory implements ServiceLocatorAwareInterface
     
     protected function buildDescriptionFromData($startTime, $endTime, $countExecs, $maxExecs)
     {
-        $descriptions = array();
+        $descriptions = [];
 
         if ($this->displayDates) {
             if (!empty($startTime) && !empty($endTime)) {
-                $descriptions[] = __('Available from %1$s to %2$s',
-                    tao_helpers_Date::displayeDate($startTime)
-                    ,tao_helpers_Date::displayeDate($endTime)
+                $descriptions[] = __(
+                    'Available from %1$s to %2$s',
+                    tao_helpers_Date::displayeDate($startTime),
+                    tao_helpers_Date::displayeDate($endTime)
                 );
             } elseif (!empty($startTime) && empty($endTime)) {
                 $descriptions[] = __('Available from %s', tao_helpers_Date::displayeDate($startTime));
             } elseif (!empty($endTime)) {
                 $descriptions[] = __('Available until %s', tao_helpers_Date::displayeDate($endTime));
-            }    
+            }
         }
         
         if ($maxExecs != 0 && $this->displayAttempts) {
             if ($maxExecs == 1) {
-                $descriptions[] = __('Attempt %1$s of %2$s'
-                    ,$countExecs
-                    ,!empty($maxExecs)
+                $descriptions[] = __(
+                    'Attempt %1$s of %2$s',
+                    $countExecs,
+                    !empty($maxExecs)
                     ? $maxExecs
-                    : __('unlimited'));
+                    : __('unlimited')
+                );
             } else {
-                $descriptions[] = __('Attempts %1$s of %2$s'
-                    ,$countExecs
-                    ,!empty($maxExecs)
+                $descriptions[] = __(
+                    'Attempts %1$s of %2$s',
+                    $countExecs,
+                    !empty($maxExecs)
                     ? $maxExecs
-                    : __('unlimited'));
-        
+                    : __('unlimited')
+                );
             }
         }
         return $descriptions;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoDeliveryRdf\scripts;
 
 use common_report_Report as Report;
@@ -53,13 +55,13 @@ class RecompileDelivery extends AbstractAction
     /**
      * @var array Available script modes
      */
-    static public $modes = ['list', 'compile'];
+    public static $modes = ['list', 'compile'];
 
     /**
      * List of properties to be copied from parent delivery
      * @var array
      */
-    static public $propertiesToCopy = [
+    public static $propertiesToCopy = [
         DeliveryContainerService::PROPERTY_END,
         DeliveryContainerService::PROPERTY_START,
         DeliveryContainerService::PROPERTY_MAX_EXEC,
@@ -141,7 +143,7 @@ class RecompileDelivery extends AbstractAction
                     "Delivery $deliveryId does not exists"
                 ));
                 continue;
-            } else if (!$delivery->isInstanceOf($deliveryClass)) {
+            } elseif (!$delivery->isInstanceOf($deliveryClass)) {
                 $this->report->add(new Report(
                     Report::TYPE_ERROR,
                     "$deliveryId is not delivery resource"
@@ -151,7 +153,7 @@ class RecompileDelivery extends AbstractAction
 
             try {
                 $newDelivery = $this->compileDelivery($delivery);
-            } catch (\common_Exception $e){
+            } catch (\common_Exception $e) {
                 $this->report->add(new Report(
                     Report::TYPE_ERROR,
                     $e->getMessage()

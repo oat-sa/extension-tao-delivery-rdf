@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,7 +45,7 @@ class TestRunnerFeatures
         $allFeatures = $testRunnerFeatureService->getAll();
         $defaultFeatures = [];
 
-        foreach($allFeatures as $feature) {
+        foreach ($allFeatures as $feature) {
             if ($feature->isEnabledByDefault() === true) {
                 $defaultFeatures[] = $feature->getId();
             }
