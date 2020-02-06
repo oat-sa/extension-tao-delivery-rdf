@@ -75,6 +75,14 @@ class DeliveryCreatedEventTest extends TestCase
     {
         $event = new DeliveryCreatedEvent($this->deliveryMock);
         $result = $event->getWebhookEventName();
-        $this->assertEquals(DeliveryCreatedEvent::class, $result);
+        $this->assertEquals('DeliveryCreatedEvent', $result);
+    }
+
+    public function testGetUri()
+    {
+        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $result = $event->getDeliveryUri();
+
+         $this->assertEquals(self::DELIVERY_URI, $result);
     }
 }
