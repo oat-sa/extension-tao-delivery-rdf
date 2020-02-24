@@ -20,8 +20,9 @@
 
 namespace oat\taoDeliveryRdf\model;
 
+use common_exception_Error;
 use common_ext_ExtensionsManager as ExtensionsManager;
-use core_kernel_classes_Property;
+use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
 use oat\taoDelivery\model\AssignmentService;
@@ -88,27 +89,18 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
      * @param DeliveryExecution $deliveryExecution
      * @return TestPlugin[] the list of plugins
      */
+    /**
+     * @param DeliveryExecution $deliveryExecution
+     * @return array
+     * @throws \common_exception_NotFound
+     */
     public function getPlugins(DeliveryExecution $deliveryExecution)
     {
-        $serviceManager = $this->getServiceManager();
-
-        $pluginService = $serviceManager->get(TestPluginService::SERVICE_ID);
-        $testRunnerFeatureService = $serviceManager->get(TestRunnerFeatureService::SERVICE_ID);
-
+        $pluginService = $this->getServiceLocator()->get(TestPluginService::SERVICE_ID);
         $allPlugins = $pluginService->getAllPlugins();
 
-        $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
-        $activeTestRunnerFeaturesIds = $this->getActiveFeatures($deliveryExecution->getDelivery());
-
-        // If test runner features are defined, we check if we need to disable some plugins accordingly
-        if (count($allTestRunnerFeatures) > 0) {
-            $pluginsToDisable = [];
-            foreach ($allTestRunnerFeatures as $feature) {
-                if (!in_array($feature->getId(), $activeTestRunnerFeaturesIds)) {
-                    $pluginsToDisable = array_merge($pluginsToDisable, $feature->getPluginsIds());
-                }
-            }
-
+        $pluginsToDisable = $this->getPluginsDisabledForDelivery($deliveryExecution->getDelivery());
+        if (count($pluginsToDisable) > 0) {
             foreach ($allPlugins as $plugin) {
                 if (!is_null($plugin) && in_array($plugin->getId(), $pluginsToDisable)) {
                     $plugin->setActive(false);
@@ -176,5 +168,45 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
             ',',
             $delivery->getOnePropertyValue($this->getProperty(self::TEST_RUNNER_FEATURES_PROPERTY))
         );
+    }
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @return array
+     */
+    protected function getPluginsDisabledForDelivery(core_kernel_classes_Resource $delivery)
+    {
+        $enabledPlugins = [];
+        $disabledPlugins = [];
+        try {
+            $testRunnerFeatureService = $this->getServiceLocator()->get(TestRunnerFeatureService::SERVICE_ID);
+            $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
+            $activeTestRunnerFeaturesIds = $this->getActiveFeatures($delivery);
+
+            if (count($allTestRunnerFeatures) === 0) {
+                return $disabledPlugins;
+            }
+
+            foreach ($allTestRunnerFeatures as $feature) {
+                if (in_array($feature->getId(), $activeTestRunnerFeaturesIds)) {
+                    $enabledPlugins = array_merge($enabledPlugins, $feature->getPluginsIds());
+                } else {
+                    $disabledPlugins = array_merge($disabledPlugins, $feature->getPluginsIds());
+                }
+            }
+
+            $enabledPlugins = array_unique($enabledPlugins);
+            $disabledPlugins = array_unique($disabledPlugins);
+
+            // We disable only plugins which are not enabled via any other active test runner feature.
+            $disabledPlugins = array_diff($disabledPlugins, $enabledPlugins);
+        } catch (common_exception_Error $e) {
+            $this->logWarning(
+                'Error getting plugins disabled for delivery.',
+                ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]
+            );
+        }
+
+        return $disabledPlugins;
     }
 }
