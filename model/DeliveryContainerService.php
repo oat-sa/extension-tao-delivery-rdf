@@ -100,7 +100,7 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
         $allPlugins = $pluginService->getAllPlugins();
 
         $pluginsToDisable = $this->getPluginsDisabledForDelivery($deliveryExecution->getDelivery());
-        if (count($pluginsToDisable) > 0) {
+        if (!empty($pluginsToDisable)) {
             foreach ($allPlugins as $plugin) {
                 if (!is_null($plugin) && in_array($plugin->getId(), $pluginsToDisable)) {
                     $plugin->setActive(false);
@@ -176,27 +176,27 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
      */
     protected function getPluginsDisabledForDelivery(core_kernel_classes_Resource $delivery)
     {
-        $enabledPlugins = [];
-        $disabledPlugins = [];
+        $enabledPlugins = [[]];
+        $disabledPlugins = [[]];
         try {
             $testRunnerFeatureService = $this->getServiceLocator()->get(TestRunnerFeatureService::SERVICE_ID);
             $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
 
-            if (count($allTestRunnerFeatures) === 0) {
+            if (empty($allTestRunnerFeatures)) {
                 return $disabledPlugins;
             }
 
             $activeTestRunnerFeaturesIds = $this->getActiveFeatures($delivery);
             foreach ($allTestRunnerFeatures as $feature) {
-                if (in_array($feature->getId(), $activeTestRunnerFeaturesIds)) {
-                    $enabledPlugins = array_merge($enabledPlugins, $feature->getPluginsIds());
+                if (in_array($feature->getId(), $activeTestRunnerFeaturesIds, true)) {
+                    $enabledPlugins[] = $feature->getPluginsIds();
                 } else {
-                    $disabledPlugins = array_merge($disabledPlugins, $feature->getPluginsIds());
+                    $disabledPlugins[] = $feature->getPluginsIds();
                 }
             }
 
-            $enabledPlugins = array_unique($enabledPlugins);
-            $disabledPlugins = array_unique($disabledPlugins);
+            $enabledPlugins = array_unique(array_merge(...$enabledPlugins));
+            $disabledPlugins = array_unique(array_merge(...$disabledPlugins));
 
             // We disable only plugins which are not enabled via any other active test runner feature.
             $disabledPlugins = array_diff($disabledPlugins, $enabledPlugins);
