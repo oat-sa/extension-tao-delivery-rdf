@@ -181,12 +181,12 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
         try {
             $testRunnerFeatureService = $this->getServiceLocator()->get(TestRunnerFeatureService::SERVICE_ID);
             $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
-            $activeTestRunnerFeaturesIds = $this->getActiveFeatures($delivery);
 
             if (count($allTestRunnerFeatures) === 0) {
                 return $disabledPlugins;
             }
 
+            $activeTestRunnerFeaturesIds = $this->getActiveFeatures($delivery);
             foreach ($allTestRunnerFeatures as $feature) {
                 if (in_array($feature->getId(), $activeTestRunnerFeaturesIds)) {
                     $enabledPlugins = array_merge($enabledPlugins, $feature->getPluginsIds());
