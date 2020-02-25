@@ -176,30 +176,31 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
      */
     protected function getPluginsDisabledForDelivery(core_kernel_classes_Resource $delivery)
     {
-        $enabledPlugins = [[]];
-        $disabledPlugins = [[]];
+        $disabledDeliveryPlugins = [];
         try {
             $testRunnerFeatureService = $this->getServiceLocator()->get(TestRunnerFeatureService::SERVICE_ID);
             $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
 
             if (empty($allTestRunnerFeatures)) {
-                return $disabledPlugins;
+                return $disabledDeliveryPlugins;
             }
 
+            $enabledFeaturesPlugins = [[]];
+            $disabledFeaturesPlugins = [[]];
             $activeTestRunnerFeaturesIds = $this->getActiveFeatures($delivery);
             foreach ($allTestRunnerFeatures as $feature) {
                 if (in_array($feature->getId(), $activeTestRunnerFeaturesIds, true)) {
-                    $enabledPlugins[] = $feature->getPluginsIds();
+                    $enabledFeaturesPlugins[] = $feature->getPluginsIds();
                 } else {
-                    $disabledPlugins[] = $feature->getPluginsIds();
+                    $disabledFeaturesPlugins[] = $feature->getPluginsIds();
                 }
             }
 
-            $enabledPlugins = array_unique(array_merge(...$enabledPlugins));
-            $disabledPlugins = array_unique(array_merge(...$disabledPlugins));
+            $enabledPlugins = array_unique(array_merge(...$enabledFeaturesPlugins));
+            $disabledPlugins = array_unique(array_merge(...$disabledFeaturesPlugins));
 
             // We disable only plugins which are not enabled via any other active test runner feature.
-            $disabledPlugins = array_diff($disabledPlugins, $enabledPlugins);
+            $disabledDeliveryPlugins = array_diff($disabledPlugins, $enabledPlugins);
         } catch (common_exception_Error $e) {
             $this->logWarning(
                 'Error getting plugins disabled for delivery.',
@@ -207,6 +208,6 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
             );
         }
 
-        return $disabledPlugins;
+        return $disabledDeliveryPlugins;
     }
 }
