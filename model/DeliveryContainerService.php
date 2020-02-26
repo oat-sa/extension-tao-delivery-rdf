@@ -178,8 +178,7 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
     {
         $disabledDeliveryPlugins = [];
         try {
-            $testRunnerFeatureService = $this->getServiceLocator()->get(TestRunnerFeatureService::SERVICE_ID);
-            $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
+            $allTestRunnerFeatures = $this->getAllAvailableFeatures();
 
             if (empty($allTestRunnerFeatures)) {
                 return $disabledDeliveryPlugins;
@@ -209,5 +208,16 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
         }
 
         return $disabledDeliveryPlugins;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAllAvailableFeatures()
+    {
+        $testRunnerFeatureService = $this->getServiceLocator()->get(TestRunnerFeatureService::SERVICE_ID);
+        $allTestRunnerFeatures = $testRunnerFeatureService->getAll();
+
+        return $allTestRunnerFeatures;
     }
 }
