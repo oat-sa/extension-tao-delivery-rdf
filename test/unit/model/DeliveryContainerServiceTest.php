@@ -88,10 +88,8 @@ class DeliveryContainerServiceTest extends TestCase
         $this->testPluginServiceMock->method('getAllPlugins')
             ->willReturn([]);
 
-        $deliveryMock = $this->createMock(core_kernel_classes_Resource::class);
-        $deliveryExecutionMock = $this->createMock(DeliveryExecution::class);
-        $deliveryExecutionMock->method('getDelivery')
-            ->willReturn($deliveryMock);
+        $deliveryFeatures = '';
+        $deliveryExecutionMock = $this->getDeliveryExecutionMock($deliveryFeatures);
 
         $this->testRunnerFeatureServiceMock->method('getAll')
             ->willReturn([]);
@@ -110,10 +108,8 @@ class DeliveryContainerServiceTest extends TestCase
         $this->testPluginServiceMock->method('getAllPlugins')
             ->willReturn($allPlugins);
 
-        $deliveryMock = $this->createMock(core_kernel_classes_Resource::class);
-        $deliveryExecutionMock = $this->createMock(DeliveryExecution::class);
-        $deliveryExecutionMock->method('getDelivery')
-            ->willReturn($deliveryMock);
+        $deliveryFeatures = '';
+        $deliveryExecutionMock = $this->getDeliveryExecutionMock($deliveryFeatures);
 
         $this->testRunnerFeatureServiceMock->method('getAll')
             ->willReturn([]);
@@ -139,12 +135,7 @@ class DeliveryContainerServiceTest extends TestCase
             ->willReturn($allPlugins);
 
         // Mock features activated for delivery
-        $deliveryMock = $this->createMock(core_kernel_classes_Resource::class);
-        $deliveryMock->method('getOnePropertyValue')
-            ->willReturn($deliveryFeatures);
-        $deliveryExecutionMock = $this->createMock(DeliveryExecution::class);
-        $deliveryExecutionMock->method('getDelivery')
-            ->willReturn($deliveryMock);
+        $deliveryExecutionMock = $this->getDeliveryExecutionMock($deliveryFeatures);
 
         // Mock all features
         $featureMock1 = $this->createMock(TestRunnerFeatureInterface::class);
@@ -211,5 +202,20 @@ class DeliveryContainerServiceTest extends TestCase
         }
 
         return $pluginsMocks;
+    }
+
+    /**
+     * @param string $deliveryFeatures
+     * @return DeliveryExecution|MockObject
+     */
+    protected function getDeliveryExecutionMock($deliveryFeatures)
+    {
+        $deliveryMock = $this->createMock(core_kernel_classes_Resource::class);
+        $deliveryMock->method('getOnePropertyValue')
+            ->willReturn($deliveryFeatures);
+        $deliveryExecutionMock = $this->createMock(DeliveryExecution::class);
+        $deliveryExecutionMock->method('getDelivery')
+            ->willReturn($deliveryMock);
+        return $deliveryExecutionMock;
     }
 }
