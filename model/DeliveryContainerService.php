@@ -101,22 +101,20 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
         $delivery = $deliveryExecution->getDelivery();
         $deliveryUri = $delivery->getUri();
         if (!isset($this->deliveryPlugins[$deliveryUri])) {
+            $this->deliveryPlugins[$deliveryUri] = [];
             $pluginService = $this->getServiceLocator()->get(TestPluginService::SERVICE_ID);
             $allPlugins = $pluginService->getAllPlugins();
 
             $pluginsToDisable = $this->getPluginsDisabledForDelivery($delivery);
-            if (!empty($pluginsToDisable)) {
-                foreach ($allPlugins as $plugin) {
-                    if (!is_null($plugin) && in_array($plugin->getId(), $pluginsToDisable)) {
-                        $plugin->setActive(false);
-                    }
+            foreach ($allPlugins as $key => $plugin) {
+                if (empty($plugin) || !$plugin instanceof TestPlugin) {
+                    continue;
+                }
+
+                if ($plugin->isActive() && !in_array($plugin->getId(), $pluginsToDisable, true)) {
+                    $this->deliveryPlugins[$deliveryUri][$key] = $plugin;
                 }
             }
-
-            // return only list of active plugins
-            $this->deliveryPlugins[$deliveryUri] = array_filter($allPlugins, function ($plugin) {
-                return !is_null($plugin) && $plugin->isActive();
-            });
         }
 
         return $this->deliveryPlugins[$deliveryUri];
