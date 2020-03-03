@@ -118,6 +118,13 @@ class DeliveryContainerServiceTest extends TestCase
 
         $this->assertTrue(is_array($result), 'Method must return an array.');
         $this->assertEquals($expectedResult, $result, 'Method must return only active plugins.');
+
+        // Test plugins caching - getAllPlugins method should not be called again
+        $this->testPluginServiceMock->expects($this->never())
+            ->method('getAllPlugins');
+
+        $resultFromCache = $this->object->getPlugins($deliveryExecutionMock);
+        $this->assertEquals($expectedResult, $resultFromCache, 'On consecutive calls method must return the same plugins.');
     }
 
     /**

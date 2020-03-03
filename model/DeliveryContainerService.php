@@ -58,6 +58,11 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
     const PROPERTY_END = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
 
     /**
+     * @var TestPlugin[]
+     */
+    private $deliveryPlugins = [];
+
+    /**
      * Get the list of providers for the current execution
      * @param DeliveryExecution $execution
      * @return array the list of providers
@@ -88,30 +93,31 @@ class DeliveryContainerService extends ConfigurableService implements DeliveryCo
      * Get the list of active plugins for the current execution
      * @param DeliveryExecution $deliveryExecution
      * @return TestPlugin[] the list of plugins
-     */
-    /**
-     * @param DeliveryExecution $deliveryExecution
-     * @return array
+     *
      * @throws \common_exception_NotFound
      */
     public function getPlugins(DeliveryExecution $deliveryExecution)
     {
-        $pluginService = $this->getServiceLocator()->get(TestPluginService::SERVICE_ID);
-        $allPlugins = $pluginService->getAllPlugins();
+        $delivery = $deliveryExecution->getDelivery();
+        $deliveryUri = $delivery->getUri();
+        if (!isset($this->deliveryPlugins[$deliveryUri])) {
+            $this->deliveryPlugins[$deliveryUri] = [];
+            $pluginService = $this->getServiceLocator()->get(TestPluginService::SERVICE_ID);
+            $allPlugins = $pluginService->getAllPlugins();
 
-        $pluginsToDisable = $this->getPluginsDisabledForDelivery($deliveryExecution->getDelivery());
-        if (!empty($pluginsToDisable)) {
-            foreach ($allPlugins as $plugin) {
-                if (!is_null($plugin) && in_array($plugin->getId(), $pluginsToDisable)) {
-                    $plugin->setActive(false);
+            $pluginsToDisable = $this->getPluginsDisabledForDelivery($delivery);
+            foreach ($allPlugins as $key => $plugin) {
+                if (empty($plugin) || !$plugin instanceof TestPlugin) {
+                    continue;
+                }
+
+                if ($plugin->isActive() && !in_array($plugin->getId(), $pluginsToDisable, true)) {
+                    $this->deliveryPlugins[$deliveryUri][$key] = $plugin;
                 }
             }
         }
 
-        // return the list of active plugins
-        return array_filter($allPlugins, function ($plugin) {
-            return !is_null($plugin) && $plugin->isActive();
-        });
+        return $this->deliveryPlugins[$deliveryUri];
     }
 
     /**
