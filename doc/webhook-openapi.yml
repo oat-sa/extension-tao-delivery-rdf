@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: DeliveryCreatedEvent webhook endpoint specification
+  description: Specification for the endpoint triggered by the webhook at delivery creation.
+paths:
+  /webhook:
+    post:
+      tags:
+        - Webhook
+      description: Webhook triggered from Tao platform when a delivery is created.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/webHookEvents"
+            example:
+              source: https://www.taotesting.com/
+              events:
+                -
+                  eventId: 1b5d1fc6430712df2993a9c917f58789
+                  eventName: DeliveryCreatedEvent
+                  triggeredTimestamp: 1579809749
+                  eventData:
+                    delivery_id: https://www.taotesting.com/ontologies/tao.rdf#i5e29fbd1e5aa9621870790a74855403
+                    test_id: https://www.taotesting.com/ontologies/tao.rdf#i5e29fbd1e5aa9621812a21bccd145e7
+      responses:
+        '200':
+          description: Request was correctly handled, all events were managed.
+        '400':
+          description: Some (or all) events were not properly managed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  failedEventIds:
+                    type: array
+                    items:
+                      type: string
+              example:
+                failedEventIds:
+                  - 1b5d1fc6430712df2993a9c917f58789
+        '500':
+          description: Internal error (should not occur).
+components:
+  schemas:
+    webHookEvents:
+      type: object
+      properties:
+        source:
+          type: string
+          description: Origin of the call. The Tao platform instance.
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/webHookEvent"
+    webHookEvent:
+      type: object
+      properties:
+        eventId:
+          type: string
+          description: Event unique id.
+        eventName:
+          type: string
+          description: Event name to dicriminate between delivery creation and test completion.
+          enum:
+            - DeliveryCreatedEvent
+        triggeredTimestamp:
+          type: integer
+          description: Event triggering date and time.
+        eventData:
+          $ref: "#/components/schemas/deliveryCreatedEvent"
+    deliveryCreatedEvent:
+      description: Triggered when a delivery is created.
+      type: object
+      format: json
+      properties:
+        delivery_id:
+          type: string
+          description: Delivery identifier.
+        test_id:
+          type: string
+          description: Test identifier to be used to retrieve the QTI package.
