@@ -53,7 +53,7 @@ class CompiledTestConverterServiceTest extends TestCase
          * @var File|MockObject
          */
     private $fileMock;
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->compilationDataReaderMock = $this->createMock(CompilationDataService::class);

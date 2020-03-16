@@ -59,7 +59,7 @@ class DeliveryContainerServiceTest extends TestCase
      */
     public $ontologyModelMock;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->testPluginServiceMock = $this->createMock(TestPluginService::class);

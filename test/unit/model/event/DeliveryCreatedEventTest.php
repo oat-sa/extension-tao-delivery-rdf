@@ -35,7 +35,7 @@ class DeliveryCreatedEventTest extends TestCase
     /** @var core_kernel_classes_Resource|MockObject */
     private $testResource;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->deliveryMock = $this->createMock(core_kernel_classes_Resource::class);
         $this->testResource = $this->createMock(core_kernel_classes_Resource::class);
