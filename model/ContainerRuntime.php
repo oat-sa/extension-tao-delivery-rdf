@@ -63,11 +63,13 @@ class ContainerRuntime extends LegacyRuntime
     public function getRuntime($deliveryId)
     {
         $delivery = $this->getResource($deliveryId);
-        if (!$delivery->exists()) {
+        $runtimeResource = $delivery->getOnePropertyValue($this->getProperty(self::PROPERTY_RUNTIME));
+        if (is_null($runtimeResource)) {
             throw new \common_exception_NoContent('Unable to load runtime associated for delivery ' . $deliveryId .
                 ' Delivery probably deleted.');
         }
-        $runtimeResource = $delivery->getUniquePropertyValue($this->getProperty(self::PROPERTY_RUNTIME));
-        return \tao_models_classes_service_ServiceCall::fromResource($runtimeResource);
+        return ($runtimeResource instanceof \core_kernel_classes_Resource)
+            ? \tao_models_classes_service_ServiceCall::fromResource($runtimeResource)
+            : \tao_models_classes_service_ServiceCall::fromString((string)$runtimeResource);
     }
 }
