@@ -23,9 +23,8 @@ namespace oat\taoDeliveryRdf\model;
 
 use oat\taoDelivery\model\container\LegacyRuntime;
 use oat\generis\model\OntologyAwareTrait;
-use oat\taoDelivery\model\container\delivery\DeliveryServiceContainer;
-use oat\taoDelivery\model\container\delivery\DeliveryClientContainer;
 use oat\taoDelivery\model\container\delivery\DeliveryContainerRegistry;
+use tao_models_classes_service_ServiceCall;
 
 /**
  * Service to select the correct container based on delivery
@@ -69,7 +68,7 @@ class ContainerRuntime extends LegacyRuntime
                 ' Delivery probably deleted.');
         }
         return ($runtimeResource instanceof \core_kernel_classes_Resource)
-            ? \tao_models_classes_service_ServiceCall::fromResource($runtimeResource)
-            : \tao_models_classes_service_ServiceCall::fromString((string)$runtimeResource);
+            ? tao_models_classes_service_ServiceCall::fromResource($runtimeResource)
+            : tao_models_classes_service_ServiceCall::fromString((string)$runtimeResource);
     }
 }
