@@ -22,7 +22,7 @@ class RestDeliveryTest extends RestTestRunner
      * Skip test if taoQtiTest is not installed
      * Init service
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
