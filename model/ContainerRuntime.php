@@ -63,7 +63,7 @@ class ContainerRuntime extends LegacyRuntime
     {
         $delivery = $this->getResource($deliveryId);
         $runtimeResource = $delivery->getOnePropertyValue($this->getProperty(self::PROPERTY_RUNTIME));
-        if (is_null($runtimeResource)) {
+        if ($runtimeResource === null) {
             throw new \common_exception_NoContent('Unable to load runtime associated for delivery ' . $deliveryId .
                 ' Delivery probably deleted.');
         }
