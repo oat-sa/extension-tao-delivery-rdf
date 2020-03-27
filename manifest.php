@@ -30,10 +30,10 @@ return [
   'label'       => 'Delivery Management',
   'description' => 'Manages deliveries using the ontology',
   'license'     => 'GPL-2.0',
-  'version'     => '11.1.0',
+  'version'     => '11.4.0',
     'author'      => 'Open Assessment Technologies SA',
     'requires'    => [
-        'generis'     => '>=12.5.0',
+        'generis'     => '>=12.15.0',
         'tao'         => '>=38.3.1',
         'taoGroups'   => '>=4.0.0',
         'taoTests'    => '>=12.1.0',

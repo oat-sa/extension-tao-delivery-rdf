@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint115\n"
-"PO-Revision-Date: 2019-11-22T11:22:54\n"
+"Project-Id-Version: TAO 3.4.0-sprint125\n"
+"PO-Revision-Date: 2020-03-27T11:28:12\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: sv-SE\n"
@@ -35,15 +35,6 @@ msgid "Assigned test-takers"
 msgstr ""
 
 msgid "Assigned to"
-msgstr ""
-
-msgid "Attempt %1$s of %2$s"
-msgstr ""
-
-msgid "Attempts %1$s of %2$s"
-msgstr ""
-
-msgid "Available from %1$s to %2$s"
 msgstr ""
 
 msgid "Available from %s"
@@ -83,9 +74,6 @@ msgid "Deliveries library"
 msgstr ""
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr ""
-
-msgid "Delivery \'%s\' not found"
 msgstr ""
 
 msgid "Delivery class uri provided is not a valid delivery class."
@@ -141,9 +129,6 @@ msgstr ""
 
 #, tao-public
 msgid "Move To"
-msgstr ""
-
-msgid "Multiple delivery class found for label \"%s\": %s"
 msgstr ""
 
 #, tao-public
@@ -212,9 +197,6 @@ msgstr ""
 msgid "Tests"
 msgstr ""
 
-msgid "The shared filesystem parameter should be a boolean value 'true' or 'false'."
-msgstr ""
-
 msgid "The test \"%s\" does not contain any items and cannot be published."
 msgstr ""
 
@@ -240,8 +222,5 @@ msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr ""
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr ""
-
-msgid "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
 msgstr ""
 

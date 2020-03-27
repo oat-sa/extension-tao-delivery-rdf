@@ -36,7 +36,7 @@ class AssemblyFilesReaderTest extends TestCase
      * @var AssemblyFilesReader
      */
     private $object;
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->object = new AssemblyFilesReader();

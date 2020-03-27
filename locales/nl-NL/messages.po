@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint115\n"
-"PO-Revision-Date: 2019-11-22T11:22:54\n"
+"Project-Id-Version: TAO 3.4.0-sprint125\n"
+"PO-Revision-Date: 2020-03-27T11:28:12\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl-NL\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s completed"
-msgstr ""
+msgstr "%s voltooid"
 
 msgid "%s test-taker(s) are excluded."
 msgstr "%s kandidaten zijn uitgesloten."
@@ -37,15 +37,6 @@ msgstr "Toegewezen kandidaten"
 msgid "Assigned to"
 msgstr "Toegewezen aan"
 
-msgid "Attempt %1$s of %2$s"
-msgstr "Poging %1$s van %2$s"
-
-msgid "Attempts %1$s of %2$s"
-msgstr "Poging %1$s van %2$s"
-
-msgid "Available from %1$s to %2$s"
-msgstr "Beschikbaar van %1$s tot %2$s"
-
 msgid "Available from %s"
 msgstr "Beschikbaar van %s"
 
@@ -56,7 +47,7 @@ msgid "Cancel"
 msgstr "Annuleren"
 
 msgid "Class successfully created."
-msgstr ""
+msgstr "Klasse met succes gecreëerd."
 
 msgid "Continue deleting of delivery \"%s\"."
 msgstr ""
@@ -72,7 +63,7 @@ msgid "Delete"
 msgstr "Verwijderen"
 
 msgid "Deleting of \"%s"
-msgstr ""
+msgstr "Wissen van \"%s"
 
 #, tao-public
 msgid "Deliveries"
@@ -85,11 +76,8 @@ msgstr "Pakketten bank"
 msgid "Delivery \"%s\" successfully imported"
 msgstr "Pakket \"%s\" is succesvol geimporteerd"
 
-msgid "Delivery \'%s\' not found"
-msgstr ""
-
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr ""
+msgstr "De verstrekte publicatieklasse uri is geen geldige publicatieklasse."
 
 msgid "Delivery is assigned to %s test-takers."
 msgstr "Pakket is toegewezen aan %s kandidaten"
@@ -101,13 +89,13 @@ msgid "Delivery saved"
 msgstr "Pakket opgeslagen"
 
 msgid "Delivery with label \"%s\" not found"
-msgstr ""
+msgstr "Publicatie met label \"%s\" niet gevonden"
 
 msgid "Directory %s doesn\'t exist"
 msgstr ""
 
 msgid "Error"
-msgstr ""
+msgstr "Fout"
 
 msgid "Excluded test-takers"
 msgstr "Sluit kandidaten uit"
@@ -116,7 +104,7 @@ msgid "Exported %1$s to %2$s"
 msgstr "%1$s tot %2$s geëxporteerd "
 
 msgid "Exporting %s"
-msgstr ""
+msgstr "Exporterende %s"
 
 msgid "Guest access"
 msgstr "Gasttoegang"
@@ -129,11 +117,11 @@ msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "Beheer Schema"
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "Beheer testen"
 
 #, tao-public
 msgid "Move"
@@ -141,10 +129,7 @@ msgstr "Verplaatsen"
 
 #, tao-public
 msgid "Move To"
-msgstr ""
-
-msgid "Multiple delivery class found for label \"%s\": %s"
-msgstr ""
+msgstr "Verplaats naar"
 
 #, tao-public
 msgid "New class"
@@ -191,7 +176,7 @@ msgid "Select the test"
 msgstr ""
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr ""
+msgstr "Selecteer de test die u wilt publiceren voor de kandidaten"
 
 msgid "Selection saved successfully"
 msgstr "Selectie succesvol opgeslagen"
@@ -203,17 +188,14 @@ msgid "TAO Guest Access"
 msgstr "Tao gasttoegang"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr ""
+msgstr "Test publicatie is mislukt omdat \"%s\" leeg is."
 
 msgid "Test-takers"
 msgstr "Kandidaten"
 
 #, tao-public
 msgid "Tests"
-msgstr ""
-
-msgid "The shared filesystem parameter should be a boolean value 'true' or 'false'."
-msgstr ""
+msgstr "Testen"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
 msgstr ""
@@ -231,17 +213,14 @@ msgid "Unable to import Archive"
 msgstr "Kan archief niet importeren"
 
 msgid "Unable to load tests"
-msgstr ""
+msgstr "Niet in staat om testen te laden"
 
 msgid "unlimited"
 msgstr "onbeperkt"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr ""
+msgstr "Gebruik: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr ""
-
-msgid "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
-msgstr ""
+msgstr "Gebruik: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 

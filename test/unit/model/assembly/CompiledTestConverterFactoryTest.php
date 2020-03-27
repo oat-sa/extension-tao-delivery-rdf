@@ -37,7 +37,7 @@ class CompiledTestConverterFactoryTest extends TestCase
      * @var CompiledTestConverterFactory
      */
     private $object;
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->object = new CompiledTestConverterFactory();
