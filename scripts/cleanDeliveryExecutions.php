@@ -25,17 +25,18 @@ namespace oat\taoDeliveryRdf\scripts;
 //Load extension to define necessary constants.
 \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
 
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\taoDelivery\model\execution\implementation\KeyValueService;
 use oat\taoDelivery\model\execution\OntologyDeliveryExecution;
 use oat\taoDelivery\model\execution\OntologyService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoOutcomeRds\model\RdsResultStorage;
-use taoAltResultStorage_models_classes_KeyValueResultStorage as KeyValueResultStorage;
-use oat\oatbox\service\ServiceNotFoundException;
+use oat\taoResultServer\models\classes\implementation\ResultServerService;
 
 class cleanDeliveryExecutions extends AbstractAction
 {
+    use OntologyAwareTrait;
+
     /**
      * @var \core_kernel_classes_Class
      */
@@ -72,11 +73,11 @@ class cleanDeliveryExecutions extends AbstractAction
 
         $class_uri = array_shift($params);
 
-        $deliveryRootClass = DeliveryAssemblyService::singleton()->getRootClass();
+        $deliveryRootClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
         if (is_null($class_uri)) {
             $deliveryClass = $deliveryRootClass;
         } else {
-            $deliveryClass = new \core_kernel_classes_Class($class_uri);
+            $deliveryClass = $this->getClass($class_uri);
             if (!$deliveryClass->isSubClassOf($deliveryRootClass)) {
                 $msg = "Usage: php index.php '" . __CLASS__ . "' [CLASS_URI]" . PHP_EOL;
                 $msg .= "CLASS_URI : a valid delivery class uri" . PHP_EOL . PHP_EOL;
@@ -91,40 +92,24 @@ class cleanDeliveryExecutions extends AbstractAction
     {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
         try {
-            // results rds
-            $rdsStorage = new RdsResultStorage();
-            $deliveryIds = $rdsStorage->getAllDeliveryIds();
+            /** @var ResultServerService $resultService */
+            $resultService = $this->getServiceLocator()->get(ResultServerService::SERVICE_ID);
+            $deliveries = $this->deliveryClass->getInstances(true);
             $count = 0;
-            foreach ($deliveryIds as $deliveryId) {
-                if ($rdsStorage->deleteResult($deliveryId['deliveryResultIdentifier'])) {
-                    $count++;
-                } else {
-                    $report->setType(\common_report_Report::TYPE_ERROR);
-                    $report->setMessage('Cannot cleanup results for ' . $deliveryId['deliveryResultIdentifier']);
-                }
-            }
-            $report->setMessage('Removed ' . $count . ' on ' . count($deliveryIds) . ' RDS results');
 
-
-            // results redis
-            try {
-                /** @var KeyValueResultStorage $kvResultService */
-                $kvStorage = $this->getServiceManager()->get(KeyValueResultStorage::SERVICE_ID);
-                $deliveryIds = $kvStorage->getAllDeliveryIds();
-                $count = 0;
-                foreach ($deliveryIds as $deliveryId) {
-                    if ($kvStorage->deleteResult($deliveryId['deliveryResultIdentifier'])) {
+            foreach ($deliveries as $delivery) {
+                $implementation = $resultService->getResultStorage($delivery->getUri());
+                foreach ($implementation->getResultByDelivery([$delivery->getUri()]) as $result) {
+                    if ($implementation->deleteResult($result['deliveryResultIdentifier'])) {
                         $count++;
                     } else {
                         $report->setType(\common_report_Report::TYPE_ERROR);
-                        $report->setMessage('Cannot cleanup results for ' . $deliveryId['deliveryResultIdentifier']);
+                        $report->setMessage('Cannot cleanup results for ' . $result['deliveryResultIdentifier']);
                     }
                 }
-                $report->setMessage('Removed ' . $count . ' on ' . count($deliveryIds) . ' Key Value results');
-            } catch (ServiceNotFoundException $e) {
-                $report->setType(\common_report_Report::TYPE_INFO);
-                $report->setMessage('KeyValue Storage not setup');
             }
+
+            $report->setMessage('Removed ' . $count . ' on ' . count($deliveries) . ' RDS results');
         } catch (\common_Exception $e) {
             $report->setType(\common_report_Report::TYPE_ERROR);
             $report->setMessage('Cannot cleanup Results: ' . $e->getMessage());

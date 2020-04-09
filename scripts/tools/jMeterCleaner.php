@@ -13,8 +13,8 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\taoDelivery\model\execution\OntologyDeliveryExecution;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoOutcomeRds\model\RdsResultStorage;
 use oat\taoDelivery\model\execution\implementation\KeyValueService;
+use oat\taoResultServer\models\classes\implementation\ResultServerService;
 
 /**
  * Start your way from this
@@ -440,19 +440,22 @@ class jMeterCleaner extends AbstractAction
     {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
         try {
-            // results rds
-            $rdsStorage = new RdsResultStorage();
-            $deliveryIds = $rdsStorage->getResultByDelivery($deliveries);
+            /** @var ResultServerService $resultService */
+            $resultService = $this->getServiceLocator()->get(ResultServerService::SERVICE_ID);
             $count = 0;
-            foreach ($deliveryIds as $deliveryId) {
-                if ($rdsStorage->deleteResult($deliveryId['deliveryResultIdentifier'])) {
-                    $count++;
-                } else {
-                    $report->setType(\common_report_Report::TYPE_ERROR);
-                    $report->setMessage('Cannot cleanup results for ' . $deliveryId['deliveryResultIdentifier']);
+            foreach ($deliveries as $delivery) {
+                $implementation = $resultService->getResultStorage($delivery);
+                foreach ($implementation->getResultByDelivery([$delivery]) as $result) {
+                    if ($implementation->deleteResult($result['deliveryResultIdentifier'])) {
+                        $count++;
+                    } else {
+                        $report->setType(\common_report_Report::TYPE_ERROR);
+                        $report->setMessage('Cannot cleanup results for ' . $result['deliveryResultIdentifier']);
+                    }
                 }
             }
-            $report->setMessage('Removed ' . $count . ' on ' . count($deliveryIds) . ' RDS results');
+
+            $report->setMessage('Removed ' . $count . ' on ' . count($deliveries) . ' RDS results');
         } catch (\common_Exception $e) {
             $report->setType(\common_report_Report::TYPE_ERROR);
             $report->setMessage('Cannot cleanup Results: ' . $e->getMessage());
