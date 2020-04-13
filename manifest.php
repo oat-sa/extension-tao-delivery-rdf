@@ -38,8 +38,7 @@ return [
         'taoGroups'   => '>=4.0.0',
         'taoTests'    => '>=12.1.0',
         'taoQtiTest'  => '>=35.4.0',
-        'taoDelivery' => '>=13.3.0',
-        'taoResultServer' => '>=7.0.0'
+        'taoDelivery' => '>=13.3.0'
     ],
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => [
