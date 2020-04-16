@@ -19,8 +19,11 @@
 
 namespace oat\taoDeliveryRdf\controller;
 
+use common_exception_RestApi;
+use core_kernel_classes_Class;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManager;
+use oat\search\base\exception\SearchGateWayExeption;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\tao\model\taskQueue\TaskLog\Broker\TaskLogBrokerInterface;
 use oat\tao\model\taskQueue\TaskLog\Entity\EntityInterface;
@@ -72,7 +75,7 @@ class RestDelivery extends \tao_actions_RestController
 
             $test = $this->getResource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
             if (!$test->exists()) {
-                throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
+                throw new common_exception_RestApi('Unable to find a test associated to the given uri.');
             }
 
             $label = 'Delivery of ' . $test->getLabel();
@@ -112,7 +115,7 @@ class RestDelivery extends \tao_actions_RestController
 
             $test = $this->getResource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
             if (! $test->exists()) {
-                throw new \common_exception_NotFound('Unable to find a test associated to the given uri.');
+                throw new common_exception_RestApi('Unable to find a test associated to the given uri.');
             }
 
             $deliveryClass = $this->getDeliveryClassByParameters();
@@ -413,7 +416,7 @@ class RestDelivery extends \tao_actions_RestController
      * If not parent class parameter is provided, class will be created under root class
      * Comment parameter is not mandatory, used to describe new created class
      *
-     * @return \core_kernel_classes_Class
+     * @return core_kernel_classes_Class
      */
     public function createClass()
     {
@@ -443,9 +446,9 @@ class RestDelivery extends \tao_actions_RestController
      * If an uri parameter is provided, and it is a delivery class, this delivery class is returned
      * If a label parameter is provided, and only one delivery class has this label, this delivery class is returned
      *
-     * @return \core_kernel_classes_Class
-     * @throws \common_Exception
-     * @throws \common_exception_NotFound
+     * @return core_kernel_classes_Class
+     * @throws SearchGateWayExeption
+     * @throws common_exception_RestApi
      */
     protected function getDeliveryClassByParameters()
     {
@@ -460,7 +463,7 @@ class RestDelivery extends \tao_actions_RestController
             ) {
                 return $deliveryClass;
             }
-            throw new \common_Exception(__('Delivery class uri provided is not a valid delivery class.'));
+            throw new common_exception_RestApi(__('Delivery class uri provided is not a valid delivery class.'));
         }
 
         if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_LABEL)) {
@@ -484,7 +487,7 @@ class RestDelivery extends \tao_actions_RestController
 
             switch ($result->count()) {
                 case 0:
-                    throw new \common_exception_NotFound(__('Delivery with label "%s" not found', $label));
+                    throw new common_exception_RestApi(__('Delivery with label "%s" not found', $label));
                 case 1:
                     return $this->getClass($result->current()->getUri());
                 default:
@@ -492,7 +495,7 @@ class RestDelivery extends \tao_actions_RestController
                     foreach ($result as $raw) {
                         $availableClasses[] = $raw->getUri();
                     }
-                    throw new \common_exception_NotFound(__(
+                    throw new common_exception_RestApi(__(
                         'Multiple delivery class found for label "%s": %s',
                         $label,
                         implode(',', $availableClasses)
@@ -506,7 +509,7 @@ class RestDelivery extends \tao_actions_RestController
     /**
      * Get the delivery root class
      *
-     * @return \core_kernel_classes_Class
+     * @return core_kernel_classes_Class
      */
     protected function getDeliveryRootClass()
     {
