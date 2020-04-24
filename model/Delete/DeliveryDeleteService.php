@@ -22,6 +22,7 @@
 namespace oat\taoDeliveryRdf\model\Delete;
 
 use common_report_Report;
+use common_ext_ExtensionsManager as ExtensionsManager;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\Monitoring;
@@ -87,12 +88,17 @@ class DeliveryDeleteService extends ConfigurableService
      * @param core_kernel_classes_Resource $deliveryResource
      * @return array|\oat\taoDelivery\model\execution\DeliveryExecution[]
      * @throws \common_exception_Error
+     * @throws \common_exception_NoImplementation
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     protected function getDeliveryExecutions(core_kernel_classes_Resource $deliveryResource)
     {
         $serviceProxy = $this->getServiceProxy();
-
-        if (!$serviceProxy instanceof Monitoring) {
+        /** @var ExtensionsManager $extensionsManager */
+        $extensionsManager = $this->getServiceManager()->get(ExtensionsManager::SERVICE_ID);
+        if ($serviceProxy instanceof Monitoring) {
+            $executions = $serviceProxy->getExecutionsByDelivery($deliveryResource);
+        } else if ($extensionsManager->isEnabled('taoResultServer')) {
             $resultStorage = $this->getResultStorage($deliveryResource->getUri());
             $results       = $resultStorage->getResultByDelivery([$deliveryResource->getUri()]);
 
@@ -101,7 +107,7 @@ class DeliveryDeleteService extends ConfigurableService
                 $executions[] = $serviceProxy->getDeliveryExecution($result['deliveryResultIdentifier']);
             }
         } else {
-            $executions = $serviceProxy->getExecutionsByDelivery($deliveryResource);
+            throw new \common_exception_Error('Cannot retrieve delivery executions by delivery');
         }
 
         return $executions;
@@ -151,11 +157,11 @@ class DeliveryDeleteService extends ConfigurableService
      * @return ResultManagement
      * @throws \common_exception_Error
      */
-    protected function getResultStorage($deliveryId)
+    protected function getResultStorage()
     {
         /** @var ResultServerService $resultService */
         $resultService = $this->getServiceLocator()->get(ResultServerService::SERVICE_ID);
-        return $resultService->getResultStorage($deliveryId);
+        return $resultService->getResultStorage();
     }
 
     /**

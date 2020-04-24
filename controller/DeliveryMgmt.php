@@ -40,8 +40,6 @@ use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoResultServer\models\classes\implementation\OntologyService;
-use oat\taoResultServer\models\classes\ResultServerService;
 use oat\taoDelivery\model\execution\Monitoring;
 use tao_helpers_form_FormContainer as FormContainer;
 
@@ -92,22 +90,9 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $class = $this->getCurrentClass();
         $delivery = $this->getCurrentInstance();
 
-        //Removing Result Server form field if it is hardcoded in configuration
-        //since property name (and possibly property itself) is deprecated then this lines will go away to
-        //when "deprecation period" will be over
-        /** @var ResultServerService $resultServerService */
-        $resultServerService = $this->getServiceManager()->get(ResultServerService::SERVICE_ID);
-        if (!$resultServerService->isConfigurable()) {
-            $options = [];
-        } else {
-            $options = [
-                'excludedProperties' => [
-                    OntologyService::PROPERTY_RESULT_SERVER
-                ]
-            ];
-        }
-
-        $options[FormContainer::CSRF_PROTECTION_OPTION] = true;
+        $options = [
+            FormContainer::CSRF_PROTECTION_OPTION => true
+        ];
 
         $formContainer = new DeliveryForm($class, $delivery, $options);
         $myForm = $formContainer->getForm();
