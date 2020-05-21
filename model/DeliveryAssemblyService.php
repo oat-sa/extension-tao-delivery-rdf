@@ -151,7 +151,10 @@ class DeliveryAssemblyService extends OntologyClassService
         $deliveryAssignement->onDelete($assembly);
         /** @var core_kernel_classes_Resource $runtimeResource */
         $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_RUNTIME));
-        return $runtimeResource->delete();
+        if ($runtimeResource instanceof core_kernel_classes_Resource) {
+            return $runtimeResource->delete();
+        }
+        return true;
     }
 
     /**

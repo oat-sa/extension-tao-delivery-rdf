@@ -29,15 +29,12 @@ class DeliveryAssemblyWrapperService extends ConfigurableService implements Deli
 {
     const SERVICE_ID = 'taoDeliveryRdf/DeliveryAssemblyWrapper';
 
-    /** @var DeliveryAssemblyService */
-    private $deliveryAssemblyService;
-
     /**
      * @inheritdoc
      */
     public function deleteDeliveryData(DeliveryDeleteRequest $request)
     {
-        $service = $this->getServiceLocator()->get(DeliveryAssemblyWrapperService::class);
+        $service = $this->getServiceLocator()->get(DeliveryAssemblyService::class);
         return $service->deleteInstance($request->getDeliveryResource());
     }
 }
