@@ -46,12 +46,4 @@ class DeliveryDeleteAction extends AbstractAction
         $task = $this->propagate(new DeliveryDeleteTask());
         return $task(['deliveryId' => $params[0]]);
     }
-
-    /**
-     * @return mixed|string
-     */
-    public function jsonSerialize()
-    {
-        return __CLASS__;
-    }
 }
