@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint125\n"
-"PO-Revision-Date: 2020-03-27T11:28:12\n"
+"Project-Id-Version: TAO 3.4.0-sprint130\n"
+"PO-Revision-Date: 2020-06-08T12:46:03\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it-IT\n"
@@ -99,16 +99,6 @@ msgstr "Excluded Subjects"
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Excluded Subjects"
 msgstr "Excluded Subjects"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer
-msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
-msgid "Result Server"
-msgstr "Result Server"
-
-# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Result Server"
-msgstr "Result Server"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryPlugins
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -324,6 +314,16 @@ msgstr ""
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Guest Access"
 msgstr ""
+
+# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Result Server"
+msgstr "Result Server"
+
+# http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryResultServer
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Result Server"
+msgstr "Result Server"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"

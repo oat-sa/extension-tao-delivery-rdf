@@ -166,8 +166,8 @@ msgstr "Publier le test"
 msgid "Published on:"
 msgstr ""
 
-msgid "Publishing of \"%s"
-msgstr "Publication de \"%s"
+msgid "Publishing of \"%s\""
+msgstr "Publication de \"%s\""
 
 msgid "Save"
 msgstr "Enregistrer"
