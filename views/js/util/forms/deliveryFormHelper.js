@@ -128,7 +128,7 @@ define([
                     && result.task.report.children[0]) {
                     if(result.task.report.children[0].data
                         && result.task.report.children[0].data.uriResource){
-                        feedback().info(__('%s completed', result.task.taskLabel));
+                        feedback().info(__('%s completed', result.task.taskLabel), { encodeHtml: false });
                         refreshTree(result.task.report.children[0].data.uriResource);
                     }else{
                         this.displayReport(result.task.report.children[0], __('Error'));
