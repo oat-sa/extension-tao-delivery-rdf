@@ -2,12 +2,13 @@ pipeline {
     agent {
         label 'builder'
     }
+    environment {
+        GITHUB_ORGANIZATION='oat-sa'
+        REPO_NAME='oat-sa/extension-tao-delivery-rdf'
+    }
     stages {
         stage('Resolve TAO dependencies') {
-            environment {
-                GITHUB_ORGANIZATION='oat-sa'
-                REPO_NAME='oat-sa/extension-tao-delivery-rdf'
-            }
+
             steps {
                 sh(
                     label : 'Create build build directory',
@@ -25,12 +26,6 @@ docker run --rm  \\
 -e "GITHUB_ORGANIZATION=${GITHUB_ORGANIZATION}" \\
 -e "GITHUB_SECRET=${GIT_TOKEN}"  \\
 tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --repository-name ${REPO_NAME} > build/composer.json
-                        '''
-                    )
-                    sh(
-                        label: 'Packagist Branch Check',
-                        script: '''
-                            php -r '<?php /* Pingigist! */ $maxAttempts = 5; $waitingTime = 30; $repoName = "${REPO_NAME}"; $testBranch = ${TEST_BRANCH}; $packagistBranch = "dev-$testBranch"; $packagistPayloadUrl = "https://repo.packagist.org/p/$repoName.json"; echo "Waiting for packagist to acknowledge branch $testBranch on repository $repoName ($maxAttempts attempts) ...\n"; for ($i = 0; $i < 5; $i++) { if ($i > 0) { echo "Waiting $waitingTime seconds to the next attempt...\n"; sleep($waitingTime); } $attempt = $i + 1; echo "Attempt #$attempt for branch $testBranch on repository $repoName...\n"; if (false === ($packagistPayload = @file_get_contents($packagistPayloadUrl))) { echo "Packagist payload could not be retrieved from $packagistPayloadUrl.\n"; exit(1); } if (!($packagistMetadata = @json_decode($packagistPayload, true))) { echo "Packagist payload could not be parsed.\n"; exit(2); } if (empty($packagistMetadata['packages']) || empty($packagistMetadata['packages'][$repoName])) { echo "Packagist metadata is not properly formated.\n"; exit(3); } if (array_key_exists($packagistBranch, $packagistMetadata['packages'][$repoName])) { echo "Branch $testBranch exists on packagist!\n"; exit(0); } } echo "Branch $testBranch does not exist on packagist for repository $repoName.\n"; exit(4);'
                         '''
                     )
                 }
@@ -51,6 +46,12 @@ tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --
             }
             steps {
                 dir('build') {
+                    sh(
+                        label: 'Packagist Branch Check',
+                        script: '''
+                            php -r '<?php /* Pingigist! */ $maxAttempts = 5; $waitingTime = 30; $repoName = "${REPO_NAME}"; $testBranch = ${TEST_BRANCH}; $packagistBranch = "dev-$testBranch"; $packagistPayloadUrl = "https://repo.packagist.org/p/$repoName.json"; echo "Waiting for packagist to acknowledge branch $testBranch on repository $repoName ($maxAttempts attempts) ...\n"; for ($i = 0; $i < 5; $i++) { if ($i > 0) { echo "Waiting $waitingTime seconds to the next attempt...\n"; sleep($waitingTime); } $attempt = $i + 1; echo "Attempt #$attempt for branch $testBranch on repository $repoName...\n"; if (false === ($packagistPayload = @file_get_contents($packagistPayloadUrl))) { echo "Packagist payload could not be retrieved from $packagistPayloadUrl.\n"; exit(1); } if (!($packagistMetadata = @json_decode($packagistPayload, true))) { echo "Packagist payload could not be parsed.\n"; exit(2); } if (empty($packagistMetadata['packages']) || empty($packagistMetadata['packages'][$repoName])) { echo "Packagist metadata is not properly formated.\n"; exit(3); } if (array_key_exists($packagistBranch, $packagistMetadata['packages'][$repoName])) { echo "Branch $testBranch exists on packagist!\n"; exit(0); } } echo "Branch $testBranch does not exist on packagist for repository $repoName.\n"; exit(4);'
+                        '''
+                    )
                     sh(
                         label: 'Install/Update sources from Composer',
                         script: 'COMPOSER_DISCARD_CHANGES=true composer update --prefer-source --no-interaction --no-ansi --no-progress --no-scripts'
