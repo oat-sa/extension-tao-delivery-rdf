@@ -55,10 +55,12 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             }
             steps {
                 dir('build') {
-                    sh(
-                        label: 'Install/Update sources from Composer',
-                        script: 'COMPOSER_DISCARD_CHANGES=true composer update --prefer-source --no-interaction --no-ansi --no-progress --no-scripts'
-                    )
+                    withCredentials([string(credentialsId: 'jenkins_github_token', variable: 'GIT_TOKEN')]) {
+                        sh(
+                            label: 'Install/Update sources from Composer',
+                            script: 'COMPOSER_DISCARD_CHANGES=true composer update --prefer-source --no-interaction --no-ansi --no-progress --no-scripts'
+                        )
+                    }
                     sh(
                         label: 'Add phpunit',
                         script: 'composer require phpunit/phpunit:^8.5'
