@@ -94,7 +94,7 @@ mkdir -p tao/views/locales/en-US/
                     agent {
                         docker {
                             image 'alexwijn/docker-git-php-composer'
-                            reuseNode true
+                            reuseNode false
                         }
                     }
                     options {
