@@ -65,13 +65,13 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
                             script: '''
                             composer config github-oauth.github.com ${GIT_TOKEN}
                             COMPOSER_DISCARD_CHANGES=true
-                            composer update --no-interaction --no-ansi --no-progress --no-suggest
+                            composer update --prefer-source --no-interaction --no-ansi --no-progress --no-suggest
                             '''
                         )
                     }
                     sh(
                         label: 'Add phpunit',
-                        script: 'composer require phpunit/phpunit:^8.5'
+                        script: 'composer require phpunit/phpunit:^8.5 --no-progress'
                     )
                     sh(
                         label: "Extra filesystem mocks",
