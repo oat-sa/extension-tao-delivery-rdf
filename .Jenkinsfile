@@ -31,7 +31,7 @@ cat > build/composer.json <<- composerjson
   "repositories": [
       {
         "type": "vcs",
-        "url": "git@github.com:${REPO_NAME}.git"
+        "url": "https://github.com/${REPO_NAME}"
       }
     ],
   "require": {
@@ -65,7 +65,7 @@ tail -n +3 build/dependencies.json >> build/composer.json                       
                         sh(
                             label: 'Install/Update sources from Composer',
                             script: '''
-                            COMPOSER_AUTH='{"github-oauth": {"github.com": "${GIT_TOKEN}"}}'
+                            composer config github-oauth.github.com ${GIT_TOKEN}
                             COMPOSER_DISCARD_CHANGES=true
                             composer update --prefer-source --no-interaction --no-ansi --no-progress --no-scripts --no-suggest
                             '''
