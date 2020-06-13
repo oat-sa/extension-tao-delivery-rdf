@@ -24,8 +24,18 @@ echo "select branch : ${TEST_BRANCH}"
 docker run --rm  \\
 -e "GITHUB_ORGANIZATION=${GITHUB_ORGANIZATION}" \\
 -e "GITHUB_SECRET=${GIT_TOKEN}"  \\
-tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --repository-name ${REPO_NAME} > build/composer.json
-                        '''
+tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --repository-name ${REPO_NAME} > build/dependencies.json
+
+cat > build/composer.json <<- composerjson
+{
+  "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/${REPO_NAME}"
+      }
+    ],
+composerjson
+tail -n +2 build/dependencies.json >> build/composer.json                        '''
                     )
                 }
             }
