@@ -31,11 +31,13 @@ cat > build/composer.json <<- composerjson
   "repositories": [
       {
         "type": "vcs",
-        "url": "git@github.com:${REPO_NAME}.git"
+        "url": "https://github.com/${REPO_NAME}"
       }
     ],
+  "require": {
+    "phpunit/phpunit": "^8.5",
 composerjson
-tail -n +2 build/dependencies.json >> build/composer.json                        '''
+tail -n +3 build/dependencies.json >> build/composer.json                        '''
                     )
                 }
                 sh(
@@ -69,10 +71,6 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
                             '''
                         )
                     }
-                    sh(
-                        label: 'Add phpunit',
-                        script: 'composer require phpunit/phpunit:^8.5'
-                    )
                     sh(
                         label: "Extra filesystem mocks",
                         script: '''
