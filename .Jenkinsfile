@@ -31,7 +31,7 @@ cat > build/composer.json <<- composerjson
   "repositories": [
       {
         "type": "vcs",
-        "url": "https://github.com/${REPO_NAME}"
+        "url": "git@github.com:${REPO_NAME}.git"
       }
     ],
 composerjson
@@ -62,7 +62,11 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
                     withCredentials([string(credentialsId: 'jenkins_github_token', variable: 'GIT_TOKEN')]) {
                         sh(
                             label: 'Install/Update sources from Composer',
-                            script: 'COMPOSER_DISCARD_CHANGES=true composer update --prefer-source --no-interaction --no-ansi --no-progress --no-scripts'
+                            script: '''
+                            COMPOSER_AUTH='{"github-oauth": {"github.com": "$GIT_TOKEN"}}'
+                            COMPOSER_DISCARD_CHANGES=true
+                            composer update --prefer-source --no-interaction --no-ansi --no-progress --no-scripts --no-suggest
+                            '''
                         )
                     }
                     sh(
