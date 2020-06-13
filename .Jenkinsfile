@@ -63,7 +63,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
                         sh(
                             label: 'Install/Update sources from Composer',
                             script: '''
-                            COMPOSER_AUTH='{"github-oauth": {"github.com": "$GIT_TOKEN"}}'
+                            COMPOSER_AUTH='{"github-oauth": {"github.com": "${GIT_TOKEN}"}}'
                             COMPOSER_DISCARD_CHANGES=true
                             composer update --prefer-source --no-interaction --no-ansi --no-progress --no-scripts --no-suggest
                             '''
