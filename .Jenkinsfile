@@ -34,10 +34,8 @@ cat > build/composer.json <<- composerjson
         "url": "https://github.com/${REPO_NAME}"
       }
     ],
-  "require": {
-    "phpunit/phpunit": "^8.5",
 composerjson
-tail -n +3 build/dependencies.json >> build/composer.json                        '''
+tail -n +2 build/dependencies.json >> build/composer.json                        '''
                     )
                 }
                 sh(
@@ -67,10 +65,14 @@ tail -n +3 build/dependencies.json >> build/composer.json                       
                             script: '''
                             composer config github-oauth.github.com ${GIT_TOKEN}
                             COMPOSER_DISCARD_CHANGES=true
-                            composer update --prefer-source --no-interaction --no-ansi --no-progress --no-scripts --no-suggest
+                            composer update --no-interaction --no-ansi --no-progress --no-suggest
                             '''
                         )
                     }
+                    sh(
+                        label: 'Add phpunit',
+                        script: 'composer require phpunit/phpunit:^8.5'
+                    )
                     sh(
                         label: "Extra filesystem mocks",
                         script: '''
