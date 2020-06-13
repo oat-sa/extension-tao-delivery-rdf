@@ -8,8 +8,19 @@ pipeline {
     }
     stages {
         stage('Resolve TAO dependencies') {
-
             steps {
+                sh(
+                    label: 'print CHANGE_BRANCH',
+                    script: 'echo $CHANGE_BRANCH'
+                )
+                sh(
+                    label: 'print BRANCH_NAME',
+                    script: 'echo $BRANCH_NAME'
+                )
+                sh(
+                    label: 'print CHANGE_SOURCE',
+                    script: 'echo $CHANGE_SOURCE'
+                )
                 sh(
                     label : 'Create build build directory',
                     script: 'mkdir -p build'
@@ -36,7 +47,7 @@ tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --
                 docker {
                     image 'alexwijn/docker-git-php-composer'
                     reuseNode true
-                    args '-e BRANCH_NAME=${CHANGE_SOURCE} -e REPO_NAME=${REPO_NAME}'
+                    args '-e BRANCH_NAME=${BRANCH_NAME} -e REPO_NAME=${REPO_NAME}'
                 }
             }
             environment {
