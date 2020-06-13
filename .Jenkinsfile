@@ -31,7 +31,7 @@ cat > build/composer.json <<- composerjson
   "repositories": [
       {
         "type": "vcs",
-        "url": "https://github.com/${REPO_NAME}"
+        "url": "git@github.com:${REPO_NAME}.git"
       }
     ],
   "require": {
