@@ -36,7 +36,7 @@ tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --
                 docker {
                     image 'alexwijn/docker-git-php-composer'
                     reuseNode true
-                    args '-e TEST_BRANCH=branch -e REPO_NAME=repo'
+                    args '-e TEST_BRANCH=branch -e REPO_NAME=${REPO_NAME}'
                 }
             }
             environment {
@@ -49,7 +49,7 @@ tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --
                 dir('build') {
                     sh(
                         label: 'Packagist Branch Check',
-                        script: 'echo ${TEST_BRANCH}'
+                        script: 'echo ${REPO_NAME}'
                     )
                     sh(
                         label: 'Install/Update sources from Composer',
