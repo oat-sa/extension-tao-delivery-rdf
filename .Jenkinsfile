@@ -62,7 +62,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
                 dir('build') {
                     sh(
                         label: 'Install/Update sources from Composer',
-                        script: 'COMPOSER_DISCARD_CHANGES=true composer update --prefer-source --no-interaction --no-ansi --no-progress --no-suggest'
+                        script: 'COMPOSER_DISCARD_CHANGES=true composer install --prefer-dest --no-interaction --no-ansi --no-progress --no-suggest'
                     )
                     sh(
                         label: 'Add phpunit',
