@@ -31,7 +31,8 @@ cat > build/composer.json <<- composerjson
   "repositories": [
       {
         "type": "vcs",
-        "url": "https://github.com/${REPO_NAME}"
+        "url": "https://github.com/${REPO_NAME}",
+        "no-api": true
       }
     ],
 composerjson
@@ -59,16 +60,10 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             }
             steps {
                 dir('build') {
-                    withCredentials([string(credentialsId: 'jenkins_github_token', variable: 'GIT_TOKEN')]) {
-                        sh(
-                            label: 'Install/Update sources from Composer',
-                            script: '''
-                            composer config github-oauth.github.com ${GIT_TOKEN}
-                            COMPOSER_DISCARD_CHANGES=true
-                            composer update --prefer-source --no-interaction --no-ansi --no-progress --no-suggest
-                            '''
-                        )
-                    }
+                    sh(
+                        label: 'Install/Update sources from Composer',
+                        script: 'COMPOSER_DISCARD_CHANGES=true composer update --prefer-source --no-interaction --no-ansi --no-progress --no-suggest'
+                    )
                     sh(
                         label: 'Add phpunit',
                         script: 'composer require phpunit/phpunit:^8.5 --no-progress'
