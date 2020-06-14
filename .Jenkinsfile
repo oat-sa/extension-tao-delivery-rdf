@@ -18,14 +18,9 @@ pipeline {
                     script: 'echo $BRANCH_NAME'
                 )
                 sh(
-                    label: 'print CHANGE_SOURCE',
-                    script: 'echo $CHANGE_SOURCE'
-                )
-                sh(
                     label : 'Create build build directory',
                     script: 'mkdir -p build'
                 )
-
                 withCredentials([string(credentialsId: 'jenkins_github_token', variable: 'GIT_TOKEN')]) {
                     sh(
                         label : 'Run the Dependency Resolver',
@@ -40,6 +35,14 @@ tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --
                         '''
                     )
                 }
+                sh(
+                    label: 'second print CHANGE_BRANCH',
+                    script: 'echo $CHANGE_BRANCH'
+                )
+                sh(
+                    label: 'second print BRANCH_NAME',
+                    script: 'echo $BRANCH_NAME'
+                )
             }
         }
         stage('Install') {
