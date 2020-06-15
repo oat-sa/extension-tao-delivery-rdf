@@ -13,10 +13,6 @@ pipeline {
                     label : 'Create build build directory',
                     script: 'mkdir -p build'
                 )
-                sh(
-                    label : 'home dir',
-                    script: 'echo $HOME'
-                )
 
                 withCredentials([string(credentialsId: 'jenkins_github_token', variable: 'GIT_TOKEN')]) {
                     sh(
@@ -53,6 +49,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             agent {
                 docker {
                     image 'alexwijn/docker-git-php-composer'
+                    args '-v composer_cache:/srv/data/jenkins/.composer-cache -e COMPOSER_CACHE_DIR=/srv/data/jenkins/.composer-cache'
                     reuseNode true
                 }
             }
@@ -64,10 +61,6 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             }
             steps {
                 dir('build') {
-                    sh(
-                        label: 'composer cache dir',
-                        script: 'composer config --global --list | grep cache'
-                    )
                     sh(
                         label: 'Install/Update sources from Composer',
                         script: 'COMPOSER_DISCARD_CHANGES=true composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest'
