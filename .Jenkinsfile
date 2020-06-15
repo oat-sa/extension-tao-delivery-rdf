@@ -49,6 +49,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             agent {
                 docker {
                     image 'alexwijn/docker-git-php-composer'
+                    args '-v composer_cache:/var/local/.composer-cache -e COMPOSER_CACHE_DIR=/var/local/.composer-cache'
                     reuseNode true
                 }
             }
