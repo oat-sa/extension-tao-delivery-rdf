@@ -24,6 +24,7 @@ namespace oat\taoDeliveryRdf\model\export;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use oat\oatbox\service\ServiceManager;
+use oat\taoDeliveryRdf\model\assembly\CompiledTestConverterFactory;
 use oat\taoDeliveryRdf\view\form\export\ExportForm;
 
 /**
@@ -45,7 +46,7 @@ class AssemblyExporter implements \tao_models_classes_export_ExportHandler
     {
         return __('Assembly');
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see tao_models_classes_export_ExportHandler::getExportForm()
@@ -60,7 +61,7 @@ class AssemblyExporter implements \tao_models_classes_export_ExportHandler
         $form = new ExportForm($formData);
         return $form->getForm();
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see tao_models_classes_export_ExportHandler::export()
@@ -70,9 +71,13 @@ class AssemblyExporter implements \tao_models_classes_export_ExportHandler
         if (!isset($formValues['exportInstance']) || empty($formValues['exportInstance'])) {
             throw new \common_Exception('No instance selected');
         }
-        
+
         $delivery = new core_kernel_classes_Resource($formValues['exportInstance']);
-        $path = ServiceManager::getServiceManager()->get(AssemblyExporterService::class)->exportCompiledDelivery($delivery);
+        $path = ServiceManager::getServiceManager()->get(
+            AssemblyExporterService::class)->exportCompiledDelivery(
+            $delivery,
+            CompiledTestConverterFactory::COMPILED_TEST_FORMAT_XML
+        );
 
         return $path;
     }

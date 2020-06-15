@@ -151,7 +151,10 @@ class AssemblyExporterService extends ConfigurableService
         }
 
         $runtime = $compiledDelivery->getUniquePropertyValue($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
-        $serviceCall = tao_models_classes_service_ServiceCall::fromResource($runtime);
+        $serviceCall = ($runtime instanceof \core_kernel_classes_Resource)
+            ? \tao_models_classes_service_ServiceCall::fromResource($runtime)
+            : \tao_models_classes_service_ServiceCall::fromString((string)$runtime);
+
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
         $rdfData = $this->rdfExporter->getRdfString([$compiledDelivery]);
         if (!$zipArchive->addFromString(self::DELIVERY_RDF_FILENAME, $rdfData)) {
