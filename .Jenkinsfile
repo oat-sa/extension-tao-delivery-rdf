@@ -62,6 +62,10 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             steps {
                 dir('build') {
                     sh(
+                        label: 'composer cache dir'
+                        script: 'composer config --global --list | grep cache'
+                    )
+                    sh(
                         label: 'Install/Update sources from Composer',
                         script: 'COMPOSER_DISCARD_CHANGES=true composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest'
                     )
