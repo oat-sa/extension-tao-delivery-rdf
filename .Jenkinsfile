@@ -62,7 +62,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             steps {
                 dir('build') {
                     sh(
-                        label: 'composer cache dir'
+                        label: 'composer cache dir',
                         script: 'composer config --global --list | grep cache'
                     )
                     sh(
