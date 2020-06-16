@@ -34,15 +34,21 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
     private $delivery;
 
     /**
+     * @var core_kernel_classes_Resource
+     */
+    private $originTest;
+
+    /**
      * @param string $deliveryUri
      * @param string $testUri
      *
      * @throws \core_kernel_persistence_Exception
      */
-    public function __construct(core_kernel_classes_Resource $delivery)
+    public function __construct(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $originTest)
     {
         $this->deliveryUri = $delivery->getUri();
         $this->delivery = $delivery;
+        $this->originTest= $originTest;
     }
 
     /**
@@ -87,5 +93,10 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
             'deliveryId' => $this->deliveryUri,
             'testId' => $this->delivery->getOnePropertyValue($testProperty)->getUri(),
         ];
+    }
+
+    public function getOriginTest(): core_kernel_classes_Resource
+    {
+        return $this->originTest;
     }
 }

@@ -32,6 +32,7 @@ class DeliveryCreatedEventTest extends TestCase
 
     /** @var core_kernel_classes_Resource|MockObject */
     private $deliveryMock;
+
     /** @var core_kernel_classes_Resource|MockObject */
     private $testResource;
 
@@ -46,7 +47,7 @@ class DeliveryCreatedEventTest extends TestCase
 
     public function testSerializeForWebhook()
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
         $result = $event->serializeForWebhook();
 
         $this->assertArrayHasKey('deliveryId', $result);
@@ -57,7 +58,7 @@ class DeliveryCreatedEventTest extends TestCase
 
     public function testJsonSerialize()
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
         $result = $event->jsonSerialize();
         $this->assertArrayHasKey('delivery', $result);
         $this->assertEquals($result['delivery'], self::DELIVERY_URI);
@@ -65,7 +66,7 @@ class DeliveryCreatedEventTest extends TestCase
 
     public function testGetName()
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
         $result = $event->getName();
 
         $this->assertEquals($result, DeliveryCreatedEvent::class);
@@ -73,14 +74,14 @@ class DeliveryCreatedEventTest extends TestCase
 
     public function testGetWebhookEventName()
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
         $result = $event->getWebhookEventName();
         $this->assertEquals('DeliveryCreatedEvent', $result);
     }
 
     public function testGetUri()
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
         $result = $event->getDeliveryUri();
 
          $this->assertEquals(self::DELIVERY_URI, $result);
