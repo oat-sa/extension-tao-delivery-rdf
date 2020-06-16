@@ -116,6 +116,7 @@ mkdir -p tao/views/locales/en-US/
                     agent {
                         docker {
                             image 'btamas/puppeteer-git'
+                            args '-v /srv/data/jenkins/cache/npm:/tmp/.npm-cache -e npm_config_cache=/tmp/.npm-cache'
                             reuseNode true
                         }
                     }
