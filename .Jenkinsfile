@@ -13,10 +13,6 @@ pipeline {
                     label : 'Create build build directory',
                     script: 'mkdir -p build'
                 )
-                sh(
-                    label : 'jenkins user',
-                    script: 'id'
-                )
 
                 withCredentials([string(credentialsId: 'jenkins_github_token', variable: 'GIT_TOKEN')]) {
                     sh(
@@ -53,7 +49,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             agent {
                 docker {
                     image 'alexwijn/docker-git-php-composer'
-                    args '-u 1003:998 -v $COMPOSER_CACHE_DIR:/tmp/.composer-cache -e COMPOSER_CACHE_DIR=/tmp/.composer-cache'
+//                     args '-e COMPOSER_CACHE_DIR=/tmp/.composer-cache'
                     reuseNode true
                 }
             }
@@ -67,7 +63,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
                 dir('build') {
                     sh(
                         label: 'Install/Update sources from Composer',
-                        script: 'COMPOSER_DISCARD_CHANGES=true composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest'
+                        script: 'pwd COMPOSER_DISCARD_CHANGES=true composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest'
                     )
                     sh(
                         label: 'Add phpunit',
