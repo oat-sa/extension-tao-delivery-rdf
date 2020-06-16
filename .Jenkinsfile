@@ -49,7 +49,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             agent {
                 docker {
                     image 'alexwijn/docker-git-php-composer'
-                    args "-v $COMPOSER_CACHE_DIR:/tmp/.composer-cache -e COMPOSER_CACHE_DIR=/tmp/.composer-cache"
+                    args "-v $BUILDER_CACHE_DIR/composer:/tmp/.composer-cache -e COMPOSER_CACHE_DIR=/tmp/.composer-cache"
                     reuseNode true
                 }
             }
@@ -116,7 +116,7 @@ mkdir -p tao/views/locales/en-US/
                     agent {
                         docker {
                             image 'btamas/puppeteer-git'
-                            args "-v $NPM_CACHE_DIR:/tmp/.npm-cache -e npm_config_cache=/tmp/.npm-cache"
+                            args "-v $BUILDER_CACHE_DIR/npm:/tmp/.npm-cache -e npm_config_cache=/tmp/.npm-cache"
                             reuseNode true
                         }
                     }
