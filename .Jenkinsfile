@@ -15,7 +15,7 @@ pipeline {
                 )
                 sh(
                     label : 'Jenkins user',
-                    script: 'echo $(id -u ${USER}):$(id -g ${USER})'
+                    script: 'whoami'
                 )
 
                 withCredentials([string(credentialsId: 'jenkins_github_token', variable: 'GIT_TOKEN')]) {
