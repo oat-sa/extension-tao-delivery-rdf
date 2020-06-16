@@ -13,10 +13,6 @@ pipeline {
                     label : 'Create build build directory',
                     script: 'mkdir -p build'
                 )
-                sh(
-                    label : 'Jenkins user',
-                    script: 'whoami'
-                )
 
                 withCredentials([string(credentialsId: 'jenkins_github_token', variable: 'GIT_TOKEN')]) {
                     sh(
@@ -53,7 +49,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             agent {
                 docker {
                     image 'alexwijn/docker-git-php-composer'
-                    args '-u $(id -u ${USER}):$(id -g ${USER}) -v composer_cache:/tmp/.composer-cache -e COMPOSER_CACHE_DIR=/tmp/.composer-cache'
+                    args '-u 1003:998 -v composer_cache:/tmp/.composer-cache -e COMPOSER_CACHE_DIR=/tmp/.composer-cache'
                     reuseNode true
                 }
             }
