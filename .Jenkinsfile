@@ -13,6 +13,10 @@ pipeline {
                     label : 'Create build build directory',
                     script: 'mkdir -p build'
                 )
+                sh(
+                    label : 'jenkins user',
+                    script: 'id'
+                )
 
                 withCredentials([string(credentialsId: 'jenkins_github_token', variable: 'GIT_TOKEN')]) {
                     sh(
