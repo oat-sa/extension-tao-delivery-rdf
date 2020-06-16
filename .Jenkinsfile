@@ -49,7 +49,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
             agent {
                 docker {
                     image 'alexwijn/docker-git-php-composer'
-                    args '-e COMPOSER_CACHE_DIR=$JENKINS_HOME/.composer-cache'
+                    args '-e COMPOSER_CACHE_DIR=$WORKSPACE/../../.composer-cache'
                     reuseNode true
                 }
             }
@@ -63,7 +63,7 @@ tail -n +2 build/dependencies.json >> build/composer.json                       
                 dir('build') {
                     sh(
                         label: 'Init composer vendor cache',
-                        script: 'echo $JENKINS_HOME && [ ! -w $JENKINS_HOME/.composer-cache ] && mkdir $JENKINS_HOME/.composer-cache'
+                        script: 'echo $WORKSPACE && [ ! -w $WORKSPACE/../../.composer-cache ] && mkdir $WORKSPACE/../../.composer-cache'
                     )
                     sh(
                         label: 'Install/Update sources from Composer',
