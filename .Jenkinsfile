@@ -36,19 +36,21 @@ cat > build/composer.json <<- composerjson
       }
     ],
 composerjson
-tail -n +2 build/dependencies.json >> build/composer.json                        '''
+tail -n +2 build/dependencies.json >> build/composer.json
+                        '''
+                    )
+                    sh(
+                        label: 'composer.json',
+                        script: 'cat build/composer.json'
                     )
                 }
-                sh(
-                    label: 'composer.json',
-                    script: 'cat build/composer.json'
-                )
             }
         }
         stage('Install') {
             agent {
                 docker {
                     image 'alexwijn/docker-git-php-composer'
+                    args "-v $BUILDER_CACHE_DIR/composer:/tmp/.composer-cache -e COMPOSER_CACHE_DIR=/tmp/.composer-cache"
                     reuseNode true
                 }
             }
@@ -115,6 +117,7 @@ mkdir -p tao/views/locales/en-US/
                     agent {
                         docker {
                             image 'btamas/puppeteer-git'
+                            args "-v $BUILDER_CACHE_DIR/npm:/tmp/.npm-cache -e npm_config_cache=/tmp/.npm-cache"
                             reuseNode true
                         }
                     }
