@@ -82,7 +82,7 @@ define([
                     && result.task.report.children[0]) {
                     if (result.task.report.children[0].data
                         && result.task.report.children[0].data.uriResource) {
-                        feedback().info(__('%s completed', result.task.taskLabel));
+                        feedback().info(__('%s completed', result.task.taskLabel), { encodeHtml: false });
 
                         //TODO: redirect to the newly compiled delivery when TAO-5746 is merged
                         refreshTree(result.task.report.children[0].data.uriResource);

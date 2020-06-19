@@ -130,6 +130,10 @@ class DeliveryFactory extends ConfigurableService
                 $container = $compiler->getContainer();
             }
             $compilationInstance = $this->createDeliveryResource($deliveryClass, $serviceCall, $container, $properties);
+
+            $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+            $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance, $test));
+
             $report->setData($compilationInstance);
         }
 
@@ -224,8 +228,6 @@ class DeliveryFactory extends ConfigurableService
             $compilationInstance = $deliveryClass->createInstanceWithProperties($properties);
         }
 
-        $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
-        $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance));
         return $compilationInstance;
     }
 }
