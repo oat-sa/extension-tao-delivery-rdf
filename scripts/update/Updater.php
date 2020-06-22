@@ -46,6 +46,7 @@ use oat\taoDelivery\model\RuntimeService;
 
 /**
  ** @author Joel Bout <joel@taotesting.com>
+ * @deprecated use migrations instead. See https://github.com/oat-sa/generis/wiki/Tao-Update-Process
  */
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -271,5 +272,10 @@ class Updater extends \common_ext_ExtensionUpdater
         }
         
         $this->skip('11.5.0', '11.7.0');
+        
+        //Updater files are deprecated. Please use migrations.
+        //See: https://github.com/oat-sa/generis/wiki/Tao-Update-Process
+
+        $this->setVersion($this->getExtension()->getManifest()->getVersion());
     }
 }
