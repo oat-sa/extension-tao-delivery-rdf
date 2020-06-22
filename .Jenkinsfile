@@ -10,6 +10,10 @@ pipeline {
             }
             steps {
                 sh(
+                    label : 'debug env vars',
+                    script: 'printenv'
+                )
+                sh(
                     label : 'Create build build directory',
                     script: 'mkdir -p build'
                 )
