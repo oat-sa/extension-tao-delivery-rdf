@@ -38,16 +38,18 @@ class DeliveryCreatedEventTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->deliveryMock = $this->createMock(core_kernel_classes_Resource::class);
+        parent::setUp();
         $this->testResource = $this->createMock(core_kernel_classes_Resource::class);
+        $this->testResource->method('getUri')->willReturn(self::TEST_URI);
+
+        $this->deliveryMock = $this->createMock(core_kernel_classes_Resource::class);
         $this->deliveryMock->method('getUri')->willReturn(self::DELIVERY_URI);
         $this->deliveryMock->method('getOnePropertyValue')->willReturn($this->testResource);
-        $this->testResource->method('getUri')->willReturn(self::TEST_URI);
     }
 
     public function testSerializeForWebhook(): void
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, self::TEST_URI);
         $result = $event->serializeForWebhook();
 
         $this->assertArrayHasKey('deliveryId', $result);
@@ -58,15 +60,17 @@ class DeliveryCreatedEventTest extends TestCase
 
     public function testJsonSerialize(): void
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, self::TEST_URI);
         $result = $event->jsonSerialize();
         $this->assertArrayHasKey('delivery', $result);
         $this->assertEquals($result['delivery'], self::DELIVERY_URI);
+        $this->assertArrayHasKey('testId', $result);
+        $this->assertEquals($result['testId'], self::TEST_URI);
     }
 
     public function testGetName(): void
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, self::TEST_URI);
         $result = $event->getName();
 
         $this->assertEquals($result, DeliveryCreatedEvent::class);
@@ -74,16 +78,70 @@ class DeliveryCreatedEventTest extends TestCase
 
     public function testGetWebhookEventName(): void
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, self::TEST_URI);
         $result = $event->getWebhookEventName();
         $this->assertEquals('DeliveryCreatedEvent', $result);
     }
 
     public function testGetUri(): void
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, self::TEST_URI);
         $result = $event->getDeliveryUri();
 
          $this->assertEquals(self::DELIVERY_URI, $result);
+    }
+
+    public function testGetOriginTestUri_WhenEventCreatedWithoutTestUri_ThenGetTestUriFromDeliveryResource(): void
+    {
+        $event = new DeliveryCreatedEvent($this->deliveryMock);
+
+        $testUri = $event->getOriginTestUri();
+        self::assertSame(self::TEST_URI, $testUri, 'Method must return correct origin test URI.');
+    }
+
+    public function testGetOriginTestUri_WhenDeliveryCreatedWithoutTest_TryGetTestUriFromDeliveryResource(): void
+    {
+        $deliveryMock = $this->getDeliveryWithoutTestMock();
+
+        $event = new DeliveryCreatedEvent($deliveryMock);
+
+        $testUri = $event->getOriginTestUri();
+        self::assertNull($testUri, 'Method must return NULL if delivery does not have origin test uri property.');
+    }
+
+    public function testGetOriginTestUri_WhenDeliveryCreatedWithoutTest_TestUriIsNullInSerializedEvent(): void
+    {
+        $expectedSerializedEvent = [
+            'delivery' => self::DELIVERY_URI,
+            'testId' => null,
+        ];
+        $expectedSerializedForWebhookEvent = [
+            'deliveryId' => self::DELIVERY_URI,
+            'testId' => null,
+        ];
+        $deliveryMock = $this->getDeliveryWithoutTestMock();
+
+        $event = new DeliveryCreatedEvent($deliveryMock);
+
+        self::assertSame($expectedSerializedEvent, $event->jsonSerialize(), 'Serialized event must be as expected.');
+        self::assertSame(
+            $expectedSerializedForWebhookEvent,
+            $event->serializeForWebhook(),
+            'Serialized for webhook event must be as expected.'
+        );
+    }
+
+    /**
+     * @return core_kernel_classes_Resource|MockObject
+     */
+    private function getDeliveryWithoutTestMock(): core_kernel_classes_Resource
+    {
+        $deliveryMock = $this->createMock(core_kernel_classes_Resource::class);
+        $deliveryMock->method('getUri')
+            ->willReturn(self::DELIVERY_URI);
+        $deliveryMock->method('getOnePropertyValue')
+            ->willReturn(null);
+
+        return $deliveryMock;
     }
 }

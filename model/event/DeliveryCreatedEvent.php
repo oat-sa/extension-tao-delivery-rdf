@@ -21,9 +21,10 @@
 
 namespace oat\taoDeliveryRdf\model\event;
 
+use Throwable;
+use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\tao\model\webhooks\WebhookSerializableEventInterface;
-use \core_kernel_persistence_Exception;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSerializableEventInterface
@@ -34,19 +35,19 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
     private $delivery;
 
     /**
-     * @var core_kernel_classes_Resource
+     * @var string
      */
-    private $originTest;
+    private $originTestUri;
 
     /**
      * @param core_kernel_classes_Resource $delivery
-     * @param core_kernel_classes_Resource $originTest
+     * @param string|null $originTestUri
      */
-    public function __construct(core_kernel_classes_Resource $delivery, ?core_kernel_classes_Resource $originTest =  null)
+    public function __construct(core_kernel_classes_Resource $delivery, ?string $originTestUri =  null)
     {
         $this->deliveryUri = $delivery->getUri();
         $this->delivery = $delivery;
-        $this->originTest= $originTest;
+        $this->originTestUri= $originTestUri;
     }
 
     /**
@@ -69,6 +70,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
     {
         return [
             'delivery' => $this->delivery->getUri(),
+            'testId' => $this->getOriginTestUri(),
         ];
     }
 
@@ -82,19 +84,27 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
 
     /**
      * @return array
-     * @throws core_kernel_persistence_Exception
      */
     public function serializeForWebhook()
     {
-        $testProperty = new \core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
         return [
             'deliveryId' => $this->deliveryUri,
-            'testId' => $this->delivery->getOnePropertyValue($testProperty)->getUri(),
+            'testId' => $this->getOriginTestUri(),
         ];
     }
 
-    public function getOriginTest(): ?core_kernel_classes_Resource
+    /**
+     * @return string|null
+     */
+    public function getOriginTestUri(): ?string
     {
-        return $this->originTest;
+        if ($this->originTestUri === null) {
+            try {
+                $testProperty = new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
+                $this->originTestUri = $this->delivery->getOnePropertyValue($testProperty)->getUri();
+            } catch (Throwable $e) {}
+        }
+
+        return $this->originTestUri;
     }
 }
