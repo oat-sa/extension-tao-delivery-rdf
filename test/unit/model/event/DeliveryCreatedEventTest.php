@@ -32,6 +32,7 @@ class DeliveryCreatedEventTest extends TestCase
 
     /** @var core_kernel_classes_Resource|MockObject */
     private $deliveryMock;
+
     /** @var core_kernel_classes_Resource|MockObject */
     private $testResource;
 
@@ -44,9 +45,9 @@ class DeliveryCreatedEventTest extends TestCase
         $this->testResource->method('getUri')->willReturn(self::TEST_URI);
     }
 
-    public function testSerializeForWebhook()
+    public function testSerializeForWebhook(): void
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
         $result = $event->serializeForWebhook();
 
         $this->assertArrayHasKey('deliveryId', $result);
@@ -55,32 +56,32 @@ class DeliveryCreatedEventTest extends TestCase
         $this->assertEquals(self::TEST_URI, $result['testId']);
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
         $result = $event->jsonSerialize();
         $this->assertArrayHasKey('delivery', $result);
         $this->assertEquals($result['delivery'], self::DELIVERY_URI);
     }
 
-    public function testGetName()
+    public function testGetName(): void
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
         $result = $event->getName();
 
         $this->assertEquals($result, DeliveryCreatedEvent::class);
     }
 
-    public function testGetWebhookEventName()
+    public function testGetWebhookEventName(): void
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
         $result = $event->getWebhookEventName();
         $this->assertEquals('DeliveryCreatedEvent', $result);
     }
 
-    public function testGetUri()
+    public function testGetUri(): void
     {
-        $event = new DeliveryCreatedEvent($this->deliveryMock);
+        $event = new DeliveryCreatedEvent($this->deliveryMock, $this->testResource);
         $result = $event->getDeliveryUri();
 
          $this->assertEquals(self::DELIVERY_URI, $result);
