@@ -2,10 +2,6 @@
 final def REPO_REGEX = /^https:\/\/github\.com\/(?<org>[a-z0-9-]+)\/(?<repo>[a-z0-9-]+)\.git$/
 final def TAO_EXTENSION_REGEX = /return\s*(\[|array\()\s*\'name\'\s*=>\s*\'([a-zA-Z0-9]+)\'/
 
-def githubOrganization
-def repoName
-def extension
-
 pipeline {
     agent {
         label 'builder'
@@ -18,21 +14,24 @@ pipeline {
                     def matcher = GIT_URL =~ REPO_REGEX
 
                     if (matcher.matches()) {
-                        githubOrganization = matcher.group("org")
-                        repoName = matcher.group("repo")
+                        def githubOrganization = matcher.group("org")
+                        def repoName = matcher.group("repo")
                         echo "Extracting repository information. GITHUB_ORGANIZATION: '$githubOrganization' REPO_NAME: '$repoName'"
                     }
                     else {
                         echo "Couldn't extract repository information from GIT_URL environment variable."
                         currentBuild.result = 'FAILURE'
                     }
+
+                    env.githubOrganization = githubOrganization
+                    env.repoName = repoName
                 }
                 // Extract TAO extension information
                 script {
                     def manifest = readFile 'manifest.php'
                     def matcher = manifest =~ TAO_EXTENSION_REGEX
 
-                    extension = matcher[0][2]
+                    def extension = matcher[0][2]
                     if (extension == null) {
                         echo "Couldn't extract extension name from manifest file."
                         currentBuild.result = 'FAILURE'
@@ -40,6 +39,8 @@ pipeline {
                     else {
                         echo "Extracting extension name from manifest file. Extension name: '$extension'"
                     }
+
+                    env.extension = extension
                 }
                 sh(
                     label : 'Create build build directory',
@@ -55,14 +56,14 @@ echo "select branch : ${TEST_BRANCH}"
 docker run --rm  \\
 -e "GITHUB_ORGANIZATION=${githubOrganization}" \\
 -e "GITHUB_SECRET=${GIT_TOKEN}"  \\
-tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --repository-name ${githubOrganization}/${repoName} > build/dependencies.json
+tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --repository-name $githubOrganization/$repoName > build/dependencies.json
 
 cat > build/composer.json <<- composerjson
 {
   "repositories": [
       {
         "type": "vcs",
-        "url": "https://github.com/${githubOrganization}/${repoName}",
+        "url": "https://github.com/$githubOrganization/$repoName",
         "no-api": true
       }
     ],
