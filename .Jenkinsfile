@@ -27,6 +27,10 @@ pipeline {
                         currentBuild.result = 'FAILURE'
                     }
                 }
+                sh(
+                    label : 'Create build build directory',
+                    script: 'mkdir -p build'
+                )
                 // Extract TAO extension information
                 script {
                     def manifest = readFile 'build/manifest.php'
@@ -41,10 +45,6 @@ pipeline {
                         echo "Extracting extension name from manifest file. Extension name: '$extension'"
                     }
                 }
-                sh(
-                    label : 'Create build build directory',
-                    script: 'mkdir -p build'
-                )
                 withCredentials([string(credentialsId: 'jenkins_github_token', variable: 'GIT_TOKEN')]) {
                     sh(
                         label : 'Run the Dependency Resolver',
