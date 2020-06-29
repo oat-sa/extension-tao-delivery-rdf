@@ -12,10 +12,12 @@ pipeline {
                // Extract repository information
                script {
                     def matcher = GIT_URL =~ REPO_REGEX
-
+                    def githubOrganization = ""
+                    def repoName = ""
+                    
                     if (matcher.matches()) {
-                        def githubOrganization = matcher.group("org")
-                        def repoName = matcher.group("repo")
+                        githubOrganization = matcher.group("org")
+                        repoName = matcher.group("repo")
                         echo "Extracting repository information. GITHUB_ORGANIZATION: '$githubOrganization' REPO_NAME: '$repoName'"
                     }
                     else {
