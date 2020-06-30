@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -108,15 +109,15 @@ class ContainerRuntimeTest extends TestCase
         $serviceCall->addInParameter(new tao_models_classes_service_ConstantParameter(
             $ontology->getResource('http://testcase/test#123'),
             "v1"
-            ));
+        ));
         $serviceCall->addInParameter(new tao_models_classes_service_ConstantParameter(
             $ontology->getResource('http://testcase/test#123'),
             "v2"
-            ));
+        ));
         $serviceCall->setOutParameter(new tao_models_classes_service_VariableParameter(
             $ontology->getResource('http://testcase/test#123'),
             $ontology->getResource('http://testcase/test#123')
-            ));
+        ));
         return $serviceCall;
     }
 }

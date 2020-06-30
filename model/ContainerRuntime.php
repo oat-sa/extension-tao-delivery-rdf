@@ -46,11 +46,11 @@ class ContainerRuntime extends LegacyRuntime
 
     public function getDeliveryContainer($deliveryId)
     {
-        $containerJson = $this->getCache()->get(self::CACHE_PREFIX.$deliveryId);
+        $containerJson = $this->getCache()->get(self::CACHE_PREFIX . $deliveryId);
         if (is_null($containerJson)) {
             $delivery = $this->getResource($deliveryId);
             $containerJson = (string)$delivery->getOnePropertyValue($this->getProperty(self::PROPERTY_CONTAINER));
-            $this->getCache()->set(self::CACHE_PREFIX.$deliveryId, $containerJson);
+            $this->getCache()->set(self::CACHE_PREFIX . $deliveryId, $containerJson);
         }
         if (!empty($containerJson)) {
             $registry = DeliveryContainerRegistry::getRegistry();
