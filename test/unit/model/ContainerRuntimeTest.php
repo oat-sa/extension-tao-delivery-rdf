@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,6 +28,11 @@ use common_exception_NoContent;
 use tao_models_classes_service_ServiceCall;
 use tao_models_classes_service_ConstantParameter;
 use tao_models_classes_service_VariableParameter;
+use oat\oatbox\cache\SimpleCache;
+use oat\taoDelivery\model\container\delivery\DeliveryContainerRegistry;
+use oat\taoDelivery\model\container\DeliveryContainer;
+use oat\oatbox\log\LoggerService;
+use Prophecy\Argument;
 
 class ContainerRuntimeTest extends TestCase
 {
@@ -90,6 +96,31 @@ class ContainerRuntimeTest extends TestCase
         $this->assertEquals($serviceCall, $runtime);
     }
 
+    public function testGetDeliveryContainer()
+    {
+        $ontology = $this->getOntologyMock();
+        $class = $ontology->getClass('http://fakeClass');
+        $delivery = $class->createInstance('Fake Delivery');
+        $delivery->setPropertyValue($ontology->getProperty(ContainerRuntime::PROPERTY_CONTAINER), 'notevenjson');
+        $simpleCache = $this->prophesize(SimpleCache::class);
+        $deliveryContainer = $this->prophesize(DeliveryContainer::class)->reveal();
+        $registry = $this->prophesize(DeliveryContainerRegistry::class);
+        $registry->fromJson('notevenjson')->willReturn($deliveryContainer);
+        $registry->setServiceLocator(Argument::any())->willReturn();
+        $registry->setLogger(Argument::any())->willReturn();
+
+        $serviceLocator = $this->getServiceLocatorMock([
+            LoggerService::SERVICE_ID => $this->prophesize(LoggerService::class)->reveal(),
+            Ontology::SERVICE_ID => $ontology,
+            SimpleCache::SERVICE_ID => $simpleCache->reveal(),
+            DeliveryContainerRegistry::class => $registry->reveal()
+        ]);
+        $runtime = new ContainerRuntime();
+        $runtime->setServiceLocator($serviceLocator);
+        $container = $runtime->getDeliveryContainer($delivery->getUri());
+        $this->assertEquals($deliveryContainer, $container);
+    }
+
     protected function injectOntology(tao_models_classes_service_ServiceCall $serviceCall, Ontology $ontology)
     {
         $serviceCall->setModel($ontology);
@@ -108,15 +139,15 @@ class ContainerRuntimeTest extends TestCase
         $serviceCall->addInParameter(new tao_models_classes_service_ConstantParameter(
             $ontology->getResource('http://testcase/test#123'),
             "v1"
-            ));
+        ));
         $serviceCall->addInParameter(new tao_models_classes_service_ConstantParameter(
             $ontology->getResource('http://testcase/test#123'),
             "v2"
-            ));
+        ));
         $serviceCall->setOutParameter(new tao_models_classes_service_VariableParameter(
             $ontology->getResource('http://testcase/test#123'),
             $ontology->getResource('http://testcase/test#123')
-            ));
+        ));
         return $serviceCall;
     }
 }
