@@ -132,7 +132,7 @@ class DeliveryFactory extends ConfigurableService
             $compilationInstance = $this->createDeliveryResource($deliveryClass, $serviceCall, $container, $properties);
 
             $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
-            $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance, $test));
+            $eventManager->trigger(new DeliveryCreatedEvent($compilationInstance));
 
             $report->setData($compilationInstance);
         }
