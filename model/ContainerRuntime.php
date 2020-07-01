@@ -53,7 +53,7 @@ class ContainerRuntime extends LegacyRuntime
             $this->getCache()->set(self::CACHE_PREFIX . $deliveryId, $containerJson);
         }
         if (!empty($containerJson)) {
-            $registry = DeliveryContainerRegistry::getRegistry();
+            $registry = $this->getServiceLocator()->get(DeliveryContainerRegistry::class);
             $this->propagate($registry);
             $container = $registry->fromJson($containerJson);
             return $container;
