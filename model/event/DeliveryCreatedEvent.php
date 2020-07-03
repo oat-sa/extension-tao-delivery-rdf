@@ -23,7 +23,6 @@ namespace oat\taoDeliveryRdf\model\event;
 
 use core_kernel_classes_Resource;
 use oat\tao\model\webhooks\WebhookSerializableEventInterface;
-use \core_kernel_persistence_Exception;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSerializableEventInterface
@@ -34,21 +33,12 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
     private $delivery;
 
     /**
-     * @var core_kernel_classes_Resource
+     * @param core_kernel_classes_Resource $delivery
      */
-    private $originTest;
-
-    /**
-     * @param string $deliveryUri
-     * @param string $testUri
-     *
-     * @throws \core_kernel_persistence_Exception
-     */
-    public function __construct(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $originTest)
+    public function __construct(core_kernel_classes_Resource $delivery)
     {
         $this->deliveryUri = $delivery->getUri();
         $this->delivery = $delivery;
-        $this->originTest= $originTest;
     }
 
     /**
@@ -84,19 +74,18 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
 
     /**
      * @return array
-     * @throws core_kernel_persistence_Exception
      */
-    public function serializeForWebhook()
+    public function serializeForWebhook(): array
     {
-        $testProperty = new \core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
+        $testUri = null;
+        try {
+            $testProperty = new \core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
+            $testUri = $this->delivery->getOnePropertyValue($testProperty)->getUri();
+        } catch (\Throwable $e) {}
+
         return [
             'deliveryId' => $this->deliveryUri,
-            'testId' => $this->delivery->getOnePropertyValue($testProperty)->getUri(),
+            'testId' => $testUri,
         ];
-    }
-
-    public function getOriginTest(): core_kernel_classes_Resource
-    {
-        return $this->originTest;
     }
 }

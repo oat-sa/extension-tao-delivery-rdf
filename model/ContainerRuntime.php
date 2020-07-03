@@ -25,6 +25,8 @@ use oat\taoDelivery\model\container\LegacyRuntime;
 use oat\generis\model\OntologyAwareTrait;
 use oat\taoDelivery\model\container\delivery\DeliveryContainerRegistry;
 use tao_models_classes_service_ServiceCall;
+use oat\oatbox\cache\SimpleCache;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Service to select the correct container based on delivery
@@ -38,16 +40,21 @@ class ContainerRuntime extends LegacyRuntime
     use OntologyAwareTrait;
     
     const PROPERTY_RUNTIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime';
-    
     const PROPERTY_CONTAINER = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainer';
+
+    const CACHE_PREFIX = 'container:';
 
     public function getDeliveryContainer($deliveryId)
     {
-        $delivery = $this->getResource($deliveryId);
-        $containerJson = (string)$delivery->getOnePropertyValue($this->getProperty(self::PROPERTY_CONTAINER));
+        $containerJson = $this->getCache()->get(self::CACHE_PREFIX . $deliveryId);
+        if (is_null($containerJson)) {
+            $delivery = $this->getResource($deliveryId);
+            $containerJson = (string)$delivery->getOnePropertyValue($this->getProperty(self::PROPERTY_CONTAINER));
+            $this->getCache()->set(self::CACHE_PREFIX . $deliveryId, $containerJson);
+        }
         if (!empty($containerJson)) {
-            $registry = DeliveryContainerRegistry::getRegistry();
-            $registry->setServiceLocator($this->getServiceLocator());
+            $registry = $this->getServiceLocator()->get(DeliveryContainerRegistry::class);
+            $this->propagate($registry);
             $container = $registry->fromJson($containerJson);
             return $container;
         } else {
@@ -70,5 +77,10 @@ class ContainerRuntime extends LegacyRuntime
         return ($runtimeResource instanceof \core_kernel_classes_Resource)
             ? tao_models_classes_service_ServiceCall::fromResource($runtimeResource)
             : tao_models_classes_service_ServiceCall::fromString((string)$runtimeResource);
+    }
+
+    private function getCache(): CacheInterface
+    {
+        return $this->getServiceLocator()->get(SimpleCache::SERVICE_ID);
     }
 }
