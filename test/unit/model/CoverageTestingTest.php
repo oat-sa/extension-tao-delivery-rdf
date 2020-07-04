@@ -11,12 +11,5 @@ class CoverageTestingTest extends TestCase
     {
         $this->assertInstanceOf(CoverageTesting::class, new CoverageTesting());
     }
-
-    public function testAdd()
-    {
-        $sut = new CoverageTesting();
-
-        $this->assertEquals(30, $sut->add());
-    }
 }
 

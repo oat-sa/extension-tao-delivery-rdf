@@ -22,6 +22,11 @@ class CoverageTesting
     {
         return $this->a + $this->b;
     }
+
+    public function divide()
+    {
+        return $this->a / $this->b;
+    }
 }
 
 
