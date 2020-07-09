@@ -91,6 +91,10 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
                 $delivery->setPropertiesValues($customParams);
             }
             $report->add($compilationReport);
+            $report->setData(
+                ['delivery-uri' => $delivery->getUri()]
+            );
+
             return $report;
         } catch (\Exception $e) {
             $detailedErrorReport = \common_report_Report::createFailure($e->getMessage());
