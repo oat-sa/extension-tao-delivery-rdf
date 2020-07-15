@@ -87,8 +87,11 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
             /** @var \core_kernel_classes_Resource $delivery */
             $delivery = $compilationReport->getData();
             $customParams = $params[self::OPTION_CUSTOM];
-            if (($delivery instanceof \core_kernel_classes_Resource) && $customParams) {
-                $delivery->setPropertiesValues($customParams);
+            if (($delivery instanceof \core_kernel_classes_Resource) && is_array($customParams)) {
+                foreach ($customParams as $rdfKey => $rdfValue) {
+                    $property = $this->getProperty($rdfKey);
+                    $delivery->editPropertyValues($property, $rdfValue);
+                }
             }
             $report->add($compilationReport);
             $report->setData(
