@@ -195,12 +195,14 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         $fileUri = $action->saveFile($file['tmp_name'], $file['name']);
         /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = ServiceManager::getServiceManager()->get(QueueDispatcher::SERVICE_ID);
-
-        return $queueDispatcher->createTask($action, [
+        $taskParameters = [
             self::OPTION_FILE => $fileUri,
             self::OPTION_IMPORTER => $importerId,
             self::OPTION_CUSTOM => $customParams,
             self::OPTION_DELIVERY_LABEL => $deliveryClassLabel,
-        ], null, null, true);
+        ];
+        $taskTitle = __('Import QTI test and create delivery.');;
+
+        return $queueDispatcher->createTask($action, $taskParameters, $taskTitle, null, true);
     }
 }
