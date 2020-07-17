@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint130\n"
-"PO-Revision-Date: 2020-06-19T10:22:56\n"
+"Project-Id-Version: TAO 3.3.0-sprint107\n"
+"PO-Revision-Date: 2020-07-17T08:37:23\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar-arb\n"
@@ -76,6 +76,9 @@ msgstr ""
 msgid "Delivery \"%s\" successfully imported"
 msgstr ""
 
+msgid "Delivery \'%s\' not found"
+msgstr ""
+
 msgid "Delivery class uri provided is not a valid delivery class."
 msgstr ""
 
@@ -107,6 +110,9 @@ msgid "Exporting %s"
 msgstr ""
 
 msgid "Guest access"
+msgstr ""
+
+msgid "Import QTI test and create delivery."
 msgstr ""
 
 msgid "Importing %1$s files into \'%2$s\"
