@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint130\n"
-"PO-Revision-Date: 2020-06-19T10:22:57\n"
+"Project-Id-Version: TAO 3.3.0-sprint107\n"
+"PO-Revision-Date: 2020-07-17T08:37:24\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: lt-LT\n"
@@ -76,6 +76,9 @@ msgstr "Pateikčių biblioteka"
 msgid "Delivery \"%s\" successfully imported"
 msgstr "Pateiktis \"%s\" sėkmingai importuota"
 
+msgid "Delivery \'%s\' not found"
+msgstr ""
+
 msgid "Delivery class uri provided is not a valid delivery class."
 msgstr "Šios pateikties klasės uri nėra teisinga pateikties klasė."
 
@@ -108,6 +111,9 @@ msgstr "Eksportuojama %s"
 
 msgid "Guest access"
 msgstr "Svečio prieiga"
+
+msgid "Import QTI test and create delivery."
+msgstr ""
 
 msgid "Importing %1$s files into \'%2$s\"
 msgstr ""
