@@ -22,22 +22,20 @@
 
 namespace oat\taoDeliveryRdf\helper;
 
+use common_ext_ExtensionsManager;
 use oat\oatbox\service\ServiceManager;
 use oat\taoTests\models\runner\features\TestRunnerFeatureService;
+use tao_helpers_form_FormElement;
+use taoItems_models_classes_TemplateRenderer;
 
 /**
  * Allow the selection of the Test Runner Features wanted for a specific delivery
  */
-class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
+class TestRunnerFeatureWidget extends tao_helpers_form_FormElement
 {
-    const WIDGET_TPL = 'views/templates/widgets/testRunnerFeature.tpl.php';
+    public const WIDGET_ID = 'http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature';
 
-    /**
-     * A reference to the Widget Definition URI.
-     *
-     * @var string
-     */
-    protected $widget = 'http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature';
+    private const WIDGET_TPL = 'views/templates/widgets/testRunnerFeature.tpl.php';
 
     /**
      * Data is stored as a coma-separated list of active test runner features ids
@@ -86,8 +84,8 @@ class TestRunnerFeatureWidget extends \tao_helpers_form_FormElement
             }
         }
 
-        $tpl = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf')->getDir() . self::WIDGET_TPL ;
-        $templateRenderer = new \taoItems_models_classes_TemplateRenderer($tpl, [
+        $tpl = common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf')->getDir() . self::WIDGET_TPL ;
+        $templateRenderer = new taoItems_models_classes_TemplateRenderer($tpl, [
             'propLabel'   => _dh($this->getDescription()),
             'choicesList' => $choicesList
         ]);
