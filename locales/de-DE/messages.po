@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint115\n"
-"PO-Revision-Date: 2019-11-22T11:22:53\n"
+"Project-Id-Version: TAO 3.4.0-sprint121\n"
+"PO-Revision-Date: 2020-08-03T08:59:41\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de-DE\n"
@@ -38,6 +38,9 @@ msgid "Assigned to"
 msgstr ""
 
 msgid "Attempt %1$s of %2$s"
+msgstr ""
+
+msgid "Attempts"
 msgstr ""
 
 msgid "Attempts %1$s of %2$s"
@@ -85,7 +88,7 @@ msgstr ""
 msgid "Delivery \"%s\" successfully imported"
 msgstr ""
 
-msgid "Delivery \'%s\' not found"
+msgid "Delivery \\'%s\\' not found"
 msgstr ""
 
 msgid "Delivery class uri provided is not a valid delivery class."
@@ -106,6 +109,9 @@ msgstr ""
 msgid "Directory %s doesn\'t exist"
 msgstr ""
 
+msgid "Directory %s doesn\\'t exist"
+msgstr ""
+
 msgid "Error"
 msgstr ""
 
@@ -124,6 +130,12 @@ msgstr ""
 msgid "Importing %1$s files into \'%2$s\"
 msgstr ""
 
+msgid "Importing %1$s files into \\'%2$s\\"
+msgstr ""
+
+msgid "Last updated on %2s"
+msgstr ""
+
 msgid "Last updated on:"
 msgstr ""
 
@@ -133,6 +145,9 @@ msgstr ""
 
 #, tao-public
 msgid "Manage tests"
+msgstr ""
+
+msgid "Manifest not found in assembly"
 msgstr ""
 
 #, tao-public
@@ -157,6 +172,9 @@ msgstr ""
 msgid "No attempt has been started yet."
 msgstr ""
 
+msgid "No information available"
+msgstr ""
+
 msgid "No information available about attempts"
 msgstr ""
 
@@ -176,6 +194,9 @@ msgid "Publish \"%s\" to"
 msgstr ""
 
 msgid "Publish the test"
+msgstr ""
+
+msgid "Published on %2s"
 msgstr ""
 
 msgid "Published on:"
@@ -231,6 +252,9 @@ msgid "Unable to import Archive"
 msgstr ""
 
 msgid "Unable to load tests"
+msgstr ""
+
+msgid "Unknown error during import"
 msgstr ""
 
 msgid "unlimited"

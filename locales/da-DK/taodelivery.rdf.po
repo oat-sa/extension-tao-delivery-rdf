@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint115\n"
-"PO-Revision-Date: 2019-11-22T11:22:53\n"
+"Project-Id-Version: TAO 3.4.0-sprint121\n"
+"PO-Revision-Date: 2020-08-03T08:59:40\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: da-DK\n"
@@ -23,12 +23,12 @@ msgstr "An assembled Delivery"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#CustomLabel
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#CustomLabel
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Label which show for test-takers"
-msgstr ""
+msgstr "Betegnelse som vises til testtagerne"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -38,7 +38,7 @@ msgstr "Start Date"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The start date of the delivery"
-msgstr ""
+msgstr "Startdatoen for leverancen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -48,47 +48,47 @@ msgstr "End Date"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The end date of the delivery"
-msgstr ""
+msgstr "Slutdatoen for leverancen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Max. Executions (default: unlimited)"
-msgstr ""
+msgstr "Maksimalt antal afviklinger (standard: Ubegrænset)"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Maximum Times of Execution per subject"
-msgstr ""
+msgstr "Maksimalt antal afviklinger per testtager"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Access"
-msgstr ""
+msgstr "Adgang"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Access"
-msgstr ""
+msgstr "Adgang"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DisplayOrder
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Display Order"
-msgstr ""
+msgstr "Visningsrækkefølge"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DisplayOrder
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "A weight determining in which order to display the available deliveries to Test Takers. The deliveries will be displayed in ascending order, depending on the integer value of this property."
-msgstr ""
+msgstr "En vægt bestemmer i hvilken rækkefølge de tilgængelige leverancer vises til testtagerne. Leverancerne bliver vist i stigende orden, afhængig af heltalsværdien af denne egenskab."
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Test Runner Features"
-msgstr ""
+msgstr "Testafviklerdetaljer"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryTestRunnerFeatures
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Test runner features associated to the delivery"
-msgstr ""
+msgstr "Testafviklerdetaljer associeret med leverancen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#ExcludedSubjects
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -113,92 +113,92 @@ msgstr "Result Server"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryPlugins
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Plugins"
-msgstr ""
+msgstr "Udvidelsesmoduler"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryPlugins
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Plugins associated to the delivery"
-msgstr ""
+msgstr "Udvidelsesmoduler associeret med leverancen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Delivery execution"
-msgstr "Delivery execution"
+msgstr "Leveranceafvikling"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Execution of a delivery"
-msgstr ""
+msgstr "Afvikling af en leverance"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Execution's delivery"
-msgstr "Execution's delivery"
+msgstr "Afviklingens leverance"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Delivery of this execution"
-msgstr ""
+msgstr "Leverance for denne afvikling"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionSubject
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "DeliveryExecution Subject"
-msgstr "DeliveryExecution Subject"
+msgstr "Leveranceafviklingssubjekt"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionSubject
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "test-taker of the delivery execution"
-msgstr ""
+msgstr "testtager for leveranceafviklingen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStart
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "DeliveryExecution start"
-msgstr "DeliveryExecution start"
+msgstr "Leveranceafviklingsstart"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStart
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Timestamp of the delivery execution start"
-msgstr ""
+msgstr "Tidsstempel for leveranceafviklingsstarten"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionEnd
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "DeliveryExecution end"
-msgstr "DeliveryExecution end"
+msgstr "Leveranceafviklingsafslutning"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionEnd
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Timestamp of the delivery finish"
-msgstr ""
+msgstr "Tidsstempel for leveranceafviklingsafslutningen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#StatusOfDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "DeliveryExecutions Status"
-msgstr "DeliveryExecutions Status"
+msgstr "Leveranceafviklingsstatus"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#StatusOfDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The current status of the DeliveryExecution"
-msgstr ""
+msgstr "Den nuværende status for leveranceafviklingen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "DeliveryExecution status"
-msgstr "DeliveryExecution status"
+msgstr "Leveranceafviklingsstatus"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Status of a delivery execution"
-msgstr ""
+msgstr "Status for en leveranceafvikling"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Delivery compile task"
-msgstr ""
+msgstr "Leverancesamlingsopgave"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Delivery compile task id"
-msgstr ""
+msgstr "Leverancesamlingsopgave-id"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusActive
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -208,7 +208,7 @@ msgstr "Active"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusActive
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Activ status of a delivery execution"
-msgstr ""
+msgstr "Aktiv status for en leveranceafvikling"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusAbandoned
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -218,32 +218,32 @@ msgstr "Finished"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusFinished
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Finished status of a delivery execution"
-msgstr ""
+msgstr "Afsluttet status for en leveranceafvikling"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusPaused
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Paused"
-msgstr ""
+msgstr "Sat på pause"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusPaused
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Paused status of a delivery execution"
-msgstr ""
+msgstr "Pausestatus for en leveranceafvikling"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusAbandoned
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Abandoned status of a delivery execution"
-msgstr ""
+msgstr "Efterladt status for en leveranceafvikling"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Assembled Delivery "
-msgstr ""
+msgstr "Samlet leverance"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "An assembled Delivery"
-msgstr ""
+msgstr "En samlet leverance"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -253,7 +253,7 @@ msgstr "Compilation Time"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The time of the compilation of the delivery"
-msgstr ""
+msgstr "Tiden for samlingen af leverancen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationDirectory
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -263,27 +263,27 @@ msgstr "Compilation Directory"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationDirectory
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The directory of the compilation of the delivery"
-msgstr ""
+msgstr "Mappen for samlingen af leverancen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Delivery origin"
-msgstr ""
+msgstr "Levaranceoprindelse"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The original test/template of the delivery"
-msgstr ""
+msgstr "Den oprindelige test/skabelon for leverancen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainer
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Delivery container serial"
-msgstr ""
+msgstr "Leverancebeholder-seriel"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainer
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The serialized delivery container"
-msgstr ""
+msgstr "Den serialiserede leverancebeholder"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -293,17 +293,17 @@ msgstr "Runtime"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Service call to run the compiled delivery"
-msgstr ""
+msgstr "Servicekald for at køre den samlede leverance"
 
 # http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Deliveries"
-msgstr "Deliveries"
+msgstr "Leverancer"
 
 # http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Deliveries of the group"
-msgstr ""
+msgstr "Gruppens leverancer"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -313,22 +313,22 @@ msgstr "Delivery Manager"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The Delivery Manager Role"
-msgstr ""
+msgstr "Leveranceadministratorrollen"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#GuestAccess
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Guest Access"
-msgstr ""
+msgstr "Gæsteadgang"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#GuestAccess
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Guest Access"
-msgstr ""
+msgstr "Gæsteadgang"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Max. number of executions (default: unlimited)"
-msgstr "Max. number of executions (default: unlimited)"
+msgstr "Maksimalt antal afviklinger (standard: ubegrænset)"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
@@ -343,7 +343,7 @@ msgstr "The end date of the delivery"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Max. number of executions (default: unlimited)"
-msgstr "Maximum Times of Execution per subject"
+msgstr "Maksimalt antal afviklinger (standard: ubegrænset)"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AbstractDeliveryContent
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -378,47 +378,47 @@ msgstr "Delivery Content"
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Delivery execution"
-msgstr "Execution of a delivery"
+msgstr "Leveranceafvikling"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Execution's delivery"
-msgstr "Delivery of this execution"
+msgstr "Afviklingens leverance"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionSubject
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "DeliveryExecution Subject"
-msgstr "test-taker of the delivery execution"
+msgstr "Leveranceafviklingssubjekt"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStart
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "DeliveryExecution start"
-msgstr "Timestamp of the delivery execution start"
+msgstr "Leveranceafviklingsstart"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionEnd
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "DeliveryExecution end"
-msgstr "Timestamp of the delivery finish"
+msgstr "Leveranceafviklingsafslutning"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#StatusOfDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "DeliveryExecutions Status"
-msgstr "The current status of the DeliveryExecution"
+msgstr "Leveranceafviklingsstatus"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatus
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "DeliveryExecution status"
-msgstr "Status of a delivery execution"
+msgstr "Leveranceafviklingsstatus"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusActive
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Active"
-msgstr "Activ status of a delivery execution"
+msgstr "Aktiv"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionStatusAbandoned
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Finished"
-msgstr "Abandoned status of a delivery execution"
+msgstr "Afsluttet"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
@@ -438,7 +438,7 @@ msgstr "Service call to run the compiled delivery"
 # http://www.tao.lu/Ontologies/TAOGroup.rdf#Deliveries
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Deliveries"
-msgstr "Deliveries of the group"
+msgstr "Leverancer"
 
 # http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"

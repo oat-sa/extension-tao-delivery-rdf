@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint115\n"
-"PO-Revision-Date: 2019-11-22T11:22:53\n"
+"Project-Id-Version: TAO 3.4.0-sprint121\n"
+"PO-Revision-Date: 2020-08-03T08:59:40\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: da-DK\n"
@@ -14,234 +14,260 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s completed"
-msgstr ""
+msgstr "%s udført"
 
 msgid "%s test-taker(s) are excluded."
-msgstr ""
+msgstr "%s testtager(e) er ekskluderet."
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "Tilgå leverancer som gæst"
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "En fejl opstod under importen"
 
 msgid "Assembly"
-msgstr ""
+msgstr "Samling"
 
 msgid "Assembly import"
-msgstr ""
+msgstr "Samlingsimport"
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "Tildelte testtagere"
 
 msgid "Assigned to"
-msgstr ""
+msgstr "Tildelt til"
 
 msgid "Attempt %1$s of %2$s"
-msgstr ""
+msgstr "Forsøg %1$s af %2$s"
+
+msgid "Attempts"
+msgstr "Forsøg"
 
 msgid "Attempts %1$s of %2$s"
-msgstr ""
+msgstr "Forsøg %1$s af %2$s"
 
 msgid "Available from %1$s to %2$s"
-msgstr ""
+msgstr "Tilgængelig fra %1$s til %2$s"
 
 msgid "Available from %s"
-msgstr ""
+msgstr "Tilgængelig fra %s"
 
 msgid "Available until %s"
-msgstr ""
+msgstr "Tilgængelig til %s"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Fortryd"
 
 msgid "Class successfully created."
-msgstr ""
+msgstr "Mappe oprettet."
 
 msgid "Continue deleting of delivery \"%s\"."
 msgstr ""
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "Opret en ny leverance"
 
 msgid "Create a test"
-msgstr ""
+msgstr "Opret en test"
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Slet"
 
 msgid "Deleting of \"%s"
-msgstr ""
+msgstr "Sletning af \"%s"
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Leverancer"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "Leverancebibliotek"
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr ""
+msgstr "Leverance \"%s\" blev importeret"
 
-msgid "Delivery \'%s\' not found"
-msgstr ""
+msgid "Delivery \\'%s\\' not found"
+msgstr "Leverance \\'%s\\' ikke fundet"
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr ""
+msgstr "Den leverancemappe-uri som blev givet, er ikke en gyldig leverance-mappe."
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr "Leverance tildelt til %s testtagere"
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "Leverancen er ikke tildelt nogen testtagere"
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "Leverance gemt"
 
 msgid "Delivery with label \"%s\" not found"
-msgstr ""
+msgstr "Leverance med betegnelsen \"%s\" blev ikke fundet"
 
 msgid "Directory %s doesn\'t exist"
 msgstr ""
+
+msgid "Directory %s doesn\\'t exist"
+msgstr "Mappe %s eksisterer ikke\\"\n"
+"\n"
+"msgid "
 
 msgid "Error"
 msgstr ""
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Udelukkede testtagere"
 
 msgid "Exported %1$s to %2$s"
-msgstr ""
+msgstr "Eksporterede %1$s til %2$s"
 
 msgid "Exporting %s"
-msgstr ""
+msgstr "Eksporterer %s"
 
 msgid "Guest access"
-msgstr ""
+msgstr "Gæsteadgang"
 
 msgid "Importing %1$s files into \'%2$s\"
 msgstr ""
+
+msgid "Importing %1$s files into \\'%2$s\\"
+msgstr "Importerer %1$s filer ind i \\'%2$s\\'"
+
+msgid "Last updated on %2s"
+msgstr "Senest opdateret den %2s"
 
 msgid "Last updated on:"
 msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "Administrer skema"
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "Administrer tests"
+
+msgid "Manifest not found in assembly"
+msgstr "Manifestet blev ikke fundet i samlingen"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Flyt"
 
 #, tao-public
 msgid "Move To"
-msgstr ""
+msgstr "Flyt til"
 
 msgid "Multiple delivery class found for label \"%s\": %s"
-msgstr ""
+msgstr "Flere leverancemapper fundet for betegnelse \"%s\": %s"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Ny mappe"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "Ny leverance"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "Ingen forsøg er blevet startet endnu."
+
+msgid "No information available"
+msgstr "Ingen information tilgængelig"
 
 msgid "No information available about attempts"
 msgstr ""
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr ""
+msgstr "Forbered og offentliggør leverancesessioner."
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Egenskaber"
 
 #, tao-public
 msgid "Publish"
-msgstr ""
+msgstr "Offentliggør"
 
 msgid "Publish \"%s\" to"
-msgstr ""
+msgstr "Offentliggør \"%s\" til"
 
 msgid "Publish the test"
-msgstr ""
+msgstr "Offentliggør testen"
+
+msgid "Published on %2s"
+msgstr "Offentliggjort %2s"
 
 msgid "Published on:"
 msgstr ""
 
 msgid "Publishing of \"%s"
-msgstr ""
+msgstr "Offentliggørelse af \"%s\""
 
 msgid "Save"
-msgstr ""
+msgstr "Gem"
 
 msgid "Select the test"
-msgstr ""
+msgstr "Vælg testen"
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr ""
+msgstr "Vælg den test du vil offentliggøre til testtagerne"
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "Markerede gemt succesfuldt"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "TAO Gæst"
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "TAO Gæsteadgang"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr ""
+msgstr "Testoffentliggørelsen fejlede fordi \"%s\" er tom."
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Testtagere"
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "Tests"
 
 msgid "The shared filesystem parameter should be a boolean value 'true' or 'false'."
-msgstr ""
+msgstr "Den delte filsystemparameter skal være en booleansk værdi 'true' eller 'false'."
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
 msgstr ""
 
 msgid "There are currently %s attempts"
-msgstr ""
+msgstr "Der er for øjeblikket %s forsøg"
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "Der er endnu ingen test som kan offentliggøres."
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "Der er for øjeblikket 1 forsøg"
 
 msgid "Unable to import Archive"
-msgstr ""
+msgstr "Ikke i stand til at importere arkiv"
 
 msgid "Unable to load tests"
-msgstr ""
+msgstr "Ikke i stand til at hente tests"
+
+msgid "Unknown error during import"
+msgstr "Ukendt fejl under import"
 
 msgid "unlimited"
-msgstr ""
+msgstr "ubegrænset"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr ""
+msgstr "Brug: %s SAMLINGSFIL [SAMLINGSFIL_2] [SAMLINGSFIL_3] ..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr ""
+msgstr "Brug: %s LEVERANCE_MAPPE_URI OUTPUT_FOLDER"
 
 msgid "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
-msgstr ""
+msgstr "Brug: %s LEVERANCE_URI OUTPUT_FIL [BRUG_DELT_FILSYSTEM]"
 

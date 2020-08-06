@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint115\n"
-"PO-Revision-Date: 2019-11-22T11:22:54\n"
+"Project-Id-Version: TAO 3.4.0-sprint121\n"
+"PO-Revision-Date: 2020-08-03T09:00:10\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: uk-UA\n"
@@ -17,43 +17,46 @@ msgid "%s completed"
 msgstr ""
 
 msgid "%s test-taker(s) are excluded."
-msgstr ""
+msgstr "%s тестований виключаються"
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "Доступ до доставки в якості гостя"
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "Сталася помилка під час імпорту."
 
 msgid "Assembly"
-msgstr ""
+msgstr "Cкладальний"
 
 msgid "Assembly import"
-msgstr ""
+msgstr "імпорт збірки"
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "призначені контролери"
 
 msgid "Assigned to"
-msgstr ""
+msgstr "Призначено"
 
 msgid "Attempt %1$s of %2$s"
-msgstr ""
+msgstr "спроба %1$s з %2$s"
+
+msgid "Attempts"
+msgstr "Спроби"
 
 msgid "Attempts %1$s of %2$s"
-msgstr ""
+msgstr "Спроби %1$s з %2$s"
 
 msgid "Available from %1$s to %2$s"
-msgstr ""
+msgstr "Доступна спроба %1$s з %2$s"
 
 msgid "Available from %s"
-msgstr ""
+msgstr "Доступний з %s"
 
 msgid "Available until %s"
-msgstr ""
+msgstr "Досвтуна до %s"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Скасувати"
 
 msgid "Class successfully created."
 msgstr ""
@@ -62,43 +65,43 @@ msgid "Continue deleting of delivery \"%s\"."
 msgstr ""
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "Створити нову доставку"
 
 msgid "Create a test"
-msgstr ""
+msgstr "Створити тест"
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Видалити"
 
 msgid "Deleting of \"%s"
 msgstr ""
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Доставки"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "бібліотека поповнення"
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr ""
+msgstr "доставка \"%s\" успішно імпортовано"
 
-msgid "Delivery \'%s\' not found"
+msgid "Delivery \\'%s\\' not found"
 msgstr ""
 
 msgid "Delivery class uri provided is not a valid delivery class."
 msgstr ""
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr "доставка призначається %s тестовані."
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "Доставка не призначається жодному випробувачеві."
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "Доставка збережена"
 
 msgid "Delivery with label \"%s\" not found"
 msgstr ""
@@ -106,22 +109,31 @@ msgstr ""
 msgid "Directory %s doesn\'t exist"
 msgstr ""
 
+msgid "Directory %s doesn\\'t exist"
+msgstr ""
+
 msgid "Error"
 msgstr ""
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Виключений тестувальники"
 
 msgid "Exported %1$s to %2$s"
-msgstr ""
+msgstr "Експортованно %1$s to %2$s"
 
 msgid "Exporting %s"
 msgstr ""
 
 msgid "Guest access"
-msgstr ""
+msgstr "Гостьовий доступ"
 
 msgid "Importing %1$s files into \'%2$s\"
+msgstr ""
+
+msgid "Importing %1$s files into \\'%2$s\\"
+msgstr ""
+
+msgid "Last updated on %2s"
 msgstr ""
 
 msgid "Last updated on:"
@@ -135,9 +147,12 @@ msgstr ""
 msgid "Manage tests"
 msgstr ""
 
+msgid "Manifest not found in assembly"
+msgstr "Манифест не найден в сборке"
+
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Перемістити"
 
 #, tao-public
 msgid "Move To"
@@ -148,25 +163,28 @@ msgstr ""
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Новий клас"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "Нова постановка"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "Спроба ще не почалась."
+
+msgid "No information available"
+msgstr "Дані недоступні"
 
 msgid "No information available about attempts"
 msgstr ""
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr ""
+msgstr "Підготуйте, опублікуйте сеанси поставок."
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Властивості"
 
 #, tao-public
 msgid "Publish"
@@ -178,6 +196,9 @@ msgstr ""
 msgid "Publish the test"
 msgstr ""
 
+msgid "Published on %2s"
+msgstr "Опублікований %2s"
+
 msgid "Published on:"
 msgstr ""
 
@@ -185,7 +206,7 @@ msgid "Publishing of \"%s"
 msgstr ""
 
 msgid "Save"
-msgstr ""
+msgstr "Збереження"
 
 msgid "Select the test"
 msgstr ""
@@ -194,19 +215,19 @@ msgid "Select the test you want to publish to the test-takers"
 msgstr ""
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "Вибір успішно збережено"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "TAO гість"
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "TAO гістьовий доступ"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr ""
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Тест-приймачі"
 
 #, tao-public
 msgid "Tests"
@@ -219,22 +240,25 @@ msgid "The test \"%s\" does not contain any items and cannot be published."
 msgstr ""
 
 msgid "There are currently %s attempts"
-msgstr ""
+msgstr "Наразі існує %s спроба"
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "Наразі немає тестів для публікації."
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "В даний час 1 спроба"
 
 msgid "Unable to import Archive"
-msgstr ""
+msgstr "Неможливо імпортувати архів"
 
 msgid "Unable to load tests"
 msgstr ""
 
-msgid "unlimited"
+msgid "Unknown error during import"
 msgstr ""
+
+msgid "unlimited"
+msgstr "необмежений"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr ""
