@@ -123,9 +123,10 @@ class RestTest extends RestController
      */
     private function getDecodedParameter(string $name): array
     {
-        return json_decode(
-            html_entity_decode($this->getParameter($name, [])),
-            true
-        );
+        $data = $this->getParameter($name, []);
+
+        return is_array($data)
+            ? $data
+            : json_decode(html_entity_decode($data), true);
     }
 }

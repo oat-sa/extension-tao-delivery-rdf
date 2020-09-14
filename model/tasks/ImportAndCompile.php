@@ -147,8 +147,7 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
         array $file,
         array $customParams = [],
         array $deliveryClassLabels = []
-    ): CallbackTaskInterface
-    {
+    ): CallbackTaskInterface {
         $serviceManager = ServiceManager::getServiceManager();
         $action = new self();
         $action->setServiceLocator($serviceManager);
