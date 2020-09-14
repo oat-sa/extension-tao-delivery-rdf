@@ -15,175 +15,139 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2017-2020 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoDeliveryRdf\model\tasks;
 
-use oat\oatbox\task\AbstractTaskAction;
+use Exception;
+use JsonSerializable;
+use common_Logger as Logger;
+use common_report_Report as Report;
+use common_exception_Error as Error;
 use oat\oatbox\service\ServiceManager;
+use oat\oatbox\task\AbstractTaskAction;
+use common_Exception as CommonException;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\import\ImportersService;
+use core_kernel_classes_Class as CoreClass;
 use oat\tao\model\taskQueue\QueueDispatcher;
-use oat\tao\model\taskQueue\Task\TaskInterface;
-use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoTests\models\import\AbstractTestImporter;
+use core_kernel_classes_Resource as Resource;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
+use oat\taoTests\models\import\AbstractTestImporter;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
+use oat\oatbox\service\exception\InvalidServiceManagerException;
+use common_exception_InconsistentData as InconsistentDataException;
+use common_exception_MissingParameter as MissingParameterException;
 
 /**
  * Class ImportAndCompile
- *
  * Action to import test and compile it into delivery
  *
- * @package oat\taoQtiTest\models\tasks
+ * @package oat\taoDeliveryRdf\model\tasks
+ *
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
+class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
 {
     use OntologyAwareTrait;
 
-    const FILE_DIR = 'ImportAndCompileTask';
-    const OPTION_FILE = 'file';
-    const OPTION_IMPORTER = 'importer';
-    const OPTION_CUSTOM = 'custom';
-    const OPTION_DELIVERY_LABEL = 'delivery-class-label';
+    public const FILE_DIR = 'ImportAndCompileTask';
+    private const OPTION_FILE = 'file';
+    private const OPTION_IMPORTER = 'importer';
+    private const OPTION_CUSTOM = 'custom';
+    private const OPTION_DELIVERY_LABELS = 'delivery-class-labels';
 
     /**
-     * @param $params
-     * @throws \common_exception_MissingParameter
-     * @return \common_report_Report
+     * @param array $params
+     *
+     * @throws Error
+     * @throws InconsistentDataException
+     * @throws MissingParameterException
+     *
+     * @return Report
      */
     public function __invoke($params)
     {
         $this->checkParams($params);
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
+
         $file = $this->getFileReferenceSerializer()->unserializeFile($params[self::OPTION_FILE]);
         $report = null;
+
         try {
             $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
 
-            /** @var \common_report_Report $report */
+            /** @var Report $report */
             $report = $importer->import($file);
 
-            if ($report->getType() === \common_report_Report::TYPE_SUCCESS) {
+            if ($report->getType() === Report::TYPE_SUCCESS) {
                 foreach ($report as $r) {
                     $test = $r->getData()->rdfsResource;
                 }
             } else {
-                throw new \common_Exception($file->getBasename() . ' Unable to import test with message ' . $report->getMessage());
+                throw new CommonException(
+                    $file->getBasename() . ' Unable to import test with message ' . $report->getMessage()
+                );
             }
 
             $label = 'Delivery of ' . $test->getLabel();
-            $parent = $this->checkSubClasses($params[self::OPTION_DELIVERY_LABEL]);
+            $parent = $this->checkSubClasses($params[self::OPTION_DELIVERY_LABELS]);
             $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
             $compilationReport = $deliveryFactory->create($parent, $test, $label);
 
-            if ($compilationReport->getType() == \common_report_Report::TYPE_ERROR) {
-                \common_Logger::i('Unable to generate delivery execution ' .
-                    'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
+            if ($compilationReport->getType() == Report::TYPE_ERROR) {
+                Logger::i(
+                    'Unable to generate delivery execution into taoDeliveryRdf::RestDelivery for test uri '
+                    . $test->getUri()
+                );
             }
-            /** @var \core_kernel_classes_Resource $delivery */
+            /** @var Resource $delivery */
             $delivery = $compilationReport->getData();
             $customParams = $params[self::OPTION_CUSTOM];
-            if (($delivery instanceof \core_kernel_classes_Resource) && is_array($customParams)) {
+
+            if ($delivery instanceof Resource && is_array($customParams)) {
                 foreach ($customParams as $rdfKey => $rdfValue) {
                     $property = $this->getProperty($rdfKey);
                     $delivery->editPropertyValues($property, $rdfValue);
                 }
             }
+
             $report->add($compilationReport);
-            $report->setData(
-                ['delivery-uri' => $delivery->getUri()]
-            );
+            $report->setData(['delivery-uri' => $delivery->getUri()]);
 
             return $report;
-        } catch (\Exception $e) {
-            $detailedErrorReport = \common_report_Report::createFailure($e->getMessage());
+        } catch (Exception $e) {
+            $detailedErrorReport = Report::createFailure($e->getMessage());
+
             if ($report) {
                 $errors = $report->getErrors();
+
                 foreach ($errors as $error) {
                     $detailedErrorReport->add($error->getErrors());
                 }
             }
+
             return $detailedErrorReport;
         }
     }
 
     /**
-     * @return string
-     */
-    public function jsonSerialize()
-    {
-        return __CLASS__;
-    }
-
-    /**
-     * @param array $params
-     * @throws \common_exception_MissingParameter
-     * @throws \common_exception_InconsistentData
-     */
-    protected function checkParams(array $params)
-    {
-        if (!isset($params[self::OPTION_FILE])) {
-            throw new \common_exception_MissingParameter('Missing parameter `' . self::OPTION_FILE . '` in ' . self::class);
-        }
-        if (!isset($params[self::OPTION_IMPORTER])) {
-            throw new \common_exception_MissingParameter('Missing parameter `' . self::OPTION_IMPORTER . '` in ' . self::class);
-        }
-
-        $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
-
-        if (!$importer instanceof AbstractTestImporter) {
-            throw new \common_exception_InconsistentData('Wrong importer `' . $params[self::OPTION_IMPORTER] . '`');
-        }
-    }
-
-    /**
-     * @param string $classLabel
-     * @return \core_kernel_classes_Class
-     */
-    protected function checkSubClasses($classLabel = '')
-    {
-        $parent = new \core_kernel_classes_Class(DeliveryAssemblyService::CLASS_URI);
-        if (!$classLabel) {
-            return $parent;
-        }
-        $deliveryClasses = $parent->getSubClasses(true);
-        $class = null;
-        if ($classLabel) {
-            foreach ($deliveryClasses as $deliveryClass) {
-                if ($classLabel === $deliveryClass->getLabel()) {
-                    $class = $deliveryClass;
-                    break;
-                }
-            }
-        }
-        if (!$class) {
-            $class = $parent->createSubClass($classLabel);
-        }
-        return $class;
-    }
-    /**
-     * @param string $id
-     * @return AbstractTestImporter
-     */
-    protected function getImporter($id)
-    {
-        $importersService = $this->getServiceManager()->get(ImportersService::SERVICE_ID);
-        return $importersService->getImporter($id);
-    }
-
-    /**
      * Create task in queue
-     * @param $importerId test importer identifier
+     *
+     * @param string $importerId test importer identifier
      * @param array $file uploaded file @see \tao_helpers_Http::getUploadedFile()
      * @param array $customParams
-     * @param string $deliveryClassLabel
-     * @return TaskInterface
+     * @param array $deliveryClassLabels
+     *
+     * @return CallbackTaskInterface
      */
-    public static function createTask($importerId, $file, $customParams = [], $deliveryClassLabel = '')
+    public static function createTask(
+        string $importerId,
+        array $file,
+        array $customParams = [],
+        array $deliveryClassLabels = []
+    ): CallbackTaskInterface
     {
         $serviceManager = ServiceManager::getServiceManager();
         $action = new self();
@@ -199,10 +163,95 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
             self::OPTION_FILE => $fileUri,
             self::OPTION_IMPORTER => $importerId,
             self::OPTION_CUSTOM => $customParams,
-            self::OPTION_DELIVERY_LABEL => $deliveryClassLabel,
+            self::OPTION_DELIVERY_LABELS => $deliveryClassLabels,
         ];
         $taskTitle = __('Import QTI test and create delivery.');;
 
         return $queueDispatcher->createTask($action, $taskParameters, $taskTitle, null, true);
+    }
+
+    /**
+     * @return string
+     */
+    public function jsonSerialize()
+    {
+        return __CLASS__;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @throws InvalidServiceManagerException
+     * @throws InconsistentDataException
+     * @throws MissingParameterException
+     */
+    private function checkParams(array $params): void
+    {
+        foreach ([self::OPTION_FILE, self::OPTION_IMPORTER] as $param) {
+            if (!isset($params[$param])) {
+                throw new MissingParameterException(sprintf(
+                    'Missing parameter `%s` in %s',
+                    $param,
+                    self::class
+                ));
+            }
+        }
+
+        $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
+
+        if (!$importer instanceof AbstractTestImporter) {
+            throw new InconsistentDataException(sprintf(
+                'Wrong importer `%s`',
+                $params[self::OPTION_IMPORTER]
+            ));
+        }
+    }
+
+    /**
+     * @param array $classLabels
+     *
+     * @return CoreClass
+     */
+    private function checkSubClasses(array $classLabels = []): CoreClass
+    {
+        $parent = new CoreClass(DeliveryAssemblyService::CLASS_URI);
+
+        if (empty($classLabels)) {
+            return $parent;
+        } else {
+            $deliveryClasses = $parent->getSubClasses(true);
+
+            foreach (array_values($deliveryClasses) as $index => $deliveryClass) {
+                if (isset($classLabels[$index]) && $classLabels[$index] === $deliveryClass->getLabel()) {
+                    $class = $deliveryClass;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (!isset($class)) {
+            foreach ($classLabels as $classLabel) {
+                $parent = $parent->createSubClass($classLabel);
+            }
+
+            $class = $parent;
+        }
+
+        return $class;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @throws InvalidServiceManagerException
+     *
+     * @return mixed
+     */
+    private function getImporter(string $id)
+    {
+        $importersService = $this->getServiceManager()->get(ImportersService::SERVICE_ID);
+
+        return $importersService->getImporter($id);
     }
 }
