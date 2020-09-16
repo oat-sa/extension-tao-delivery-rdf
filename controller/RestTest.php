@@ -51,9 +51,6 @@ class RestTest extends RestController
     /** @deprecated Use \oat\taoDeliveryRdf\controller\RestTest::REST_DELIVERY_CLASS_LABELS instead */
     public const REST_DELIVERY_CLASS_LABEL = 'delivery-class-label';
 
-    /** @var array */
-    private $body;
-
     /**
      * Import test and compile it into delivery
      *
