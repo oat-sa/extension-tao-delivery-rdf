@@ -105,9 +105,9 @@ class RestTest extends RestController
      * @param string $name
      * @param mixed|null $default
      *
-     * @return string|null
+     * @return mixed|null
      */
-    private function getParameter(string $name, $default = null): ?string
+    private function getParameter(string $name, $default = null)
     {
         $bodyParameters = $this->getPsrRequest()->getParsedBody();
 
@@ -116,7 +116,7 @@ class RestTest extends RestController
         }
 
         if (is_object($bodyParameters) && property_exists($bodyParameters, $name)) {
-            return $bodyParameters->$name;
+            return $bodyParameters->{$name};
         }
 
         return $default;

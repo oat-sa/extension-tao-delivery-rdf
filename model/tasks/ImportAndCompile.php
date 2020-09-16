@@ -213,31 +213,40 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
      */
     private function checkSubClasses(array $classLabels = []): CoreClass
     {
-        $parent = new CoreClass(DeliveryAssemblyService::CLASS_URI);
+        $parent = $this->determineParentClass(new CoreClass(DeliveryAssemblyService::CLASS_URI), $classLabels);
 
-        if (empty($classLabels)) {
-            return $parent;
-        } else {
-            $deliveryClasses = $parent->getSubClasses(true);
-
-            foreach (array_values($deliveryClasses) as $index => $deliveryClass) {
-                if (isset($classLabels[$index]) && $classLabels[$index] === $deliveryClass->getLabel()) {
-                    $class = $deliveryClass;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        if (!isset($class)) {
+        if (!empty($classLabels)) {
             foreach ($classLabels as $classLabel) {
                 $parent = $parent->createSubClass($classLabel);
             }
-
-            $class = $parent;
         }
 
-        return $class;
+        return $parent;
+    }
+
+    /**
+     * @param CoreClass $parent
+     * @param array $classLabels
+     * @param int $level
+     *
+     * @return CoreClass
+     */
+    private function determineParentClass(CoreClass $parent, array &$classLabels): CoreClass
+    {
+        if (empty($classLabels)) {
+            return $parent;
+        }
+
+        foreach ($parent->getSubClasses(true) as $deliveryClass) {
+            if (isset($classLabels[0]) && $classLabels[0] === $deliveryClass->getLabel()) {
+                $classLabels = array_slice($classLabels, 1);
+                $parent = $this->determineParentClass($deliveryClass, $classLabels) ?? $parent;
+
+                break;
+            }
+        }
+
+        return $parent;
     }
 
     /**
