@@ -109,11 +109,17 @@ class RestTest extends RestController
      */
     private function getParameter(string $name, $default = null): ?string
     {
-        if (!isset($this->body)) {
-            $this->body = $this->getPsrRequest()->getParsedBody();
+        $bodyParameters = $this->getPsrRequest()->getParsedBody();
+
+        if (is_array($bodyParameters) && isset($bodyParameters[$name])) {
+            return $bodyParameters[$name];
         }
 
-        return $this->body[$name] ?? $default;
+        if (is_object($bodyParameters) && property_exists($bodyParameters, $name)) {
+            return $bodyParameters->$name;
+        }
+
+        return $default;
     }
 
     /**
