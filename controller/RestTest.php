@@ -89,7 +89,7 @@ class RestTest extends RestController
             if (!empty($report)) {
                 if ($report instanceof Report) {
                     // Serialize report to array
-                    $report = json_decode(json_encode($report));
+                    $report = json_decode(json_encode($report), true);
                 }
 
                 $result['common_report_Report'] = $report;
