@@ -22,17 +22,17 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\controller;
 
-use common_report_Report as Report;
-use tao_helpers_Http as HttpHelper;
+use common_exception_BadRequest as BadRequestException;
 use common_exception_Error as Error;
+use common_exception_MissingParameter as MissingParameterException;
+use common_exception_NotFound as NotFoundException;
+use common_exception_NotImplemented as NotImplementedException;
+use common_report_Report as Report;
 use oat\tao\model\import\ImporterNotFound;
 use oat\tao\model\taskQueue\TaskLogInterface;
-use tao_actions_RestController as RestController;
-use common_exception_NotFound as NotFoundException;
 use oat\taoDeliveryRdf\model\tasks\ImportAndCompile;
-use common_exception_BadRequest as BadRequestException;
-use common_exception_NotImplemented as NotImplementedException;
-use common_exception_MissingParameter as MissingParameterException;
+use tao_actions_RestController as RestController;
+use tao_helpers_Http as HttpHelper;
 
 /**
  * Class RestTest
@@ -48,7 +48,10 @@ class RestTest extends RestController
     public const REST_DELIVERY_PARAMS = 'delivery-params';
     public const REST_DELIVERY_CLASS_LABELS = 'delivery-class-labels';
 
-    /** @deprecated Use \oat\taoDeliveryRdf\controller\RestTest::REST_DELIVERY_CLASS_LABELS instead */
+    /**
+     * @deprecated
+     * @see \oat\taoDeliveryRdf\controller\RestTest::REST_DELIVERY_CLASS_LABELS
+     */
     public const REST_DELIVERY_CLASS_LABEL = 'delivery-class-label';
 
     /**
