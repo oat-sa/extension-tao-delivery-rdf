@@ -77,7 +77,16 @@ class RestTest extends RestController
                 $importerId = $this->getParameter(self::REST_IMPORTER_ID);
                 $file = HttpHelper::getUploadedFile(self::REST_FILE_NAME);
                 $customParams = $this->getDecodedParameter(self::REST_DELIVERY_PARAMS);
-                $deliveryClassLabels = $this->getDecodedParameter(self::REST_DELIVERY_CLASS_LABELS);
+                $deliveryClassLabels = $this->getParameter(self::REST_DELIVERY_CLASS_LABELS) === null
+                    ? [$this->getParameter(self::REST_DELIVERY_CLASS_LABEL)]
+                    : $this->getDecodedParameter(self::REST_DELIVERY_CLASS_LABELS);
+
+                $deliveryClassLabels = array_filter(
+                    $deliveryClassLabels,
+                    static function ($deliveryClassLabel): bool {
+                        return null !== $deliveryClassLabel;
+                    }
+                );
 
                 $task = ImportAndCompile::createTask($importerId, $file, $customParams, $deliveryClassLabels);
             } catch (ImporterNotFound $e) {
