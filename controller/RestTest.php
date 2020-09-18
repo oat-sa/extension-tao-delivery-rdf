@@ -31,6 +31,7 @@ use common_report_Report as Report;
 use oat\tao\model\import\ImporterNotFound;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\taoDeliveryRdf\model\tasks\ImportAndCompile;
+use Request;
 use tao_actions_RestController as RestController;
 use tao_helpers_Http as HttpHelper;
 
@@ -63,7 +64,7 @@ class RestTest extends RestController
      */
     public function compileDeferred(): void
     {
-        if ($this->getRequestMethod() !== \Request::HTTP_POST) {
+        if ($this->getRequestMethod() !== Request::HTTP_POST) {
             throw new NotImplementedException('Only post method is accepted to compile test');
         }
 
