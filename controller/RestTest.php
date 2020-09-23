@@ -15,78 +15,137 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2017-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\controller;
 
+use common_exception_BadRequest as BadRequestException;
+use common_exception_Error as Error;
+use common_exception_MissingParameter as MissingParameterException;
+use common_exception_NotFound as NotFoundException;
+use common_exception_NotImplemented as NotImplementedException;
+use common_report_Report as Report;
 use oat\tao\model\import\ImporterNotFound;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\taoDeliveryRdf\model\tasks\ImportAndCompile;
+use Request;
+use tao_actions_RestController as RestController;
+use tao_helpers_Http as HttpHelper;
 
 /**
  * Class RestTest
+ *
  * @package oat\taoDeliveryRdf\controller
+ *
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class RestTest extends \tao_actions_RestController
+class RestTest extends RestController
 {
-    const REST_IMPORTER_ID = 'importerId';
-    const REST_FILE_NAME = 'testPackage';
-    const REST_DELIVERY_PARAMS = 'delivery-params';
-    const REST_DELIVERY_CLASS_LABEL = 'delivery-class-label';
+    public const REST_IMPORTER_ID = 'importerId';
+    public const REST_FILE_NAME = 'testPackage';
+    public const REST_DELIVERY_PARAMS = 'delivery-params';
+    public const REST_DELIVERY_CLASS_LABELS = 'delivery-class-labels';
+
+    /**
+     * @deprecated
+     * @see \oat\taoDeliveryRdf\controller\RestTest::REST_DELIVERY_CLASS_LABELS
+     */
+    public const REST_DELIVERY_CLASS_LABEL = 'delivery-class-label';
 
     /**
      * Import test and compile it into delivery
+     *
+     * @throws Error
+     * @throws MissingParameterException
+     * @throws NotImplementedException
      */
-    public function compileDeferred()
+    public function compileDeferred(): void
     {
-        if ($this->getRequestMethod() !== \Request::HTTP_POST) {
-            throw new \common_exception_NotImplemented('Only post method is accepted to compile test');
+        if ($this->getRequestMethod() !== Request::HTTP_POST) {
+            throw new NotImplementedException('Only post method is accepted to compile test');
         }
 
         if (!$this->hasRequestParameter(self::REST_IMPORTER_ID)) {
-            throw new \common_exception_MissingParameter(self::REST_IMPORTER_ID, $this->getRequestURI());
+            throw new MissingParameterException(self::REST_IMPORTER_ID, $this->getRequestURI());
         }
 
-        if (\tao_helpers_Http::hasUploadedFile(self::REST_FILE_NAME)) {
-            $file = \tao_helpers_Http::getUploadedFile(self::REST_FILE_NAME);
-            $importerId = $this->getRequestParameter(self::REST_IMPORTER_ID);
+        if (HttpHelper::hasUploadedFile(self::REST_FILE_NAME)) {
             try {
-                $customParams = [];
-                if ($this->hasRequestParameter(self::REST_DELIVERY_PARAMS)) {
-                    $customParams = $this->getRequestParameter(self::REST_DELIVERY_PARAMS);
-                    $customParams = json_decode(html_entity_decode($customParams), true);
-                }
-                $deliveryClassLabel = '';
-                if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_LABEL)) {
-                    $deliveryClassLabel = $this->getRequestParameter(self::REST_DELIVERY_CLASS_LABEL);
-                }
-                $task = ImportAndCompile::createTask($importerId, $file, $customParams, $deliveryClassLabel);
+                $importerId = $this->getParameter(self::REST_IMPORTER_ID);
+                $file = HttpHelper::getUploadedFile(self::REST_FILE_NAME);
+                $customParams = $this->getDecodedParameter(self::REST_DELIVERY_PARAMS);
+                $deliveryClassLabels = $this->getParameter(self::REST_DELIVERY_CLASS_LABELS) === null
+                    ? [$this->getParameter(self::REST_DELIVERY_CLASS_LABEL)]
+                    : $this->getDecodedParameter(self::REST_DELIVERY_CLASS_LABELS);
+
+                $deliveryClassLabels = array_filter(
+                    $deliveryClassLabels,
+                    static function ($deliveryClassLabel): bool {
+                        return null !== $deliveryClassLabel;
+                    }
+                );
+
+                $task = ImportAndCompile::createTask($importerId, $file, $customParams, $deliveryClassLabels);
             } catch (ImporterNotFound $e) {
-                $this->returnFailure(new \common_exception_NotFound($e->getMessage()));
+                $this->returnFailure(new NotFoundException($e->getMessage()));
             }
-            
+
             $result = ['reference_id' => $task->getId()];
 
             /** @var TaskLogInterface $taskLog */
             $taskLog = $this->getServiceLocator()->get(TaskLogInterface::SERVICE_ID);
-
             $report = $taskLog->getReport($task->getId());
 
-            if (!empty($report)) { //already executed
-                if ($report instanceof \common_report_Report) {
-                    //serialize report to array
-                    $report = json_encode($report);
-                    $report = json_decode($report);
+            if (!empty($report)) {
+                if ($report instanceof Report) {
+                    // Serialize report to array
+                    $report = json_decode(json_encode($report), true);
                 }
+
                 $result['common_report_Report'] = $report;
             }
 
-            return $this->returnSuccess($result);
+            $this->returnSuccess($result);
         } else {
-            return $this->returnFailure(new \common_exception_BadRequest('Test package file was not given'));
+            $this->returnFailure(new BadRequestException('Test package file was not given'));
         }
+    }
+
+    /**
+     * @param string $name
+     * @param mixed|null $default
+     *
+     * @return mixed|null
+     */
+    private function getParameter(string $name, $default = null)
+    {
+        $bodyParameters = $this->getPsrRequest()->getParsedBody();
+
+        if (is_array($bodyParameters) && isset($bodyParameters[$name])) {
+            return $bodyParameters[$name];
+        }
+
+        if (is_object($bodyParameters) && property_exists($bodyParameters, $name)) {
+            return $bodyParameters->{$name};
+        }
+
+        return $default;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
+    private function getDecodedParameter(string $name): array
+    {
+        $data = $this->getParameter($name, []);
+
+        return is_array($data)
+            ? $data
+            : json_decode(html_entity_decode($data), true);
     }
 }
