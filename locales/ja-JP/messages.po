@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint107\n"
-"PO-Revision-Date: 2020-07-17T08:37:24\n"
+"Project-Id-Version: TAO 3.4.0-sprint117\n"
+"PO-Revision-Date: 2020-09-22T16:02:16\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -14,219 +14,231 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s completed"
-msgstr ""
+msgstr "%s 完了"
 
 msgid "%s test-taker(s) are excluded."
-msgstr ""
+msgstr "%s 受験者を除外"
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "ゲストとしてデリバリーにアクセス"
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "インポート中にエラーが発生しました。"
 
 msgid "Assembly"
-msgstr ""
+msgstr "アセンブリ"
 
 msgid "Assembly import"
-msgstr ""
+msgstr "アセンブリインポート"
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "割り当て受験者"
 
 msgid "Assigned to"
-msgstr ""
+msgstr "割り当て"
+
+msgid "Attempt %1$s of %2$s"
+msgstr "試行 %1$s ／ %2$s"
+
+msgid "Attempts %1$s of %2$s"
+msgstr "試行 %1$s ／ %2$s"
+
+msgid "Available from %1$s to %2$s"
+msgstr "%1$s から %2$s まで利用可能"
 
 msgid "Available from %s"
-msgstr ""
+msgstr "%s から利用可能"
 
 msgid "Available until %s"
-msgstr ""
+msgstr "%s まで利用可能"
 
 msgid "Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 msgid "Class successfully created."
-msgstr ""
+msgstr "クラスは正常に作成されました"
 
 msgid "Continue deleting of delivery \"%s\"."
-msgstr ""
+msgstr "配信の削除を続ける。\"%s\""
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "新しいデリバリーを作成"
 
 msgid "Create a test"
-msgstr ""
+msgstr "テスト作成"
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "削除"
 
 msgid "Deleting of \"%s"
-msgstr ""
+msgstr "Deleting of \"%s"
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "デリバリー"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "デリバリーライブラリ"
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr ""
+msgstr "デリバリー \"%s\" のインポートに成功"
 
 msgid "Delivery \'%s\' not found"
-msgstr ""
+msgstr "Delivery \'%s\' not found"
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr ""
+msgstr "Delivery class uri provided is not a valid delivery class."
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr "デリバリーは %s 人の受験者に割り当てられました。"
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "デリバリーは受験者に割り当てられていません。"
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "デリバリーは保存されました"
 
 msgid "Delivery with label \"%s\" not found"
-msgstr ""
+msgstr "Delivery with label \"%s\" not found"
 
 msgid "Directory %s doesn\'t exist"
-msgstr ""
+msgstr "Directory %s doesn\'t exist"
 
 msgid "Error"
-msgstr ""
+msgstr "エラー"
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "除外された受験者"
 
 msgid "Exported %1$s to %2$s"
-msgstr ""
+msgstr "%1$s を %2$s にエクスポート"
 
 msgid "Exporting %s"
-msgstr ""
+msgstr "%s エクスポート中"
 
 msgid "Guest access"
-msgstr ""
-
-msgid "Import QTI test and create delivery."
-msgstr ""
+msgstr "ゲストアクセス"
 
 msgid "Importing %1$s files into \'%2$s\"
-msgstr ""
+msgstr "Importing %1$s files into \'%2$s\"
 
 msgid "Last updated on:"
-msgstr ""
+msgstr "Last updated on:"
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "Manage Schema"
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "Manage tests"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "移動"
 
 #, tao-public
 msgid "Move To"
-msgstr ""
+msgstr "移動"
+
+msgid "Multiple delivery class found for label \"%s\": %s"
+msgstr "Multiple delivery class found for label \"%s\": %s"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "新規クラス"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "新規デリバリー"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "まだ試行されていません。"
 
 msgid "No information available about attempts"
-msgstr ""
+msgstr "No information available about attempts"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr ""
+msgstr "デリバリーセッションの準備，公開します。"
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "プロパティ"
 
 #, tao-public
 msgid "Publish"
-msgstr ""
+msgstr "パブリッシュ"
 
 msgid "Publish \"%s\" to"
-msgstr ""
+msgstr "Publish \"%s\" to"
 
 msgid "Publish the test"
-msgstr ""
+msgstr "Publish the test"
 
 msgid "Published on:"
-msgstr ""
+msgstr "Published on:"
 
 msgid "Publishing of <b>%s</b>"
-msgstr ""
+msgstr "Publishing of <b>%s</b>"
 
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 msgid "Select the test"
-msgstr ""
+msgstr "テストを選択"
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr ""
+msgstr "受験者にパブリッシュしたいテストを選択"
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "選択が正常に保存されました"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "TAO ゲスト"
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "TAO ゲストアクセス"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr ""
+msgstr "Test publishing failed because \"%s\" is empty."
 
 msgid "Test-takers"
-msgstr ""
+msgstr "受験者"
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "テスト"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr ""
+msgstr "The test \"%s\" does not contain any items and cannot be published."
 
 msgid "There are currently %s attempts"
-msgstr ""
+msgstr "%s 回実施されました"
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "現在公開可能なテストはありません。"
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "1回実施されました"
 
 msgid "Unable to import Archive"
-msgstr ""
+msgstr "アーカイブをインポートできません。"
 
 msgid "Unable to load tests"
-msgstr ""
+msgstr "Unable to load tests"
 
 msgid "unlimited"
-msgstr ""
+msgstr "制限なし"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr ""
+msgstr "使い方：%s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr ""
+msgstr "使い方: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+
+msgid "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
+msgstr "Usage: %s DELIVERY_URI OUTPUT_FILE [USE_SHARED_FILESYSTEM]"
 
