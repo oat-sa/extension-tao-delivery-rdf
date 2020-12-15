@@ -249,4 +249,17 @@
   	<rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessModel"/>
    </rdf:Description>
 
+   <!--
+   IMPORTANT!!!! @TODO @FIXME Rename property and label after agreement with Sam
+   -->
+   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#Alias">
+       <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+       <rdfs:label xml:lang="en-US"><![CDATA[Alias]]></rdfs:label>
+       <rdfs:comment xml:lang="en-US"><![CDATA[The alias of a delivery used by external systems.]]></rdfs:comment>
+       <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#Delivery"/>
+       <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+       <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#TextBox"/>
+       <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#False"/>
+   </rdf:Description>
+
 </rdf:RDF>
