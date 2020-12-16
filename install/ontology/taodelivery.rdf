@@ -252,10 +252,10 @@
    <!--
    IMPORTANT!!!! @TODO @FIXME Rename property and label after agreement with Sam
    -->
-   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#Alias">
+   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAODelivery.rdf#AssessmentProjectId">
        <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-       <rdfs:label xml:lang="en-US"><![CDATA[Alias]]></rdfs:label>
-       <rdfs:comment xml:lang="en-US"><![CDATA[The alias of a delivery used by external systems.]]></rdfs:comment>
+       <rdfs:label xml:lang="en-US"><![CDATA[Assessment Project Id]]></rdfs:label>
+       <rdfs:comment xml:lang="en-US"><![CDATA[The assessment project Id used on external system.]]></rdfs:comment>
        <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#Delivery"/>
        <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
        <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#TextBox"/>

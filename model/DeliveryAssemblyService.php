@@ -60,7 +60,7 @@ class DeliveryAssemblyService extends OntologyClassService
     /**
      * @TODO FIXME Rename this when have an agreement with @Joel and @Sam
      */
-    public const PROPERTY_ALIAS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#Alias';
+    public const PROPERTY_ASSESSMENT_PROJECT_ID = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssessmentProjectId';
 
     /**
      * @var \tao_models_classes_service_FileStorage

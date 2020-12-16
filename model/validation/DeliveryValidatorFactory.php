@@ -29,7 +29,7 @@ class DeliveryValidatorFactory extends ConfigurableService
 {
     private const VALIDATORS =
         [
-            DeliveryAssemblyService::PROPERTY_ALIAS => [
+            DeliveryAssemblyService::PROPERTY_ASSESSMENT_PROJECT_ID => [
                 [
                     'AlphaNum',
                     [
