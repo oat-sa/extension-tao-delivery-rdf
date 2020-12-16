@@ -58,6 +58,11 @@ class DeliveryAssemblyService extends OntologyClassService
     const PROPERTY_END = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
 
     /**
+     * @TODO FIXME Rename this when have an agreement with @Joel and @Sam
+     */
+    public const PROPERTY_ALIAS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#Alias';
+
+    /**
      * @var \tao_models_classes_service_FileStorage
      */
     protected $storageService;
