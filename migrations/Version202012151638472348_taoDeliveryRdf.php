@@ -39,6 +39,5 @@ final class Version202012151638472348_taoDeliveryRdf extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        OntologyUpdater::syncModels();
     }
 }
