@@ -36,12 +36,15 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
+use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDelivery\model\execution\Monitoring;
 use tao_helpers_form_FormContainer as FormContainer;
+use tao_helpers_form_FormFactory;
+use tao_helpers_Uri;
 
 /**
  * Controller to managed assembled deliveries
@@ -91,7 +94,8 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $delivery = $this->getCurrentInstance();
 
         $options = [
-            FormContainer::CSRF_PROTECTION_OPTION => true
+            FormContainer::CSRF_PROTECTION_OPTION => true,
+            FormContainer::ADDITIONAL_VALIDATORS => $this->getExtraValidationRules(),
         ];
 
         $formContainer = new DeliveryForm($class, $delivery, $options);
@@ -306,5 +310,15 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $options['order'] = key($config['OntologyTreeOrder']);
         $options['orderdir'] = $config['OntologyTreeOrder'][$options['order']];
         return parent::getTreeOptionsFromRequest($options);
+    }
+
+    protected function getExtraValidationRules(): array
+    {
+        return $this->getValidatorFactory()->createMultiple();
+    }
+
+    private function getValidatorFactory(): DeliveryValidatorFactory
+    {
+        return $this->getServiceLocator()->get(DeliveryValidatorFactory::class);
     }
 }
