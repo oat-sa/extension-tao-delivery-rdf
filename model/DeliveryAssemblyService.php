@@ -57,6 +57,8 @@ class DeliveryAssemblyService extends OntologyClassService
 
     const PROPERTY_END = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
 
+    public const PROPERTY_ASSESSMENT_PROJECT_ID = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssessmentProjectId';
+
     /**
      * @var \tao_models_classes_service_FileStorage
      */
