@@ -22,11 +22,21 @@ namespace oat\taoDeliveryRdf\model\DataStore\Service;
 
 use core_kernel_classes_Resource;
 use oat\taoDeliveryRdf\model\DataStore\DataStoreParser;
+use oat\taoDeliveryRdf\model\DataStore\DataStoreRepositoryInterface;
 
 class TestMetaDataParser implements DataStoreParser
 {
+    /** @var DataStoreRepositoryInterface */
+    private $dataStoreRepository;
+
+    public function __construct(DataStoreRepositoryInterface $dataStoreRepository)
+    {
+        $this->dataStoreRepository = $dataStoreRepository;
+    }
 
     public function parse(core_kernel_classes_Resource $resource): iterable
     {
+        $metaData = $this->dataStoreRepository->findByResource($resource);
+        //here you process
     }
 }

@@ -23,7 +23,7 @@ namespace oat\taoDeliveryRdf\model\DataStore\Service;
 use core_kernel_classes_Resource;
 use oat\taoDeliveryRdf\model\DataStore\DataStoreParser;
 
-class DeliveryDataParser implements DataStoreParser
+class DeliveryMetaDataParser implements DataStoreParser
 {
 
     public function parse(core_kernel_classes_Resource $resource): iterable

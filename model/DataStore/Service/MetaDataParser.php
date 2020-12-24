@@ -42,7 +42,7 @@ class MetaDataParser implements DataStoreParser
     public function __construct(
         ItemMetaDataParser $itemMetaData,
         TestMetaDataParser $testMetaData,
-        DeliveryDataParser $deliveryMetaData,
+        DeliveryMetaDataParser $deliveryMetaData,
         DataStoreItemRepository $dataStoreRepository
     ) {
         $this->itemMetaData = $itemMetaData;
@@ -74,6 +74,6 @@ class MetaDataParser implements DataStoreParser
 
     private function getItemsByTestId(core_kernel_classes_Resource $resource): iterable
     {
-        return $this->dataStoreRepository->findByTestId($resource);
+        return $this->dataStoreRepository->findByResource($resource);
     }
 }

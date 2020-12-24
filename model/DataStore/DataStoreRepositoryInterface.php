@@ -26,5 +26,5 @@ interface DataStoreRepositoryInterface
 {
     public const SERVICE_ID = 'taoDeliveryRdf/DataStoreRepository';
 
-    public function findByTestId(core_kernel_classes_Resource $test);
+    public function findByResource(core_kernel_classes_Resource $test);
 }

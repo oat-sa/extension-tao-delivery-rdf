@@ -31,8 +31,6 @@ class DataStoreItemRepository extends ConfigurableService implements DataStoreRe
 {
     use OntologyAwareTrait;
 
-    public const OPTION_STORAGE = 'storage';
-
     /** @var taoTests_models_classes_TestModel */
     private $storage;
 
@@ -45,7 +43,7 @@ class DataStoreItemRepository extends ConfigurableService implements DataStoreRe
         return $this->storage;
     }
 
-    public function findByTestId(core_kernel_classes_Resource $test): iterable
+    public function findByResource(core_kernel_classes_Resource $test): iterable
     {
         return $this->getStorage()->getItems($test);
     }
