@@ -20,7 +20,6 @@
 
 namespace oat\taoDeliveryRdf\model\DataStore\Service;
 
-
 use core_kernel_classes_Resource;
 use oat\taoDeliveryRdf\model\DataStore\DataStoreParser;
 
@@ -29,6 +28,5 @@ class TestMetaDataParser implements DataStoreParser
 
     public function parse(core_kernel_classes_Resource $resource): iterable
     {
-
     }
 }

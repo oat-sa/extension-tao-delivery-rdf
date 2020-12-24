@@ -20,7 +20,6 @@
 
 namespace oat\taoDeliveryRdf\model\DataStore\Service;
 
-
 use core_kernel_classes_Resource;
 use oat\taoDeliveryRdf\model\DataStore\DataStoreParser;
 

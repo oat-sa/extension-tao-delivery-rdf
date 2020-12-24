@@ -44,8 +44,7 @@ class MetaDataParser implements DataStoreParser
         TestMetaDataParser $testMetaData,
         DeliveryDataParser $deliveryMetaData,
         DataStoreItemRepository $dataStoreRepository
-    )
-    {
+    ) {
         $this->itemMetaData = $itemMetaData;
         $this->testMetaData = $testMetaData;
         $this->deliveryMetaData = $deliveryMetaData;
