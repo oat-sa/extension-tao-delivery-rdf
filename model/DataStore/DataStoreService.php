@@ -66,7 +66,7 @@ class DataStoreService extends ConfigurableService
             $items = $testService->getItems($test);
             $params['itemMetaData'] = [];
             foreach ($items as $item) {
-                $params['itemMetaData'][$item->getUri()] = $compiler->compile($item);
+                $params['itemMetaData'][] = $compiler->compile($item);
             }
             $this->triggerSyncTask($params);
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
@@ -98,7 +98,7 @@ class DataStoreService extends ConfigurableService
         /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = $this->getQueueDispatcher();
         $queueDispatcher->createTask(
-            new GCPDeliverySyncTask(),
+            new MetaDataDeliverySyncTask(),
             $params,
             __('Continue try to sync GCP of delivery "%s".', $params['deliveryId'])
         );

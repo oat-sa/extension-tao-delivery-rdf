@@ -24,15 +24,19 @@ namespace oat\taoDeliveryRdf\model\DataStore;
 
 use JsonSerializable;
 use oat\oatbox\extension\AbstractAction;
+use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\reporting\Report;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
-use oat\tao\model\service\ServiceFileStorage;
 use oat\tao\model\taskQueue\QueueDispatcher;
 
-class GCPDeliverySyncTask extends AbstractAction implements JsonSerializable
+class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializable
 {
     private const MAX_TRIES = 10;
+    const DATA_STORE = 'dataStore';
+    const DELIVERY_META_DATA_JSON = 'deliveryMetaData.json';
+    const TEST_META_DATA_JSON = 'testMetaData.json';
+    const ITEM_META_DATA_JSON = 'itemMetaData.json';
 
     /**
      * @throws InvalidServiceManagerException
@@ -47,14 +51,8 @@ class GCPDeliverySyncTask extends AbstractAction implements JsonSerializable
         }
         if ($error && $params['count'] < self::MAX_TRIES) {
             $params['count']++;
-            $this->logError('loggin params:' . var_export($params, true));
 
-            $publish = $this->getFileSystem()->getDirectoryById('publishing');
-
-            $publish->write('deliveryMetaData.json', json_encode($params['deliveryMetaData']));
-            $publish->write('testMetaData.json', json_encode($params['testMetaData']));
-            $publish->write('itemMetaData.json', json_encode($params['itemMetaData']));
-
+            $this->writeMetaData($params);
             $this->requeueTask($params);
             $report->setType(Report::TYPE_ERROR);
             $report->setMessage('Failing syncing GCP for delivery: ' . $params['deliveryId']);
@@ -92,8 +90,32 @@ class GCPDeliverySyncTask extends AbstractAction implements JsonSerializable
         );
     }
 
-    private function getFileSystem(): ServiceFileStorage
+    private function getFileSystem(): FileSystemService
     {
-        return $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID);
+        return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
+    }
+
+    private function getFolderName(string $deliveryId): string
+    {
+        return hash('sha1', $deliveryId);
+    }
+
+    private function writeMetaData($params): void
+    {
+        $fileSystem = $this->getFileSystem()->getFileSystem(self::DATA_STORE);
+
+        $folder = $this->getFolderName($params['deliveryId']);
+
+        $fileSystem->write($folder . DIRECTORY_SEPARATOR . self::DELIVERY_META_DATA_JSON,
+            json_encode($params['deliveryMetaData'])
+        );
+
+        $fileSystem->write($folder . DIRECTORY_SEPARATOR . self::TEST_META_DATA_JSON,
+            json_encode($params['testMetaData'])
+        );
+
+        $fileSystem->write($folder . DIRECTORY_SEPARATOR . self::ITEM_META_DATA_JSON,
+            json_encode($params['itemMetaData'])
+        );
     }
 }
