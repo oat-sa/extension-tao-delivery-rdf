@@ -24,6 +24,7 @@ namespace oat\taoDeliveryRdf\model\DataStore;
 
 use JsonSerializable;
 use oat\oatbox\extension\AbstractAction;
+use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\reporting\Report;
 use oat\oatbox\service\ConfigurableService;
@@ -47,7 +48,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         $error = true;
 
         if (!$error) {
-            $report->setMessage('Success syncing GCP for delivery: ' . $params['deliveryId']);
+            $report->setMessage('Success MetaData syncing for delivery: ' . $params['deliveryId']);
         }
         if ($error && $params['count'] < self::MAX_TRIES) {
             $params['count']++;
@@ -55,7 +56,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
             $this->writeMetaData($params);
             $this->requeueTask($params);
             $report->setType(Report::TYPE_ERROR);
-            $report->setMessage('Failing syncing GCP for delivery: ' . $params['deliveryId']);
+            $report->setMessage('Failing MetaData syncing for delivery: ' . $params['deliveryId']);
             $error = false;
         }
 
@@ -103,19 +104,14 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
     private function writeMetaData($params): void
     {
         $fileSystem = $this->getFileSystem()->getFileSystem(self::DATA_STORE);
-
         $folder = $this->getFolderName($params['deliveryId']);
+        $this->persistData($fileSystem, $folder , self::DELIVERY_META_DATA_JSON, $params['deliveryMetaData']);
+        $this->persistData($fileSystem, $folder, self::TEST_META_DATA_JSON, $params['testMetaData']);
+        $this->persistData($fileSystem, $folder, self::ITEM_META_DATA_JSON, $params['itemMetaData']);
+    }
 
-        $fileSystem->write($folder . DIRECTORY_SEPARATOR . self::DELIVERY_META_DATA_JSON,
-            json_encode($params['deliveryMetaData'])
-        );
-
-        $fileSystem->write($folder . DIRECTORY_SEPARATOR . self::TEST_META_DATA_JSON,
-            json_encode($params['testMetaData'])
-        );
-
-        $fileSystem->write($folder . DIRECTORY_SEPARATOR . self::ITEM_META_DATA_JSON,
-            json_encode($params['itemMetaData'])
-        );
+    private function persistData(FileSystem $fileSystem, string $folder, string $fileName, $params): void
+    {
+        $fileSystem->write($folder . DIRECTORY_SEPARATOR . $fileName, json_encode($params));
     }
 }
