@@ -87,7 +87,8 @@ class GCPDeliverySyncTask extends AbstractAction implements JsonSerializable
         $queueDispatcher = $this->getQueueDispatcher();
         $queueDispatcher->createTask(
             $this,
-            $params, __('Continue try to sync GCP of delivery "%s".', $params['deliveryId'])
+            $params,
+            __('Continue try to sync GCP of delivery "%s".', $params['deliveryId'])
         );
     }
 

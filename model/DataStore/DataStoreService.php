@@ -36,7 +36,6 @@ use oat\taoDeliveryRdf\model\event\AbstractDeliveryEvent;
 use taoQtiTest_models_classes_QtiTestService;
 use Throwable;
 
-
 class DataStoreService extends ConfigurableService
 {
     use LoggerAwareTrait;

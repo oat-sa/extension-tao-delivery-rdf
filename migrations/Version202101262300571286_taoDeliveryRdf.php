@@ -10,7 +10,6 @@ use oat\tao\scripts\tools\migrations\AbstractMigration;
 use oat\taoDeliveryRdf\model\DataStore\DataStoreService;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 
-
 final class Version202101262300571286_taoDeliveryRdf extends AbstractMigration
 {
     public function getDescription(): string

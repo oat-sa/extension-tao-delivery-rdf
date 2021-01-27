@@ -88,9 +88,4 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
             'testId' => $testUri,
         ];
     }
-
-    public function getDelivery(): core_kernel_classes_Resource
-    {
-        return $this->delivery;
-    }
 }
