@@ -27,6 +27,7 @@ use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\reporting\Report;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
+use oat\tao\model\service\ServiceFileStorage;
 use oat\tao\model\taskQueue\QueueDispatcher;
 
 class GCPDeliverySyncTask extends AbstractAction implements JsonSerializable
@@ -46,10 +47,16 @@ class GCPDeliverySyncTask extends AbstractAction implements JsonSerializable
         }
         if ($error && $params['count'] < self::MAX_TRIES) {
             $params['count']++;
-            $this->requeueTask($params);
+            $this->logError('loggin params:' . var_export($params, true));
 
+            $publish = $this->getFileSystem()->getDirectoryById('publishing');
+
+            $publish->write('testing-metadata-test.json', json_encode($params['deliveryMetaData']));
+
+            $this->requeueTask($params);
             $report->setType(Report::TYPE_ERROR);
             $report->setMessage('Failing syncing GCP for delivery: ' . $params['deliveryId']);
+            $error = false;
         }
 
         return $report;
@@ -80,5 +87,10 @@ class GCPDeliverySyncTask extends AbstractAction implements JsonSerializable
             $this,
             $params, __('Continue try to sync GCP of delivery "%s".', $params['deliveryId'])
         );
+    }
+
+    private function getFileSystem(): ServiceFileStorage
+    {
+        return $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID);
     }
 }

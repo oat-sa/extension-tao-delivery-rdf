@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\DataStore;
 
+use core_kernel_classes_Resource;
 use http\Exception\RuntimeException;
 use oat\oatbox\event\Event;
 use oat\oatbox\log\LoggerAwareTrait;
@@ -42,8 +43,12 @@ class DataStoreService extends ConfigurableService
         try {
             $this->logDebug(sprintf('Processing MetaData event for %s', get_class($event)));
             $this->checkEventType($event);
+            $compiler = $this->getMetaDataCompiler();
 
             $params['deliveryId'] = $event->getDeliveryUri();
+            $params['count'] = 0;
+            $deliveryResource = new core_kernel_classes_Resource($event->getDeliveryUri());
+            $params['deliveryMetaData'] = $compiler->compile($deliveryResource);
 
             $this->triggerSyncTask($params);
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
@@ -75,7 +80,7 @@ class DataStoreService extends ConfigurableService
         /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = $this->getQueueDispatcher();
         $queueDispatcher->createTask(
-            GCPDeliverySyncTask::class,
+            new GCPDeliverySyncTask(),
             $params,
             __('Continue try to sync GCP of delivery "%s".', $params['deliveryId'])
         );
