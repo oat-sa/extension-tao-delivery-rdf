@@ -51,7 +51,9 @@ class GCPDeliverySyncTask extends AbstractAction implements JsonSerializable
 
             $publish = $this->getFileSystem()->getDirectoryById('publishing');
 
-            $publish->write('testing-metadata-test.json', json_encode($params['deliveryMetaData']));
+            $publish->write('deliveryMetaData.json', json_encode($params['deliveryMetaData']));
+            $publish->write('testMetaData.json', json_encode($params['testMetaData']));
+            $publish->write('itemMetaData.json', json_encode($params['itemMetaData']));
 
             $this->requeueTask($params);
             $report->setType(Report::TYPE_ERROR);

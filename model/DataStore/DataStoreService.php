@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\DataStore;
 
+use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use http\Exception\RuntimeException;
 use oat\oatbox\event\Event;
@@ -30,7 +31,9 @@ use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
 use oat\tao\model\taskQueue\QueueDispatcher;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\event\AbstractDeliveryEvent;
+use taoQtiTest_models_classes_QtiTestService;
 use Throwable;
 
 
@@ -47,9 +50,25 @@ class DataStoreService extends ConfigurableService
 
             $params['deliveryId'] = $event->getDeliveryUri();
             $params['count'] = 0;
+
+            //DeliveryMetaData
             $deliveryResource = new core_kernel_classes_Resource($event->getDeliveryUri());
             $params['deliveryMetaData'] = $compiler->compile($deliveryResource);
 
+            //test MetaData
+            $testProperty = new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
+            $testUri = $deliveryResource->getOnePropertyValue($testProperty)->getUri();
+            $test = new core_kernel_classes_Resource($testUri);
+            $params['testMetaData'] = $compiler->compile($test);
+
+            //items
+            /** @var taoQtiTest_models_classes_QtiTestService $testService */
+            $testService = $this->getServiceLocator()->get(taoQtiTest_models_classes_QtiTestService::class);
+            $items = $testService->getItems($test);
+            $params['itemMetaData'] = [];
+            foreach ($items as $item) {
+                $params['itemMetaData'][$item->getUri()] = $compiler->compile($item);
+            }
             $this->triggerSyncTask($params);
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
         } catch (Throwable $exception) {
