@@ -71,11 +71,11 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
                 $report->setMessage('Failing MetaData syncing for delivery: ' . $params['deliveryId']);
                 $this->error = false;
             } catch (Throwable $exception) {
-                $this->logError(sprintf('Failing MetaData syncing for delivery: %s with message: %s',
-                        $params['deliveryId'],
-                        $exception->getMessage()
-                    )
-                );
+                $this->logError(sprintf(
+                    'Failing MetaData syncing for delivery: %s with message: %s',
+                    $params['deliveryId'],
+                    $exception->getMessage()
+                ));
             }
         }
 
@@ -163,7 +163,6 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
             );
 
             $this->moveExportedZipTest($folder, $deliveryId, $tempDir);
-
         } catch (Throwable $exception) {
             $this->logError(
                 'DataStore: An error has occurred while exporting the qti package ::' .
@@ -192,12 +191,12 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         );
 
         if (!empty($zipFiles)) {
-
             foreach ($zipFiles as $zipFile) {
                 $this->logDebug('Started to copy zip file: ' . $zipFile);
                 $contents = file_get_contents($zipFile);
                 $this->getDataStoreFilesystem()->write(
-                    sprintf('%s%s%s%s',
+                    sprintf(
+                        '%s%s%s%s',
                         $this->getFolderName($deliveryId),
                         DIRECTORY_SEPARATOR,
                         self::PACKAGE_FILENAME,
