@@ -7,7 +7,7 @@ namespace oat\taoDeliveryRdf\migrations;
 use Doctrine\DBAL\Schema\Schema;
 use oat\oatbox\event\EventManager;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
-use oat\taoDeliveryRdf\model\DataStore\DataStoreService;
+use oat\taoDeliveryRdf\model\DataStore\DeliveryMetadataListener;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 
 final class Version202101262300571286_taoDeliveryRdf extends AbstractMigration
@@ -20,13 +20,13 @@ final class Version202101262300571286_taoDeliveryRdf extends AbstractMigration
     public function up(Schema $schema): void
     {
         $eventManager = $this->getEventManger();
-        $eventManager->attach(DeliveryCreatedEvent::class, [DataStoreService::class, 'processMetaData']);
+        $eventManager->attach(DeliveryCreatedEvent::class, [DeliveryMetadataListener::class, 'whenDeliveryIsPublished']);
     }
 
     public function down(Schema $schema): void
     {
         $eventManager = $this->getEventManger();
-        $eventManager->detach(DeliveryCreatedEvent::class, [DataStoreService::class, 'processMetaData']);
+        $eventManager->detach(DeliveryCreatedEvent::class, [DeliveryMetadataListener::class, 'processMetaData']);
     }
 
     private function getEventManger(): EventManager

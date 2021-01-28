@@ -38,11 +38,11 @@ use oat\taoDeliveryRdf\model\event\AbstractDeliveryEvent;
 use taoQtiTest_models_classes_QtiTestService;
 use Throwable;
 
-class DataStoreService extends ConfigurableService
+class DeliveryMetadataListener extends ConfigurableService
 {
     use LoggerAwareTrait;
 
-    public function processMetaData(Event $event): void
+    public function whenDeliveryIsPublished(Event $event): void
     {
         try {
             $this->logDebug(sprintf('Processing MetaData event for %s', get_class($event)));
