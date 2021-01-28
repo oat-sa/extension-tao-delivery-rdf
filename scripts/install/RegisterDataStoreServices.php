@@ -20,22 +20,17 @@
 
 declare(strict_types=1);
 
-namespace oat\taoDeliveryRdf\migrations;
+namespace oat\taoDeliveryRdf\scripts\install;
 
-use Doctrine\DBAL\Schema\Schema;
 use oat\oatbox\event\EventManager;
-use oat\tao\scripts\tools\migrations\AbstractMigration;
+use oat\oatbox\extension\InstallAction;
 use oat\taoDeliveryRdf\model\DataStore\DeliveryMetadataListener;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 
-final class Version202101262300571286_taoDeliveryRdf extends AbstractMigration
+class RegisterDataStoreServices extends InstallAction
 {
-    public function getDescription(): string
-    {
-        return 'Registering DataStoreService for metaData processing';
-    }
 
-    public function up(Schema $schema): void
+    public function __invoke($params)
     {
         $eventManager = $this->getEventManger();
         $this->getServiceLocator()->register(
@@ -43,18 +38,6 @@ final class Version202101262300571286_taoDeliveryRdf extends AbstractMigration
             new DeliveryMetadataListener()
         );
         $eventManager->attach(
-            DeliveryCreatedEvent::class,
-            [DeliveryMetadataListener::class, 'whenDeliveryIsPublished']
-        );
-    }
-
-    public function down(Schema $schema): void
-    {
-        $eventManager = $this->getEventManger();
-        $this->getServiceLocator()->unregister(
-            DeliveryMetadataListener::SERVICE_ID
-        );
-        $eventManager->detach(
             DeliveryCreatedEvent::class,
             [DeliveryMetadataListener::class, 'whenDeliveryIsPublished']
         );

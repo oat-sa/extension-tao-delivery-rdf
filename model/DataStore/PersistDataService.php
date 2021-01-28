@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\DataStore;
 
+use common_Exception;
 use common_exception_Error;
 use common_exception_NotFound;
 use oat\oatbox\filesystem\FileSystem;
@@ -30,6 +31,7 @@ use oat\oatbox\service\ConfigurableService;
 use oat\tao\helpers\FileHelperService;
 use tao_helpers_Uri;
 use taoQtiTest_models_classes_export_TestExport22;
+use Throwable;
 
 class PersistDataService extends ConfigurableService
 {
@@ -48,7 +50,6 @@ class PersistDataService extends ConfigurableService
         $this->persistData($fileSystem, $folder, self::DELIVERY_META_DATA_JSON, $params['deliveryMetaData']);
         $this->persistData($fileSystem, $folder, self::TEST_META_DATA_JSON, $params['testMetaData']);
         $this->persistData($fileSystem, $folder, self::ITEM_META_DATA_JSON, $params['itemMetaData']);
-
         $this->persistExportedTest($params['deliveryId'], $params['testUri']);
     }
 
@@ -74,6 +75,12 @@ class PersistDataService extends ConfigurableService
         }
     }
 
+    /**
+     * @throws Throwable
+     * @throws common_Exception
+     * @throws common_exception_Error
+     * @throws common_exception_NotFound
+     */
     private function persistExportedTest(string $deliveryId, string $testUri): void
     {
         /** @var FileHelperService $tempDir */
@@ -91,12 +98,9 @@ class PersistDataService extends ConfigurableService
                 $folder
             );
 
-            $this->moveExportedZipTest($folder, $deliveryId, $tempDir);
-        } catch (Throwable $exception) {
-            $this->logError(
-                'DataStore: An error has occurred while exporting the qti package ::' .
-                $exception->getMessage()
-            );
+            $this->moveExportedZipTest($folder, $deliveryId);
+        } finally {
+            $tempDir->removeDirectory($folder);
         }
     }
 
@@ -104,7 +108,7 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function moveExportedZipTest(string $folder, string $deliveryId, FileHelperService $tempDir): void
+    private function moveExportedZipTest(string $folder, string $deliveryId): void
     {
         $zipFiles = glob(
             sprintf('%s%s*%s', $folder, self::PACKAGE_FILENAME, self::ZIP_EXTENSION)
@@ -112,20 +116,25 @@ class PersistDataService extends ConfigurableService
 
         if (!empty($zipFiles)) {
             foreach ($zipFiles as $zipFile) {
-                $this->logDebug('Started to copy zip file: ' . $zipFile);
                 $contents = file_get_contents($zipFile);
-                $this->getDataStoreFilesystem()->write(
-                    sprintf(
-                        '%s%s%s%s',
-                        $this->getFolderName($deliveryId),
-                        DIRECTORY_SEPARATOR,
-                        self::PACKAGE_FILENAME,
-                        self::ZIP_EXTENSION
-                    ),
-                    $contents
+                $fileName = sprintf(
+                    '%s%s%s%s',
+                    $this->getFolderName($deliveryId),
+                    DIRECTORY_SEPARATOR,
+                    self::PACKAGE_FILENAME,
+                    self::ZIP_EXTENSION
                 );
-                $tempDir->removeDirectory($folder);
-                $this->logDebug('Temporary extraction folder has been removed! Folder: ' . $folder);
+                if ($this->getDataStoreFilesystem()->has($fileName)) {
+                    $this->getDataStoreFilesystem()->update(
+                        $fileName,
+                        $contents
+                    );
+                } else {
+                    $this->getDataStoreFilesystem()->write(
+                        $fileName,
+                        $contents
+                    );
+                }
             }
         }
     }

@@ -40,12 +40,10 @@ use Throwable;
 class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializable
 {
 
-
-    /** @var bool */
-    private $error;
-
     /**
      * @throws InvalidServiceManagerException
+     * @throws common_exception_Error
+     * @throws core_kernel_persistence_Exception
      */
     public function __invoke($params)
     {
@@ -128,6 +126,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
 
         return $params;
     }
+
     private function getItemMetaData(core_kernel_classes_Resource $test, ResourceJsonMetadataCompiler $compiler): array
     {
         /** @var taoQtiTest_models_classes_QtiTestService $testService */
