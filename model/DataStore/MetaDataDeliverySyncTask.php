@@ -158,7 +158,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
      */
     private function getTestUri(core_kernel_classes_Resource $deliveryResource): ?string
     {
-        $testProperty = new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
+        $testProperty = $this->getProperty(DeliveryAssemblyService::PROPERTY_ORIGIN);
 
         return ($deliveryResource->getOnePropertyValue($testProperty)) ?
             $deliveryResource->getOnePropertyValue($testProperty)->getUri() :
