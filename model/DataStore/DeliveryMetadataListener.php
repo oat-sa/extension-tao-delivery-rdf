@@ -27,6 +27,7 @@ use oat\oatbox\event\Event;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\taoDeliveryRdf\model\event\AbstractDeliveryEvent;
 use Throwable;
@@ -41,6 +42,10 @@ class DeliveryMetadataListener extends ConfigurableService
 
     public function whenDeliveryIsPublished(Event $event): void
     {
+        $featureFlag = $this->getFeatureFlag();
+        if (!$featureFlag->isEnabled('FEATURE_FLAG_ENABLE_DATA_STORE_STORAGE')) {
+            return;
+        }
         try {
             $this->logDebug(sprintf('Processing MetaData event for %s', get_class($event)));
             $this->checkEventType($event);
@@ -80,5 +85,10 @@ class DeliveryMetadataListener extends ConfigurableService
             $params,
             __('Continue try to sync GCP of delivery "%s".', $params['deliveryId'])
         );
+    }
+
+    private function getFeatureFlag(): FeatureFlagChecker
+    {
+        return $this->getServiceLocator()->get(FeatureFlagChecker::class);
     }
 }
