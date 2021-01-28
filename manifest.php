@@ -23,6 +23,7 @@
 
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\scripts\install\RegisterDataStoreServices;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
 use oat\taoDeliveryRdf\scripts\install\RegisterDeliveryAssemblyWrapperService;
@@ -66,7 +67,8 @@ return [
             OverrideRuntime::class,
             SetUpQueueTasks::class,
             RegisterDeliveryAssemblyWrapperService::class,
-            RegisterFileSystem::class
+            RegisterFileSystem::class,
+            RegisterDataStoreServices::class
         ]
     ],
     //'uninstall' => array(),

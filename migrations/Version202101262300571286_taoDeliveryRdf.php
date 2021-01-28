@@ -46,6 +46,8 @@ final class Version202101262300571286_taoDeliveryRdf extends AbstractMigration
             DeliveryCreatedEvent::class,
             [DeliveryMetadataListener::class, 'whenDeliveryIsPublished']
         );
+
+        $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
     }
 
     public function down(Schema $schema): void
@@ -58,6 +60,8 @@ final class Version202101262300571286_taoDeliveryRdf extends AbstractMigration
             DeliveryCreatedEvent::class,
             [DeliveryMetadataListener::class, 'whenDeliveryIsPublished']
         );
+
+        $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
     }
 
     private function getEventManger(): EventManager
