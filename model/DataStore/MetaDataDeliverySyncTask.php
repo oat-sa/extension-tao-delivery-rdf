@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\DataStore;
 
+use common_exception_Error;
+use common_exception_NotFound;
 use JsonSerializable;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\filesystem\FileSystem;
@@ -29,15 +31,24 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\reporting\Report;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
+use oat\tao\helpers\FileHelperService;
 use oat\tao\model\taskQueue\QueueDispatcher;
+use taoQtiTest_models_classes_export_TestExport22;
+use Throwable;
 
 class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializable
 {
-    private const MAX_TRIES = 10;
-    const DATA_STORE = 'dataStore';
-    const DELIVERY_META_DATA_JSON = 'deliveryMetaData.json';
-    const TEST_META_DATA_JSON = 'testMetaData.json';
-    const ITEM_META_DATA_JSON = 'itemMetaData.json';
+    private const MAX_TRIES = 1;
+
+    private const DATA_STORE = 'dataStore';
+    private const DELIVERY_META_DATA_JSON = 'deliveryMetaData.json';
+    private const TEST_META_DATA_JSON = 'testMetaData.json';
+    private const ITEM_META_DATA_JSON = 'itemMetaData.json';
+    private const PACKAGE_FILENAME = 'QTIPackage';
+    private const ZIP_EXTENSION = '.zip';
+
+    /** @var bool */
+    private $error;
 
     /**
      * @throws InvalidServiceManagerException
@@ -45,19 +56,27 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
     public function __invoke($params)
     {
         $report = new Report(Report::TYPE_SUCCESS);
-        $error = true;
+        $this->error = true;
 
-        if (!$error) {
+        if (!$this->error) {
             $report->setMessage('Success MetaData syncing for delivery: ' . $params['deliveryId']);
         }
-        if ($error && $params['count'] < self::MAX_TRIES) {
+        if ($this->error && $params['count'] < self::MAX_TRIES) {
             $params['count']++;
-
-            $this->writeMetaData($params);
-            $this->requeueTask($params);
-            $report->setType(Report::TYPE_ERROR);
-            $report->setMessage('Failing MetaData syncing for delivery: ' . $params['deliveryId']);
-            $error = false;
+            try {
+                $this->writeMetaData($params);
+                $this->persistExportedTest($params['deliveryId'], $params['testUri']);
+                $this->requeueTask($params);
+                $report->setType(Report::TYPE_ERROR);
+                $report->setMessage('Failing MetaData syncing for delivery: ' . $params['deliveryId']);
+                $this->error = false;
+            } catch (Throwable $exception) {
+                $this->logError(sprintf('Failing MetaData syncing for delivery: %s with message: %s',
+                        $params['deliveryId'],
+                        $exception->getMessage()
+                    )
+                );
+            }
         }
 
         return $report;
@@ -91,7 +110,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         );
     }
 
-    private function getFileSystem(): FileSystemService
+    private function getFileSystemManager(): FileSystemService
     {
         return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
     }
@@ -103,15 +122,92 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
 
     private function writeMetaData($params): void
     {
-        $fileSystem = $this->getFileSystem()->getFileSystem(self::DATA_STORE);
+        $fileSystem = $this->getDataStoreFilesystem();
         $folder = $this->getFolderName($params['deliveryId']);
-        $this->persistData($fileSystem, $folder , self::DELIVERY_META_DATA_JSON, $params['deliveryMetaData']);
-        $this->persistData($fileSystem, $folder, self::TEST_META_DATA_JSON, $params['testMetaData']);
-        $this->persistData($fileSystem, $folder, self::ITEM_META_DATA_JSON, $params['itemMetaData']);
+        if (!$fileSystem->has($folder . DIRECTORY_SEPARATOR . self::DELIVERY_META_DATA_JSON)) {
+            $this->persistData($fileSystem, $folder, self::DELIVERY_META_DATA_JSON, $params['deliveryMetaData']);
+        }
+        if (!$fileSystem->has($folder . DIRECTORY_SEPARATOR . self::TEST_META_DATA_JSON)) {
+            $this->persistData($fileSystem, $folder, self::TEST_META_DATA_JSON, $params['testMetaData']);
+        }
+        if (!$fileSystem->has($folder . DIRECTORY_SEPARATOR . self::ITEM_META_DATA_JSON)) {
+            $this->persistData($fileSystem, $folder, self::ITEM_META_DATA_JSON, $params['itemMetaData']);
+        }
     }
 
     private function persistData(FileSystem $fileSystem, string $folder, string $fileName, $params): void
     {
         $fileSystem->write($folder . DIRECTORY_SEPARATOR . $fileName, json_encode($params));
+    }
+
+    private function getTestExporter(): taoQtiTest_models_classes_export_TestExport22
+    {
+        return new taoQtiTest_models_classes_export_TestExport22();
+    }
+
+    private function persistExportedTest(string $deliveryId, string $testUri)
+    {
+        /** @var FileHelperService $tempDir */
+        $tempDir = $this->getServiceLocator()->get(FileHelperService::class);
+        $folder = $tempDir->createTempDir();
+
+        $testExporter = $this->getTestExporter();
+        try {
+            $testExporter->export(
+                [
+                    'filename' => self::PACKAGE_FILENAME,
+                    'instances' => $testUri,
+                    'uri' => $testUri
+                ],
+                $folder
+            );
+
+            $this->moveExportedZipTest($folder, $deliveryId, $tempDir);
+
+        } catch (Throwable $exception) {
+            $this->logError(
+                'DataStore: An error has occurred while exporting the qti package ::' .
+                $exception->getMessage()
+            );
+        }
+    }
+
+    /**
+     * @throws common_exception_Error
+     * @throws common_exception_NotFound
+     */
+    private function getDataStoreFilesystem(): FileSystem
+    {
+        return $this->getFileSystemManager()->getFileSystem(self::DATA_STORE);
+    }
+
+    /**
+     * @throws common_exception_Error
+     * @throws common_exception_NotFound
+     */
+    private function moveExportedZipTest(string $folder, string $deliveryId, FileHelperService $tempDir): void
+    {
+        $zipFiles = glob(
+            sprintf('%s%s*%s', $folder, self::PACKAGE_FILENAME, self::ZIP_EXTENSION)
+        );
+
+        if (!empty($zipFiles)) {
+
+            foreach ($zipFiles as $zipFile) {
+                $this->logDebug('Started to copy zip file: ' . $zipFile);
+                $contents = file_get_contents($zipFile);
+                $this->getDataStoreFilesystem()->write(
+                    sprintf('%s%s%s%s',
+                        $this->getFolderName($deliveryId),
+                        DIRECTORY_SEPARATOR,
+                        self::PACKAGE_FILENAME,
+                        self::ZIP_EXTENSION
+                    ),
+                    $contents
+                );
+                $tempDir->removeDirectory($folder);
+                $this->logDebug('Temporary extraction folder has been removed! Folder: ' . $folder);
+            }
+        }
     }
 }
