@@ -20,13 +20,26 @@ final class Version202101262300571286_taoDeliveryRdf extends AbstractMigration
     public function up(Schema $schema): void
     {
         $eventManager = $this->getEventManger();
-        $eventManager->attach(DeliveryCreatedEvent::class, [DeliveryMetadataListener::class, 'whenDeliveryIsPublished']);
+        $this->getServiceLocator()->register(
+            DeliveryMetadataListener::SERVICE_ID,
+            new DeliveryMetadataListener()
+        );
+        $eventManager->attach(
+            DeliveryCreatedEvent::class,
+            [DeliveryMetadataListener::class, 'whenDeliveryIsPublished']
+        );
     }
 
     public function down(Schema $schema): void
     {
         $eventManager = $this->getEventManger();
-        $eventManager->detach(DeliveryCreatedEvent::class, [DeliveryMetadataListener::class, 'processMetaData']);
+        $this->getServiceLocator()->unregister(
+            DeliveryMetadataListener::SERVICE_ID
+        );
+        $eventManager->detach(
+            DeliveryCreatedEvent::class,
+            [DeliveryMetadataListener::class, 'whenDeliveryIsPublished']
+        );
     }
 
     private function getEventManger(): EventManager

@@ -22,45 +22,30 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\DataStore;
 
-use common_exception_Error;
-use core_kernel_classes_Property;
-use core_kernel_classes_Resource;
-use core_kernel_persistence_Exception;
 use http\Exception\RuntimeException;
 use oat\oatbox\event\Event;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
-use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
 use oat\tao\model\taskQueue\QueueDispatcher;
-use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\event\AbstractDeliveryEvent;
-use taoQtiTest_models_classes_QtiTestService;
 use Throwable;
 
 class DeliveryMetadataListener extends ConfigurableService
 {
     use LoggerAwareTrait;
 
+    public const SERVICE_ID = 'taoDeliveryRdf/DeliveryMetadataListener';
+
+    public const OPTION_MAX_TRIES = 'max_tries';
+
     public function whenDeliveryIsPublished(Event $event): void
     {
         try {
             $this->logDebug(sprintf('Processing MetaData event for %s', get_class($event)));
             $this->checkEventType($event);
-            $compiler = $this->getMetaDataCompiler();
-
             $params['deliveryId'] = $event->getDeliveryUri();
-            $params['count'] = 0;
-            //DeliveryMetaData
-            $deliveryResource = new core_kernel_classes_Resource($event->getDeliveryUri());
-            $params['deliveryMetaData'] = $compiler->compile($deliveryResource);
-            //test MetaData
-            $test = $this->getTest($deliveryResource);
-            $params['testUri'] = $this->getTestUri($deliveryResource);
-            $params['testMetaData'] = $compiler->compile($test);
-            //Item MetaData
-            $params['itemMetaData'] = $this->getItemMetaData($test, $compiler);
-
+            $params[self::OPTION_MAX_TRIES] = $this->getOption(self::OPTION_MAX_TRIES, 10);
             $this->triggerSyncTask($params);
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
         } catch (Throwable $exception) {
@@ -95,46 +80,5 @@ class DeliveryMetadataListener extends ConfigurableService
             $params,
             __('Continue try to sync GCP of delivery "%s".', $params['deliveryId'])
         );
-    }
-
-    private function getMetaDataCompiler(): ResourceJsonMetadataCompiler
-    {
-        return $this->getServiceLocator()->get(ResourceJsonMetadataCompiler::SERVICE_ID);
-    }
-
-    private function getItemMetaData(core_kernel_classes_Resource $test, ResourceJsonMetadataCompiler $compiler): array
-    {
-        /** @var taoQtiTest_models_classes_QtiTestService $testService */
-        $testService = $this->getServiceLocator()->get(taoQtiTest_models_classes_QtiTestService::class);
-        $items = $testService->getItems($test);
-        $itemMetaData = [];
-        foreach ($items as $item) {
-            $itemMetaData[] = $compiler->compile($item);
-        }
-
-        return $itemMetaData;
-    }
-
-    /**
-     * @throws common_exception_Error
-     * @throws core_kernel_persistence_Exception
-     */
-    private function getTest(core_kernel_classes_Resource $deliveryResource): core_kernel_classes_Resource
-    {
-        $testUri = $this->getTestUri($deliveryResource);
-
-        return new core_kernel_classes_Resource($testUri);
-    }
-
-    /**
-     * @throws core_kernel_persistence_Exception
-     */
-    private function getTestUri(core_kernel_classes_Resource $deliveryResource): ?string
-    {
-        $testProperty = new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
-
-        return ($deliveryResource->getOnePropertyValue($testProperty)) ?
-            $deliveryResource->getOnePropertyValue($testProperty)->getUri() :
-            null;
     }
 }
