@@ -27,6 +27,7 @@ use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use core_kernel_persistence_Exception;
 use JsonSerializable;
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\reporting\Report;
 use oat\oatbox\service\ConfigurableService;
@@ -39,6 +40,7 @@ use Throwable;
 
 class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializable
 {
+    use OntologyAwareTrait;
 
     /**
      * @throws InvalidServiceManagerException
@@ -114,7 +116,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         if (!isset($params['deliveryMetaData'], $params['testMetaData'], $params['testUri'], $params['itemMetaData'])) {
             $compiler = $this->getMetaDataCompiler();
             //DeliveryMetaData
-            $deliveryResource = new core_kernel_classes_Resource($params['deliveryId']);
+            $deliveryResource = $this->getResource($params['deliveryId']);
             $params['deliveryMetaData'] = $compiler->compile($deliveryResource);
             //test MetaData
             $test = $this->getTest($deliveryResource);

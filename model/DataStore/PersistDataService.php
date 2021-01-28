@@ -42,6 +42,12 @@ class PersistDataService extends ConfigurableService
     private const PACKAGE_FILENAME = 'QTIPackage';
     private const ZIP_EXTENSION = '.zip';
 
+    /**
+     * @throws Throwable
+     * @throws common_Exception
+     * @throws common_exception_Error
+     * @throws common_exception_NotFound
+     */
     public function persist(array $params): void
     {
         $fileSystem = $this->getDataStoreFilesystem();
