@@ -150,7 +150,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
     {
         $testUri = $this->getTestUri($deliveryResource);
 
-        return new core_kernel_classes_Resource($testUri);
+        return $this->getResource($testUri);
     }
 
     /**
