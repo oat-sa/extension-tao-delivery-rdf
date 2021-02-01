@@ -83,7 +83,7 @@ class DeliveryMetadataListener extends ConfigurableService
         $queueDispatcher->createTask(
             new MetaDataDeliverySyncTask(),
             $params,
-            __('Continue try to sync GCP of delivery "%s".', $params['deliveryId'])
+            __('Continue try to sync metadata of delivery "%s".', $params['deliveryId'])
         );
     }
 
