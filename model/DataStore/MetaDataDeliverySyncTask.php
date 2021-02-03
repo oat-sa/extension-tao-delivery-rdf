@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\DataStore;
 
 use common_exception_Error;
-use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use core_kernel_persistence_Exception;
 use JsonSerializable;
@@ -83,7 +82,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
      */
     private function getQueueDispatcher(): ConfigurableService
     {
-        return $this->getServiceManager()->get(QueueDispatcher::SERVICE_ID);
+        return $this->getServiceLocator()->get(QueueDispatcher::SERVICE_ID);
     }
 
     /**
@@ -159,10 +158,9 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
     private function getTestUri(core_kernel_classes_Resource $deliveryResource): ?string
     {
         $testProperty = $this->getProperty(DeliveryAssemblyService::PROPERTY_ORIGIN);
+        $test = $deliveryResource->getOnePropertyValue($testProperty);
 
-        return ($deliveryResource->getOnePropertyValue($testProperty)) ?
-            $deliveryResource->getOnePropertyValue($testProperty)->getUri() :
-            null;
+        return ($test) ? $test->getUri() : null;
     }
 
     private function getMetaDataCompiler(): ResourceJsonMetadataCompiler
