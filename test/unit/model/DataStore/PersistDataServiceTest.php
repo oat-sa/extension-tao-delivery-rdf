@@ -15,10 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019  (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021  (original work) Open Assessment Technologies SA;
  */
 
-namespace oat\taoDeliveryRdf\test\unit\model\assembly;
+namespace oat\taoDeliveryRdf\test\unit\model\DataStore;
 
 use oat\generis\test\TestCase;
 use oat\oatbox\filesystem\FileSystem;
