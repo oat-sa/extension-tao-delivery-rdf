@@ -46,7 +46,7 @@ class PersistDataService extends ConfigurableService
     /** @var ExporterInterface */
     private $exporter;
 
-    public function __construct($options = [], $exporter)
+    public function __construct(array $options = [], $exporter = null)
     {
         parent::__construct();
         $this->setOptions($options);
