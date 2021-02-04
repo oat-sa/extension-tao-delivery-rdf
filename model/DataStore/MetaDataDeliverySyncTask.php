@@ -80,7 +80,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
     /**
      * @throws InvalidServiceManagerException
      */
-    private function getQueueDispatcher(): ConfigurableService
+    private function getQueueDispatcher(): QueueDispatcher
     {
         return $this->getServiceLocator()->get(QueueDispatcher::SERVICE_ID);
     }
