@@ -61,8 +61,7 @@ class PersistDataServiceTest extends TestCase
         ]);
 
         $this->subject = new PersistDataService(
-            [],
-            $this->exporterHelper
+            [PersistDataService::OPTION_EXPORTER_SERVICE => $this->exporterHelper]
         );
 
         $this->subject->setServiceLocator($serviceLocator);

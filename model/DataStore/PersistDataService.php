@@ -42,16 +42,10 @@ class PersistDataService extends ConfigurableService
     private const ITEM_META_DATA_JSON = 'itemMetaData.json';
     private const PACKAGE_FILENAME = 'QTIPackage';
     private const ZIP_EXTENSION = '.zip';
+    public const OPTION_EXPORTER_SERVICE = 'exporter_service';
 
     /** @var ExporterInterface */
     private $exporter;
-
-    public function __construct(array $options = [], $exporter = null)
-    {
-        parent::__construct();
-        $this->setOptions($options);
-        $this->exporter = ($exporter instanceof ExporterInterface) ? $exporter : $this->getTestExporter();
-    }
 
     /**
      * @throws Throwable
@@ -105,7 +99,7 @@ class PersistDataService extends ConfigurableService
         $folder = $tempDir->createTempDir();
 
         try {
-            $this->exporter->export(
+            $this->getTestExporter()->export(
                 [
                     'filename' => self::PACKAGE_FILENAME,
                     'instances' => $testUri,
@@ -157,6 +151,12 @@ class PersistDataService extends ConfigurableService
 
     private function getTestExporter(): ExporterInterface
     {
+        $exporter = $this->getOption(self::OPTION_EXPORTER_SERVICE);
+
+        if ($exporter) {
+            return $exporter;
+        }
+
         return new taoQtiTest_models_classes_export_TestExport22();
     }
 
