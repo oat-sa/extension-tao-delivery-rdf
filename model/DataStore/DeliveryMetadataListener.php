@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\DataStore;
 
-use http\Exception\RuntimeException;
 use oat\oatbox\event\Event;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
@@ -30,6 +29,7 @@ use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\taoDeliveryRdf\model\event\AbstractDeliveryEvent;
+use RuntimeException;
 use Throwable;
 
 class DeliveryMetadataListener extends ConfigurableService
@@ -63,7 +63,7 @@ class DeliveryMetadataListener extends ConfigurableService
      */
     private function getQueueDispatcher(): ConfigurableService
     {
-        return $this->getServiceManager()->get(QueueDispatcher::SERVICE_ID);
+        return $this->getServiceLocator()->get(QueueDispatcher::SERVICE_ID);
     }
 
     /**

@@ -30,6 +30,7 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\helpers\FileHelperService;
 use tao_helpers_Uri;
+use tao_models_classes_export_ExportHandler as ExporterInterface;
 use taoQtiTest_models_classes_export_TestExport22;
 use Throwable;
 
@@ -41,6 +42,10 @@ class PersistDataService extends ConfigurableService
     private const ITEM_META_DATA_JSON = 'itemMetaData.json';
     private const PACKAGE_FILENAME = 'QTIPackage';
     private const ZIP_EXTENSION = '.zip';
+    public const OPTION_EXPORTER_SERVICE = 'exporter_service';
+
+    /** @var ExporterInterface */
+    private $exporter;
 
     /**
      * @throws Throwable
@@ -93,9 +98,8 @@ class PersistDataService extends ConfigurableService
         $tempDir = $this->getServiceLocator()->get(FileHelperService::class);
         $folder = $tempDir->createTempDir();
 
-        $testExporter = $this->getTestExporter();
         try {
-            $testExporter->export(
+            $this->getTestExporter()->export(
                 [
                     'filename' => self::PACKAGE_FILENAME,
                     'instances' => $testUri,
@@ -145,8 +149,14 @@ class PersistDataService extends ConfigurableService
         }
     }
 
-    private function getTestExporter(): taoQtiTest_models_classes_export_TestExport22
+    private function getTestExporter(): ExporterInterface
     {
+        $exporter = $this->getOption(self::OPTION_EXPORTER_SERVICE);
+
+        if ($exporter) {
+            return $exporter;
+        }
+
         return new taoQtiTest_models_classes_export_TestExport22();
     }
 
