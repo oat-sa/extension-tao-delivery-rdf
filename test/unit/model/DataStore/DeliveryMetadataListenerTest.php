@@ -36,7 +36,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class DeliveryMetadataListenerTest extends TestCase
 {
     use OntologyMockTrait;
-    use LoggerAwareTrait;
 
     /** @var ServiceLocatorInterface */
     private $serviceLocator;
