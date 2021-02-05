@@ -160,7 +160,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         $testProperty = $this->getProperty(DeliveryAssemblyService::PROPERTY_ORIGIN);
         $test = $deliveryResource->getOnePropertyValue($testProperty);
 
-        return ($test) ? $test->getUri() : null;
+        return $test ? $test->getUri() : null;
     }
 
     private function getMetaDataCompiler(): ResourceJsonMetadataCompiler
