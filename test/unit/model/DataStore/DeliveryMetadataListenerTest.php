@@ -78,7 +78,6 @@ class DeliveryMetadataListenerTest extends TestCase
 
     public function testWhenDeliveryIsPublished(): void
     {
-
         $class = $this->ontology->getClass('http://tao.tld/bogusUri');
         $class->createInstance('Bogus');
 
