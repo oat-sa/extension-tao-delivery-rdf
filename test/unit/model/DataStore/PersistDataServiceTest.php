@@ -17,7 +17,7 @@
  *
  * Copyright (c) 2021  (original work) Open Assessment Technologies SA;
  */
- 
+
 declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\test\unit\model\DataStore;
@@ -87,15 +87,18 @@ class PersistDataServiceTest extends TestCase
         $this->subject->persist($params);
     }
 
-
-    /**
-     * @return array[]
-     */
     public function provideDataForPersist(): array
     {
         return [
             [
-                ['deliveryId' => 'bogus', 'testUri' => 'testBogus'], ''
+                [
+                    'deliveryId' => 'bogus',
+                    'testUri' => 'testBogus',
+                    'deliveryMetaData' => [],
+                    'testMetaData' => [],
+                    'itemMetaData' => [],
+
+                ], ''
             ]
         ];
     }
