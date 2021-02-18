@@ -37,16 +37,7 @@ return [
   'label'       => 'Delivery Management',
   'description' => 'Manages deliveries using the ontology',
   'license'     => 'GPL-2.0',
-  'version'     => '13.3.2',
     'author'      => 'Open Assessment Technologies SA',
-    'requires'    => [
-        'generis'     => '>=12.32.1',
-        'tao'         => '>=45.0.0',
-        'taoGroups'   => '>=4.0.0',
-        'taoTests'    => '>=12.1.0',
-        'taoQtiTest'  => '>=35.4.0',
-        'taoDelivery' => '>=13.3.0'
-    ],
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager',
     'acl' => [
         ['grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoDeliveryRdfManager', ['ext' => 'taoDeliveryRdf']],
@@ -71,7 +62,6 @@ return [
             RegisterDataStoreServices::class
         ]
     ],
-    //'uninstall' => array(),
     'update' => Updater::class,
     'routes' => [
         '/taoDeliveryRdf' => 'oat\\taoDeliveryRdf\\controller'
