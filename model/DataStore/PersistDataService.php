@@ -29,6 +29,7 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\helpers\FileHelperService;
+use tao_helpers_File;
 use tao_helpers_Uri;
 use tao_models_classes_export_ExportHandler as ExporterInterface;
 use taoQtiTest_models_classes_export_TestExport22;
@@ -55,13 +56,7 @@ class PersistDataService extends ConfigurableService
      */
     public function persist(array $params): void
     {
-        $fileSystem = $this->getDataStoreFilesystem();
-        $folder = $this->getFolderName($params['deliveryId']);
-
-        $this->persistData($fileSystem, $folder, self::DELIVERY_META_DATA_JSON, $params['deliveryMetaData']);
-        $this->persistData($fileSystem, $folder, self::TEST_META_DATA_JSON, $params['testMetaData']);
-        $this->persistData($fileSystem, $folder, self::ITEM_META_DATA_JSON, $params['itemMetaData']);
-        $this->persistExportedTest($params['deliveryId'], $params['testUri']);
+        $this->persistArchive($params['deliveryId'], $params);
     }
 
     /**
@@ -81,8 +76,8 @@ class PersistDataService extends ConfigurableService
 
     private function persistData(FileSystem $fileSystem, string $folder, string $fileName, $params): void
     {
-        if (!$fileSystem->has($folder . DIRECTORY_SEPARATOR . $fileName)) {
-            $fileSystem->write($folder . DIRECTORY_SEPARATOR . $fileName, json_encode($params));
+        if (!$fileSystem->has($this->concatenatePath($folder, $fileName))) {
+            $fileSystem->write($this->concatenatePath($folder, $fileName), json_encode($params));
         }
     }
 
@@ -92,8 +87,15 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function persistExportedTest(string $deliveryId, string $testUri): void
+    private function persistArchive(string $deliveryId, array $params): void
     {
+        $fileSystem = $this->getDataStoreFilesystem();
+        $folder = $this->getFolderName($params['deliveryId']);
+
+        $this->persistData($fileSystem, $folder, self::DELIVERY_META_DATA_JSON, $params['deliveryMetaData']);
+        $this->persistData($fileSystem, $folder, self::TEST_META_DATA_JSON, $params['testMetaData']);
+        $this->persistData($fileSystem, $folder, self::ITEM_META_DATA_JSON, $params['itemMetaData']);
+
         /** @var FileHelperService $tempDir */
         $tempDir = $this->getServiceLocator()->get(FileHelperService::class);
         $folder = $tempDir->createTempDir();
@@ -102,8 +104,8 @@ class PersistDataService extends ConfigurableService
             $this->getTestExporter()->export(
                 [
                     'filename' => self::PACKAGE_FILENAME,
-                    'instances' => $testUri,
-                    'uri' => $testUri
+                    'instances' => $params['testUri'],
+                    'uri' => $params['testUri']
                 ],
                 $folder
             );
@@ -134,6 +136,10 @@ class PersistDataService extends ConfigurableService
                     self::PACKAGE_FILENAME,
                     self::ZIP_EXTENSION
                 );
+                $this->addMetaDataFile($fileName, self::DELIVERY_META_DATA_JSON);
+                $this->addMetaDataFile($fileName, self::TEST_META_DATA_JSON);
+                $this->addMetaDataFile($fileName, self::ITEM_META_DATA_JSON);
+                //move the zip
                 if ($this->getDataStoreFilesystem()->has($fileName)) {
                     $this->getDataStoreFilesystem()->update(
                         $fileName,
@@ -163,5 +169,24 @@ class PersistDataService extends ConfigurableService
     private function getFileSystemManager(): FileSystemService
     {
         return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
+    }
+
+    /**
+     * @param string $folder
+     * @param string $fileName
+     * @return string
+     */
+    private function concatenatePath(...$fileName): string
+    {
+        return implode(DIRECTORY_SEPARATOR, $fileName);
+    }
+
+    private function addMetaDataFile($zipFile, string $fileToAdd): bool
+    {
+        $file = $this->getDataStoreFilesystem()->get($fileToAdd);
+
+        return $file ?
+            (bool)tao_helpers_File::addFilesToZip($zipFile, $file, $fileToAdd) :
+            false;
     }
 }
