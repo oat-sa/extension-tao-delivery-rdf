@@ -29,11 +29,11 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\helpers\FileHelperService;
-use tao_helpers_File;
 use tao_helpers_Uri;
 use tao_models_classes_export_ExportHandler as ExporterInterface;
 use taoQtiTest_models_classes_export_TestExport22;
 use Throwable;
+use ZipArchive;
 
 class PersistDataService extends ConfigurableService
 {
@@ -43,10 +43,7 @@ class PersistDataService extends ConfigurableService
     private const ITEM_META_DATA_JSON = 'itemMetaData.json';
     private const PACKAGE_FILENAME = 'QTIPackage';
     private const ZIP_EXTENSION = '.zip';
-    public const OPTION_EXPORTER_SERVICE = 'exporter_service';
-
-    /** @var ExporterInterface */
-    private $exporter;
+    public const  OPTION_EXPORTER_SERVICE = 'exporter_service';
 
     /**
      * @throws Throwable
@@ -74,13 +71,6 @@ class PersistDataService extends ConfigurableService
         return tao_helpers_Uri::encode($deliveryId);
     }
 
-    private function persistData(FileSystem $fileSystem, string $folder, string $fileName, $params): void
-    {
-        if (!$fileSystem->has($this->concatenatePath($folder, $fileName))) {
-            $fileSystem->write($this->concatenatePath($folder, $fileName), json_encode($params));
-        }
-    }
-
     /**
      * @throws Throwable
      * @throws common_Exception
@@ -89,13 +79,6 @@ class PersistDataService extends ConfigurableService
      */
     private function persistArchive(string $deliveryId, array $params): void
     {
-        $fileSystem = $this->getDataStoreFilesystem();
-        $folder = $this->getFolderName($params['deliveryId']);
-
-        $this->persistData($fileSystem, $folder, self::DELIVERY_META_DATA_JSON, $params['deliveryMetaData']);
-        $this->persistData($fileSystem, $folder, self::TEST_META_DATA_JSON, $params['testMetaData']);
-        $this->persistData($fileSystem, $folder, self::ITEM_META_DATA_JSON, $params['itemMetaData']);
-
         /** @var FileHelperService $tempDir */
         $tempDir = $this->getServiceLocator()->get(FileHelperService::class);
         $folder = $tempDir->createTempDir();
@@ -110,7 +93,7 @@ class PersistDataService extends ConfigurableService
                 $folder
             );
 
-            $this->moveExportedZipTest($folder, $deliveryId);
+            $this->moveExportedZipTest($folder, $deliveryId, $params);
         } finally {
             $tempDir->removeDirectory($folder);
         }
@@ -120,7 +103,7 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function moveExportedZipTest(string $folder, string $deliveryId): void
+    private function moveExportedZipTest(string $folder, string $deliveryId, array $params): void
     {
         $zipFiles = glob(
             sprintf('%s%s*%s', $folder, self::PACKAGE_FILENAME, self::ZIP_EXTENSION)
@@ -128,26 +111,18 @@ class PersistDataService extends ConfigurableService
 
         if (!empty($zipFiles)) {
             foreach ($zipFiles as $zipFile) {
+                $zipFileName = $this->getZipFileName($deliveryId);
+                $this->addMetaDataToArchive($zipFile, $params);
                 $contents = file_get_contents($zipFile);
-                $fileName = sprintf(
-                    '%s%s%s%s',
-                    $this->getFolderName($deliveryId),
-                    DIRECTORY_SEPARATOR,
-                    self::PACKAGE_FILENAME,
-                    self::ZIP_EXTENSION
-                );
-                $this->addMetaDataFile($fileName, self::DELIVERY_META_DATA_JSON);
-                $this->addMetaDataFile($fileName, self::TEST_META_DATA_JSON);
-                $this->addMetaDataFile($fileName, self::ITEM_META_DATA_JSON);
-                //move the zip
-                if ($this->getDataStoreFilesystem()->has($fileName)) {
+
+                if ($this->getDataStoreFilesystem()->has($zipFileName)) {
                     $this->getDataStoreFilesystem()->update(
-                        $fileName,
+                        $zipFileName,
                         $contents
                     );
                 } else {
                     $this->getDataStoreFilesystem()->write(
-                        $fileName,
+                        $zipFileName,
                         $contents
                     );
                 }
@@ -171,22 +146,48 @@ class PersistDataService extends ConfigurableService
         return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
     }
 
-    /**
-     * @param string $folder
-     * @param string $fileName
-     * @return string
-     */
-    private function concatenatePath(...$fileName): string
+    private function addMetaDataFile($zipFile, string $fileNameToAdd, string $content): bool
     {
-        return implode(DIRECTORY_SEPARATOR, $fileName);
+        $return = false;
+
+        try {
+            $return = $zipFile->addFromString($fileNameToAdd, $content);
+        } catch (Throwable $exception) {
+            $this->logError(
+                sprintf('Error while adding file %s to the zip file  with message: %s ',
+                    $fileNameToAdd,
+                    $exception->getMessage())
+            );
+        }
+
+        return $return;
     }
 
-    private function addMetaDataFile($zipFile, string $fileToAdd): bool
+    private function addMetaDataToArchive($zipFile, array $metaData): void
     {
-        $file = $this->getDataStoreFilesystem()->get($fileToAdd);
+        $zipArchive = new ZipArchive();
 
-        return $file ?
-            (bool)tao_helpers_File::addFilesToZip($zipFile, $file, $fileToAdd) :
-            false;
+        $zipArchive->open($zipFile);
+
+        $this->addMetaDataFile($zipArchive, self::DELIVERY_META_DATA_JSON, json_encode($metaData['deliveryMetaData']));
+        $this->addMetaDataFile($zipArchive, self::TEST_META_DATA_JSON, json_encode($metaData['testMetaData']));
+        $this->addMetaDataFile($zipArchive, self::ITEM_META_DATA_JSON, json_encode($metaData['itemMetaData']));
+
+        $zipArchive->close();
+    }
+
+    /**
+     * @param string $deliveryId
+     * @return string
+     */
+    private function getZipFileName(string $deliveryId): string
+    {
+        return sprintf(
+            '%s%s%s%s',
+            $this->getFolderName($deliveryId),
+            DIRECTORY_SEPARATOR,
+            self::PACKAGE_FILENAME,
+            self::ZIP_EXTENSION
+        );
     }
 }
