@@ -33,14 +33,10 @@ use tao_helpers_Uri;
 use tao_models_classes_export_ExportHandler as ExporterInterface;
 use taoQtiTest_models_classes_export_TestExport22;
 use Throwable;
-use ZipArchive;
 
 class PersistDataService extends ConfigurableService
 {
     private const DATA_STORE = 'dataStore';
-    private const DELIVERY_META_DATA_JSON = 'deliveryMetaData.json';
-    private const TEST_META_DATA_JSON = 'testMetaData.json';
-    private const ITEM_META_DATA_JSON = 'itemMetaData.json';
     private const PACKAGE_FILENAME = 'QTIPackage';
     private const ZIP_EXTENSION = '.zip';
     public const  OPTION_EXPORTER_SERVICE = 'exporter_service';
@@ -112,7 +108,7 @@ class PersistDataService extends ConfigurableService
         if (!empty($zipFiles)) {
             foreach ($zipFiles as $zipFile) {
                 $zipFileName = $this->getZipFileName($deliveryId);
-                $this->addMetaDataToArchive($zipFile, $params);
+                $this->getProcessDataService()->process($zipFile, $params);
                 $contents = file_get_contents($zipFile);
 
                 if ($this->getDataStoreFilesystem()->has($zipFileName)) {
@@ -146,22 +142,9 @@ class PersistDataService extends ConfigurableService
         return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
     }
 
-    private function addMetaDataFile(ZipArchive $zipFile, string $fileNameToAdd, string $content): bool
+    private function getProcessDataService(): ProcessDataService
     {
-        return $zipFile->addFromString($fileNameToAdd, $content);
-    }
-
-    private function addMetaDataToArchive(string $zipFile, array $metaData): void
-    {
-        $zipArchive = new ZipArchive();
-
-        $zipArchive->open($zipFile);
-
-        $this->addMetaDataFile($zipArchive, self::DELIVERY_META_DATA_JSON, json_encode($metaData['deliveryMetaData']));
-        $this->addMetaDataFile($zipArchive, self::TEST_META_DATA_JSON, json_encode($metaData['testMetaData']));
-        $this->addMetaDataFile($zipArchive, self::ITEM_META_DATA_JSON, json_encode($metaData['itemMetaData']));
-
-        $zipArchive->close();
+        return $this->getServiceLocator()->get(ProcessDataService::class);
     }
 
     private function getZipFileName(string $deliveryId): string
