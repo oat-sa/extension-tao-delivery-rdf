@@ -146,7 +146,7 @@ class PersistDataService extends ConfigurableService
         return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
     }
 
-    private function addMetaDataFile($zipFile, string $fileNameToAdd, string $content): bool
+    private function addMetaDataFile(ZipArchive $zipFile, string $fileNameToAdd, string $content): bool
     {
         $return = false;
 
@@ -163,7 +163,7 @@ class PersistDataService extends ConfigurableService
         return $return;
     }
 
-    private function addMetaDataToArchive($zipFile, array $metaData): void
+    private function addMetaDataToArchive(string $zipFile, array $metaData): void
     {
         $zipArchive = new ZipArchive();
 
@@ -176,10 +176,6 @@ class PersistDataService extends ConfigurableService
         $zipArchive->close();
     }
 
-    /**
-     * @param string $deliveryId
-     * @return string
-     */
     private function getZipFileName(string $deliveryId): string
     {
         return sprintf(
