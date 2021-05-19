@@ -148,19 +148,7 @@ class PersistDataService extends ConfigurableService
 
     private function addMetaDataFile(ZipArchive $zipFile, string $fileNameToAdd, string $content): bool
     {
-        $return = false;
-
-        try {
-            $return = $zipFile->addFromString($fileNameToAdd, $content);
-        } catch (Throwable $exception) {
-            $this->logError(
-                sprintf('Error while adding file %s to the zip file  with message: %s ',
-                    $fileNameToAdd,
-                    $exception->getMessage())
-            );
-        }
-
-        return $return;
+        return $zipFile->addFromString($fileNameToAdd, $content);
     }
 
     private function addMetaDataToArchive(string $zipFile, array $metaData): void
