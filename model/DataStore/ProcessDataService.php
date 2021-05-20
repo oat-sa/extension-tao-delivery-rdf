@@ -27,12 +27,10 @@ use ZipArchive;
 
 class ProcessDataService extends ConfigurableService
 {
-
     private const DELIVERY_META_DATA_JSON = 'deliveryMetaData.json';
     private const TEST_META_DATA_JSON = 'testMetaData.json';
     private const ITEM_META_DATA_JSON = 'itemMetaData.json';
     public const  OPTION_ZIP_ARCHIVE_SERVICE = 'zipArchive';
-
 
     public function process(string $zipFile, array $metaData): void
     {
