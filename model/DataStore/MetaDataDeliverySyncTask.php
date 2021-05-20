@@ -96,7 +96,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         $queueDispatcher->createTask(
             $this,
             $params,
-            __('Continue try to sync GCP of delivery "%s".', $params['deliveryId'])
+            __('DataStore sync retry for delivery "%s".', $params['deliveryId'])
         );
     }
 
