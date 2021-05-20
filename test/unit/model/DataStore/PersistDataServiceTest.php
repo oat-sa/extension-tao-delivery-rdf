@@ -78,12 +78,6 @@ class PersistDataServiceTest extends TestCase
 
         $this->exporterHelper->expects($this->once())->method('export')->willReturn(true);
 
-        $this->fileSystem->expects($this->exactly(3))->method('has')->willReturn(false);
-        $this->fileSystem->expects($this->exactly(3))->method('write')->willReturn(true);
-
-        $this->filesystemService->expects($this->once())->method('getFileSystem')
-            ->willReturn($this->fileSystem);
-
         $this->subject->persist($params);
     }
 

@@ -37,15 +37,9 @@ use Throwable;
 class PersistDataService extends ConfigurableService
 {
     private const DATA_STORE = 'dataStore';
-    private const DELIVERY_META_DATA_JSON = 'deliveryMetaData.json';
-    private const TEST_META_DATA_JSON = 'testMetaData.json';
-    private const ITEM_META_DATA_JSON = 'itemMetaData.json';
     private const PACKAGE_FILENAME = 'QTIPackage';
     private const ZIP_EXTENSION = '.zip';
-    public const OPTION_EXPORTER_SERVICE = 'exporter_service';
-
-    /** @var ExporterInterface */
-    private $exporter;
+    public const  OPTION_EXPORTER_SERVICE = 'exporter_service';
 
     /**
      * @throws Throwable
@@ -55,13 +49,7 @@ class PersistDataService extends ConfigurableService
      */
     public function persist(array $params): void
     {
-        $fileSystem = $this->getDataStoreFilesystem();
-        $folder = $this->getFolderName($params['deliveryId']);
-
-        $this->persistData($fileSystem, $folder, self::DELIVERY_META_DATA_JSON, $params['deliveryMetaData']);
-        $this->persistData($fileSystem, $folder, self::TEST_META_DATA_JSON, $params['testMetaData']);
-        $this->persistData($fileSystem, $folder, self::ITEM_META_DATA_JSON, $params['itemMetaData']);
-        $this->persistExportedTest($params['deliveryId'], $params['testUri']);
+        $this->persistArchive($params['deliveryId'], $params);
     }
 
     /**
@@ -79,20 +67,13 @@ class PersistDataService extends ConfigurableService
         return tao_helpers_Uri::encode($deliveryId);
     }
 
-    private function persistData(FileSystem $fileSystem, string $folder, string $fileName, $params): void
-    {
-        if (!$fileSystem->has($folder . DIRECTORY_SEPARATOR . $fileName)) {
-            $fileSystem->write($folder . DIRECTORY_SEPARATOR . $fileName, json_encode($params));
-        }
-    }
-
     /**
      * @throws Throwable
      * @throws common_Exception
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function persistExportedTest(string $deliveryId, string $testUri): void
+    private function persistArchive(string $deliveryId, array $params): void
     {
         /** @var FileHelperService $tempDir */
         $tempDir = $this->getServiceLocator()->get(FileHelperService::class);
@@ -102,13 +83,13 @@ class PersistDataService extends ConfigurableService
             $this->getTestExporter()->export(
                 [
                     'filename' => self::PACKAGE_FILENAME,
-                    'instances' => $testUri,
-                    'uri' => $testUri
+                    'instances' => $params['testUri'],
+                    'uri' => $params['testUri']
                 ],
                 $folder
             );
 
-            $this->moveExportedZipTest($folder, $deliveryId);
+            $this->moveExportedZipTest($folder, $deliveryId, $params);
         } finally {
             $tempDir->removeDirectory($folder);
         }
@@ -118,7 +99,7 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function moveExportedZipTest(string $folder, string $deliveryId): void
+    private function moveExportedZipTest(string $folder, string $deliveryId, array $params): void
     {
         $zipFiles = glob(
             sprintf('%s%s*%s', $folder, self::PACKAGE_FILENAME, self::ZIP_EXTENSION)
@@ -126,22 +107,18 @@ class PersistDataService extends ConfigurableService
 
         if (!empty($zipFiles)) {
             foreach ($zipFiles as $zipFile) {
+                $zipFileName = $this->getZipFileName($deliveryId);
+                $this->getProcessDataService()->process($zipFile, $params);
                 $contents = file_get_contents($zipFile);
-                $fileName = sprintf(
-                    '%s%s%s%s',
-                    $this->getFolderName($deliveryId),
-                    DIRECTORY_SEPARATOR,
-                    self::PACKAGE_FILENAME,
-                    self::ZIP_EXTENSION
-                );
-                if ($this->getDataStoreFilesystem()->has($fileName)) {
+
+                if ($this->getDataStoreFilesystem()->has($zipFileName)) {
                     $this->getDataStoreFilesystem()->update(
-                        $fileName,
+                        $zipFileName,
                         $contents
                     );
                 } else {
                     $this->getDataStoreFilesystem()->write(
-                        $fileName,
+                        $zipFileName,
                         $contents
                     );
                 }
@@ -163,5 +140,21 @@ class PersistDataService extends ConfigurableService
     private function getFileSystemManager(): FileSystemService
     {
         return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
+    }
+
+    private function getProcessDataService(): ProcessDataService
+    {
+        return $this->getServiceLocator()->get(ProcessDataService::class);
+    }
+
+    private function getZipFileName(string $deliveryId): string
+    {
+        return sprintf(
+            '%s%s%s%s',
+            $this->getFolderName($deliveryId),
+            DIRECTORY_SEPARATOR,
+            self::PACKAGE_FILENAME,
+            self::ZIP_EXTENSION
+        );
     }
 }
