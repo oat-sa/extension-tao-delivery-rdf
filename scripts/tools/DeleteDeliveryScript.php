@@ -32,6 +32,7 @@ use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
  * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\tools\DeleteDeliveryScript'
  *
  * Class TerminateSession
+ *
  * @package oat\taoDeliveryRdf\scripts\tools
  */
 class DeleteDeliveryScript extends ScriptAction
@@ -44,21 +45,27 @@ class DeleteDeliveryScript extends ScriptAction
     protected function provideUsage(): array
     {
         return [
-            'prefix' => 'h',
-            'longPrefix' => 'help',
-            'description' => 'Prints a help statement'
+            'prefix'      => 'h',
+            'longPrefix'  => 'help',
+            'description' => 'Prints a help statement',
         ];
     }
 
     protected function provideOptions(): array
     {
         return [
-            'delivery' => [
-                'prefix' => 'd',
-                'longPrefix' => 'delivery',
-                'required' => true,
-                'description' => 'A delivery ID.'
-            ]
+            'delivery'  => [
+                'prefix'      => 'd',
+                'longPrefix'  => 'delivery',
+                'required'    => true,
+                'description' => 'A delivery ID',
+            ],
+            'recursive' => [
+                'prefix'      => 'r',
+                'longPrefix'  => 'recursive',
+                'flag'        => true,
+                'description' => 'Remove all the linked resources such as Tests or Items',
+            ],
         ];
     }
 
@@ -72,11 +79,11 @@ class DeleteDeliveryScript extends ScriptAction
         $report = Report::createInfo('Deleting Delivery ...');
 
         /** @var DeliveryDeleteService $deliveryDeleteService */
-        $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
+        $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::class);
 
         $deliveryId = $this->getOption('delivery');
         try {
-            $deliveryDeleteService->execute(new DeliveryDeleteRequest($deliveryId));
+            $deliveryDeleteService->execute($this->createDeliveryDeleteRequest());
             $report->add($deliveryDeleteService->getReport());
         } catch (Exception $exception) {
             $report->add(Report::createError('Failing deleting delivery: ' . $deliveryId));
@@ -84,5 +91,16 @@ class DeleteDeliveryScript extends ScriptAction
         }
 
         return $report;
+    }
+
+    private function createDeliveryDeleteRequest(): DeliveryDeleteRequest
+    {
+        $deliveryDeleteRequest = new DeliveryDeleteRequest($this->getOption('delivery'));
+
+        if ($this->getOption('recursive')) {
+            $deliveryDeleteRequest->setIsRecursive();
+        }
+
+        return $deliveryDeleteRequest;
     }
 }

@@ -21,27 +21,35 @@
 
 namespace oat\taoDeliveryRdf\model\Delete;
 
-use core_kernel_classes_Resource;
+use core_kernel_classes_Resource as KernelResource;
 
 class DeliveryDeleteRequest
 {
     /** @var string  */
     private $deliveryId;
 
-    /**
-     * DeliveryDeleteRequest constructor.
-     * @param $deliveryId string
-     */
-    public function __construct($deliveryId)
+    /** @var bool */
+    private $isRecursive = false;
+
+    public function __construct(string $deliveryId)
     {
         $this->deliveryId = $deliveryId;
     }
 
-    /**
-     * @return core_kernel_classes_Resource
-     */
-    public function getDeliveryResource()
+    public function getDeliveryResource(): KernelResource
     {
-        return new core_kernel_classes_Resource($this->deliveryId);
+        return new KernelResource($this->deliveryId);
+    }
+
+    public function isRecursive(): bool
+    {
+        return $this->isRecursive;
+    }
+
+    public function setIsRecursive(): self
+    {
+        $this->isRecursive = true;
+
+        return $this;
     }
 }
