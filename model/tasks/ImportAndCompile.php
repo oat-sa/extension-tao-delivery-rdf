@@ -58,6 +58,10 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
     public function __invoke($params)
     {
         $this->checkParams($params);
+
+        /** @var string[] $customParams */
+        $customParams = $params[self::OPTION_CUSTOM];
+
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
         $file = $this->getFileReferenceSerializer()->unserializeFile($params[self::OPTION_FILE]);
         $report = null;
@@ -78,7 +82,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
             $label = 'Delivery of ' . $test->getLabel();
             $parent = $this->checkSubClasses($params[self::OPTION_DELIVERY_LABEL]);
             $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-            $compilationReport = $deliveryFactory->create($parent, $test, $label);
+            $compilationReport = $deliveryFactory->create($parent, $test, $label, null, $customParams);
 
             if ($compilationReport->getType() == \common_report_Report::TYPE_ERROR) {
                 \common_Logger::i('Unable to generate delivery execution ' .
@@ -86,7 +90,7 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
             }
             /** @var \core_kernel_classes_Resource $delivery */
             $delivery = $compilationReport->getData();
-            $customParams = $params[self::OPTION_CUSTOM];
+
             if (($delivery instanceof \core_kernel_classes_Resource) && is_array($customParams)) {
                 foreach ($customParams as $rdfKey => $rdfValue) {
                     $property = $this->getProperty($rdfKey);
