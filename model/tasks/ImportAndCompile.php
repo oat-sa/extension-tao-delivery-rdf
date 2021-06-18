@@ -72,6 +72,9 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
     {
         $this->checkParams($params);
 
+        /** @var string[] $customParams */
+        $customParams = $params[self::OPTION_CUSTOM];
+
         $file = $this->getFileReferenceSerializer()->unserializeFile($params[self::OPTION_FILE]);
         $report = null;
 
@@ -94,7 +97,7 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
             $label = 'Delivery of ' . $test->getLabel();
             $parent = $this->checkSubClasses($params[self::OPTION_DELIVERY_LABELS]);
             $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-            $compilationReport = $deliveryFactory->create($parent, $test, $label);
+            $compilationReport = $deliveryFactory->create($parent, $test, $label, null, $customParams);
 
             if ($compilationReport->getType() == Report::TYPE_ERROR) {
                 Logger::i(
@@ -104,7 +107,6 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
             }
             /** @var Resource $delivery */
             $delivery = $compilationReport->getData();
-            $customParams = $params[self::OPTION_CUSTOM];
 
             if ($delivery instanceof Resource && is_array($customParams)) {
                 foreach ($customParams as $rdfKey => $rdfValue) {

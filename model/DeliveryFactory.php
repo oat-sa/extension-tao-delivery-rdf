@@ -21,17 +21,22 @@
 
 namespace oat\taoDeliveryRdf\model;
 
+use common_report_Report as Report;
+use core_kernel_classes_ResourceFactory as ResourceFactory;
+use DomainException;
+use oat\generis\model\data\event\ResourceCreated;
 use oat\generis\model\OntologyAwareTrait;
+use oat\generis\model\OntologyRdf;
 use oat\generis\model\OntologyRdfs;
-use oat\oatbox\log\LoggerService;
 use oat\oatbox\service\ConfigurableService;
-use core_kernel_classes_Resource;
-use core_kernel_classes_Class;
+use core_kernel_classes_Resource as KernelResource;
+use core_kernel_classes_Class as KernelClass;
 use oat\tao\helpers\form\ValidationRuleRegistry;
 use oat\oatbox\event\EventManager;
+use oat\taoDelivery\model\container\delivery\AbstractContainer;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDelivery\model\container\delivery\ContainerProvider;
-use tao_models_classes_service_ServiceCall;
+use RuntimeException;
 
 /**
  * Services to manage Deliveries
@@ -44,16 +49,16 @@ class DeliveryFactory extends ConfigurableService
 {
     use OntologyAwareTrait;
 
-    const SERVICE_ID = 'taoDeliveryRdf/DeliveryFactory';
+    public const SERVICE_ID = 'taoDeliveryRdf/DeliveryFactory';
 
-    const OPTION_PROPERTIES = 'properties';
+    public const OPTION_PROPERTIES = 'properties';
 
     /**
      * 'initialProperties' => array(
      *      'uri_of_property'
      * )
      */
-    const OPTION_INITIAL_PROPERTIES = 'initialProperties';
+    public const OPTION_INITIAL_PROPERTIES = 'initialProperties';
 
     /**
      * initialPropertiesMap' => array(
@@ -65,25 +70,22 @@ class DeliveryFactory extends ConfigurableService
      *          )
      *      )
      */
-    const OPTION_INITIAL_PROPERTIES_MAP = 'initialPropertiesMap';
-    const OPTION_INITIAL_PROPERTIES_MAP_VALUES = 'values';
-    const OPTION_INITIAL_PROPERTIES_MAP_URI = 'uri';
+    public const OPTION_INITIAL_PROPERTIES_MAP = 'initialPropertiesMap';
+    public const OPTION_INITIAL_PROPERTIES_MAP_VALUES = 'values';
+    public const OPTION_INITIAL_PROPERTIES_MAP_URI = 'uri';
+    public const OPTION_NAMESPACE = 'namespace';
 
-    const PROPERTY_DELIVERY_COMPILE_TASK = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask';
+    public const PROPERTY_DELIVERY_COMPILE_TASK = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask';
 
     private $deliveryResource;
 
-    /**
-     * Creates a new simple delivery
-     *
-     * @param core_kernel_classes_Class $deliveryClass
-     * @param core_kernel_classes_Resource $test
-     * @param string $label
-     * @param core_kernel_classes_Resource $deliveryResource
-     * @return \common_report_Report
-     */
-    public function create(core_kernel_classes_Class $deliveryClass, core_kernel_classes_Resource $test, $label = '', core_kernel_classes_Resource $deliveryResource = null)
-    {
+    public function create(
+        KernelClass $deliveryClass,
+        KernelResource $test,
+        string $label = '',
+        KernelResource $deliveryResource = null,
+        array $additionalParameters = []
+    ): Report {
 
         \common_Logger::i('Creating ' . $label . ' with ' . $test->getLabel() . ' under ' . $deliveryClass->getLabel());
 
@@ -94,15 +96,20 @@ class DeliveryFactory extends ConfigurableService
 
             $propertyValues = $test->getPropertyValues($testPropretyInstance);
 
-            if ($validationValue == 'notEmpty' && empty($propertyValues)) {
-                $report = \common_report_Report::createFailure(__('Test publishing failed because "%s" is empty.', $testPropretyInstance->getLabel()));
+            if ($validationValue === 'notEmpty' && empty($propertyValues)) {
+                $report = Report::createFailure(__('Test publishing failed because "%s" is empty.', $testPropretyInstance->getLabel()));
 
                 return $report;
             }
         }
 
-        if (!$deliveryResource instanceof core_kernel_classes_Resource) {
-            $deliveryResource = \core_kernel_classes_ResourceFactory::create($deliveryClass);
+        if (!$deliveryResource instanceof KernelResource) {
+            $deliveryResource = $this->hasNamespace() && $additionalParameters
+                ? $this->createNamespacedDeliveryResource(
+                    $deliveryClass,
+                    $additionalParameters
+                )
+                : ResourceFactory::create($deliveryClass);
         }
 
         $this->deliveryResource = $deliveryResource;
@@ -112,7 +119,7 @@ class DeliveryFactory extends ConfigurableService
         $compiler = $this->getServiceLocator()->get(\taoTests_models_classes_TestsService::class)->getCompiler($test, $storage);
 
         $report = $compiler->compile();
-        if ($report->getType() == \common_report_Report::TYPE_SUCCESS) {
+        if ($report->getType() == Report::TYPE_SUCCESS) {
             $serviceCall = $report->getData();
 
             $properties = [
@@ -142,11 +149,11 @@ class DeliveryFactory extends ConfigurableService
 
     /**
      * @param $values
-     * @param core_kernel_classes_Resource $delivery
+     * @param KernelResource $delivery
      *
-     * @return core_kernel_classes_Resource
+     * @return KernelResource
      */
-    public function setInitialProperties($values, core_kernel_classes_Resource $delivery)
+    public function setInitialProperties($values, KernelResource $delivery)
     {
         $initialProperties = $this->getOption(self::OPTION_INITIAL_PROPERTIES);
 
@@ -199,29 +206,19 @@ class DeliveryFactory extends ConfigurableService
         return $initialPropertiesResponse;
     }
 
-    /**
-     * Create a delivery resource based on a successfull compilation
-     *
-     * @param core_kernel_classes_Class $deliveryClass
-     * @param \tao_models_classes_service_ServiceCall $serviceCall
-     * @param string $containerId
-     * @param string $containerParam
-     * @param array $properties
-     */
     protected function createDeliveryResource(
-        core_kernel_classes_Class $deliveryClass,
+        KernelClass $deliveryClass,
         \tao_models_classes_service_ServiceCall $serviceCall,
-        $container,
-        $properties = []
-    ) {
-
-        $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_TIME]      = time();
-        $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME]   = json_encode($serviceCall);
+        AbstractContainer $container = null,
+        array $properties = []
+    ): KernelResource {
+        $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_TIME]    = time();
+        $properties[DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME] = json_encode($serviceCall);
         if (!is_null($container)) {
             $properties[ContainerRuntime::PROPERTY_CONTAINER] = json_encode($container);
         }
 
-        if ($this->deliveryResource instanceof core_kernel_classes_Resource) {
+        if ($this->deliveryResource instanceof KernelResource) {
             $compilationInstance = $this->deliveryResource;
             $compilationInstance->setPropertiesValues($properties);
         } else {
@@ -229,5 +226,49 @@ class DeliveryFactory extends ConfigurableService
         }
 
         return $compilationInstance;
+    }
+
+    private function createNamespacedDeliveryResource(
+        KernelClass $deliveryClass,
+        array $additionalParameters
+    ): KernelResource {
+        $deliveryId = trim($additionalParameters[DeliveryAssemblyService::PROPERTY_ASSESSMENT_PROJECT_ID] ?? '');
+
+        if (!$deliveryId) {
+            throw new RuntimeException(
+                sprintf('%s must not be empty.', DeliveryAssemblyService::PROPERTY_ASSESSMENT_PROJECT_ID)
+            );
+        }
+
+        $delivery = $deliveryClass->getResource("{$this->getNamespace()}#$deliveryId");
+
+        $delivery->setPropertiesValues([OntologyRdf::RDF_TYPE => $deliveryClass]);
+
+        $this->getEventManager()->trigger(new ResourceCreated($delivery));
+
+        return $delivery;
+    }
+
+    private function hasNamespace(): bool
+    {
+        return $this->hasOption(static::OPTION_NAMESPACE);
+    }
+
+    private function getNamespace(): string
+    {
+        $namespace = rtrim($this->getOption(static::OPTION_NAMESPACE, ''), '#');
+
+        if ($namespace === LOCAL_NAMESPACE) {
+            throw new DomainException(
+                "Overridden namespace value must be different from a local one, $namespace given"
+            );
+        }
+
+        return $namespace;
+    }
+
+    private function getEventManager(): EventManager
+    {
+        return $this->getServiceLocator()->get(EventManager::class);
     }
 }
