@@ -40,6 +40,8 @@ use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use common_exception_InconsistentData as InconsistentDataException;
 use common_exception_MissingParameter as MissingParameterException;
+use taoItems_models_classes_ItemsService as ItemService;
+use taoTests_models_classes_TestsService as TestService;
 
 /**
  * Class ImportAndCompile
@@ -77,6 +79,8 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
 
         $file = $this->getFileReferenceSerializer()->unserializeFile($params[self::OPTION_FILE]);
         $report = null;
+        $test = null;
+        $items = [];
 
         try {
             $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
@@ -86,7 +90,10 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
 
             if ($report->getType() === Report::TYPE_SUCCESS) {
                 foreach ($report as $r) {
+                    /** @var Resource $test */
                     $test = $r->getData()->rdfsResource;
+                    /** @var Resource[] $items */
+                    $items = array_values($r->getData()->items);
                 }
             } else {
                 throw new CommonException(
@@ -120,6 +127,8 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
 
             return $report;
         } catch (Exception $e) {
+            $this->clearImportedData($test, ...$items);
+
             $detailedErrorReport = Report::createFailure($e->getMessage());
 
             if ($report) {
@@ -251,6 +260,21 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
         return $parent;
     }
 
+    private function clearImportedData(Resource $test = null, Resource ...$items): void
+    {
+        if (null === $test) {
+            return;
+        }
+
+        $itemService = $this->getItemService();
+
+        foreach ($items as $item) {
+            $itemService->deleteResource($item);
+        }
+
+        $this->getTestService()->deleteResource($test);
+    }
+
     /**
      * @param string $id
      *
@@ -263,5 +287,15 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
         $importersService = $this->getServiceManager()->get(ImportersService::SERVICE_ID);
 
         return $importersService->getImporter($id);
+    }
+
+    protected function getItemService(): ItemService
+    {
+        return $this->getServiceLocator()->get(ItemService::class);
+    }
+
+    protected function getTestService(): TestService
+    {
+        return $this->getServiceLocator()->get(TestService::class);
     }
 }
