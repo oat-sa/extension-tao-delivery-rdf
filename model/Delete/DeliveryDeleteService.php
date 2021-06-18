@@ -248,6 +248,10 @@ class DeliveryDeleteService extends ConfigurableService
     {
         $delivery = $this->request->getDeliveryResource();
 
+        if (!$delivery->exists()) {
+            return;
+        }
+
         $test = $delivery->getUniquePropertyValue(
             $delivery->getProperty(DeliveryAssemblyService::PROPERTY_ORIGIN)
         );
