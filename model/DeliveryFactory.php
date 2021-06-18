@@ -34,6 +34,8 @@ use core_kernel_classes_Class as KernelClass;
 use oat\tao\helpers\form\ValidationRuleRegistry;
 use oat\oatbox\event\EventManager;
 use oat\taoDelivery\model\container\delivery\AbstractContainer;
+use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
+use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDelivery\model\container\delivery\ContainerProvider;
 use RuntimeException;
@@ -240,7 +242,12 @@ class DeliveryFactory extends ConfigurableService
             );
         }
 
-        $delivery = $deliveryClass->getResource("{$this->getNamespace()}#$deliveryId");
+        $this->getDeliveryDeleteService()
+            ->execute(
+                $this->createDeliverDeleteRequest($deliveryId)
+            );
+
+        $delivery = $deliveryClass->getResource($this->createNamespacedDeliveryId($deliveryId));
 
         $delivery->setPropertiesValues([OntologyRdf::RDF_TYPE => $deliveryClass]);
 
@@ -267,8 +274,24 @@ class DeliveryFactory extends ConfigurableService
         return $namespace;
     }
 
+    private function createNamespacedDeliveryId(string $deliveryId): string
+    {
+        return "{$this->getNamespace()}#$deliveryId";
+    }
+
+    private function createDeliverDeleteRequest(string $deliveryId): DeliveryDeleteRequest
+    {
+        return (new DeliveryDeleteRequest($this->createNamespacedDeliveryId($deliveryId)))
+            ->setIsRecursive();
+    }
+
     private function getEventManager(): EventManager
     {
         return $this->getServiceLocator()->get(EventManager::class);
+    }
+
+    private function getDeliveryDeleteService(): DeliveryDeleteService
+    {
+        return $this->getServiceLocator()->get(DeliveryDeleteService::class);
     }
 }
