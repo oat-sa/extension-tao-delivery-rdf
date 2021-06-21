@@ -40,8 +40,7 @@ use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use common_exception_InconsistentData as InconsistentDataException;
 use common_exception_MissingParameter as MissingParameterException;
-use taoItems_models_classes_ItemsService as ItemService;
-use taoTests_models_classes_TestsService as TestService;
+use taoQtiTest_models_classes_QtiTestService as QtiTestService;
 
 /**
  * Class ImportAndCompile
@@ -80,11 +79,9 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
         $file = $this->getFileReferenceSerializer()->unserializeFile($params[self::OPTION_FILE]);
         $report = null;
         $test = null;
-        $items = [];
+        $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
 
         try {
-            $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
-
             /** @var Report $report */
             $report = $importer->import($file);
 
@@ -92,8 +89,6 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
                 foreach ($report as $r) {
                     /** @var Resource $test */
                     $test = $r->getData()->rdfsResource;
-                    /** @var Resource[] $items */
-                    $items = array_values($r->getData()->items);
                 }
             } else {
                 throw new CommonException(
@@ -127,7 +122,9 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
 
             return $report;
         } catch (Exception $e) {
-            $this->clearImportedData($test, ...$items);
+            if (null !== $report) {
+                $this->getQtiTestService()->clearRelatedResources($report);
+            }
 
             $detailedErrorReport = Report::createFailure($e->getMessage());
 
@@ -260,21 +257,6 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
         return $parent;
     }
 
-    private function clearImportedData(Resource $test = null, Resource ...$items): void
-    {
-        if (null === $test) {
-            return;
-        }
-
-        $itemService = $this->getItemService();
-
-        foreach ($items as $item) {
-            $itemService->deleteResource($item);
-        }
-
-        $this->getTestService()->deleteResource($test);
-    }
-
     /**
      * @param string $id
      *
@@ -289,13 +271,8 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
         return $importersService->getImporter($id);
     }
 
-    protected function getItemService(): ItemService
+    private function getQtiTestService(): QtiTestService
     {
-        return $this->getServiceLocator()->get(ItemService::class);
-    }
-
-    protected function getTestService(): TestService
-    {
-        return $this->getServiceLocator()->get(TestService::class);
+        return $this->getServiceLocator()->get(QtiTestService::class);
     }
 }
