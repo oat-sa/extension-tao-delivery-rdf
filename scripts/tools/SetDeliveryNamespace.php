@@ -52,7 +52,6 @@ class SetDeliveryNamespace extends ScriptAction
             'namespace' => [
                 'prefix'      => 'n',
                 'longPrefix'  => 'namespace',
-                'required'    => true,
                 'description' => 'A custom namespace for remotely published Delivery resources',
             ],
         ];
@@ -60,13 +59,17 @@ class SetDeliveryNamespace extends ScriptAction
 
     protected function run(): Report
     {
+        if (!$this->getOption('namespace')) {
+            return $this->unsetNamespace();
+        }
+
         $namespace = $this->getNamespace();
 
         $deliveryFactory = $this->getDeliveryFactory();
         $deliveryFactory->setOption(DeliveryFactory::OPTION_NAMESPACE, $namespace);
 
         try {
-            $this->getServiceManager()->register($deliveryFactory::SERVICE_ID, $deliveryFactory);
+            $this->setDeliveryFactory($deliveryFactory);
         } catch (Exception $exception) {
             return Report::createError(
                 "Failed to set \"$namespace\" Delivery namespace.",
@@ -81,6 +84,19 @@ class SetDeliveryNamespace extends ScriptAction
     protected function provideDescription(): string
     {
         return 'TAO DeliveryRDF - Set up remotely published Delivery resource namespace';
+    }
+
+    private function unsetNamespace(): Report
+    {
+        $deliveryFactory        = $this->getDeliveryFactory();
+        $deliveryFactoryOptions = $deliveryFactory->getOptions();
+
+        unset($deliveryFactoryOptions[DeliveryFactory::OPTION_NAMESPACE]);
+        $deliveryFactory->setOptions($deliveryFactoryOptions);
+
+        $this->setDeliveryFactory($deliveryFactory);
+
+        return Report::createSuccess('Removed a Delivery namespace.');
     }
 
     private function getNamespace(): string
@@ -99,5 +115,10 @@ class SetDeliveryNamespace extends ScriptAction
     private function getDeliveryFactory(): DeliveryFactory
     {
         return $this->getServiceLocator()->get(DeliveryFactory::class);
+    }
+
+    private function setDeliveryFactory(DeliveryFactory $deliveryFactory): void
+    {
+        $this->getServiceManager()->register($deliveryFactory::SERVICE_ID, $deliveryFactory);
     }
 }
