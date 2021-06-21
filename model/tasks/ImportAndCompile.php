@@ -31,8 +31,7 @@ use oat\tao\model\taskQueue\Task\TaskInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoTests\models\import\AbstractTestImporter;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
-use taoItems_models_classes_ItemsService as ItemService;
-use taoTests_models_classes_TestsService as TestService;
+use taoQtiTest_models_classes_QtiTestService as QtiTestService;
 
 /**
  * Class ImportAndCompile
@@ -68,10 +67,9 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         $file = $this->getFileReferenceSerializer()->unserializeFile($params[self::OPTION_FILE]);
         $report = null;
         $test = null;
-        $items = [];
-        try {
-            $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
+        $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
 
+        try {
             /** @var \common_report_Report $report */
             $report = $importer->import($file);
 
@@ -79,8 +77,6 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
                 foreach ($report as $r) {
                     /** @var \core_kernel_classes_Resource $test */
                     $test = $r->getData()->rdfsResource;
-                    /** @var \core_kernel_classes_Resource[] $items */
-                    $items = array_values($r->getData()->items);
                 }
             } else {
                 throw new \common_Exception($file->getBasename() . ' Unable to import test with message ' . $report->getMessage());
@@ -111,7 +107,9 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
 
             return $report;
         } catch (\Exception $e) {
-            $this->clearImportedData($test, ...$items);
+            if (null !== $report) {
+                $this->getQtiTestService()->clearRelatedResources($report);
+            }
 
             $detailedErrorReport = \common_report_Report::createFailure($e->getMessage());
             if ($report) {
@@ -219,28 +217,8 @@ class ImportAndCompile extends AbstractTaskAction implements \JsonSerializable
         return $queueDispatcher->createTask($action, $taskParameters, $taskTitle, null, true);
     }
 
-    private function clearImportedData(\core_kernel_classes_Resource $test = null, \core_kernel_classes_Resource ...$items): void
+    private function getQtiTestService(): QtiTestService
     {
-        if (null === $test) {
-            return;
-        }
-
-        $itemService = $this->getItemService();
-
-        foreach ($items as $item) {
-            $itemService->deleteResource($item);
-        }
-
-        $this->getTestService()->deleteResource($test);
-    }
-
-    protected function getItemService(): ItemService
-    {
-        return $this->getServiceLocator()->get(ItemService::class);
-    }
-
-    protected function getTestService(): TestService
-    {
-        return $this->getServiceLocator()->get(TestService::class);
+        return $this->getServiceLocator()->get(QtiTestService::class);
     }
 }
