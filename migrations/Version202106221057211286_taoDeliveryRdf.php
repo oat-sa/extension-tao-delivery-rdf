@@ -24,11 +24,7 @@ final class Version202106221057211286_taoDeliveryRdf extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addReport(
-            $this->propagate(
-                new SetDeliveryNamespace()
-            )(
-                []
-            )
+            $this->propagate(new SetDeliveryNamespace())([])
         );
 
         $this->addReport(
