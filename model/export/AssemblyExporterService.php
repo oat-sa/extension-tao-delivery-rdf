@@ -150,7 +150,7 @@ class AssemblyExporterService extends ConfigurableService
             $data['dir'][$id] = $directory->getPrefix();
         }
 
-        $runtime = $compiledDelivery->getUniquePropertyValue($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
+        $runtime = $compiledDelivery->getResource($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
         $serviceCall = tao_models_classes_service_ServiceCall::fromResource($runtime);
         $data['runtime'] = base64_encode($serviceCall->serializeToString());
         $rdfData = $this->rdfExporter->getRdfString([$compiledDelivery]);
