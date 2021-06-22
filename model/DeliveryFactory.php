@@ -23,7 +23,6 @@ namespace oat\taoDeliveryRdf\model;
 
 use common_report_Report as Report;
 use core_kernel_classes_ResourceFactory as ResourceFactory;
-use DomainException;
 use oat\generis\model\data\event\ResourceCreated;
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdf;
@@ -36,6 +35,8 @@ use oat\oatbox\event\EventManager;
 use oat\taoDelivery\model\container\delivery\AbstractContainer;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
+use oat\taoDeliveryRdf\model\Delivery\Business\Contract\DeliveryNamespaceRegistryInterface;
+use oat\taoDeliveryRdf\model\Delivery\Business\Domain\DeliveryNamespace;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDelivery\model\container\delivery\ContainerProvider;
 use RuntimeException;
@@ -106,7 +107,7 @@ class DeliveryFactory extends ConfigurableService
         }
 
         if (!$deliveryResource instanceof KernelResource) {
-            $deliveryResource = $this->hasNamespace() && $additionalParameters
+            $deliveryResource = $this->getNamespace() && $additionalParameters
                 ? $this->createNamespacedDeliveryResource(
                     $deliveryClass,
                     $additionalParameters
@@ -256,22 +257,9 @@ class DeliveryFactory extends ConfigurableService
         return $delivery;
     }
 
-    private function hasNamespace(): bool
+    private function getNamespace(): ?DeliveryNamespace
     {
-        return $this->hasOption(static::OPTION_NAMESPACE);
-    }
-
-    private function getNamespace(): string
-    {
-        $namespace = rtrim($this->getOption(static::OPTION_NAMESPACE, ''), '#');
-
-        if ($namespace === LOCAL_NAMESPACE) {
-            throw new DomainException(
-                "Overridden namespace value must be different from a local one, $namespace given"
-            );
-        }
-
-        return $namespace;
+        return $this->getDeliveryNamespaceRegistry()->get();
     }
 
     private function createNamespacedDeliveryId(string $deliveryId): string
@@ -293,5 +281,10 @@ class DeliveryFactory extends ConfigurableService
     private function getDeliveryDeleteService(): DeliveryDeleteService
     {
         return $this->getServiceLocator()->get(DeliveryDeleteService::class);
+    }
+
+    private function getDeliveryNamespaceRegistry(): DeliveryNamespaceRegistryInterface
+    {
+        return $this->getServiceLocator()->get(DeliveryNamespaceRegistryInterface::class);
     }
 }
