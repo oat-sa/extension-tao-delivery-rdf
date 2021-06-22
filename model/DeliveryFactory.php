@@ -236,7 +236,7 @@ class DeliveryFactory extends ConfigurableService
     ): KernelResource {
         $deliveryId = trim($additionalParameters[DeliveryAssemblyService::PROPERTY_ASSESSMENT_PROJECT_ID] ?? '');
 
-        if (!$deliveryId) {
+        if ('' === $deliveryId) {
             throw new RuntimeException(
                 sprintf('%s must not be empty.', DeliveryAssemblyService::PROPERTY_ASSESSMENT_PROJECT_ID)
             );
