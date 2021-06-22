@@ -25,10 +25,10 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\scripts\tools;
 
 use Exception;
-use InvalidArgumentException;
 use oat\oatbox\extension\script\ScriptAction;
 use oat\oatbox\reporting\Report;
-use oat\taoDeliveryRdf\model\DeliveryFactory;
+use oat\taoDeliveryRdf\model\Delivery\Business\Domain\DeliveryNamespace;
+use oat\taoDeliveryRdf\model\Delivery\DataAccess\DeliveryNamespaceRegistry;
 
 /**
  * Usage:
@@ -59,26 +59,25 @@ class SetDeliveryNamespace extends ScriptAction
 
     protected function run(): Report
     {
-        if (!$this->getOption('namespace')) {
-            return $this->unsetNamespace();
-        }
-
-        $namespace = $this->getNamespace();
-
-        $deliveryFactory = $this->getDeliveryFactory();
-        $deliveryFactory->setOption(DeliveryFactory::OPTION_NAMESPACE, $namespace);
+        $deliveryNamespace = $this->getDeliveryNamespace();
 
         try {
-            $this->setDeliveryFactory($deliveryFactory);
+            $this->registerService(
+                DeliveryNamespaceRegistry::SERVICE_ID,
+                new DeliveryNamespaceRegistry(
+                    new DeliveryNamespace(LOCAL_NAMESPACE),
+                    $deliveryNamespace
+                )
+            );
         } catch (Exception $exception) {
             return Report::createError(
-                "Failed to set \"$namespace\" Delivery namespace.",
+                "Failed to set \"$deliveryNamespace\" Delivery namespace.",
                 null,
                 [Report::createInfo($exception->getMessage())]
             );
         }
 
-        return Report::createSuccess("Registered \"$namespace\" Delivery namespace.");
+        return Report::createSuccess("Registered \"$deliveryNamespace\" Delivery namespace.");
     }
 
     protected function provideDescription(): string
@@ -86,39 +85,12 @@ class SetDeliveryNamespace extends ScriptAction
         return 'TAO DeliveryRDF - Set up remotely published Delivery resource namespace';
     }
 
-    private function unsetNamespace(): Report
+    private function getDeliveryNamespace(): ?DeliveryNamespace
     {
-        $deliveryFactory        = $this->getDeliveryFactory();
-        $deliveryFactoryOptions = $deliveryFactory->getOptions();
-
-        unset($deliveryFactoryOptions[DeliveryFactory::OPTION_NAMESPACE]);
-        $deliveryFactory->setOptions($deliveryFactoryOptions);
-
-        $this->setDeliveryFactory($deliveryFactory);
-
-        return Report::createSuccess('Removed a Delivery namespace.');
-    }
-
-    private function getNamespace(): string
-    {
-        $namespace = rtrim($this->getOption('namespace'), '#');
-
-        if ($namespace === LOCAL_NAMESPACE) {
-            throw new InvalidArgumentException(
-                "Overridden namespace value must be different from a local one, \"$namespace\" given"
-            );
-        }
-
-        return $namespace;
-    }
-
-    private function getDeliveryFactory(): DeliveryFactory
-    {
-        return $this->getServiceLocator()->get(DeliveryFactory::class);
-    }
-
-    private function setDeliveryFactory(DeliveryFactory $deliveryFactory): void
-    {
-        $this->getServiceManager()->register($deliveryFactory::SERVICE_ID, $deliveryFactory);
+        return $this->hasOption('namespace')
+            ? new DeliveryNamespace(
+                $this->getOption('namespace')
+            )
+            : null;
     }
 }
