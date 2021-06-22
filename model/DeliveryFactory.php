@@ -76,7 +76,6 @@ class DeliveryFactory extends ConfigurableService
     public const OPTION_INITIAL_PROPERTIES_MAP = 'initialPropertiesMap';
     public const OPTION_INITIAL_PROPERTIES_MAP_VALUES = 'values';
     public const OPTION_INITIAL_PROPERTIES_MAP_URI = 'uri';
-    public const OPTION_NAMESPACE = 'namespace';
 
     public const PROPERTY_DELIVERY_COMPILE_TASK = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryCompileTask';
 
