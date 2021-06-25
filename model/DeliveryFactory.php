@@ -238,7 +238,7 @@ class DeliveryFactory extends ConfigurableService
 
         if ('' === $deliveryId) {
             throw new RuntimeException(
-                sprintf('%s must not be empty.', DeliveryAssemblyService::PROPERTY_ASSESSMENT_PROJECT_ID)
+                sprintf('%s must not be empty', DeliveryAssemblyService::PROPERTY_ASSESSMENT_PROJECT_ID)
             );
         }
 
