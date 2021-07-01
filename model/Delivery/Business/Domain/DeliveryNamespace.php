@@ -15,41 +15,32 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  *
+ * @author Sergei Mikhailov <sergei.mikhailov@taotesting.com>
  */
 
-namespace oat\taoDeliveryRdf\model\Delete;
+declare(strict_types=1);
 
-use core_kernel_classes_Resource as KernelResource;
+namespace oat\taoDeliveryRdf\model\Delivery\Business\Domain;
 
-class DeliveryDeleteRequest
+final class DeliveryNamespace
 {
-    /** @var string  */
-    private $deliveryId;
+    /** @var string */
+    private $value;
 
-    /** @var bool */
-    private $isRecursive = false;
-
-    public function __construct(string $deliveryId)
+    public function __construct(string $value)
     {
-        $this->deliveryId = $deliveryId;
+        $this->value = rtrim($value, '#');
     }
 
-    public function getDeliveryResource(): KernelResource
+    public function equals(self $deliveryNamespace): bool
     {
-        return new KernelResource($this->deliveryId);
+        return (string)$this === (string)$deliveryNamespace;
     }
 
-    public function isRecursive(): bool
+    public function __toString(): string
     {
-        return $this->isRecursive;
-    }
-
-    public function setIsRecursive(): self
-    {
-        $this->isRecursive = true;
-
-        return $this;
+        return $this->value;
     }
 }

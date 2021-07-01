@@ -40,6 +40,7 @@ use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use common_exception_InconsistentData as InconsistentDataException;
 use common_exception_MissingParameter as MissingParameterException;
+use taoQtiTest_models_classes_QtiTestService as QtiTestService;
 
 /**
  * Class ImportAndCompile
@@ -72,17 +73,21 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
     {
         $this->checkParams($params);
 
+        /** @var string[] $customParams */
+        $customParams = $params[self::OPTION_CUSTOM];
+
         $file = $this->getFileReferenceSerializer()->unserializeFile($params[self::OPTION_FILE]);
         $report = null;
+        $test = null;
+        $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
 
         try {
-            $importer = $this->getImporter($params[self::OPTION_IMPORTER]);
-
             /** @var Report $report */
             $report = $importer->import($file);
 
             if ($report->getType() === Report::TYPE_SUCCESS) {
                 foreach ($report as $r) {
+                    /** @var Resource $test */
                     $test = $r->getData()->rdfsResource;
                 }
             } else {
@@ -94,7 +99,7 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
             $label = 'Delivery of ' . $test->getLabel();
             $parent = $this->checkSubClasses($params[self::OPTION_DELIVERY_LABELS]);
             $deliveryFactory = $this->getServiceManager()->get(DeliveryFactory::SERVICE_ID);
-            $compilationReport = $deliveryFactory->create($parent, $test, $label);
+            $compilationReport = $deliveryFactory->create($parent, $test, $label, null, $customParams);
 
             if ($compilationReport->getType() == Report::TYPE_ERROR) {
                 Logger::i(
@@ -104,7 +109,6 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
             }
             /** @var Resource $delivery */
             $delivery = $compilationReport->getData();
-            $customParams = $params[self::OPTION_CUSTOM];
 
             if ($delivery instanceof Resource && is_array($customParams)) {
                 foreach ($customParams as $rdfKey => $rdfValue) {
@@ -118,6 +122,10 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
 
             return $report;
         } catch (Exception $e) {
+            if (null !== $report) {
+                $this->getQtiTestService()->clearRelatedResources($report);
+            }
+
             $detailedErrorReport = Report::createFailure($e->getMessage());
 
             if ($report) {
@@ -261,5 +269,10 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
         $importersService = $this->getServiceManager()->get(ImportersService::SERVICE_ID);
 
         return $importersService->getImporter($id);
+    }
+
+    private function getQtiTestService(): QtiTestService
+    {
+        return $this->getServiceLocator()->get(QtiTestService::class);
     }
 }
