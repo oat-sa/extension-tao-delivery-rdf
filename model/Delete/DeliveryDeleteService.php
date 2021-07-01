@@ -24,14 +24,20 @@ namespace oat\taoDeliveryRdf\model\Delete;
 use common_report_Report;
 use common_ext_ExtensionsManager as ExtensionsManager;
 use core_kernel_classes_Resource;
+use core_kernel_classes_Resource as KernelResource;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\Monitoring;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteRequest;
 use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteService;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoQtiTest\models\TestSessionService;
 use oat\taoResultServer\models\classes\ResultManagement;
 use oat\taoResultServer\models\classes\ResultServerService;
+use taoItems_models_classes_ItemsService as ItemService;
+use taoQtiTest_models_classes_QtiTestService as QtiTestService;
+use taoTests_models_classes_TestsService as TestService;
 
 class DeliveryDeleteService extends ConfigurableService
 {
@@ -43,6 +49,9 @@ class DeliveryDeleteService extends ConfigurableService
 
     /** @var common_report_Report  */
     protected $report;
+
+    /** @var DeliveryDeleteRequest */
+    private $request;
 
     /**
      * DeliveryDeleteService constructor.
@@ -66,6 +75,8 @@ class DeliveryDeleteService extends ConfigurableService
      */
     public function execute(DeliveryDeleteRequest $request, $byChunk = false)
     {
+        $this->request = $request;
+
         $delivery = $request->getDeliveryResource();
 
         $this->report = common_report_Report::createInfo('Deleting Delivery: ' . $delivery->getUri());
@@ -76,9 +87,10 @@ class DeliveryDeleteService extends ConfigurableService
             : count($executions);
         if ($byChunk && $executions && count($executions) > $executionsLimit) {
             $executionsForDeleting = array_slice($executions, 0, $executionsLimit);
-            $this->deleteDeliveryExecutions($delivery, $executionsForDeleting);
+            $this->deleteDeliveryExecutions($executionsForDeleting);
         } else {
-            $this->deleteDeliveryExecutions($delivery, $executions);
+            $this->deleteDeliveryExecutions($executions);
+            $this->deleteLinkedResources();
             return $this->deleteDelivery($request);
         }
         return true;
@@ -86,7 +98,8 @@ class DeliveryDeleteService extends ConfigurableService
 
     /**
      * @param core_kernel_classes_Resource $deliveryResource
-     * @return array|\oat\taoDelivery\model\execution\DeliveryExecution[]
+     *
+     * @return array|DeliveryExecution[]
      * @throws \common_exception_Error
      * @throws \common_exception_NoImplementation
      * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
@@ -172,6 +185,21 @@ class DeliveryDeleteService extends ConfigurableService
         return $this->getServiceLocator()->get(ServiceProxy::SERVICE_ID);
     }
 
+    protected function getQtiTestService(): QtiTestService
+    {
+        return $this->getServiceLocator()->get(QtiTestService::class);
+    }
+
+    protected function getItemService(): ItemService
+    {
+        return $this->getServiceLocator()->get(ItemService::class);
+    }
+
+    protected function getTestService(): TestService
+    {
+        return $this->getServiceLocator()->get(TestService::class);
+    }
+
     /**
      * @return DeliveryDelete[]
      * @throws \common_exception_Error
@@ -216,13 +244,35 @@ class DeliveryDeleteService extends ConfigurableService
         );
     }
 
+    private function deleteLinkedResources(): void
+    {
+        $delivery = $this->request->getDeliveryResource();
+
+        if (!$delivery->exists()) {
+            return;
+        }
+
+        $test = $delivery->getUniquePropertyValue(
+            $delivery->getProperty(DeliveryAssemblyService::PROPERTY_ORIGIN)
+        );
+
+        $itemService = $this->getItemService();
+
+        foreach ($this->getQtiTestService()->getItems($test) as $item) {
+            $itemService->deleteResource($item);
+        }
+
+        $this->getTestService()->deleteResource($test);
+    }
+
     /**
-     * @param core_kernel_classes_Resource $delivery
-     * @param $executions
+     * @param DeliveryExecution[] $executions
      * @throws \common_exception_Error
      */
-    private function deleteDeliveryExecutions(\core_kernel_classes_Resource $delivery, $executions)
+    private function deleteDeliveryExecutions(array $executions): void
     {
+        $delivery = $this->request->getDeliveryResource();
+
         /** @var DeliveryExecutionDeleteService $deliveryExecutionDeleteService */
         $deliveryExecutionDeleteService = $this->getServiceLocator()->get(DeliveryExecutionDeleteService::SERVICE_ID);
 
@@ -247,7 +297,7 @@ class DeliveryDeleteService extends ConfigurableService
      * @return bool
      * @throws \common_exception_Error
      */
-    public function hasDeliveryExecutions(\core_kernel_classes_Resource $delivery)
+    public function hasDeliveryExecutions(KernelResource $delivery)
     {
         $executions = $this->getDeliveryExecutions($delivery);
         return !empty($executions);

@@ -1,15 +1,29 @@
 <?php
 
 /**
- * Copyright (c) 2017 Open Assessment Technologies, S.A.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
  *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2017-2021 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\scripts\tools;
 
-use common_report_Report;
-use oat\oatbox\extension\AbstractAction;
-use common_report_Report as Report;
+use Exception;
+use oat\oatbox\reporting\Report;
 use oat\oatbox\extension\script\ScriptAction;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
@@ -18,66 +32,75 @@ use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
  * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\tools\DeleteDeliveryScript'
  *
  * Class TerminateSession
+ *
  * @package oat\taoDeliveryRdf\scripts\tools
  */
 class DeleteDeliveryScript extends ScriptAction
 {
-    /**
-     * @var common_report_Report
-     */
-    private $report;
-
-    protected function showTime()
+    protected function showTime(): bool
     {
         return true;
     }
 
-    protected function provideUsage()
+    protected function provideUsage(): array
     {
         return [
-            'prefix' => 'h',
-            'longPrefix' => 'help',
-            'description' => 'Prints a help statement'
+            'prefix'      => 'h',
+            'longPrefix'  => 'help',
+            'description' => 'Prints a help statement',
         ];
     }
 
-    protected function provideOptions()
+    protected function provideOptions(): array
     {
         return [
-            'delivery' => [
-                'prefix' => 'd',
-                'longPrefix' => 'delivery',
-                'required' => true,
-                'description' => 'A delivery ID.'
-            ]
+            'delivery'  => [
+                'prefix'      => 'd',
+                'longPrefix'  => 'delivery',
+                'required'    => true,
+                'description' => 'A delivery ID',
+            ],
+            'recursive' => [
+                'prefix'      => 'r',
+                'longPrefix'  => 'recursive',
+                'flag'        => true,
+                'description' => 'Remove all the linked resources such as Tests or Items',
+            ],
         ];
     }
 
-    protected function provideDescription()
+    protected function provideDescription(): string
     {
         return 'TAO Delivery - Delete Delivery';
     }
 
-    /**
-     * @return Report
-     * @throws \common_exception_Error
-     */
-    protected function run()
+    protected function run(): Report
     {
-        $this->report = common_report_Report::createInfo('Deleting Delivery ...');
+        $report = Report::createInfo('Deleting Delivery ...');
 
         /** @var DeliveryDeleteService $deliveryDeleteService */
-        $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
+        $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::class);
 
         $deliveryId = $this->getOption('delivery');
         try {
-            $deliveryDeleteService->execute(new DeliveryDeleteRequest($deliveryId));
-            $this->report->add($deliveryDeleteService->getReport());
-        } catch (\Exception $exception) {
-            $this->report->add(common_report_Report::createFailure('Failing deleting delivery: ' . $deliveryId));
-            $this->report->add(common_report_Report::createFailure($exception->getMessage()));
+            $deliveryDeleteService->execute($this->createDeliveryDeleteRequest());
+            $report->add($deliveryDeleteService->getReport());
+        } catch (Exception $exception) {
+            $report->add(Report::createError('Failing deleting delivery: ' . $deliveryId));
+            $report->add(Report::createError($exception->getMessage()));
         }
 
-        return $this->report;
+        return $report;
+    }
+
+    private function createDeliveryDeleteRequest(): DeliveryDeleteRequest
+    {
+        $deliveryDeleteRequest = new DeliveryDeleteRequest($this->getOption('delivery'));
+
+        if ($this->getOption('recursive')) {
+            $deliveryDeleteRequest->setIsRecursive();
+        }
+
+        return $deliveryDeleteRequest;
     }
 }
