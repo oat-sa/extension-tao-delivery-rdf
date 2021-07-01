@@ -25,8 +25,8 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\scripts\tools;
 
 use Exception;
+use common_report_Report as Report;
 use oat\oatbox\extension\script\ScriptAction;
-use oat\oatbox\reporting\Report;
 use oat\taoDeliveryRdf\model\Delivery\Business\Domain\DeliveryNamespace;
 use oat\taoDeliveryRdf\model\Delivery\DataAccess\DeliveryNamespaceRegistry;
 
@@ -70,11 +70,10 @@ class SetDeliveryNamespace extends ScriptAction
                 )
             );
         } catch (Exception $exception) {
-            return Report::createError(
-                "Failed to set \"$deliveryNamespace\" Delivery namespace.",
-                null,
-                [Report::createInfo($exception->getMessage())]
-            );
+            $errorReport = Report::createFailure("Failed to set \"$deliveryNamespace\" Delivery namespace.");
+            $errorReport->add(Report::createInfo($exception->getMessage()));
+
+            return $errorReport;
         }
 
         return Report::createSuccess("Registered \"$deliveryNamespace\" Delivery namespace.");

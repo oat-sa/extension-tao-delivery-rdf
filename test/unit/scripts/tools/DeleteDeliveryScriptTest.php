@@ -28,7 +28,7 @@ use Exception;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use oat\generis\test\MockObject;
 use oat\generis\test\TestCase;
-use oat\oatbox\reporting\Report;
+use common_report_Report as Report;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 use oat\taoDeliveryRdf\scripts\tools\DeleteDeliveryScript;

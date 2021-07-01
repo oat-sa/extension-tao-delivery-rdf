@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\migrations;
 
 use Doctrine\DBAL\Schema\Schema;
-use oat\oatbox\reporting\Report;
+use common_report_Report as Report;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 use oat\taoDeliveryRdf\model\Delivery\Business\Contract\DeliveryNamespaceRegistryInterface;
 use oat\taoDeliveryRdf\scripts\tools\SetDeliveryNamespace;

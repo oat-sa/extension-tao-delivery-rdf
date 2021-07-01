@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\scripts\tools;
 
 use Exception;
-use oat\oatbox\reporting\Report;
+use common_report_Report as Report;
 use oat\oatbox\extension\script\ScriptAction;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
@@ -86,8 +86,8 @@ class DeleteDeliveryScript extends ScriptAction
             $deliveryDeleteService->execute($this->createDeliveryDeleteRequest());
             $report->add($deliveryDeleteService->getReport());
         } catch (Exception $exception) {
-            $report->add(Report::createError('Failing deleting delivery: ' . $deliveryId));
-            $report->add(Report::createError($exception->getMessage()));
+            $report->add(Report::createFailure('Failing deleting delivery: ' . $deliveryId));
+            $report->add(Report::createFailure($exception->getMessage()));
         }
 
         return $report;
