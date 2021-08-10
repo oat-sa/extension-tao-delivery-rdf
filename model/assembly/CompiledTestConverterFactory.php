@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019  (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2019-2021  (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoDeliveryRdf\model\assembly;
@@ -29,14 +29,15 @@ use oat\taoQtiTest\models\XmlCompilationDataService;
 
 class CompiledTestConverterFactory extends ConfigurableService
 {
-    const COMPILED_TEST_FORMAT_XML = 'xml';
-    const COMPILED_TEST_FORMAT_PHP = 'php';
+    const COMPILED_TEST_FORMAT_XML            = 'xml';
+    const COMPILED_TEST_FORMAT_PHP            = 'php';
     const COMPILED_TEST_FORMAT_PHP_SERIALIZED = 'php_serialized';
+
     /**
-         * @param $outputTestFormat
-         * @return CompiledTestConverterService
-         * @throws UnsupportedCompiledTestFormatException
-         */
+     * @param $outputTestFormat
+     * @return CompiledTestConverterService
+     * @throws UnsupportedCompiledTestFormatException
+     */
     public function createConverter($outputTestFormat)
     {
         if (!is_string($outputTestFormat)) {
@@ -58,19 +59,21 @@ class CompiledTestConverterFactory extends ConfigurableService
         $outputTestFormat = strtolower(trim($outputTestFormat));
         switch ($outputTestFormat) {
             case self::COMPILED_TEST_FORMAT_PHP:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $outputCompilationService = new PhpCodeCompilationDataService();
+                $outputCompilationService = new PhpCodeCompilationDataService();
 
                 break;
             case self::COMPILED_TEST_FORMAT_PHP_SERIALIZED:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $outputCompilationService = new PhpSerializationCompilationDataService();
+                $outputCompilationService = new PhpSerializationCompilationDataService();
 
                 break;
             case self::COMPILED_TEST_FORMAT_XML:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $outputCompilationService = new XmlCompilationDataService();
+                $outputCompilationService = new XmlCompilationDataService();
 
                 break;
             default:
-                throw new UnsupportedCompiledTestFormatException("Unsupported compiled test format provided: {$outputTestFormat}");
+                throw new UnsupportedCompiledTestFormatException(
+                    "Unsupported compiled test format provided: {$outputTestFormat}"
+                );
         }
 
         return $this->propagate($outputCompilationService);
