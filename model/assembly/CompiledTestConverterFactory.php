@@ -35,7 +35,7 @@ class CompiledTestConverterFactory extends ConfigurableService
 
     /**
      * @param $outputTestFormat
-     * @return CompiledTestConverterService
+     * @return CompiledTestConverterService|null
      * @throws UnsupportedCompiledTestFormatException
      */
     public function createConverter($outputTestFormat)
@@ -45,7 +45,13 @@ class CompiledTestConverterFactory extends ConfigurableService
         }
 
         $outputCompilationService = $this->getOutputCompilationService($outputTestFormat);
+        /** @var CompilationDataService $systemCompilationService */
         $systemCompilationService = $this->getServiceLocator()->get(CompilationDataService::SERVICE_ID);
+
+        if (get_class($outputCompilationService) === get_class($systemCompilationService)) {
+            return null;
+        }
+
         return new CompiledTestConverterService($systemCompilationService, $outputCompilationService);
     }
 
