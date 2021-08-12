@@ -83,6 +83,29 @@ class CompiledTestConverterFactoryTest extends TestCase
     }
 
     /**
+     * @param string $format
+     * @param string|CompilationDataService $compilationDataServiceClassName
+     * @throws UnsupportedCompiledTestFormatException
+     *
+     * @dataProvider dataProviderTestCreateConverterReturnsCompiledTestConverter
+     */
+    public function testCreateConverterReturnsNullWhenNoConversionIsNeeded(
+        string $format,
+        string $compilationDataServiceClassName
+    ): void {
+        $this->object->setServiceLocator(
+            $this->getServiceLocatorMock(
+                [
+                    CompilationDataService::SERVICE_ID => new $compilationDataServiceClassName(),
+                    LoggerService::SERVICE_ID          => $this->createMock(LoggerService::class),
+                ]
+            )
+        );
+
+        $this->assertNull($this->object->createConverter($format));
+    }
+
+    /**
      * @return array
      */
     public function dataProviderTestCreateConverterFailsIfParameterNotString()

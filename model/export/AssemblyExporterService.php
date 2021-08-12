@@ -144,7 +144,7 @@ class AssemblyExporterService extends ConfigurableService
         $directories = $compiledDelivery->getPropertyValues($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
         foreach ($directories as $id) {
             $directory = $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID)->getDirectoryById($id);
-            foreach ($this->assemblyFilesReader->getFiles($directory) as $filePath => $fileStream) {
+            foreach ($this->getAssemblyFilesReader()->getFiles($directory) as $filePath => $fileStream) {
                 tao_helpers_File::addFilesToZip($zipArchive, $fileStream, $filePath);
             }
             $data['dir'][$id] = $directory->getPrefix();
@@ -177,7 +177,10 @@ class AssemblyExporterService extends ConfigurableService
         /** @var CompiledTestConverterFactory $compiledTestConverterFactory */
         $compiledTestConverterFactory = $this->getServiceLocator()->get(CompiledTestConverterFactory::class);
         $converter = $compiledTestConverterFactory->createConverter($outputTestFormat);
-        $this->getAssemblyFilesReader()->setCompiledTestConverter($converter);
+
+        if ($converter) {
+            $this->getAssemblyFilesReader()->setCompiledTestConverter($converter);
+        }
     }
 
     /**
