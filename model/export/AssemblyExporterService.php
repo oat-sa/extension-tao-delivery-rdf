@@ -150,9 +150,13 @@ class AssemblyExporterService extends ConfigurableService
             $data['dir'][$id] = $directory->getPrefix();
         }
 
-        $runtime = $compiledDelivery->getResource($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME));
-        $serviceCall = tao_models_classes_service_ServiceCall::fromResource($runtime);
-        $data['runtime'] = base64_encode($serviceCall->serializeToString());
+        $runtime = $compiledDelivery->getOnePropertyValue(
+            $this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_RUNTIME)
+        );
+        $serviceCall = $runtime instanceof core_kernel_classes_Resource
+            ? tao_models_classes_service_ServiceCall::fromResource($runtime)
+            : tao_models_classes_service_ServiceCall::fromString((string)$runtime);
+        $data['runtime'] = base64_encode(json_encode($serviceCall));
         $rdfData = $this->rdfExporter->getRdfString([$compiledDelivery]);
         if (!$zipArchive->addFromString(self::DELIVERY_RDF_FILENAME, $rdfData)) {
             throw new common_Exception('Unable to add metadata to exported delivery assembly');
