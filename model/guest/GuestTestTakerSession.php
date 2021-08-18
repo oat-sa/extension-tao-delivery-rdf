@@ -39,6 +39,12 @@ class GuestTestTakerSession extends \common_session_DefaultSession
      */
     public function getInterfaceLanguage()
     {
+        $language = parent::getInterfaceLanguage();
+
+        if (!empty($language)) {
+            return $language;
+        }
+
         return defined('DEFAULT_ANONYMOUS_INTERFACE_LANG') ? DEFAULT_ANONYMOUS_INTERFACE_LANG : DEFAULT_LANG;
     }
 }

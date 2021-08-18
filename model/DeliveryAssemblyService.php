@@ -59,6 +59,8 @@ class DeliveryAssemblyService extends OntologyClassService
 
     public const PROPERTY_ASSESSMENT_PROJECT_ID = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssessmentProjectId';
 
+    public const PROPERTY_INTERFACE_LANGUAGE = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#InterfaceLanguage';
+
     /**
      * @var \tao_models_classes_service_FileStorage
      */
