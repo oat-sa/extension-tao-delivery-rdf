@@ -37,17 +37,21 @@ class GuestTestUser implements User
         $this->uri = \common_Utils::getNewUri();
     }
 
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->uri;
     }
 
-    public function getPropertyValues($property)
+    public function getPropertyValues($property): array
     {
+        if ($property === GenerisRdf::PROPERTY_USER_UILG && defined('DEFAULT_ANONYMOUS_INTERFACE_LANG')) {
+            return [DEFAULT_ANONYMOUS_INTERFACE_LANG];
+        }
+
         return [];
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return [
             TaoOntology::PROPERTY_INSTANCE_ROLE_DELIVERY => TaoOntology::PROPERTY_INSTANCE_ROLE_DELIVERY,
