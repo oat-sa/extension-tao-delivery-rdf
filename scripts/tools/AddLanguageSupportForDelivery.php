@@ -65,6 +65,6 @@ class AddLanguageSupportForDelivery extends ScriptAction
             );
         }
 
-        return Report::createSuccess("Language support for deliveries has been added successfully.");
+        return Report::createSuccess('Language support for deliveries has been added successfully.');
     }
 }
