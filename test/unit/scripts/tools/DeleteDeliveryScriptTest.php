@@ -78,6 +78,28 @@ class DeleteDeliveryScriptTest extends TestCase
         );
     }
 
+    public function testDeleteDeliveryExecutionsOnly(): void
+    {
+        $this->assertDeliveryDeleteServiceCall(
+            $this->createDeliveryDeleteRequest(false, true)
+        );
+
+        $this->assertReportContainsNoError(
+            ($this->sut)(['--delivery', self::DELIVERY_ID, '-e'])
+        );
+    }
+
+    public function testDeleteDeliveryExecutionsAndLinkedResources(): void
+    {
+        $this->assertDeliveryDeleteServiceCall(
+            $this->createDeliveryDeleteRequest(true, true)
+        );
+
+        $this->assertReportContainsNoError(
+            ($this->sut)(['--delivery', self::DELIVERY_ID, '-e', '-r'])
+        );
+    }
+
     public function testDeleteDeliveryWithException(): void
     {
         $this->assertDeliveryDeleteServiceCall(
@@ -126,9 +148,15 @@ class DeleteDeliveryScriptTest extends TestCase
             );
     }
 
-    private function createDeliveryDeleteRequest(bool $isRecursive = false): DeliveryDeleteRequest
-    {
+    private function createDeliveryDeleteRequest(
+        bool $isRecursive = false,
+        bool $isDeliveryExecutionsOnly = false
+    ): DeliveryDeleteRequest {
         $deliveryDeleteRequest = new DeliveryDeleteRequest(self::DELIVERY_ID);
+
+        if ($isDeliveryExecutionsOnly) {
+            $deliveryDeleteRequest->setDeliveryExecutionsOnly();
+        }
 
         if ($isRecursive) {
             $deliveryDeleteRequest->setIsRecursive();
