@@ -77,7 +77,7 @@ class DeliveryDeleteService extends ConfigurableService
     {
         $this->request = $request;
 
-        $delivery = $request->getDeliveryResource();
+        $delivery = $this->request->getDeliveryResource();
 
         $this->report = common_report_Report::createInfo('Deleting Delivery: ' . $delivery->getUri());
         $executions   = $this->getDeliveryExecutions($delivery);
@@ -91,7 +91,7 @@ class DeliveryDeleteService extends ConfigurableService
         } else {
             $this->deleteDeliveryExecutions($executions);
             $this->deleteLinkedResources();
-            return $this->deleteDelivery($request);
+            return $this->deleteDelivery();
         }
         return true;
     }
@@ -135,17 +135,16 @@ class DeliveryDeleteService extends ConfigurableService
     }
 
     /**
-     * @param DeliveryDeleteRequest $request
      * @return bool
      * @throws \Exception
      */
-    protected function deleteDelivery(DeliveryDeleteRequest $request)
+    protected function deleteDelivery()
     {
         $services = $this->getDeliveryDeleteService();
 
         foreach ($services as $service) {
             try {
-                $deleted = $service->deleteDeliveryData($request);
+                $deleted = $service->deleteDeliveryData($this->request);
                 if ($deleted) {
                     $this->report->add(common_report_Report::createSuccess(
                         'Delete delivery Service: ' . get_class($service) . ' data has been deleted.'
