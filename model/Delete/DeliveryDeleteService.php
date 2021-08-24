@@ -140,6 +140,10 @@ class DeliveryDeleteService extends ConfigurableService
      */
     protected function deleteDelivery()
     {
+        if (!$this->request->isDeliveryRemovalRequested()) {
+            return true;
+        }
+
         $services = $this->getDeliveryDeleteService();
 
         foreach ($services as $service) {
@@ -274,6 +278,10 @@ class DeliveryDeleteService extends ConfigurableService
      */
     private function deleteDeliveryExecutions(array $executions): void
     {
+        if (!$this->request->isExecutionsRemovalRequested()) {
+            return;
+        }
+
         $delivery = $this->request->getDeliveryResource();
 
         /** @var DeliveryExecutionDeleteService $deliveryExecutionDeleteService */
