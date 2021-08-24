@@ -246,6 +246,10 @@ class DeliveryDeleteService extends ConfigurableService
 
     private function deleteLinkedResources(): void
     {
+        if (!$this->request->isRecursive()) {
+            return;
+        }
+
         $delivery = $this->request->getDeliveryResource();
 
         if (!$delivery->exists()) {
