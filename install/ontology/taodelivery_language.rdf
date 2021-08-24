@@ -14,7 +14,7 @@
     <rdfs:label xml:lang="en-US"><![CDATA[Interface Language]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[The language used for applying the test to a test taker]]></rdfs:comment>
     <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#Delivery"/>
-    <rdfs:range rdf:resource="http://www.tao.lu/ntologies/TAO.rdf#Languages"/>
+    <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#Languages"/>
     <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#False"/>
     <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#ComboBox"/>
     <tao:TAOGUIOrder><![CDATA[50]]></tao:TAOGUIOrder>
