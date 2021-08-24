@@ -23,8 +23,6 @@ namespace oat\taoDeliveryRdf\model;
 
 use core_kernel_classes_Resource;
 use \core_kernel_classes_Property;
-use oat\generis\model\kernel\persistence\smoothsql\search\filter\Filter;
-use oat\generis\model\kernel\persistence\smoothsql\search\filter\FilterOperator;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
 use oat\taoDelivery\model\RuntimeService;
@@ -103,7 +101,7 @@ class DeliveryAssemblyService extends OntologyClassService
     /**
      * Returns all assemblies marked as active
      *
-     * @return array
+     * @return core_kernel_classes_Resource[]
      */
     public function getAllAssemblies()
     {
