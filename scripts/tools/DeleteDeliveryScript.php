@@ -31,12 +31,16 @@ use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteService;
 /**
  * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\tools\DeleteDeliveryScript'
  *
- * Class TerminateSession
+ * Class DeleteDeliveryScript
  *
  * @package oat\taoDeliveryRdf\scripts\tools
  */
 class DeleteDeliveryScript extends ScriptAction
 {
+    public const OPTION_DELIVERY        = 'delivery';
+    public const OPTION_RECURSIVE       = 'recursive';
+    public const OPTION_EXECUTIONS_ONLY = 'executionsOnly';
+
     protected function showTime(): bool
     {
         return true;
@@ -54,17 +58,23 @@ class DeleteDeliveryScript extends ScriptAction
     protected function provideOptions(): array
     {
         return [
-            'delivery'  => [
+            self::OPTION_DELIVERY => [
                 'prefix'      => 'd',
-                'longPrefix'  => 'delivery',
+                'longPrefix'  => self::OPTION_DELIVERY,
                 'required'    => true,
                 'description' => 'A delivery ID',
             ],
-            'recursive' => [
+            self::OPTION_RECURSIVE => [
                 'prefix'      => 'r',
-                'longPrefix'  => 'recursive',
+                'longPrefix'  => self::OPTION_RECURSIVE,
                 'flag'        => true,
                 'description' => 'Remove all the linked resources such as Tests or Items',
+            ],
+            self::OPTION_EXECUTIONS_ONLY => [
+                'prefix'      => 'e',
+                'longPrefix'  => self::OPTION_EXECUTIONS_ONLY,
+                'flag'        => true,
+                'description' => 'Remove only the delivery executions of the specified Delivery',
             ],
         ];
     }
@@ -81,7 +91,7 @@ class DeleteDeliveryScript extends ScriptAction
         /** @var DeliveryDeleteService $deliveryDeleteService */
         $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::class);
 
-        $deliveryId = $this->getOption('delivery');
+        $deliveryId = $this->getOption(self::OPTION_DELIVERY);
         try {
             $deliveryDeleteService->execute($this->createDeliveryDeleteRequest());
             $report->add($deliveryDeleteService->getReport());
@@ -95,9 +105,13 @@ class DeleteDeliveryScript extends ScriptAction
 
     private function createDeliveryDeleteRequest(): DeliveryDeleteRequest
     {
-        $deliveryDeleteRequest = new DeliveryDeleteRequest($this->getOption('delivery'));
+        $deliveryDeleteRequest = new DeliveryDeleteRequest($this->getOption(self::OPTION_DELIVERY));
 
-        if ($this->getOption('recursive')) {
+        if ($this->getOption(self::OPTION_EXECUTIONS_ONLY)) {
+            $deliveryDeleteRequest->setDeliveryExecutionsOnly();
+        }
+
+        if ($this->getOption(self::OPTION_RECURSIVE)) {
             $deliveryDeleteRequest->setIsRecursive();
         }
 
