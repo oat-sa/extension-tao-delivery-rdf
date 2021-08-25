@@ -36,8 +36,7 @@ use oat\oatbox\service\ServiceManager;
  */
 class AddLanguageSupportForDelivery extends ScriptAction
 {
-    private const APP_ROOT_PATH = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
-    private const RDF_FILE_PATH = self::APP_ROOT_PATH . 'install' . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR . 'taodelivery_language.rdf';
+    private const RDF_FILE_PATH = ROOT_PATH . 'taoDeliveryRdf' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR . 'taodelivery_language.rdf';
 
     protected function provideOptions(): array
     {
