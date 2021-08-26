@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\scripts\tools;
 
+use common_report_Report as Report;
 use core_kernel_classes_Resource as KernelResource;
-use oat\oatbox\reporting\Report;
 use oat\oatbox\extension\script\ScriptAction;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
