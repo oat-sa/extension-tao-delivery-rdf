@@ -19,17 +19,23 @@
  *
  */
 
+declare(strict_types=1);
+
 namespace oat\taoDeliveryRdf\model\Delete;
 
 use core_kernel_classes_Resource as KernelResource;
 
 class DeliveryDeleteRequest
 {
-    /** @var string  */
+    private const SCOPE_DELIVERY   = 1 << 0;
+    private const SCOPE_EXECUTIONS = 1 << 2;
+    private const SCOPE_RESOURCES  = 1 << 3;
+
+    /** @var string */
     private $deliveryId;
 
-    /** @var bool */
-    private $isRecursive = false;
+    /** @var int */
+    private $scope = self::SCOPE_DELIVERY | self::SCOPE_EXECUTIONS;
 
     public function __construct(string $deliveryId)
     {
@@ -41,15 +47,37 @@ class DeliveryDeleteRequest
         return new KernelResource($this->deliveryId);
     }
 
+    public function isDeliveryRemovalRequested(): bool
+    {
+        return $this->hasInScope(self::SCOPE_DELIVERY);
+    }
+
+    public function isExecutionsRemovalRequested(): bool
+    {
+        return $this->hasInScope(self::SCOPE_EXECUTIONS);
+    }
+
     public function isRecursive(): bool
     {
-        return $this->isRecursive;
+        return $this->hasInScope(self::SCOPE_RESOURCES);
     }
 
     public function setIsRecursive(): self
     {
-        $this->isRecursive = true;
+        $this->scope |= self::SCOPE_RESOURCES;
 
         return $this;
+    }
+
+    public function setDeliveryExecutionsOnly(): self
+    {
+        $this->scope = self::SCOPE_EXECUTIONS;
+
+        return $this;
+    }
+
+    private function hasInScope(int $scope): bool
+    {
+        return (bool)($this->scope & $scope);
     }
 }
