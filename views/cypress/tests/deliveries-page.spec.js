@@ -26,9 +26,7 @@ describe('Deliveries Page', () => {
         cy.loginAsAdmin();
         cy.intercept('POST', '**/edit*').as('edit');
         cy.visit(urls.deliveries);
-        cy.wait('@edit', {
-            requestTimeout: 10000
-        });
+        cy.wait('@edit');
     });
 
     describe('Deliveries page', () => {
