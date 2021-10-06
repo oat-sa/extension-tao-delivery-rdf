@@ -22,6 +22,8 @@
 
 namespace oat\taoDeliveryRdf\controller;
 
+use oat\oatbox\validator\ValidatorInterface;
+use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
@@ -96,6 +98,11 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $options = [
             FormContainer::CSRF_PROTECTION_OPTION => true,
             FormContainer::ADDITIONAL_VALIDATORS => $this->getExtraValidationRules(),
+            FormContainer::ATTRIBUTE_VALIDATORS => [
+                'data-depends-on-property' => [
+                    $this->getDependsOnPropertyValidator(),
+                ],
+            ],
         ];
 
         $formContainer = new DeliveryForm($class, $delivery, $options);
@@ -320,5 +327,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     private function getValidatorFactory(): DeliveryValidatorFactory
     {
         return $this->getServiceLocator()->get(DeliveryValidatorFactory::class);
+    }
+
+    private function getDependsOnPropertyValidator(): ValidatorInterface
+    {
+        return $this->getPsrContainer()->get(DependsOnPropertyValidator::class);
     }
 }
