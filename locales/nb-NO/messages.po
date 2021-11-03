@@ -1,0 +1,238 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2021.10\n"
+"PO-Revision-Date: 2021-10-22T09:39:50\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: nb-NO\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: nb-NO\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s completed"
+msgstr "%s fullført"
+
+msgid "%s test-taker(s) are excluded."
+msgstr "%s elev(er) er ekskludert."
+
+msgid "Access deliveries as a guest"
+msgstr "Få tilgang til besvrelser som gjest"
+
+msgid "An error occured during the import"
+msgstr "Det oppstod en feil under importen"
+
+msgid "Assembly"
+msgstr "Samling"
+
+msgid "Assembly import"
+msgstr "Import"
+
+msgid "Assigned test-takers"
+msgstr "Påmeldte elever"
+
+msgid "Assigned to"
+msgstr "Påmeldt"
+
+msgid "Available from %s"
+msgstr "Tilgjengelig fra %s"
+
+msgid "Available until %s"
+msgstr "Tilgjengelig til %s"
+
+msgid "Cancel"
+msgstr "Avbryt"
+
+msgid "Class successfully created."
+msgstr "Mappen ble opprettet."
+
+msgid "Continue deleting of delivery \"%s\"."
+msgstr "Fortsett å slette besvarele \"%s\"."
+
+msgid "Continue try to sync metadata of delivery \"%s\"."
+msgstr "Prøv å synkronisere metadata for levering \"%s\"."
+
+msgid "Create a new delivery"
+msgstr "Opprett et nytt oppgavesett"
+
+msgid "Create a test"
+msgstr "Opprett en prøve"
+
+msgid "DataStore sync retry for delivery \"%s\"."
+msgstr "Prøver ny DataStore-synkronisering for levering \"%s\"."
+
+#, tao-public
+msgid "Delete"
+msgstr "Slett"
+
+msgid "Deleting of \"%s"
+msgstr "Sletter \"%s"
+
+#, tao-public
+msgid "Deliveries"
+msgstr "Oppgavesett"
+
+#, tao-public
+msgid "Deliveries library"
+msgstr "Samling av oppgavesett"
+
+msgid "Delivery \"%s\" successfully imported"
+msgstr "Oppgavesett \"%s\" er importert"
+
+msgid "Delivery \'%s\' not found"
+msgstr ""
+
+msgid "Delivery class uri provided is not a valid delivery class."
+msgstr "Gitt oppgavesettmappe uri er ikke en gyldig mappe."
+
+msgid "Delivery is assigned to %s test-takers."
+msgstr "Oppgavesettet tildeles %s elever."
+
+msgid "Delivery is not assigned to any test-taker."
+msgstr "Oppgavesettet er ikke koblet til noen elever."
+
+msgid "Delivery saved"
+msgstr "Oppgavesettet er lagret"
+
+msgid "Delivery with label \"%s\" not found"
+msgstr "Oppgavesett merket \"%s\" ble ikke funnet"
+
+msgid "Directory %s doesn\'t exist"
+msgstr ""
+
+msgid "Error"
+msgstr "Feil"
+
+msgid "Excluded test-takers"
+msgstr "Ekskluderte elever"
+
+msgid "Exported %1$s to %2$s"
+msgstr "Eksporterte %1$s til %2$s"
+
+msgid "Exporting %s"
+msgstr "Eksporterer %s"
+
+msgid "Guest access"
+msgstr "Gjestetilgang"
+
+msgid "Import QTI test and create delivery."
+msgstr "Importer QTI-prøven og opprett et oppgavesett."
+
+msgid "Importing %1$s files into \'%2$s\"
+msgstr ""
+
+msgid "Last updated on:"
+msgstr ""
+
+#, tao-public
+msgid "Manage Schema"
+msgstr "Administrer skjema"
+
+#, tao-public
+msgid "Manage tests"
+msgstr "Administrer prøver"
+
+#, tao-public
+msgid "Move"
+msgstr "Flytt"
+
+#, tao-public
+msgid "Move To"
+msgstr "Flytt til"
+
+#, tao-public
+msgid "New class"
+msgstr "Ny mappe"
+
+#, tao-public
+msgid "New delivery"
+msgstr "Nytt oppgavesett"
+
+msgid "No attempt has been started yet."
+msgstr "Har ikke startet prøven ennå."
+
+msgid "No information available about attempts"
+msgstr "Ingen informasjon tilgjengelig om prøvestart"
+
+#, tao-public
+msgid "Prepare, publish deliveries sessions."
+msgstr "Forbered og publiser oppgavesettet."
+
+#, tao-public
+msgid "Properties"
+msgstr "Egenskaper"
+
+#, tao-public
+msgid "Publish"
+msgstr "Publiser"
+
+msgid "Publish \"%s\" to"
+msgstr "Publiser \"%s\" til"
+
+msgid "Publish the test"
+msgstr "Publiser prøven"
+
+msgid "Published on:"
+msgstr "Publisert på:"
+
+msgid "Publishing of <b>%s</b>"
+msgstr "Publishing of <b>%s</b>"
+
+msgid "Save"
+msgstr "Lagre"
+
+msgid "Select the test"
+msgstr "Velg testen"
+
+msgid "Select the test you want to publish to the test-takers"
+msgstr "Velg prøven du vil publisere til elevene"
+
+msgid "Selection saved successfully"
+msgstr "Utvalget ble lagret"
+
+msgid "TAO Guest"
+msgstr "TAO gjest"
+
+msgid "TAO Guest Access"
+msgstr "TAO Gjestetilgang"
+
+msgid "Test publishing failed because \"%s\" is empty."
+msgstr "Publisering av prøven mislyktes fordi \"%s\" er tom."
+
+msgid "Test-takers"
+msgstr "Elever/kandidater"
+
+#, tao-public
+msgid "Tests"
+msgstr "Prøver"
+
+msgid "The test \"%s\" does not contain any items and cannot be published."
+msgstr "Prøven \"%s\" inneholder ingen oppgaver og kan ikke publiseres."
+
+msgid "There are currently %s attempts"
+msgstr "Det er for øyeblikket %s forsøk"
+
+msgid "There are currently no tests available to publish."
+msgstr "Det er foreløpig ingen prøver tilgjengelig for publisering."
+
+msgid "There is currently 1 attempt"
+msgstr "Det er for øyeblikket 1 forsøk"
+
+msgid "Unable to import Archive"
+msgstr "Kan ikke importere arkiv"
+
+msgid "Unable to load tests"
+msgstr "Kan ikke laste inn prøver"
+
+msgid "unlimited"
+msgstr "ubegrenset"
+
+msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr "Bruk: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+
+msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr "Bruk: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+
