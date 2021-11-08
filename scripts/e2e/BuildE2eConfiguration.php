@@ -39,7 +39,7 @@ use oat\taoGroups\models\GroupsService;
 use oat\taoTestTaker\models\CrudService;
 use Ramsey\Uuid\Uuid;
 use stdClass;
-use taoQtiTest_models_classes_CrudQtiTestsService;
+use taoQtiTest_models_classes_QtiTestService;
 
 class BuildE2eConfiguration extends AbstractAction
 {
@@ -93,7 +93,7 @@ class BuildE2eConfiguration extends AbstractAction
             $key = $package->key;
             $path = sprintf('%s/%s', dirname($this->getManifestPath()), $package->package);
             $this->getLogger()->debug(sprintf('Importing test package %s', $path));
-            $importReports = $this->getTestImportService()->importQtiTest($path, $targetTestClass);
+            $importReports = $this->getTestImportService()->importMultipleTests($targetTestClass, $path);
 
             if ($importReports->getType() === ReportInterface::TYPE_SUCCESS) {
                 foreach ($importReports as $importReport) {
@@ -191,9 +191,9 @@ class BuildE2eConfiguration extends AbstractAction
         return $this->getServiceLocator()->getContainer()->get(DeliveryFactory::SERVICE_ID);
     }
 
-    private function getTestImportService(): taoQtiTest_models_classes_CrudQtiTestsService
+    private function getTestImportService(): taoQtiTest_models_classes_QtiTestService
     {
-        return taoQtiTest_models_classes_CrudQtiTestsService::singleton();
+        return $this->getServiceLocator()->getContainer()->get(taoQtiTest_models_classes_QtiTestService::class);
     }
 
     private function getConfigWriter(): E2eConfigDriver
