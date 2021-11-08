@@ -29,10 +29,10 @@ use JsonSerializable;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\reporting\Report;
-use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
-use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
+use oat\tao\model\metadata\compiler\ResourceMetadataCompilerInterface;
 use oat\tao\model\taskQueue\QueueDispatcher;
+use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetaDataCompiler;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use taoQtiTest_models_classes_QtiTestService;
 use Throwable;
@@ -120,16 +120,18 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
             //test MetaData
             $test = $this->getTest($deliveryResource);
             $params['testUri'] = $this->getTestUri($deliveryResource);
-            $params['testMetaData'] = $compiler->compile($test);
+            $params['testMetaData'] = $compiler->compile($test); //@TODO @FIXME Get additional lists metadata...
             //Item MetaData
-            $params['itemMetaData'] = $this->getItemMetaData($test, $compiler);
+            $params['itemMetaData'] = $this->getItemMetaData($test, $compiler);  //@TODO @FIXME Get additional lists metadata...
         }
 
         return $params;
     }
 
-    private function getItemMetaData(core_kernel_classes_Resource $test, ResourceJsonMetadataCompiler $compiler): array
-    {
+    private function getItemMetaData(
+        core_kernel_classes_Resource $test,
+        ResourceMetadataCompilerInterface $compiler
+    ): array {
         /** @var taoQtiTest_models_classes_QtiTestService $testService */
         $testService = $this->getServiceLocator()->get(taoQtiTest_models_classes_QtiTestService::class);
         $items = $testService->getItems($test);
@@ -163,8 +165,10 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         return $test ? $test->getUri() : null;
     }
 
-    private function getMetaDataCompiler(): ResourceJsonMetadataCompiler
+    private function getMetaDataCompiler(): ResourceMetadataCompilerInterface
     {
-        return $this->getServiceLocator()->get(ResourceJsonMetadataCompiler::SERVICE_ID);
+        return $this->getServiceManager()->getContainer()->get(JsonMetaDataCompiler::class);
+        //FIXME @TODO remove after test
+        // return $this->getServiceLocator()->get(\oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler::SERVICE_ID);
     }
 }
