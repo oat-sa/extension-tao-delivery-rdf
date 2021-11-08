@@ -172,7 +172,7 @@ class BuildE2eConfiguration extends AbstractAction
 
     private function createLabel(string $label): string
     {
-        return $label . '_' . mktime();
+        return $label . '_' . time();
     }
 
     private function createGroup(string $label): RdfResource
