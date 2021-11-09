@@ -26,6 +26,8 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use core_kernel_classes_Triple;
 use oat\generis\model\data\Ontology;
+use oat\tao\helpers\form\elements\xhtml\SearchDropdown;
+use oat\tao\helpers\form\elements\xhtml\SearchTextBox;
 use oat\tao\model\export\JsonLdTripleEncoderInterface;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
@@ -34,6 +36,10 @@ use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\Business\Specification\LocalListClassSpecification;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use oat\tao\model\TaoOntology;
+use tao_helpers_form_elements_Checkbox;
+use tao_helpers_form_elements_Combobox;
+use tao_helpers_form_elements_Radiobox;
+use tao_helpers_form_elements_Treebox;
 
 class JsonLdListTripleEncoder implements JsonLdTripleEncoderInterface
 {
@@ -125,5 +131,21 @@ class JsonLdListTripleEncoder implements JsonLdTripleEncoderInterface
     private function getMetadataKey(core_kernel_classes_Triple $triple, array $dataToEncode): ?string
     {
         return array_flip($dataToEncode['@context'] ?? [])[$triple->predicate] ?? null;
+    }
+
+    public function isWidgetSupported(string $widgetUri): bool
+    {
+        return in_array(
+            $widgetUri,
+            [
+                tao_helpers_form_elements_Radiobox::WIDGET_ID,
+                tao_helpers_form_elements_Treebox::WIDGET_ID,
+                tao_helpers_form_elements_Combobox::WIDGET_ID,
+                tao_helpers_form_elements_Checkbox::WIDGET_ID,
+                SearchTextBox::WIDGET_ID,
+                SearchDropdown::WIDGET_ID,
+            ],
+            true
+        );
     }
 }

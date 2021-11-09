@@ -27,18 +27,27 @@ use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\Business\Specification\LocalListClassSpecification;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
+use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonLdBasicTripleEncoder;
 use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonLdListTripleEncoder;
 use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonLdTripleEncoderProxy;
 use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetaDataCompiler;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
-
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 class DataStoreServiceProvider implements ContainerServiceProviderInterface
 {
     public function __invoke(ContainerConfigurator $configurator): void
     {
         $services = $configurator->services();
+
+        $services->set(JsonLdBasicTripleEncoder::class, JsonLdBasicTripleEncoder::class)
+            ->public()
+            ->args(
+                [
+                    service(Ontology::SERVICE_ID),
+                ]
+            );
 
         $services->set(JsonLdListTripleEncoder::class, JsonLdListTripleEncoder::class)
             ->public()
@@ -57,6 +66,12 @@ class DataStoreServiceProvider implements ContainerServiceProviderInterface
                 'addEncoder',
                 [
                     service(JsonLdListTripleEncoder::class),
+                ]
+            )
+            ->call(
+                'addEncoder',
+                [
+                    service(JsonLdBasicTripleEncoder::class),
                 ]
             )
             ->args(

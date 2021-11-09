@@ -24,19 +24,48 @@ namespace oat\taoDeliveryRdf\model\DataStore\Metadata;
 
 use core_kernel_classes_Triple;
 use oat\generis\model\data\Ontology;
+use oat\tao\helpers\form\elements\xhtml\SearchDropdown;
+use oat\tao\helpers\form\elements\xhtml\SearchTextBox;
 use oat\tao\model\export\JsonLdTripleEncoderInterface;
+use tao_helpers_form_elements_Calendar;
+use tao_helpers_form_elements_Checkbox;
+use tao_helpers_form_elements_Combobox;
+use tao_helpers_form_elements_Hiddenbox;
+use tao_helpers_form_elements_Htmlarea;
+use tao_helpers_form_elements_Radiobox;
+use tao_helpers_form_elements_Textarea;
+use tao_helpers_form_elements_Textbox;
+use tao_helpers_form_elements_Treebox;
 
 class JsonLdTripleEncoderProxy implements JsonLdTripleEncoderInterface
 {
+    private const ALLOWED_WIDGETS = [
+        tao_helpers_form_elements_Textbox::WIDGET_ID,
+        tao_helpers_form_elements_Textarea::WIDGET_ID,
+        tao_helpers_form_elements_Htmlarea::WIDGET_ID,
+        tao_helpers_form_elements_Radiobox::WIDGET_ID,
+        tao_helpers_form_elements_Treebox::WIDGET_ID,
+        tao_helpers_form_elements_Combobox::WIDGET_ID,
+        tao_helpers_form_elements_Checkbox::WIDGET_ID,
+        SearchTextBox::WIDGET_ID,
+        SearchDropdown::WIDGET_ID,
+        tao_helpers_form_elements_Calendar::WIDGET_ID,
+        tao_helpers_form_elements_Hiddenbox::WIDGET_ID
+    ];
+
     /** @var Ontology */
     private $ontology;
 
     /** @var JsonLdTripleEncoderInterface[] */
     private $encoders = [];
 
-    public function __construct(Ontology $ontology)
+    /** @var array */
+    private $allowedWidgets;
+
+    public function __construct(Ontology $ontology, array $allowedWidgets = [])
     {
         $this->ontology = $ontology;
+        $this->allowedWidgets = empty($allowedWidgets) ? self::ALLOWED_WIDGETS : $allowedWidgets;
     }
 
     public function addEncoder(JsonLdTripleEncoderInterface $encoder): void
@@ -46,28 +75,24 @@ class JsonLdTripleEncoderProxy implements JsonLdTripleEncoderInterface
 
     public function encode(core_kernel_classes_Triple $triple, array $dataToEncode): array
     {
-        //FIXME ============================= Remove after testing
-        /**
-         * - subject: https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i6189202811630158abd04ce58dc9ac7 (Item URI)
-         * - predicate: https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i61891fd32890c1210487eecb1cd298b (Property URI)
-         * - object: http://test.test.test/PARENT-CODE-1
-         */
-        $property = $this->ontology->getProperty($triple->predicate); // Schema Property
+        $property = $this->ontology->getProperty($triple->predicate);
+        $widgetUri = $property->getWidget() ? $property->getWidget()->getUri() : null;
 
-        $allowedProperties = [
-            'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i61891fd32890c1210487eecb1cd298b', // item remote
-            'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i61891ff4a51d2139433f1ba4e375526', // item local
-        ];
-
-        if (!in_array($property->getUri(), $allowedProperties)) {
+        if ($widgetUri === null) {
             return $dataToEncode;
         }
-        //FIXME ============================== Remove after testing
 
         foreach ($this->encoders as $encoder) {
-            $dataToEncode = $encoder->encode($triple, $dataToEncode);
+            if ($encoder->isWidgetSupported($widgetUri)) {
+                $dataToEncode = $encoder->encode($triple, $dataToEncode);
+            }
         }
 
         return $dataToEncode;
+    }
+
+    public function isWidgetSupported(string $widgetUri): bool
+    {
+        return in_array($widgetUri, $this->allowedWidgets, true);
     }
 }
