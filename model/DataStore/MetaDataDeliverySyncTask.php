@@ -169,6 +169,6 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
     {
         return $this->getServiceManager()->getContainer()->get(JsonMetaDataCompiler::class);
         //FIXME @TODO remove after test
-        // return $this->getServiceLocator()->get(\oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler::SERVICE_ID);
+        //return $this->getServiceLocator()->get(\oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler::SERVICE_ID);
     }
 }

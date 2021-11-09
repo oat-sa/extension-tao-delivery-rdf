@@ -22,9 +22,16 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\DataStore\ServiceProvider;
 
+use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
-use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonLdTripleEncoder;
+use oat\tao\model\Lists\Business\Service\ValueCollectionService;
+use oat\tao\model\Lists\Business\Specification\LocalListClassSpecification;
+use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
+use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonLdListTripleEncoder;
+use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonLdTripleEncoderProxy;
 use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetaDataCompiler;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 class DataStoreServiceProvider implements ContainerServiceProviderInterface
@@ -33,14 +40,36 @@ class DataStoreServiceProvider implements ContainerServiceProviderInterface
     {
         $services = $configurator->services();
 
-        $services->set(JsonLdTripleEncoder::class, JsonLdTripleEncoder::class)
-            ->public();
+        $services->set(JsonLdListTripleEncoder::class, JsonLdListTripleEncoder::class)
+            ->public()
+            ->args(
+                [
+                    service(Ontology::SERVICE_ID),
+                    service(ValueCollectionService::SERVICE_ID),
+                    service(RemoteListClassSpecification::class),
+                    service(LocalListClassSpecification::class),
+                ]
+            );
+
+        $services->set(JsonLdTripleEncoderProxy::class, JsonLdTripleEncoderProxy::class)
+            ->public()
+            ->call(
+                'addEncoder',
+                [
+                    service(JsonLdListTripleEncoder::class),
+                ]
+            )
+            ->args(
+                [
+                    service(Ontology::SERVICE_ID),
+                ]
+            );
 
         $services->set(JsonMetaDataCompiler::class, JsonMetaDataCompiler::class)
             ->public()
             ->args(
                 [
-                    JsonLdTripleEncoder::class
+                    service(JsonLdTripleEncoderProxy::class)
                 ]
             );
     }
