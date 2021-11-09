@@ -120,9 +120,9 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
             //test MetaData
             $test = $this->getTest($deliveryResource);
             $params['testUri'] = $this->getTestUri($deliveryResource);
-            $params['testMetaData'] = $compiler->compile($test); //@TODO @FIXME Get additional lists metadata...
+            $params['testMetaData'] = $compiler->compile($test);
             //Item MetaData
-            $params['itemMetaData'] = $this->getItemMetaData($test, $compiler);  //@TODO @FIXME Get additional lists metadata...
+            $params['itemMetaData'] = $this->getItemMetaData($test, $compiler);
         }
 
         return $params;
