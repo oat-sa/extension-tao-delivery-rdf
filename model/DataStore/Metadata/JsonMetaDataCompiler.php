@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\DataStore\Metadata;
 
 use core_kernel_classes_Resource;
+use oat\generis\model\GenerisRdf;
 use oat\tao\model\export\JsonLdExport;
 use oat\tao\model\export\Metadata\JsonLd\JsonLdTripleEncoderInterface;
 use oat\tao\model\metadata\compiler\ResourceMetadataCompilerInterface;
@@ -32,9 +33,15 @@ class JsonMetaDataCompiler implements ResourceMetadataCompilerInterface
     /** @var JsonLdTripleEncoderInterface */
     private $jsonLdTripleEncoder;
 
-    public function __construct(JsonLdTripleEncoderInterface $jsonLdTripleEncoder)
-    {
+    /** @var JsonLdExport */
+    private $jsonLdExport;
+
+    public function __construct(
+        JsonLdTripleEncoderInterface $jsonLdTripleEncoder,
+        JsonLdExport $jsonLdExport
+    ) {
         $this->jsonLdTripleEncoder = $jsonLdTripleEncoder;
+        $this->jsonLdExport = $jsonLdExport;
     }
 
     /**
@@ -42,9 +49,15 @@ class JsonMetaDataCompiler implements ResourceMetadataCompilerInterface
      */
     public function compile(core_kernel_classes_Resource $resource)
     {
-        $jsonExporter = new JsonLdExport($resource);
-        $jsonExporter->addTripleEncoder($this->jsonLdTripleEncoder);
+        $data = $this->jsonLdExport
+            ->setResource($resource)
+            ->addTripleEncoder($this->jsonLdTripleEncoder)
+            ->jsonSerialize();
 
-        return $jsonExporter->jsonSerialize();
+        $data['@context']->type = JsonLdTripleEncoderInterface::RDF_TYPE;
+        $data['@context']->value = JsonLdTripleEncoderInterface::RDF_VALUE;
+        $data['@context']->alias = GenerisRdf::PROPERTY_ALIAS;
+
+        return $data;
     }
 }

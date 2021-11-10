@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\DataStore\ServiceProvider;
 
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
+use oat\tao\model\export\JsonLdExport;
 use oat\tao\model\export\Metadata\JsonLd\JsonLdTripleEncoderProxy;
 use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetaDataCompiler;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -39,7 +40,8 @@ class DataStoreServiceProvider implements ContainerServiceProviderInterface
             ->public()
             ->args(
                 [
-                    service(JsonLdTripleEncoderProxy::class)
+                    service(JsonLdTripleEncoderProxy::class),
+                    service(JsonLdExport::class),
                 ]
             );
     }
