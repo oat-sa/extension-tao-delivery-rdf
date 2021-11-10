@@ -30,9 +30,12 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\reporting\Report;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
+use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
 use oat\tao\model\metadata\compiler\ResourceMetadataCompilerInterface;
 use oat\tao\model\taskQueue\QueueDispatcher;
-use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetaDataCompiler;
+use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetadataCompiler;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use taoQtiTest_models_classes_QtiTestService;
 use Throwable;
@@ -167,8 +170,15 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
 
     private function getMetaDataCompiler(): ResourceMetadataCompilerInterface
     {
-        return $this->getServiceManager()->getContainer()->get(JsonMetaDataCompiler::class);
-        //FIXME @TODO remove after test
-        //return $this->getServiceLocator()->get(\oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler::SERVICE_ID);
+        $container = $this->getServiceManager()->getContainer();
+
+        return $this->getFeatureFlagChecker()->isEnabled('FEATURE_FLAG_DATA_STORE_METADATA_V2')
+            ? $container->get(JsonMetadataCompiler::class)
+            : $container->get(ResourceJsonMetadataCompiler::SERVICE_ID);
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
+    {
+        return $this->getServiceManager()->getContainer()->get(FeatureFlagChecker::class);
     }
 }

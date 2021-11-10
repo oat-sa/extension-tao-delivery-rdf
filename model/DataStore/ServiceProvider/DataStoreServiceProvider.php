@@ -25,7 +25,7 @@ namespace oat\taoDeliveryRdf\model\DataStore\ServiceProvider;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\export\JsonLdExport;
 use oat\tao\model\export\Metadata\JsonLd\JsonLdTripleEncoderProxy;
-use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetaDataCompiler;
+use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetadataCompiler;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -36,7 +36,7 @@ class DataStoreServiceProvider implements ContainerServiceProviderInterface
     {
         $services = $configurator->services();
 
-        $services->set(JsonMetaDataCompiler::class, JsonMetaDataCompiler::class)
+        $services->set(JsonMetadataCompiler::class, JsonMetadataCompiler::class)
             ->public()
             ->args(
                 [

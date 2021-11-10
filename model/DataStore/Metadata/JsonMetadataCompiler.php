@@ -28,7 +28,7 @@ use oat\tao\model\export\JsonLdExport;
 use oat\tao\model\export\Metadata\JsonLd\JsonLdTripleEncoderInterface;
 use oat\tao\model\metadata\compiler\ResourceMetadataCompilerInterface;
 
-class JsonMetaDataCompiler implements ResourceMetadataCompilerInterface
+class JsonMetadataCompiler implements ResourceMetadataCompilerInterface
 {
     /** @var JsonLdTripleEncoderInterface */
     private $jsonLdTripleEncoder;

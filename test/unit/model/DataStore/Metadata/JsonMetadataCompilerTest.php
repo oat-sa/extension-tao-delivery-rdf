@@ -27,7 +27,7 @@ use oat\generis\test\OntologyMockTrait;
 use oat\generis\test\TestCase;
 use oat\tao\model\export\JsonLdExport;
 use oat\tao\model\export\Metadata\JsonLd\JsonLdTripleEncoderInterface;
-use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetaDataCompiler;
+use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetadataCompiler;
 use PHPUnit\Framework\MockObject\MockObject;
 use stdClass;
 
@@ -41,7 +41,7 @@ class JsonMetadataCompilerTest extends TestCase
     /** @var JsonLdExport|MockObject */
     private $jsonLdExport;
 
-    /** @var JsonMetaDataCompiler */
+    /** @var JsonMetadataCompiler */
     private $subject;
 
     protected function setUp(): void
@@ -50,7 +50,7 @@ class JsonMetadataCompilerTest extends TestCase
 
         $this->jsonLdTripleEncoder = $this->createMock(JsonLdTripleEncoderInterface::class);
         $this->jsonLdExport = $this->createMock(JsonLdExport::class);
-        $this->subject = new JsonMetaDataCompiler(
+        $this->subject = new JsonMetadataCompiler(
             $this->jsonLdTripleEncoder,
             $this->jsonLdExport
         );
