@@ -29,10 +29,13 @@ use JsonSerializable;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\reporting\Report;
-use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
+use oat\tao\model\metadata\compiler\ResourceMetadataCompilerInterface;
 use oat\tao\model\taskQueue\QueueDispatcher;
+use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetadataCompiler;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use taoQtiTest_models_classes_QtiTestService;
 use Throwable;
@@ -116,7 +119,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
             $compiler = $this->getMetaDataCompiler();
             //DeliveryMetaData
             $deliveryResource = $this->getResource($params['deliveryId']);
-            $params['deliveryMetaData'] = $compiler->compile($deliveryResource);
+            $params['deliveryMetaData'] = $this->getResourceJsonMetadataCompiler()->compile($deliveryResource);
             //test MetaData
             $test = $this->getTest($deliveryResource);
             $params['testUri'] = $this->getTestUri($deliveryResource);
@@ -128,8 +131,10 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         return $params;
     }
 
-    private function getItemMetaData(core_kernel_classes_Resource $test, ResourceJsonMetadataCompiler $compiler): array
-    {
+    private function getItemMetaData(
+        core_kernel_classes_Resource $test,
+        ResourceMetadataCompilerInterface $compiler
+    ): array {
         /** @var taoQtiTest_models_classes_QtiTestService $testService */
         $testService = $this->getServiceLocator()->get(taoQtiTest_models_classes_QtiTestService::class);
         $items = $testService->getItems($test);
@@ -163,8 +168,25 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         return $test ? $test->getUri() : null;
     }
 
-    private function getMetaDataCompiler(): ResourceJsonMetadataCompiler
+    private function getMetaDataCompiler(): ResourceMetadataCompilerInterface
     {
-        return $this->getServiceLocator()->get(ResourceJsonMetadataCompiler::SERVICE_ID);
+        return $this->getFeatureFlagChecker()->isEnabled('FEATURE_FLAG_DATA_STORE_METADATA_V2')
+            ? $this->getJsonMetadataCompiler()
+            : $this->getResourceJsonMetadataCompiler();
+    }
+
+    private function getJsonMetadataCompiler(): ResourceMetadataCompilerInterface
+    {
+        return $this->getServiceManager()->getContainer()->get(JsonMetadataCompiler::class);
+    }
+
+    private function getResourceJsonMetadataCompiler(): ResourceMetadataCompilerInterface
+    {
+        return $this->getServiceManager()->getContainer()->get(ResourceJsonMetadataCompiler::SERVICE_ID);
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
+    {
+        return $this->getServiceManager()->getContainer()->get(FeatureFlagChecker::class);
     }
 }

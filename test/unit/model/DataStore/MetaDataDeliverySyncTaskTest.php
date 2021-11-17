@@ -26,27 +26,30 @@ use oat\generis\model\data\Ontology;
 use oat\generis\test\OntologyMockTrait;
 use oat\generis\test\TestCase;
 use oat\oatbox\reporting\Report;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\taoDeliveryRdf\model\DataStore\MetaDataDeliverySyncTask;
 use oat\taoDeliveryRdf\model\DataStore\PersistDataService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use PHPUnit\Framework\MockObject\MockObject;
 use taoQtiTest_models_classes_QtiTestService;
 
 class MetaDataDeliverySyncTaskTest extends TestCase
 {
     use OntologyMockTrait;
 
-    /** @var QueueDispatcher|\PHPUnit\Framework\MockObject\MockObject */
+    /** @var QueueDispatcher|MockObject */
     private $queueDispatcher;
 
-    /** @var PersistDataService|\PHPUnit\Framework\MockObject\MockObject */
+    /** @var PersistDataService|MockObject */
     private $persistDataService;
 
-    /** @var \PHPUnit\Framework\MockObject\MockObject|taoQtiTest_models_classes_QtiTestService */
+    /** @var MockObject|taoQtiTest_models_classes_QtiTestService */
     private $qtiTestService;
 
-    /** @var ResourceJsonMetadataCompiler|\PHPUnit\Framework\MockObject\MockObject */
+    /** @var ResourceJsonMetadataCompiler|MockObject */
     private $resourceJsonMetadataCompiler;
 
     /** @var \Zend\ServiceManager\ServiceLocatorInterface */
@@ -58,6 +61,9 @@ class MetaDataDeliverySyncTaskTest extends TestCase
     /** @var MetaDataDeliverySyncTask */
     private $subject;
 
+    /** @var FeatureFlagCheckerInterface|MockObject */
+    private $featureFlagChecker;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -66,15 +72,18 @@ class MetaDataDeliverySyncTaskTest extends TestCase
         $this->persistDataService = $this->createMock(PersistDataService::class);
         $this->qtiTestService = $this->createMock(taoQtiTest_models_classes_QtiTestService::class);
         $this->resourceJsonMetadataCompiler = $this->createMock(ResourceJsonMetadataCompiler::class);
+        $this->featureFlagChecker = $this->createMock(FeatureFlagCheckerInterface::class);
         $this->ontology = $this->getOntologyMock();
-
-        $this->serviceLocator = $this->getServiceLocatorMock([
-            QueueDispatcher::SERVICE_ID => $this->queueDispatcher,
-            PersistDataService::class => $this->persistDataService,
-            taoQtiTest_models_classes_QtiTestService::class => $this->qtiTestService,
-            ResourceJsonMetadataCompiler::SERVICE_ID => $this->resourceJsonMetadataCompiler,
-            Ontology::SERVICE_ID => $this->ontology
-        ]);
+        $this->serviceLocator = $this->getServiceLocatorMock(
+            [
+                QueueDispatcher::SERVICE_ID => $this->queueDispatcher,
+                PersistDataService::class => $this->persistDataService,
+                taoQtiTest_models_classes_QtiTestService::class => $this->qtiTestService,
+                ResourceJsonMetadataCompiler::SERVICE_ID => $this->resourceJsonMetadataCompiler,
+                Ontology::SERVICE_ID => $this->ontology,
+                FeatureFlagChecker::class => $this->featureFlagChecker,
+            ]
+        );
 
         $this->subject = new MetaDataDeliverySyncTask();
     }
@@ -94,6 +103,10 @@ class MetaDataDeliverySyncTaskTest extends TestCase
         $this->queueDispatcher->method('createTask')->willReturn(true);
         $this->resourceJsonMetadataCompiler->method('compile')->willReturn([]);
         $this->subject->setServiceLocator($this->serviceLocator);
+
+        $this->featureFlagChecker
+            ->method('isEnabled')
+            ->willReturn(false);
 
         $class = $this->ontology->getClass('http://tao.tld/bogusUri');
         $mockDelivery = $class->createInstance('Bogus');
