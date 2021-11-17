@@ -119,7 +119,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
             $compiler = $this->getMetaDataCompiler();
             //DeliveryMetaData
             $deliveryResource = $this->getResource($params['deliveryId']);
-            $params['deliveryMetaData'] = $compiler->compile($deliveryResource);
+            $params['deliveryMetaData'] = $this->getResourceJsonMetadataCompiler()->compile($deliveryResource);
             //test MetaData
             $test = $this->getTest($deliveryResource);
             $params['testUri'] = $this->getTestUri($deliveryResource);
@@ -170,11 +170,19 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
 
     private function getMetaDataCompiler(): ResourceMetadataCompilerInterface
     {
-        $container = $this->getServiceManager()->getContainer();
-
         return $this->getFeatureFlagChecker()->isEnabled('FEATURE_FLAG_DATA_STORE_METADATA_V2')
-            ? $container->get(JsonMetadataCompiler::class)
-            : $container->get(ResourceJsonMetadataCompiler::SERVICE_ID);
+            ? $this->getJsonMetadataCompiler()
+            : $this->getResourceJsonMetadataCompiler();
+    }
+
+    private function getJsonMetadataCompiler(): ResourceMetadataCompilerInterface
+    {
+        return $this->getServiceManager()->getContainer()->get(JsonMetadataCompiler::class);
+    }
+
+    private function getResourceJsonMetadataCompiler(): ResourceMetadataCompilerInterface
+    {
+        return $this->getServiceManager()->getContainer()->get(ResourceJsonMetadataCompiler::SERVICE_ID);
     }
 
     private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
