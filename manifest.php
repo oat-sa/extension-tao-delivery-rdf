@@ -21,6 +21,7 @@
 
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\model\DataStore\ServiceProvider\DataStoreServiceProvider;
 use oat\taoDeliveryRdf\scripts\e2e\BuildE2eConfiguration;
 use oat\taoDeliveryRdf\scripts\install\RegisterDataStoreServices;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
@@ -79,5 +80,8 @@ return [
     ],
     'e2ePrerequisiteActions' => [
         BuildE2eConfiguration::class
+    ],
+    'containerServiceProviders' => [
+        DataStoreServiceProvider::class
     ],
 ];
