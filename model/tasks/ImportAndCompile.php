@@ -122,7 +122,20 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
             $report->setData(['delivery-uri' => $delivery->getUri()]);
 
             return $report;
+        } catch (Exception $e) {
+            Logger::singleton()->handleException($e);
         } catch (Throwable $e) {
+            Logger::f($e->getMessage(), [
+                Logger::CONTEXT_EXCEPTION => get_class($e),
+                Logger::CONTEXT_ERROR_FILE => $e->getFile(),
+                Logger::CONTEXT_ERROR_LINE => $e->getLine(),
+                Logger::CONTEXT_TRACE => $e->getTrace()
+            ]);
+        } finally {
+            if (!isset($e)) {
+                return $report;
+            }
+
             if (null !== $report) {
                 $this->getQtiTestService()->clearRelatedResources($report);
             }
