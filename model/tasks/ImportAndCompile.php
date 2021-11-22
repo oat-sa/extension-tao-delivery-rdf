@@ -41,6 +41,7 @@ use oat\oatbox\service\exception\InvalidServiceManagerException;
 use common_exception_InconsistentData as InconsistentDataException;
 use common_exception_MissingParameter as MissingParameterException;
 use taoQtiTest_models_classes_QtiTestService as QtiTestService;
+use Throwable;
 
 /**
  * Class ImportAndCompile
@@ -122,6 +123,19 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
 
             return $report;
         } catch (Exception $e) {
+            Logger::singleton()->handleException($e);
+        } catch (Throwable $e) {
+            Logger::f($e->getMessage(), [
+                Logger::CONTEXT_EXCEPTION => get_class($e),
+                Logger::CONTEXT_ERROR_FILE => $e->getFile(),
+                Logger::CONTEXT_ERROR_LINE => $e->getLine(),
+                Logger::CONTEXT_TRACE => $e->getTrace()
+            ]);
+        } finally {
+            if (!isset($e)) {
+                return $report;
+            }
+
             if (null !== $report) {
                 $this->getQtiTestService()->clearRelatedResources($report);
             }
