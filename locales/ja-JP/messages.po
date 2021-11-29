@@ -121,7 +121,7 @@ msgstr ""
 msgid "Import QTI test and create delivery."
 msgstr ""
 
-msgid "Importing %1$s files into \'%2$s\"
+msgid "Importing %1$s files into \'%2$s\'"
 msgstr ""
 
 msgid "Last updated on:"
@@ -210,7 +210,7 @@ msgid "Tests"
 msgstr ""
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr ""
+msgstr "テスト \"%s\" にはアイテムが含まれていないため、公開できません。"
 
 msgid "There are currently %s attempts"
 msgstr ""
