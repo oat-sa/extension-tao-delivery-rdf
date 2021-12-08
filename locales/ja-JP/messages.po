@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint107\n"
-"PO-Revision-Date: 2020-07-17T08:37:24\n"
+"Project-Id-Version: TAO 2021.10\n"
+"PO-Revision-Date: 2021-11-17T13:27:53\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -52,10 +52,16 @@ msgstr ""
 msgid "Continue deleting of delivery \"%s\"."
 msgstr ""
 
+msgid "Continue try to sync metadata of delivery \"%s\"."
+msgstr ""
+
 msgid "Create a new delivery"
 msgstr ""
 
 msgid "Create a test"
+msgstr ""
+
+msgid "DataStore sync retry for delivery \"%s\"."
 msgstr ""
 
 #, tao-public
@@ -115,7 +121,7 @@ msgstr ""
 msgid "Import QTI test and create delivery."
 msgstr ""
 
-msgid "Importing %1$s files into \'%2$s\"
+msgid "Importing %1$s files into \'%2$s\'"
 msgstr ""
 
 msgid "Last updated on:"
@@ -204,7 +210,7 @@ msgid "Tests"
 msgstr ""
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr ""
+msgstr "テスト \"%s\" にはアイテムが含まれていないため、公開できません。"
 
 msgid "There are currently %s attempts"
 msgstr ""
