@@ -1,0 +1,1063 @@
+openapi: 3.0.1
+info:
+  title: Delivery compilation API
+  version: 1.0.0
+externalDocs:
+  description: taoDeliveryRdf on Github
+  url: https://github.com/oat-sa/extension-tao-delivery-rdf
+servers:
+  - url: https://community.docker.localhost/
+tags:
+  - name: delivery
+    description: Operations about delivery
+paths:
+  /taoDeliveryRdf/RestDelivery/generate:
+    post:
+      tags:
+        - delivery
+      description: Generate a delivery from a valid test uri
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - test
+              properties:
+                test:
+                  type: string
+                  description: Test identifier, in URI format
+                delivery-uri:
+                  type: string
+                  description: Delivery class uri where to create test delivery
+                delivery-label:
+                  type: string
+                  description: If delivery-uri is specified, this parameter will be
+                    ignored. Delivery class label where to create test delivery otherwise
+                    root class will be used
+                remote-publish:
+                  type: boolean
+                  description: Publish delivery to remote env. Require taoPublishing
+                    extension.
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                title: response
+                required:
+                  - success
+                  - version
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: false on failure, true on success
+                  version:
+                    type: string
+                    description: tao version
+                  data:
+                    $ref: '#/components/schemas/data'
+                  errorCode:
+                    type: string
+                    description: error code. it appear if success value is false
+                  errorMsg:
+                    type: string
+                    description: error description. it appear if success value is
+                      false
+                format: json
+            application/json:
+              example:
+                success: true
+                data:
+                  delivery:
+                    - http://tao.local/mytao.rdf#xxxxxxxxxxxxx1
+                version: 3.1.0
+        400:
+          description: Bad request if you send invalid parameters. Test uri is mandatory.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: At least one mandatory parameter was required but found
+                  missing in your request
+                version: 3.1.0
+        401:
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You don't have permission to access this resource.
+                version: 3.1.0
+        404:
+          description: Test uri is provided but not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Unable to find a test associated to the given uri.
+                version: 3.1.0
+        500:
+          description: Internal error, if delivery class label is found multiple times.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Exception error description
+                version: 3.1.0
+  /taoDeliveryRdf/RestDelivery/generateDeferred:
+    post:
+      tags:
+        - delivery
+      description: Generate a delivery from a valid test uri using task queue
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - test
+              properties:
+                test:
+                  type: string
+                  description: Test identifier, in URI format
+                delivery-uri:
+                  type: string
+                  description: Delivery class uri where to create test delivery
+                delivery-label:
+                  type: string
+                  description: If delivery-uri is specified, this parameter will be
+                    ignored. Delivery class label where to create test delivery otherwise
+                    root class will be used
+                remote-publish:
+                  type: boolean
+                  description: Publish delivery to remote env. Require taoPublishing
+                    extension.
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                title: response
+                required:
+                  - success
+                  - version
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: false on failure, true on success
+                  version:
+                    type: string
+                    description: tao version
+                  data:
+                    type: object
+                    properties:
+                      reference_id:
+                        type: string
+                        description: Identifier of the task in the task queue
+                  errorCode:
+                    type: string
+                    description: error code. it appear if success value is false
+                  errorMsg:
+                    type: string
+                    description: error description. it appear if success value is
+                      false
+                format: json
+            application/json:
+              example:
+                success: true
+                data:
+                  reference_id: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                version: 3.1.0
+        400:
+          description: Bad request if you send invalid parameters. Test uri is mandatory.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: At least one mandatory parameter was required but found
+                  missing in your request
+                version: 3.1.0
+        401:
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You don't have permission to access this resource.
+                version: 3.1.0
+        404:
+          description: Test uri is provided but not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Unable to find a test associated to the given uri.
+                version: 3.1.0
+        500:
+          description: Internal error, if delivery class label is found multiple times.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Exception error description
+                version: 3.1.0
+  /taoDeliveryRdf/RestDelivery/update:
+    post:
+      tags:
+        - delivery
+      description: Update parameters of all the deliveries found by criteria given
+        from url query
+      parameters:
+        - name: searchParams
+          in: query
+          description: A valid json with search params for finding deliveries
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - http_2_www_0_w3_0_org_1_2000_1_01_1_rdf-schema_3_label
+              properties:
+                http_2_www_0_w3_0_org_1_2000_1_01_1_rdf-schema_3_label:
+                  type: string
+                  description: Delivery label, or any other parameter for updating
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                title: response
+                required:
+                  - success
+                  - version
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: false on failure, true on success
+                  version:
+                    type: string
+                    description: tao version
+                  data:
+                    type: object
+                    properties:
+                      reference_id:
+                        type: string
+                        description: Identifier of the task in the task queue
+                  errorCode:
+                    type: string
+                    description: error code. it appear if success value is false
+                  errorMsg:
+                    type: string
+                    description: error description. it appear if success value is
+                      false
+                format: json
+            application/json:
+              example:
+                success: true
+                data:
+                  reference_id: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                version: 3.1.0
+        400:
+          description: Bad request if you send invalid parameters.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: At least one mandatory parameter was required but found
+                  missing in your request
+                version: 3.1.0
+        401:
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You don't have permission to access this resource.
+                version: 3.1.0
+        404:
+          description: Delivery not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Unable to find a test associated to the given uri.
+                version: 3.1.0
+        500:
+          description: Internal error.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Exception error description
+                version: 3.1.0
+  /taoDeliveryRdf/RestDelivery/updateDeferred:
+    post:
+      tags:
+        - delivery
+      description: Update parameters of all the deliveries found by criteria given
+        from url query using task queue
+      parameters:
+        - name: searchParams
+          in: query
+          description: A valid json with search params for finding deliveries
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - http_2_www_0_w3_0_org_1_2000_1_01_1_rdf-schema_3_label
+              properties:
+                http_2_www_0_w3_0_org_1_2000_1_01_1_rdf-schema_3_label:
+                  type: string
+                  description: Delivery label, or any other parameter for updating
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                title: response
+                required:
+                  - success
+                  - version
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: false on failure, true on success
+                  version:
+                    type: string
+                    description: tao version
+                  data:
+                    type: object
+                    properties:
+                      reference_id:
+                        type: string
+                        description: Identifier of the task in the task queue
+                  errorCode:
+                    type: string
+                    description: error code. it appear if success value is false
+                  errorMsg:
+                    type: string
+                    description: error description. it appear if success value is
+                      false
+                format: json
+            application/json:
+              example:
+                success: true
+                data:
+                  reference_id: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                version: 3.1.0
+        400:
+          description: Bad request if you send invalid parameters.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: At least one mandatory parameter was required but found
+                  missing in your request
+                version: 3.1.0
+        401:
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You don't have permission to access this resource.
+                version: 3.1.0
+        404:
+          description: Delivery not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Unable to find a test associated to the given uri.
+                version: 3.1.0
+        500:
+          description: Internal error.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Exception error description
+                version: 3.1.0
+  /taoDeliveryRdf/RestDelivery/deleteDeferred:
+    delete:
+      tags:
+        - delivery
+      description: Delete the delivery by URI using task queue
+      parameters:
+        - name: uri
+          in: query
+          description: A valid URI
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                title: response
+                required:
+                  - success
+                  - version
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: false on failure, true on success
+                  version:
+                    type: string
+                    description: tao version
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Identifier of the task in the task queue
+                  errorCode:
+                    type: string
+                    description: error code. it appear if success value is false
+                  errorMsg:
+                    type: string
+                    description: error description. it appear if success value is
+                      false
+                format: json
+            application/json:
+              example:
+                success: true
+                data:
+                  id: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                version: 3.1.0
+        400:
+          description: Bad request if you send invalid parameters.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: At least one mandatory parameter was required but found
+                  missing in your request
+                version: 3.1.0
+        401:
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You are unauthorized.
+                version: 3.1.0
+        403:
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You don't have permission to access this resource.
+                version: 3.1.0
+        404:
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: The delivery with given URI has not been found.
+                version: 3.1.0
+        500:
+          description: Internal error.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Exception error description
+                version: 3.1.0
+  /taoDeliveryRdf/RestDelivery/get:
+    get:
+      tags:
+        - delivery
+      description: List all deliveries or a range of deliveries
+      parameters:
+        - name: limit
+          in: query
+          description: Amount of deliveries to be shown
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Start from delivery number
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                title: response
+                required:
+                  - success
+                  - version
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: false on failure, true on success
+                  version:
+                    type: string
+                    description: tao version
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        description: delivery objects
+                        items:
+                          type: object
+                          properties: { }
+                      overallCount:
+                        type: integer
+                        description: overall count of deliveries regardless of pagination
+                  errorCode:
+                    type: string
+                    description: error code. it appear if success value is false
+                  errorMsg:
+                    type: string
+                    description: error description. it appear if success value is
+                      false
+                format: json
+            application/json:
+              example:
+                success: true
+                data:
+                  overallCount: 5
+                  items:
+                    - uri: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                      label: Delivery Label 1
+                    - uri: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                      label: Delivery Label 2
+                version: 3.1.0
+        400:
+          description: Bad request if you send invalid parameters.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: '''Offset'' should be a positive integer'
+                version: 3.1.0
+        401:
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You don't have permission to access this resource.
+                version: 3.1.0
+        403:
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You don't have permission to access this resource.
+                version: 3.1.0
+        500:
+          description: Internal error (should not occur)
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Exception error description
+                version: 3.1.0
+        501:
+          description: Method not implemented
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Only get method is accepted to getting deliveries
+                version: 3.1.0
+  /taoDeliveryRdf/RestDelivery/getStatus:
+    get:
+      tags:
+        - delivery
+      description: Check status of generate delivery task. Available since Tao 3.1.
+      parameters:
+        - name: id
+          in: query
+          description: Task identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                title: response
+                required:
+                  - success
+                  - version
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: false on failure, true on success
+                  version:
+                    type: string
+                    description: tao version
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Task identifier
+                      status:
+                        type: string
+                        description: Task execution status
+                      delivery:
+                        type: string
+                        description: Generated delivery identifier
+                      children:
+                        type: array
+                        description: Array with remote environments and statuses of
+                          publication
+                        items:
+                          type: string
+                  errorCode:
+                    type: string
+                    description: error code. it appear if success value is false
+                  errorMsg:
+                    type: string
+                    description: error description. it appear if success value is
+                      false
+                format: json
+            application/json:
+              example:
+                success: true
+                data:
+                  id: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                  status: Success
+                  delivery: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                  children:
+                    - id: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                      label: Publishing Delivery
+                      status: Success
+                      report:
+                        - type: info
+                          message: Running task http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                version: 3.1.0
+        400:
+          description: Bad request if you send invalid parameters. Test uri is mandatory.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: At least one mandatory parameter was required but found
+                  missing in your request
+                version: 3.1.0
+        401:
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You don't have permission to access this resource.
+                version: 3.1.0
+        404:
+          description: Task with given id was not found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Task not found.
+                version: 3.1.0
+        500:
+          description: Internal error (should not occur)
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Exception error description
+                version: 3.1.0
+  /taoDeliveryRdf/RestTest/compileDeferred:
+    post:
+      tags:
+        - delivery
+        - test
+      description: Import test and compile delivery using task queue
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - importerId
+                - testPackage
+              properties:
+                testPackage:
+                  type: string
+                  description: Test package archive
+                  format: binary
+                importerId:
+                  type: string
+                  description: Importer name
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                title: response
+                required:
+                  - success
+                  - version
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: false on failure, true on success
+                  version:
+                    type: string
+                    description: tao version
+                  data:
+                    type: object
+                    properties:
+                      reference_id:
+                        type: string
+                        description: Identifier of the task in the task queue
+                  errorCode:
+                    type: string
+                    description: error code. it appear if success value is false
+                  errorMsg:
+                    type: string
+                    description: error description. it appear if success value is
+                      false
+                format: json
+            application/json:
+              example:
+                success: true
+                data:
+                  reference_id: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                version: 3.1.0
+        400:
+          description: Bad request if you send invalid parameters.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: At least one mandatory parameter was required but found
+                  missing in your request
+                version: 3.1.0
+        401:
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You don't have permission to access this resource.
+                version: 3.1.0
+        404:
+          description: Test uri is provided but not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Unable to find a importer by given identifier
+                version: 3.1.0
+        500:
+          description: Internal error (should not occur)
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Exception error description
+                version: 3.1.0
+  /taoDeliveryRdf/RestDelivery/createClass:
+    post:
+      tags:
+        - delivery
+      description: Create a delivery class
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - delivery-label
+              properties:
+                delivery-label:
+                  type: string
+                  description: Delivery class label to create
+                delivery-parent:
+                  type: string
+                  description: Parent delivery class uri. If not specified root delivery
+                    class will be used
+                delivery-comment:
+                  type: string
+                  description: The comment of new created class
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                title: response
+                required:
+                  - success
+                  - version
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: false on failure, true on success
+                  version:
+                    type: string
+                    description: tao version
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        description: A message to explain if class is newly created
+                          or it already exists
+                      delivery-uri:
+                        type: string
+                        description: The uri of newly created delivery class
+                  errorCode:
+                    type: string
+                    description: error code. it appear if success value is false
+                  errorMsg:
+                    type: string
+                    description: error description. it appear if success value is
+                      false
+                format: json
+            application/json:
+              example:
+                success: true
+                data:
+                  delivery-uri: http://tao.local/mytao.rdf#xxxxxxxxxxxxx
+                version: 3.1.0
+        400:
+          description: Bad request if you send invalid parameters. delivery-label
+            uri is mandatory.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: At least one mandatory parameter was required but found
+                  missing in your request
+                version: 3.1.0
+        401:
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: You don't have permission to access this resource.
+                version: 3.1.0
+        500:
+          description: Internal error, if delivery-parent if not a valid delivery
+            class.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/errorModel'
+            application/json:
+              example:
+                success: false
+                errorCode: 0
+                errorMsg: Exception error description
+                version: 3.1.0
+components:
+  schemas:
+    errorModel:
+      required:
+        - errorCode
+        - errorMsg
+        - success
+        - version
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: false on failure
+          default: false
+        version:
+          type: string
+          description: tao version
+        errorCode:
+          type: integer
+          description: error code
+        errorMsg:
+          type: string
+          description: error description
+      description: contain error
+    data:
+      type: object
+      properties:
+        delivery:
+          type: array
+          items:
+            type: string
+      description: Generated delivery URI , it appear if success value is true
