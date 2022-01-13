@@ -25,26 +25,57 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\Delivery\ServiceProvider;
 
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
+use oat\taoDeliveryRdf\model\Delivery\Business\Service\DeliveryService;
+use oat\taoDeliveryRdf\model\Delivery\DataAccess\DeliveryRepository;
+use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliveryPatchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliverySearchRequestHandler;
+use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\JsonDeliveryPatchRequestHandler;
+use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\UrlEncodedFormDeliveryPatchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestValidator\DeliverySearchRequestValidator;
+use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-class DeliverySearchRequestServiceProvider implements ContainerServiceProviderInterface
+class DeliveryServiceProvider implements ContainerServiceProviderInterface
 {
     public function __invoke(ContainerConfigurator $configurator): void
     {
         $services = $configurator->services();
 
         $services
-            ->set(DeliverySearchRequestHandler::class, DeliverySearchRequestHandler::class)
+            ->set(DeliveryService::class, DeliveryService::class)
             ->public()
+            ->args([
+                service(DeliveryRepository::class),
+                service(DeliveryValidatorFactory::class),
+            ]);
+
+        $services
+            ->set(DeliveryPatchRequestHandler::class, DeliveryPatchRequestHandler::class)
+            ->public()
+            ->args([
+                service(DeliverySearchRequestHandler::class),
+                service(UrlEncodedFormDeliveryPatchRequestHandler::class),
+                service(JsonDeliveryPatchRequestHandler::class),
+            ]);
+
+        $services
+            ->set(DeliverySearchRequestHandler::class, DeliverySearchRequestHandler::class)
             ->args([
                 service(DeliverySearchRequestValidator::class),
             ]);
 
         $services
+            ->set(DeliveryRepository::class, DeliveryRepository::class);
+
+        $services
             ->set(DeliverySearchRequestValidator::class, DeliverySearchRequestValidator::class);
+
+        $services
+            ->set(UrlEncodedFormDeliveryPatchRequestHandler::class, UrlEncodedFormDeliveryPatchRequestHandler::class);
+
+        $services
+            ->set(JsonDeliveryPatchRequestHandler::class, JsonDeliveryPatchRequestHandler::class);
     }
 }

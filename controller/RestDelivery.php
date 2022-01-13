@@ -19,8 +19,12 @@
 
 namespace oat\taoDeliveryRdf\controller;
 
-use common_exception_RestApi;
-use core_kernel_classes_Class;
+use common_Exception as BaseException;
+use common_exception_MethodNotAllowed as HttpMethodNotAllowedException;
+use common_exception_ResourceNotFound as ResourceNotFoundException;
+use common_exception_RestApi as BadRequestException;
+use core_kernel_classes_Class as KernelClass;
+use core_kernel_classes_Resource as kernelResource;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\oatbox\event\EventManager;
 use oat\search\base\exception\SearchGateWayExeption;
@@ -31,11 +35,16 @@ use oat\tao\model\taskQueue\TaskLog\TaskLogFilter;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteTask;
+use oat\taoDeliveryRdf\model\Delivery\Business\Service\DeliveryService;
+use oat\taoDeliveryRdf\model\Delivery\DataAccess\DeliveryRepository;
+use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliveryPatchRequestHandler;
+use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliverySearchRequestHandler;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\generis\model\OntologyRdfs;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
+use Request;
 
 class RestDelivery extends \tao_actions_RestController
 {
@@ -75,7 +84,7 @@ class RestDelivery extends \tao_actions_RestController
 
             $test = $this->getResource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
             if (!$test->exists()) {
-                throw new common_exception_RestApi('Unable to find a test associated to the given uri.');
+                throw new BadRequestException('Unable to find a test associated to the given uri.');
             }
 
             $label = 'Delivery of ' . $test->getLabel();
@@ -88,7 +97,7 @@ class RestDelivery extends \tao_actions_RestController
             if ($report->getType() == \common_report_Report::TYPE_ERROR) {
                 $this->logInfo('Unable to generate delivery execution ' .
                     'into taoDeliveryRdf::RestDelivery for test uri ' . $test->getUri());
-                throw new \common_Exception('Unable to generate delivery execution.');
+                throw new BaseException('Unable to generate delivery execution.');
             }
             $delivery = $report->getData();
 
@@ -115,7 +124,7 @@ class RestDelivery extends \tao_actions_RestController
 
             $test = $this->getResource($this->getRequestParameter(self::REST_DELIVERY_TEST_ID));
             if (! $test->exists()) {
-                throw new common_exception_RestApi('Unable to find a test associated to the given uri.');
+                throw new BadRequestException('Unable to find a test associated to the given uri.');
             }
 
             $deliveryClass = $this->getDeliveryClassByParameters();
@@ -155,7 +164,7 @@ class RestDelivery extends \tao_actions_RestController
     public function update()
     {
         try {
-            if ($this->getRequestMethod() !== \Request::HTTP_POST) {
+            if ($this->getRequestMethod() !== Request::HTTP_POST) {
                 throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
             }
 
@@ -172,7 +181,7 @@ class RestDelivery extends \tao_actions_RestController
 
             $response = [];
 
-            /** @var \core_kernel_classes_Resource $delivery */
+            /** @var kernelResource $delivery */
             foreach ($deliveries as $key => $delivery) {
                 foreach ($propertyValues as $rdfKey => $rdfValue) {
                     $rdfKey = \tao_helpers_Uri::decode($rdfKey);
@@ -188,12 +197,29 @@ class RestDelivery extends \tao_actions_RestController
     }
 
     /**
+     * @throws HttpMethodNotAllowedException
+     * @throws ResourceNotFoundException
+     * @throws BadRequestException
+     */
+    public function updateProperties(): void {
+        if ($this->getRequestMethod() !== Request::HTTP_PATCH) {
+            throw new HttpMethodNotAllowedException(null, 0, [Request::HTTP_PATCH]);
+        }
+
+        $this->getDeliveryService()->update(
+            $this->getDeliveryPatchRequestHandler()->handle(
+                $this->getPsrRequest()
+            )
+        );
+    }
+
+    /**
      * Update delivery by parameters
      */
     public function updateDeferred()
     {
         try {
-            if ($this->getRequestMethod() !== \Request::HTTP_POST) {
+            if ($this->getRequestMethod() !== Request::HTTP_POST) {
                 throw new \common_exception_NotImplemented('Only post method is accepted to updating delivery');
             }
             if (! $this->hasRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)) {
@@ -231,7 +257,7 @@ class RestDelivery extends \tao_actions_RestController
     public function deleteDeferred()
     {
         try {
-            if ($this->getRequestMethod() !== \Request::HTTP_DELETE) {
+            if ($this->getRequestMethod() !== Request::HTTP_DELETE) {
                 throw new \common_exception_NotImplemented('Only delete method is accepted to deleting delivery');
             }
 
@@ -271,7 +297,7 @@ class RestDelivery extends \tao_actions_RestController
     public function get()
     {
         try {
-            if ($this->getRequestMethod() !== \Request::HTTP_GET) {
+            if ($this->getRequestMethod() !== Request::HTTP_GET) {
                 throw new \common_exception_NotImplemented('Only get method is accepted to getting deliveries');
             }
 
@@ -293,7 +319,7 @@ class RestDelivery extends \tao_actions_RestController
 
             $service = DeliveryAssemblyService::singleton();
 
-            /** @var \core_kernel_classes_Resource[] $deliveries */
+            /** @var kernelResource[] $deliveries */
             $deliveries = $service->getAllAssemblies();
             $overallCount = count($deliveries);
             if ($offset || $limit) {
@@ -416,7 +442,7 @@ class RestDelivery extends \tao_actions_RestController
      * If not parent class parameter is provided, class will be created under root class
      * Comment parameter is not mandatory, used to describe new created class
      *
-     * @return core_kernel_classes_Class
+     * @return KernelClass
      */
     public function createClass()
     {
@@ -446,9 +472,9 @@ class RestDelivery extends \tao_actions_RestController
      * If an uri parameter is provided, and it is a delivery class, this delivery class is returned
      * If a label parameter is provided, and only one delivery class has this label, this delivery class is returned
      *
-     * @return core_kernel_classes_Class
+     * @return KernelClass
      * @throws SearchGateWayExeption
-     * @throws common_exception_RestApi
+     * @throws BadRequestException
      */
     protected function getDeliveryClassByParameters()
     {
@@ -463,7 +489,7 @@ class RestDelivery extends \tao_actions_RestController
             ) {
                 return $deliveryClass;
             }
-            throw new common_exception_RestApi(__('Delivery class uri provided is not a valid delivery class.'));
+            throw new BadRequestException(__('Delivery class uri provided is not a valid delivery class.'));
         }
 
         if ($this->hasRequestParameter(self::REST_DELIVERY_CLASS_LABEL)) {
@@ -487,7 +513,7 @@ class RestDelivery extends \tao_actions_RestController
 
             switch ($result->count()) {
                 case 0:
-                    throw new common_exception_RestApi(__('Delivery with label "%s" not found', $label));
+                    throw new BadRequestException(__('Delivery with label "%s" not found', $label));
                 case 1:
                     return $this->getClass($result->current()->getUri());
                 default:
@@ -495,7 +521,7 @@ class RestDelivery extends \tao_actions_RestController
                     foreach ($result as $raw) {
                         $availableClasses[] = $raw->getUri();
                     }
-                    throw new common_exception_RestApi(__(
+                    throw new BadRequestException(__(
                         'Multiple delivery class found for label "%s": %s',
                         $label,
                         implode(',', $availableClasses)
@@ -506,13 +532,18 @@ class RestDelivery extends \tao_actions_RestController
         return $rootDeliveryClass;
     }
 
-    /**
-     * Get the delivery root class
-     *
-     * @return core_kernel_classes_Class
-     */
-    protected function getDeliveryRootClass()
+    protected function getDeliveryRootClass(): KernelClass
     {
         return $this->getClass(DeliveryAssemblyService::CLASS_URI);
+    }
+
+    private function getDeliveryService(): DeliveryService
+    {
+        return $this->getPsrContainer()->get(DeliveryService::class);
+    }
+
+    private function getDeliveryPatchRequestHandler(): DeliveryPatchRequestHandler
+    {
+        return $this->getPsrContainer()->get(DeliveryPatchRequestHandler::class);
     }
 }
