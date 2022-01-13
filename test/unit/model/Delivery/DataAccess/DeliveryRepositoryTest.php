@@ -75,6 +75,14 @@ class DeliveryRepositoryTest extends TestCase
         $this->assertSame($delivery, $this->sut->findOrFail($searchRequest));
     }
 
+    public function testGetRootClass(): void
+    {
+        $this->assertSame(
+            $this->deliveryClassMock,
+            $this->sut->getRootClass()
+        );
+    }
+
     public function dataProvider(): array
     {
         return [

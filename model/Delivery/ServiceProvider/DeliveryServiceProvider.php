@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\Delivery\ServiceProvider;
 
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
+use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use oat\taoDeliveryRdf\model\Delivery\Business\Service\DeliveryService;
 use oat\taoDeliveryRdf\model\Delivery\DataAccess\DeliveryRepository;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliveryPatchRequestHandler;
@@ -49,6 +50,7 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
             ->args([
                 service(DeliveryRepository::class),
                 service(DeliveryValidatorFactory::class),
+                service(DependsOnPropertyValidator::class),
             ]);
 
         $services
