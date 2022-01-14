@@ -25,7 +25,6 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\Delivery\DataAccess;
 
 use common_exception_ResourceNotFound as ResourceNotFoundException;
-use core_kernel_classes_Class as KernelClass;
 use core_kernel_classes_Resource as KernelResource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\taoDeliveryRdf\model\Delivery\Business\Domain\DeliverySearchRequest;
@@ -40,7 +39,7 @@ class DeliveryRepository
      */
     public function findOrFail(DeliverySearchRequest $searchRequest): KernelResource
     {
-        $deliveryClass = $this->getRootClass();
+        $deliveryClass = $this->getClass(DeliveryAssemblyService::CLASS_URI);
         $delivery = $deliveryClass->getResource($searchRequest->getId());
 
         if ($delivery->isClass() || !$delivery->exists() || !$delivery->isInstanceOf($deliveryClass)) {
@@ -48,10 +47,5 @@ class DeliveryRepository
         }
 
         return $delivery;
-    }
-
-    public function getRootClass(): KernelClass
-    {
-        return $this->getClass(DeliveryAssemblyService::CLASS_URI);
     }
 }

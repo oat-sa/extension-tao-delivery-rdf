@@ -25,13 +25,11 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\Delivery\Business\Service;
 
 use common_exception_ResourceNotFound as ResourceNotFoundException;
-use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use oat\taoDeliveryRdf\model\Delivery\Business\Input\DeliveryUpdateInput;
 use oat\taoDeliveryRdf\model\Delivery\DataAccess\DeliveryRepository;
-use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
+use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\Form\DeliveryFormFactory;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use tao_helpers_form_Form as Form;
-use tao_helpers_form_FormContainer as FormContainer;
 use tao_helpers_Uri as UriHelper;
 
 class DeliveryService
@@ -39,19 +37,15 @@ class DeliveryService
     /** @var DeliveryRepository */
     private $repository;
 
-    /** @var DeliveryValidatorFactory */
-    private $validatorFactory;
-    /** @var DependsOnPropertyValidator */
-    private $dependsOnPropertyValidator;
+    /** @var DeliveryFormFactory */
+    private $formFactory;
 
     public function __construct(
         DeliveryRepository $repository,
-        DeliveryValidatorFactory $validatorFactory,
-        DependsOnPropertyValidator $dependsOnPropertyValidator
+        DeliveryFormFactory $formFactory
     ) {
         $this->repository = $repository;
-        $this->validatorFactory = $validatorFactory;
-        $this->dependsOnPropertyValidator = $dependsOnPropertyValidator;
+        $this->formFactory = $formFactory;
     }
 
     /**
@@ -87,17 +81,6 @@ class DeliveryService
             $input->getSearchRequest()
         );
 
-        return new DeliveryForm(
-            $this->repository->getRootClass(),
-            $delivery,
-            [
-                FormContainer::ADDITIONAL_VALIDATORS => $this->validatorFactory->createMultiple(),
-                FormContainer::ATTRIBUTE_VALIDATORS => [
-                    'data-depends-on-property' => [
-                        $this->dependsOnPropertyValidator
-                    ],
-                ],
-            ]
-        );
+        return $this->formFactory->create($delivery);
     }
 }

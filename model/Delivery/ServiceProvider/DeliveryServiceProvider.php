@@ -28,6 +28,7 @@ use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use oat\taoDeliveryRdf\model\Delivery\Business\Service\DeliveryService;
 use oat\taoDeliveryRdf\model\Delivery\DataAccess\DeliveryRepository;
+use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\Form\DeliveryFormFactory;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliveryPatchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliverySearchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\JsonDeliveryPatchRequestHandler;
@@ -49,8 +50,7 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
             ->public()
             ->args([
                 service(DeliveryRepository::class),
-                service(DeliveryValidatorFactory::class),
-                service(DependsOnPropertyValidator::class),
+                service(DeliveryFormFactory::class),
             ]);
 
         $services
@@ -60,6 +60,14 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
                 service(DeliverySearchRequestHandler::class),
                 service(UrlEncodedFormDeliveryPatchRequestHandler::class),
                 service(JsonDeliveryPatchRequestHandler::class),
+            ]);
+
+        $services
+            ->set(DeliveryFormFactory::class, DeliveryFormFactory::class)
+            ->public()
+            ->args([
+                service(DeliveryValidatorFactory::class),
+                service(DependsOnPropertyValidator::class),
             ]);
 
         $services
