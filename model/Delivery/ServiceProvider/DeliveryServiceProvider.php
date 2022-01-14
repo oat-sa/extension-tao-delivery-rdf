@@ -38,6 +38,8 @@ use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestValidator\Delivery
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
+use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
+
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 class DeliveryServiceProvider implements ContainerServiceProviderInterface
@@ -46,15 +48,23 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
     {
         $services = $configurator->services();
 
-        $services
-            ->set(DeliveryService::class, DeliveryService::class)
-            ->public()
-            ->args([
-                service(DeliveryRepository::class),
-                service(DeliveryFormFactory::class),
-                service(EventManager::class),
-            ]);
+        $this->registerRequestValidators($services);
+        $this->registerRequestHandlers($services);
+        $this->registerFactories($services);
+        $this->registerRepositories($services);
+        $this->registerServices($services);
+    }
 
+    private function registerDeliveryPatchRequestHandlers(ServicesConfigurator $services): void
+    {
+        $services
+            ->set(UrlEncodedFormDeliveryPatchRequestHandler::class, UrlEncodedFormDeliveryPatchRequestHandler::class);
+        $services
+            ->set(JsonDeliveryPatchRequestHandler::class, JsonDeliveryPatchRequestHandler::class);
+    }
+
+    private function registerRequestHandlers(ServicesConfigurator $services): void
+    {
         $services
             ->set(DeliveryPatchRequestHandler::class, DeliveryPatchRequestHandler::class)
             ->public()
@@ -65,29 +75,46 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
             ]);
 
         $services
+            ->set(DeliverySearchRequestHandler::class, DeliverySearchRequestHandler::class)
+            ->args([
+                service(DeliverySearchRequestValidator::class),
+            ]);
+
+        $this->registerDeliveryPatchRequestHandlers($services);
+    }
+
+    private function registerRepositories(ServicesConfigurator $services): void
+    {
+        $services
+            ->set(DeliveryRepository::class, DeliveryRepository::class);
+    }
+
+    private function registerRequestValidators(ServicesConfigurator $services): void
+    {
+        $services
+            ->set(DeliverySearchRequestValidator::class, DeliverySearchRequestValidator::class);
+    }
+
+    private function registerFactories(ServicesConfigurator $services): void
+    {
+        $services
             ->set(DeliveryFormFactory::class, DeliveryFormFactory::class)
             ->public()
             ->args([
                 service(DeliveryValidatorFactory::class),
                 service(DependsOnPropertyValidator::class),
             ]);
+    }
 
+    private function registerServices(ServicesConfigurator $services): void
+    {
         $services
-            ->set(DeliverySearchRequestHandler::class, DeliverySearchRequestHandler::class)
+            ->set(DeliveryService::class, DeliveryService::class)
+            ->public()
             ->args([
-                service(DeliverySearchRequestValidator::class),
+                service(DeliveryRepository::class),
+                service(DeliveryFormFactory::class),
+                service(EventManager::class),
             ]);
-
-        $services
-            ->set(DeliveryRepository::class, DeliveryRepository::class);
-
-        $services
-            ->set(DeliverySearchRequestValidator::class, DeliverySearchRequestValidator::class);
-
-        $services
-            ->set(UrlEncodedFormDeliveryPatchRequestHandler::class, UrlEncodedFormDeliveryPatchRequestHandler::class);
-
-        $services
-            ->set(JsonDeliveryPatchRequestHandler::class, JsonDeliveryPatchRequestHandler::class);
     }
 }
