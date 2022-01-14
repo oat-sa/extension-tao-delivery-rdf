@@ -214,7 +214,7 @@ class RestDelivery extends \tao_actions_RestController
                 )
             );
         } catch (RuntimeException $exception) {
-            throw new BadRequestException($exception->getMessage(), $exception->getCode());
+            throw new BadRequestException($exception->getMessage(), 422);
         }
 
         /** @noinspection PhpUnhandledExceptionInspection */
