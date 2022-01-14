@@ -90,36 +90,24 @@ class DeliveryService
         $errors = [];
 
         foreach ($input->getProperties() as $property => $value) {
-            $formElement = $form->getElement(UriHelper::encode($property));
-
-            if (null === $formElement) {
-                continue;
-            }
-
-            $this->assignValueToFormElement($formElement, $value);
-
-            if (!$formElement->validate()) {
-                $errors[$property] = $formElement->getError();
-            }
+            $errors[$this->assignPropertyValue($form, $property, $value)] = $property;
         }
 
         $this->handleValidationErrors($errors);
     }
 
-    /**
-     * @throws RuntimeException
-     */
-    private function handleValidationErrors(array $errors): void
+    private function assignPropertyValue(Form $form, string $property, $value): string
     {
-        $validationErrors = [];
+        $formElement = $form->getElement(UriHelper::encode($property));
 
-        foreach ($errors as $property => $error) {
-            $validationErrors[] = "[$property] $error";
+        if (null === $formElement) {
+            return '';
         }
 
-        if ($validationErrors) {
-            throw new RuntimeException(implode('; ', $validationErrors));
-        }
+        $this->assignValueToFormElement($formElement, $value);
+        $formElement->validate();
+
+        return $formElement->getError();
     }
 
     private function assignValueToFormElement(\tao_helpers_form_FormElement $formElement, $value): void
@@ -133,6 +121,23 @@ class DeliveryService
         $formElement->setValues([]);
         if ($value) {
             $formElement->setValue($value);
+        }
+    }
+
+    /**
+     * @throws RuntimeException
+     */
+    private function handleValidationErrors(array $errors): void
+    {
+        $validationErrors = [];
+
+        unset($errors['']);
+        foreach ($errors as $error => $property) {
+            $validationErrors[] = "[$property] $error";
+        }
+
+        if ($validationErrors) {
+            throw new RuntimeException(implode('; ', $validationErrors));
         }
     }
 }
