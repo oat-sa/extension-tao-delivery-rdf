@@ -22,8 +22,6 @@
 
 namespace oat\taoDeliveryRdf\controller;
 
-use oat\oatbox\validator\ValidatorInterface;
-use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
@@ -33,6 +31,7 @@ use oat\tao\model\TaoOntology;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\Form\DeliveryFormFactory;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
@@ -41,12 +40,9 @@ use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
-use oat\taoDeliveryRdf\view\form\DeliveryForm;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDelivery\model\execution\Monitoring;
 use tao_helpers_form_FormContainer as FormContainer;
-use tao_helpers_form_FormFactory;
-use tao_helpers_Uri;
 
 /**
  * Controller to managed assembled deliveries
@@ -92,20 +88,12 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     {
         $this->defaultData();
 
-        $class = $this->getCurrentClass();
         $delivery = $this->getCurrentInstance();
 
-        $options = [
-            FormContainer::CSRF_PROTECTION_OPTION => true,
-            FormContainer::ADDITIONAL_VALIDATORS => $this->getExtraValidationRules(),
-            FormContainer::ATTRIBUTE_VALIDATORS => [
-                'data-depends-on-property' => [
-                    $this->getDependsOnPropertyValidator(),
-                ],
-            ],
-        ];
-
-        $formContainer = new DeliveryForm($class, $delivery, $options);
+        $formContainer = $this->getDeliveryFormFactory()->create(
+            $delivery,
+            [FormContainer::CSRF_PROTECTION_OPTION => true]
+        );
         $myForm = $formContainer->getForm();
         $deliveryUri = $delivery->getUri();
 
@@ -180,7 +168,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
         $assigned = [];
         foreach ($this->getServiceLocator()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($assembly->getUri()) as $userId) {
-            if (!in_array($userId, array_keys($excluded))) {
+            if (!array_key_exists($userId, $excluded)) {
                 $user = $this->getResource($userId);
                 $assigned[$userId] = $user->getLabel();
             }
@@ -326,11 +314,11 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
     private function getValidatorFactory(): DeliveryValidatorFactory
     {
-        return $this->getServiceLocator()->get(DeliveryValidatorFactory::class);
+        return $this->getPsrContainer()->get(DeliveryValidatorFactory::class);
     }
 
-    private function getDependsOnPropertyValidator(): ValidatorInterface
+    private function getDeliveryFormFactory(): DeliveryFormFactory
     {
-        return $this->getPsrContainer()->get(DependsOnPropertyValidator::class);
+        return $this->getPsrContainer()->get(DeliveryFormFactory::class);
     }
 }
