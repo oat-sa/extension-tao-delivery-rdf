@@ -7,6 +7,8 @@ externalDocs:
   url: https://github.com/oat-sa/extension-tao-delivery-rdf
 servers:
   - url: https://community.docker.localhost/
+security:
+  - basicAuth: []
 tags:
   - name: delivery
     description: Operations about delivery
@@ -1030,6 +1032,10 @@ paths:
                 errorMsg: Exception error description
                 version: 3.1.0
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
     errorModel:
       required:
