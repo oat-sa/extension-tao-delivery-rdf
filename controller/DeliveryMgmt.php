@@ -180,7 +180,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
         $assigned = [];
         foreach ($this->getServiceLocator()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($assembly->getUri()) as $userId) {
-            if (!in_array($userId, array_keys($excluded))) {
+            if (!array_key_exists($userId, $excluded)) {
                 $user = $this->getResource($userId);
                 $assigned[$userId] = $user->getLabel();
             }
