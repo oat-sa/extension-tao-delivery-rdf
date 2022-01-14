@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\Delivery\ServiceProvider;
 
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
+use oat\oatbox\event\EventManager;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use oat\taoDeliveryRdf\model\Delivery\Business\Service\DeliveryService;
 use oat\taoDeliveryRdf\model\Delivery\DataAccess\DeliveryRepository;
@@ -51,6 +52,7 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
             ->args([
                 service(DeliveryRepository::class),
                 service(DeliveryFormFactory::class),
+                service(EventManager::class),
             ]);
 
         $services

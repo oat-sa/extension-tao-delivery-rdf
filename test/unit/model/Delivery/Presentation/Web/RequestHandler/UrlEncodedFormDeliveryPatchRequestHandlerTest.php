@@ -64,14 +64,12 @@ class UrlEncodedFormDeliveryPatchRequestHandlerTest extends TestCase
     }
 
     /**
-     * @testWith ["property_1=value_1&property_2=value_2"]
-     *           [""]
+     * @testWith [{"property_1": "value_1", "property.2": "value.2"}, "property_1=value_1&property.2=value.2"]
+     *           [{}, ""]
      */
-    public function testHandle(string $body): void
+    public function testHandle(array $expected, string $body): void
     {
         $this->expectBody($body);
-
-        parse_str($body, $expected);
 
         $this->assertSame(
             $expected,

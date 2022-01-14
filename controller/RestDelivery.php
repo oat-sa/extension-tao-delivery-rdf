@@ -36,15 +36,15 @@ use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteTask;
 use oat\taoDeliveryRdf\model\Delivery\Business\Service\DeliveryService;
-use oat\taoDeliveryRdf\model\Delivery\DataAccess\DeliveryRepository;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliveryPatchRequestHandler;
-use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliverySearchRequestHandler;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\generis\model\OntologyRdfs;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\tasks\UpdateDelivery;
 use Request;
+use RuntimeException;
+use tao_models_classes_dataBinding_GenerisFormDataBindingException as FormDataBindingException;
 
 class RestDelivery extends \tao_actions_RestController
 {
@@ -200,17 +200,25 @@ class RestDelivery extends \tao_actions_RestController
      * @throws HttpMethodNotAllowedException
      * @throws ResourceNotFoundException
      * @throws BadRequestException
+     * @throws FormDataBindingException
      */
     public function updateProperties(): void {
         if ($this->getRequestMethod() !== Request::HTTP_PATCH) {
             throw new HttpMethodNotAllowedException(null, 0, [Request::HTTP_PATCH]);
         }
 
-        $this->getDeliveryService()->update(
-            $this->getDeliveryPatchRequestHandler()->handle(
-                $this->getPsrRequest()
-            )
-        );
+        try {
+            $delivery = $this->getDeliveryService()->update(
+                $this->getDeliveryPatchRequestHandler()->handle(
+                    $this->getPsrRequest()
+                )
+            );
+        } catch (RuntimeException $exception) {
+            throw new BadRequestException($exception->getMessage(), $exception->getCode());
+        }
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $this->returnSuccess(['delivery' => $delivery->getUri()]);
     }
 
     /**

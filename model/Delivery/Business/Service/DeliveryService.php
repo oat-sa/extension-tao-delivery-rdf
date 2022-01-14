@@ -25,12 +25,19 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\Delivery\Business\Service;
 
 use common_exception_ResourceNotFound as ResourceNotFoundException;
+use core_kernel_classes_Resource as KernelResource;
+use DomainException;
+use oat\oatbox\event\EventManager;
 use oat\taoDeliveryRdf\model\Delivery\Business\Input\DeliveryUpdateInput;
 use oat\taoDeliveryRdf\model\Delivery\DataAccess\DeliveryRepository;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\Form\DeliveryFormFactory;
-use oat\taoDeliveryRdf\view\form\DeliveryForm;
+use oat\taoDeliveryRdf\model\event\DeliveryUpdatedEvent;
+use RuntimeException;
+use tao_helpers_form_elements_MultipleElement as MultipleValueElement;
 use tao_helpers_form_Form as Form;
 use tao_helpers_Uri as UriHelper;
+use tao_models_classes_dataBinding_GenerisFormDataBinder as FormDataBinder;
+use tao_models_classes_dataBinding_GenerisFormDataBindingException as FormDataBindingException;
 
 class DeliveryService
 {
@@ -40,22 +47,47 @@ class DeliveryService
     /** @var DeliveryFormFactory */
     private $formFactory;
 
+    /** @var EventManager */
+    private $eventManager;
+
     public function __construct(
         DeliveryRepository $repository,
-        DeliveryFormFactory $formFactory
+        DeliveryFormFactory $formFactory,
+        EventManager $eventManager
     ) {
         $this->repository = $repository;
         $this->formFactory = $formFactory;
+        $this->eventManager = $eventManager;
     }
 
     /**
      * @throws ResourceNotFoundException
+     * @throws DomainException
+     * @throws FormDataBindingException
      */
-    public function update(DeliveryUpdateInput $input): void
+    public function update(DeliveryUpdateInput $input): KernelResource
     {
-        $deliveryForm = $this->createDeliveryForm($input);
+        $delivery = $this->repository->findOrFail(
+            $input->getSearchRequest()
+        );
+
         /** @var Form $form */
-        $form = $deliveryForm->getForm();
+        $form = $this->formFactory->create($delivery)->getForm();
+        $this->setProperties($input, $form);
+
+        $propertyValues = $form->getValues();
+        (new FormDataBinder($delivery))->bind($propertyValues);
+        $this->eventManager->trigger(new DeliveryUpdatedEvent($delivery->getUri(), $propertyValues));
+
+        return $delivery;
+    }
+
+    /**
+     * @throws RuntimeException
+     */
+    private function setProperties(DeliveryUpdateInput $input, Form $form): void
+    {
+        $errors = [];
 
         foreach ($input->getProperties() as $property => $value) {
             $formElement = $form->getElement(UriHelper::encode($property));
@@ -64,23 +96,43 @@ class DeliveryService
                 continue;
             }
 
-            $formElement->setValue($value);
+            $this->assignValueToFormElement($formElement, $value);
+
+            if (!$formElement->validate()) {
+                $errors[$property] = $formElement->getError();
+            }
         }
 
-        $form->evaluate();
-
-        // TODO implement Delivery persistence
+        $this->handleValidationErrors($errors);
     }
 
     /**
-     * @throws ResourceNotFoundException
+     * @throws RuntimeException
      */
-    private function createDeliveryForm(DeliveryUpdateInput $input): DeliveryForm
+    private function handleValidationErrors(array $errors): void
     {
-        $delivery = $this->repository->findOrFail(
-            $input->getSearchRequest()
-        );
+        $validationErrors = [];
 
-        return $this->formFactory->create($delivery);
+        foreach ($errors as $property => $error) {
+            $validationErrors[] = "[$property] $error";
+        }
+
+        if ($validationErrors) {
+            throw new RuntimeException(implode('; ', $validationErrors));
+        }
+    }
+
+    private function assignValueToFormElement(\tao_helpers_form_FormElement $formElement, $value): void
+    {
+        if (!$formElement instanceof MultipleValueElement) {
+            $formElement->setValue($value);
+
+            return;
+        }
+
+        $formElement->setValues([]);
+        if ($value) {
+            $formElement->setValue($value);
+        }
     }
 }

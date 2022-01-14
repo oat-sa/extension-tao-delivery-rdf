@@ -35,11 +35,12 @@ final class UrlEncodedFormDeliveryPatchRequestHandler implements DeliveryPatchRe
 
     public function handle(ServerRequestInterface $request): array
     {
-        parse_str(
-            (string)$request->getBody(),
-            $result
-        );
+        $data = preg_replace_callback('/(?:^|(?<=&))[^=[]+/', static function(array $match) {
+            return bin2hex(urldecode($match[0]));
+        }, (string)$request->getBody());
 
-        return $result;
+        parse_str($data, $result);
+
+        return array_combine(array_map('hex2bin', array_keys($result)), $result);
     }
 }
