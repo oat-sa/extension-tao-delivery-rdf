@@ -240,6 +240,74 @@ paths:
                 errorCode: 0
                 errorMsg: Exception error description
                 version: 3.1.0
+  /taoDeliveryRdf/RestDelivery/updateProperties:
+    patch:
+      tags:
+        - delivery
+      description: Patch properties of a specified Delivery
+      parameters:
+        - name: id
+          in: query
+          description: Delivery URI
+          required: true
+          schema:
+            type: string
+            example: https://community.docker.localhost/tao.rdf#i6184e6d62dd251873bf75dd6d033da78
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/deliveryPatchRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/deliveryPatchRequest'
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deliveryPatchResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/deliveryPatchResponse'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+        406:
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+        422:
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+        500:
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
   /taoDeliveryRdf/RestDelivery/update:
     post:
       tags:
@@ -1067,3 +1135,76 @@ components:
           items:
             type: string
       description: Generated delivery URI , it appear if success value is true
+    deliveryPatchRequest:
+      description: Additional properties may be included, depending on the installed TAO extensions.
+      additionalProperties: true
+      example:
+        http://www.w3.org/2000/01/rdf-schema#label: My Label
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#CustomLabel: My Title
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec: 1
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart: "2009-11-04T19:55:00Z"
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd: "2009-11-05T19:55:00Z"
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#DisplayOrder: 10
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings: http://www.tao.lu/Ontologies/TAODelivery.rdf#GuestAccess
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#ProctorAccessible: http://www.tao.lu/Ontologies/TAODelivery.rdf#ComplyEnabled
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#AssessmentProjectId: https://authoring.docker.localhost/ontologies/tao.rdf#i61936ddf61b7d10386e52b91550dbc9
+      properties:
+        http://www.w3.org/2000/01/rdf-schema#label:
+          type: string
+          description: Delivery label
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#CustomLabel:
+          type: string
+          nullable: true
+          description: Delivery title
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec:
+          type: integer
+          nullable: true
+          description: Maximum number of possible delivery execution attempts by a single test taker
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart:
+          type: string
+          format: date-time
+          nullable: true
+          description: Restricts a start date-time of a delivery execution
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd:
+          type: string
+          format: date-time
+          nullable: true
+          description: Restricts an end date-time of a delivery execution
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#DisplayOrder:
+          type: string
+          nullable: true
+          description: Alpha-numerically orders the available deliveries for a test taker
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#AccessSettings:
+          type: string
+          nullable: true
+          enum:
+            - http://www.tao.lu/Ontologies/TAODelivery.rdf#GuestAccess
+          description: Controls whether a delivery publicly available
+        http://www.tao.lu/Ontologies/TAODelivery.rdf#AssessmentProjectId:
+          type: string
+          nullable: true
+          description: Remote publicator environment delivery URI
+    deliveryPatchResponse:
+      required:
+        - success
+        - version
+        - data
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: false on failure, true on success
+        data:
+          type: object
+          required:
+            - delivery
+          properties:
+            delivery:
+              type: string
+              description: Delivery URI
+              example: https://community.docker.localhost/tao.rdf#i6184e6d62dd251873bf75dd6d033da78
+        version:
+          type: string
+          description: tao version
+          example: 2022.02
+
