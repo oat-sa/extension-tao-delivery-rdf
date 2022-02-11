@@ -36,6 +36,9 @@ class DataStoreServiceProvider implements ContainerServiceProviderInterface
     {
         $services = $configurator->services();
 
+        /**
+         * @deprecated use oat\tao\model\metadata\compiler\AdvancedJsonResourceMetadataCompiler
+         */
         $services->set(JsonMetadataCompiler::class, JsonMetadataCompiler::class)
             ->public()
             ->args(

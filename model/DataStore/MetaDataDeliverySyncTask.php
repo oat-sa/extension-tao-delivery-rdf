@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -32,10 +32,10 @@ use oat\oatbox\reporting\Report;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
+use oat\tao\model\metadata\compiler\AdvancedJsonResourceMetadataCompiler;
 use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
 use oat\tao\model\metadata\compiler\ResourceMetadataCompilerInterface;
 use oat\tao\model\taskQueue\QueueDispatcher;
-use oat\taoDeliveryRdf\model\DataStore\Metadata\JsonMetadataCompiler;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use taoQtiTest_models_classes_QtiTestService;
 use Throwable;
@@ -177,7 +177,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
 
     private function getJsonMetadataCompiler(): ResourceMetadataCompilerInterface
     {
-        return $this->getServiceManager()->getContainer()->get(JsonMetadataCompiler::class);
+        return $this->getServiceManager()->getContainer()->get(AdvancedJsonResourceMetadataCompiler::class);
     }
 
     private function getResourceJsonMetadataCompiler(): ResourceMetadataCompilerInterface

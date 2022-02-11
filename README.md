@@ -17,5 +17,11 @@ Command: `php index.php "oat\taoDeliveryRdf\scripts\tools\ExportDeliveryAssembly
 
 ### Data Store
 
-- `FEATURE_FLAG_ENABLE_DATA_STORE_STORAGE`: Enable `Data Store` integration.
-- `FEATURE_FLAG_DATA_STORE_METADATA_V2`: Allows usage of the new metadata format while integration with `Data Store`.
+# Environment variables
+
+Here you can find the environment variables including feature flags
+
+| Variable                               | Description                                                                 | Default value |
+|----------------------------------------|-----------------------------------------------------------------------------|---------------|
+| FEATURE_FLAG_ENABLE_DATA_STORE_STORAGE | Enable `Data Store` integration                                             | -             |
+| FEATURE_FLAG_DATA_STORE_METADATA_V2    | Allows usage of the new metadata format while integration with `Data Store` | -             |
