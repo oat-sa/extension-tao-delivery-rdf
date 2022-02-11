@@ -15,49 +15,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\DataStore\Metadata;
 
-use core_kernel_classes_Resource;
-use oat\generis\model\GenerisRdf;
-use oat\tao\model\export\JsonLdExport;
-use oat\tao\model\export\Metadata\JsonLd\JsonLdTripleEncoderInterface;
-use oat\tao\model\metadata\compiler\ResourceMetadataCompilerInterface;
+use oat\tao\model\metadata\compiler\AdvancedJsonResourceMetadataCompiler;
 
-class JsonMetadataCompiler implements ResourceMetadataCompilerInterface
+/**
+ * @deprecated use oat\tao\model\metadata\compiler\AdvancedJsonResourceMetadataCompiler
+ */
+class JsonMetadataCompiler extends AdvancedJsonResourceMetadataCompiler
 {
-    /** @var JsonLdTripleEncoderInterface */
-    private $jsonLdTripleEncoder;
-
-    /** @var JsonLdExport */
-    private $jsonLdExport;
-
-    public function __construct(
-        JsonLdTripleEncoderInterface $jsonLdTripleEncoder,
-        JsonLdExport $jsonLdExport
-    ) {
-        $this->jsonLdTripleEncoder = $jsonLdTripleEncoder;
-        $this->jsonLdExport = $jsonLdExport;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function compile(core_kernel_classes_Resource $resource)
-    {
-        $data = $this->jsonLdExport
-            ->setResource($resource)
-            ->addTripleEncoder($this->jsonLdTripleEncoder)
-            ->jsonSerialize();
-
-        $data['@context']->type = JsonLdTripleEncoderInterface::RDF_TYPE;
-        $data['@context']->value = JsonLdTripleEncoderInterface::RDF_VALUE;
-        $data['@context']->alias = GenerisRdf::PROPERTY_ALIAS;
-
-        return $data;
-    }
 }
