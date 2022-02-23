@@ -36,6 +36,11 @@ class DeliveryValidatorFactory extends ConfigurableService
                         'allow_punctuation' => true
                     ]
                 ]
+            ],
+            DeliveryAssemblyService::PROPERTY_START => [
+                [
+                    'DateTime'
+                ]
             ]
         ];
 
