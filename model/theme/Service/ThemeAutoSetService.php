@@ -80,7 +80,7 @@ class ThemeAutoSetService
         if (!empty($currentThemeId)) {
             throw new ThemeAutoSetNotSupported(
                 sprintf(
-                    'Cannot auto-set theme, cause theme "%s" is already set for delivery "%s"',
+                    'Cannot auto-set theme cause theme "%s" is already set for delivery "%s"',
                     $currentThemeId,
                     $deliveryUri
                 )
@@ -92,7 +92,7 @@ class ThemeAutoSetService
         if (!$test) {
             throw new ThemeAutoSetNotSupported(
                 sprintf(
-                    'Cannot auto-set theme, cause delivery "%s" does not have a test',
+                    'Cannot auto-set theme cause delivery "%s" does not have a test',
                     $deliveryUri
                 )
             );
@@ -103,7 +103,7 @@ class ThemeAutoSetService
         if (empty($language)) {
             throw new ThemeAutoSetNotSupported(
                 sprintf(
-                    'Cannot auto-set theme, cause test "%s" does not have a language',
+                    'Cannot auto-set theme cause test "%s" does not have a language',
                     $test->getUri()
                 )
             );
@@ -114,7 +114,7 @@ class ThemeAutoSetService
         if ($themeId === null) {
             throw new ThemeAutoSetNotSupported(
                 sprintf(
-                    'Cannot auto-set theme, cause there is not theme associated for language "%s"',
+                    'Cannot auto-set theme cause there is not theme associated for language "%s"',
                     $language
                 )
             );
