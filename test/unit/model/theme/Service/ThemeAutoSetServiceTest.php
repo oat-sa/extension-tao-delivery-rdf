@@ -18,6 +18,8 @@
  * Copyright (c) 2022 (original work) Open Assessment Technologies SA;
  */
 
+declare(strict_types=1);
+
 namespace oat\taoDeliveryRdf\test\unit\model\theme\Service;
 
 use core_kernel_classes_Property;
