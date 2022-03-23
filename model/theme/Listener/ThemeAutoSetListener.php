@@ -54,10 +54,10 @@ class ThemeAutoSetListener extends ConfigurableService
 
     private function getThemeDiscoverService(): ?ThemeDiscoverServiceInterface
     {
-        $themeDiscoverService = $this->getOption(self::OPTION_THEME_DISCOVER_SERVICE);
+        $themeDiscoverServiceId = $this->getOption(self::OPTION_THEME_DISCOVER_SERVICE);
 
-        return $themeDiscoverService
-            ? $this->getServiceManager()->getContainer()->get(self::OPTION_THEME_DISCOVER_SERVICE)
+        return $themeDiscoverServiceId
+            ? $this->getServiceManager()->getContainer()->get($themeDiscoverServiceId)
             : null;
     }
 
