@@ -26,21 +26,39 @@ use oat\oatbox\service\ConfigurableService;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use oat\taoDeliveryRdf\model\theme\Exception\ThemeAutoSetNotSupported;
 use oat\taoDeliveryRdf\model\theme\Service\ThemeAutoSetService;
+use oat\taoDeliveryRdf\model\theme\Service\ThemeDiscoverServiceInterface;
 use Throwable;
 
 class ThemeAutoSetListener extends ConfigurableService
 {
     public const SERVICE_ID = 'taoDeliveryRdf/ThemeAutoSetListener';
+    public const OPTION_THEME_DISCOVER_SERVICE = 'themeDiscoverService';
 
     public function whenDeliveryIsCreated(DeliveryCreatedEvent $event): void
     {
         try {
-            $this->getAutoSetThemeService()->setThemeByDelivery($event->getDeliveryUri());
+            $autoSetThemeService = $this->getAutoSetThemeService();
+            $themeDiscoverService = $this->getThemeDiscoverService();
+
+            if ($themeDiscoverService) {
+                $autoSetThemeService->setThemeDiscoverService($themeDiscoverService);
+            }
+
+            $autoSetThemeService->setThemeByDelivery($event->getDeliveryUri());
         } catch (ThemeAutoSetNotSupported $exception) {
             $this->logInfo(sprintf('AutoSet Theme not supported: %s', $exception->getMessage()));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Could not set theme: %s', $exception->getMessage()));
         }
+    }
+
+    private function getThemeDiscoverService(): ?ThemeDiscoverServiceInterface
+    {
+        $themeDiscoverService = $this->getOption(self::OPTION_THEME_DISCOVER_SERVICE);
+
+        return $themeDiscoverService
+            ? $this->getServiceManager()->getContainer()->get(self::OPTION_THEME_DISCOVER_SERVICE)
+            : null;
     }
 
     private function getAutoSetThemeService(): ThemeAutoSetService

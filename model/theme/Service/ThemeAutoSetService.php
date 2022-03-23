@@ -45,6 +45,9 @@ class ThemeAutoSetService
     /** @var ThemeServiceAbstract */
     private $themeService;
 
+    /** @var ThemeDiscoverServiceInterface */
+    private $themeDiscoverService;
+
     public function __construct(
         Ontology                     $ontology,
         DeliveryThemeDetailsProvider $deliveryThemeDetailsProvider,
@@ -55,6 +58,13 @@ class ThemeAutoSetService
         $this->deliveryThemeDetailsProvider = $deliveryThemeDetailsProvider;
         $this->qtiTestRepository = $qtiTestRepository;
         $this->themeService = $themeService;
+    }
+
+    public function setThemeDiscoverService(ThemeDiscoverServiceInterface $themeDiscoverService): self
+    {
+        $this->themeDiscoverService = $themeDiscoverService;
+
+        return $this;
     }
 
     /**
@@ -87,6 +97,18 @@ class ThemeAutoSetService
             );
         }
 
+        $themeId = isset($this->themeDiscoverService)
+            ? $this->themeDiscoverService->discoverByDelivery($deliveryUri)
+            : $this->discoverThemeId($deliveryUri);
+
+        $delivery->setPropertyValue(
+            $delivery->getProperty(DeliveryThemeDetailsProvider::DELIVERY_THEME_ID_URI),
+            $themeId
+        );
+    }
+
+    private function discoverThemeId(string $deliveryUri): string
+    {
         $test = $this->qtiTestRepository->findByDelivery($deliveryUri);
 
         if (!$test) {
@@ -109,7 +131,7 @@ class ThemeAutoSetService
             );
         }
 
-        $themeId = $this->themeService->getFirstThemeIdByLanguage($language);
+        $themeId = $this->themeService->getFirstThemeIdByLanguage($language) ?? $this->themeService->getCurrentThemeId();
 
         if ($themeId === null) {
             throw new ThemeAutoSetNotSupported(
@@ -120,14 +142,13 @@ class ThemeAutoSetService
             );
         }
 
-        $delivery->setPropertyValue(
-            $delivery->getProperty(DeliveryThemeDetailsProvider::DELIVERY_THEME_ID_URI),
-            $themeId
-        );
+        return $themeId;
     }
 
     private function getOriginDeliveryId(core_kernel_classes_Resource $delivery): string
     {
-        return (string)$delivery->getOnePropertyValue($delivery->getProperty(self::PUBLISHING_ORIGINAL_ID));
+        $propertyValue = $delivery->getOnePropertyValue($delivery->getProperty(self::PUBLISHING_ORIGINAL_ID));
+
+        return $propertyValue ? $propertyValue->getUri() : '';
     }
 }
