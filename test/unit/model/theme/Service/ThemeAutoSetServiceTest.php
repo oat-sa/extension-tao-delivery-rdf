@@ -184,7 +184,7 @@ class ThemeAutoSetServiceTest extends TestCase
             ->willReturn($originDeliveryProperty);
 
         $originDeliveryProperty
-            ->method('__toString')
+            ->method('getUri')
             ->willReturn($originDeliveryId);
 
         $this->ontology
