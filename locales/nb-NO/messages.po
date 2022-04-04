@@ -53,7 +53,7 @@ msgid "Continue deleting of delivery \"%s\"."
 msgstr "Fortsett å slette besvarele \"%s\"."
 
 msgid "Continue try to sync metadata of delivery \"%s\"."
-msgstr "Prøv å synkronisere metadata for levering \"%s\"."
+msgstr "Prøv å synkronisere metadata for oppgavesett \"%s\"."
 
 msgid "Create a new delivery"
 msgstr "Opprett et nytt oppgavesett"
@@ -73,7 +73,7 @@ msgstr "Sletter \"%s"
 
 #, tao-public
 msgid "Deliveries"
-msgstr "Oppgavesett"
+msgstr "Publiserte"
 
 #, tao-public
 msgid "Deliveries library"
@@ -83,7 +83,7 @@ msgid "Delivery \"%s\" successfully imported"
 msgstr "Oppgavesett \"%s\" er importert"
 
 msgid "Delivery \'%s\' not found"
-msgstr ""
+msgstr "Oppgavesett \'%s\' ble ikke funnet"
 
 msgid "Delivery class uri provided is not a valid delivery class."
 msgstr "Gitt oppgavesettmappe uri er ikke en gyldig mappe."
@@ -101,7 +101,7 @@ msgid "Delivery with label \"%s\" not found"
 msgstr "Oppgavesett merket \"%s\" ble ikke funnet"
 
 msgid "Directory %s doesn\'t exist"
-msgstr ""
+msgstr "Katalogen %s eksisterer ikke"
 
 msgid "Error"
 msgstr "Feil"
@@ -122,18 +122,18 @@ msgid "Import QTI test and create delivery."
 msgstr "Importer QTI-prøven og opprett et oppgavesett."
 
 msgid "Importing %1$s files into \'%2$s\"
-msgstr ""
+msgstr "Importerer %1$s filer til \'%2$s\"
 
 msgid "Last updated on:"
-msgstr ""
+msgstr "Sist oppdatert på:"
 
 #, tao-public
 msgid "Manage Schema"
-msgstr "Administrer skjema"
+msgstr "Administrer egenskaper"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Administrer prøver"
+msgstr "Administrer oppgavesett"
 
 #, tao-public
 msgid "Move"
@@ -149,7 +149,7 @@ msgstr "Ny mappe"
 
 #, tao-public
 msgid "New delivery"
-msgstr "Nytt oppgavesett"
+msgstr "Ny publisering"
 
 msgid "No attempt has been started yet."
 msgstr "Har ikke startet prøven ennå."
@@ -173,7 +173,7 @@ msgid "Publish \"%s\" to"
 msgstr "Publiser \"%s\" til"
 
 msgid "Publish the test"
-msgstr "Publiser prøven"
+msgstr "Publiser oppgavesettet"
 
 msgid "Published on:"
 msgstr "Publisert på:"
@@ -185,7 +185,7 @@ msgid "Save"
 msgstr "Lagre"
 
 msgid "Select the test"
-msgstr "Velg testen"
+msgstr "Velg prøve"
 
 msgid "Select the test you want to publish to the test-takers"
 msgstr "Velg prøven du vil publisere til elevene"
@@ -203,11 +203,11 @@ msgid "Test publishing failed because \"%s\" is empty."
 msgstr "Publisering av prøven mislyktes fordi \"%s\" er tom."
 
 msgid "Test-takers"
-msgstr "Elever/kandidater"
+msgstr "Elever"
 
 #, tao-public
 msgid "Tests"
-msgstr "Prøver"
+msgstr "Oppgavesett"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
 msgstr "Prøven \"%s\" inneholder ingen oppgaver og kan ikke publiseres."
@@ -225,7 +225,7 @@ msgid "Unable to import Archive"
 msgstr "Kan ikke importere arkiv"
 
 msgid "Unable to load tests"
-msgstr "Kan ikke laste inn prøver"
+msgstr "Kan ikke laste inn oppgavesett"
 
 msgid "unlimited"
 msgstr "ubegrenset"
