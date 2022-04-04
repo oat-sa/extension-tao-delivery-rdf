@@ -49,10 +49,10 @@ class ThemeAutoSetService
     private $themeDiscoverService;
 
     public function __construct(
-        Ontology                     $ontology,
+        Ontology $ontology,
         DeliveryThemeDetailsProvider $deliveryThemeDetailsProvider,
-        QtiTestRepositoryInterface   $qtiTestRepository,
-        ThemeServiceAbstract         $themeService
+        QtiTestRepositoryInterface $qtiTestRepository,
+        ThemeServiceAbstract $themeService
     ) {
         $this->ontology = $ontology;
         $this->deliveryThemeDetailsProvider = $deliveryThemeDetailsProvider;
