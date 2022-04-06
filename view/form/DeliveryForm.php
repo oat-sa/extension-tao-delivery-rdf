@@ -107,7 +107,18 @@ class DeliveryForm extends SignedFormInstance
             }
         }
 
-        $this->form->getElement($elementUri)->setOptions($options);
+        $themeElement = $this->form->getElement($elementUri);
+
+        $themeElement->setOptions($options);
+
+        // Ensures stored value is selected in the element
+        if ($this->instance !== null) {
+            $themeElement->setValue(
+                $this->instance->getOnePropertyValue(
+                    $this->instance->getProperty(DeliveryThemeDetailsProvider::DELIVERY_THEME_ID_URI)
+                )
+            );
+        }
 
         return true;
     }
