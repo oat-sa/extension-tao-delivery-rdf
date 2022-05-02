@@ -27,7 +27,7 @@
         "oat-sa/extension-tao-group": ">=7.0.0",
         "oat-sa/extension-tao-item": ">=11.0.0",
         "oat-sa/extension-tao-test": ">=15.0.0",
-        "oat-sa/extension-tao-testqti": ">=41.10.0"
+        "oat-sa/extension-tao-testqti": " dev-backport/tr4008"
     },
     "autoload": {
         "psr-4": {
