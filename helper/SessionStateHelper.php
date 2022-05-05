@@ -32,7 +32,7 @@ use oat\oatbox\service\ServiceManager;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionReactivated;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
 use oat\taoQtiTest\models\TestSessionService;
-use oat\taoQtiTest\models\TestSessionState\Api\TestSessionStateRestorationServiceInterface;
+use oat\taoQtiTest\models\TestSessionState\Api\TestSessionStateRestorationInterface;
 use oat\taoQtiTest\models\TestSessionState\Exception\RestorationImpossibleException;
 use qtism\runtime\storage\common\StorageException;
 use qtism\runtime\tests\AssessmentTestSessionState;
@@ -76,9 +76,9 @@ class SessionStateHelper
         return ServiceManager::getServiceManager()->getContainer()->get(TestSessionService::SERVICE_ID);
     }
 
-    private static function getTestSessionStateRestorationService(): TestSessionStateRestorationServiceInterface
+    private static function getTestSessionStateRestorationService(): TestSessionStateRestorationInterface
     {
-        return ServiceManager::getServiceManager()->getContainer()->get(TestSessionStateRestorationServiceInterface::class);
+        return ServiceManager::getServiceManager()->getContainer()->get(TestSessionStateRestorationInterface::class);
     }
 
     private static function getLoggerService(): LoggerService
