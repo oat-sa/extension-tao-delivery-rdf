@@ -1,4 +1,7 @@
 # extension-tao-delivery-rdf
+
+[![codecov](https://codecov.io/gh/oat-sa/extension-tao-delivery-rdf/branch/master/graph/badge.svg)](https://codecov.io/gh/oat-sa/extension-tao-delivery-rdf)
+
 Manages deliveries using the ontology
 
 _Note_: 
