@@ -42,6 +42,6 @@ class DeliveryValidatorFactoryTest extends TestCase
         $validator1 = $validators['http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_AssessmentProjectId'][0];
 
         $this->assertInstanceOf(tao_helpers_form_validators_AlphaNum::class, $validator1);
-        $this->assertContains(['allow_punctuation' => true], $validator1->getOptions());
+        $this->assertTrue($validator1->getOptions()['allow_punctuation']);
     }
 }
