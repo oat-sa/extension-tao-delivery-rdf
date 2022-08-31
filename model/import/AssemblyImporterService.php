@@ -31,6 +31,7 @@ use oat\generis\model\kernel\persistence\file\FileIterator;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoDeliveryRdf\model\ContainerRuntime;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\generis\model\OntologyRdf;
 
@@ -48,7 +49,7 @@ class AssemblyImporterService extends ConfigurableService
     use OntologyAwareTrait;
 
     const MANIFEST_FILE = 'manifest.json';
-    
+
     const RDF_FILE = 'delivery.rdf';
 
     /**
@@ -192,7 +193,7 @@ class AssemblyImporterService extends ConfigurableService
 
         $deliveryUri = null;
         foreach ($this->getRdfResourceIterator($tmpImportFolder) as $triple) {
-            if ($triple->predicate == OntologyRdf::RDF_TYPE && $triple->object == DeliveryAssemblyService::CLASS_URI) {
+            if ($triple->predicate === ContainerRuntime::PROPERTY_CONTAINER) {
                 $deliveryUri = $triple->subject;
                 break;
             }
