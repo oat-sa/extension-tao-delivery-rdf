@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2021.10\n"
-"PO-Revision-Date: 2021-11-17T13:27:53\n"
+"Project-Id-Version: TAO 2022.09\n"
+"PO-Revision-Date: 2022-08-12T16:45:56\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -35,7 +35,7 @@ msgid "Assigned test-takers"
 msgstr ""
 
 msgid "Assigned to"
-msgstr ""
+msgstr "アサイン"
 
 msgid "Available from %s"
 msgstr ""
@@ -56,24 +56,24 @@ msgid "Continue try to sync metadata of delivery \"%s\"."
 msgstr ""
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "新規デリバリ作成"
 
 msgid "Create a test"
-msgstr ""
+msgstr "テスト作成"
 
 msgid "DataStore sync retry for delivery \"%s\"."
 msgstr ""
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "削除"
 
 msgid "Deleting of \"%s"
 msgstr ""
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "デリバリ"
 
 #, tao-public
 msgid "Deliveries library"
@@ -89,7 +89,7 @@ msgid "Delivery class uri provided is not a valid delivery class."
 msgstr ""
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr " %s 名の受験者に割り当てられました"
 
 msgid "Delivery is not assigned to any test-taker."
 msgstr ""
@@ -104,10 +104,10 @@ msgid "Directory %s doesn\'t exist"
 msgstr ""
 
 msgid "Error"
-msgstr ""
+msgstr "エラー"
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "除外された受験生"
 
 msgid "Exported %1$s to %2$s"
 msgstr ""
@@ -116,16 +116,16 @@ msgid "Exporting %s"
 msgstr ""
 
 msgid "Guest access"
-msgstr ""
+msgstr "ゲストアクセス"
 
 msgid "Import QTI test and create delivery."
 msgstr ""
 
-msgid "Importing %1$s files into \'%2$s\'"
+msgid "Importing %1$s files into \'%2$s\"
 msgstr ""
 
 msgid "Last updated on:"
-msgstr ""
+msgstr "最終更新日："
 
 #, tao-public
 msgid "Manage Schema"
@@ -149,13 +149,13 @@ msgstr ""
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "新規デリバリ"
 
 msgid "No attempt has been started yet."
 msgstr ""
 
 msgid "No information available about attempts"
-msgstr ""
+msgstr "実施に関する情報はありません（未実施）"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
@@ -176,16 +176,16 @@ msgid "Publish the test"
 msgstr ""
 
 msgid "Published on:"
-msgstr ""
+msgstr "作成日："
 
 msgid "Publishing of <b>%s</b>"
 msgstr ""
 
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 msgid "Select the test"
-msgstr ""
+msgstr "テスト選択"
 
 msgid "Select the test you want to publish to the test-takers"
 msgstr ""
@@ -197,13 +197,13 @@ msgid "TAO Guest"
 msgstr ""
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "ゲストアクセス"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr ""
 
 msgid "Test-takers"
-msgstr ""
+msgstr "受験者"
 
 #, tao-public
 msgid "Tests"
