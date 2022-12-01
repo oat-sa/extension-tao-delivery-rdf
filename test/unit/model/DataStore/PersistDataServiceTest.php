@@ -27,8 +27,8 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\helpers\FileHelperService;
 use oat\taoDeliveryRdf\model\DataStore\PersistDataService;
+use oat\taoQtiTest\models\export\Formats\Package2p2\TestPackageExport;
 use PHPUnit\Framework\MockObject\MockObject;
-use taoQtiTest_models_classes_export_TestExport22;
 
 class PersistDataServiceTest extends TestCase
 {
@@ -37,7 +37,7 @@ class PersistDataServiceTest extends TestCase
 
     /** @var FileHelperService|MockObject */
     private $filesystemHelper;
-    /** @var MockObject|taoQtiTest_models_classes_export_TestExport22 */
+    /** @var MockObject|TestPackageExport */
     private $exporterHelper;
 
     /** @var FileSystem|MockObject */
@@ -52,7 +52,7 @@ class PersistDataServiceTest extends TestCase
 
         $this->filesystemService = $this->createMock(FileSystemService::class);
         $this->filesystemHelper = $this->createMock(FileHelperService::class);
-        $this->exporterHelper = $this->createMock(taoQtiTest_models_classes_export_TestExport22::class);
+        $this->exporterHelper = $this->createMock(TestPackageExport::class);
         $this->fileSystem = $this->createMock(FileSystem::class);
 
         $serviceLocator = $this->getServiceLocatorMock([

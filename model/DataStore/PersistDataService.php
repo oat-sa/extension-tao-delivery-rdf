@@ -29,9 +29,9 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\helpers\FileHelperService;
+use oat\taoQtiTest\models\export\Formats\Package2p2\TestPackageExport;
 use tao_helpers_Uri;
 use tao_models_classes_export_ExportHandler as ExporterInterface;
-use taoQtiTest_models_classes_export_TestExport22;
 use Throwable;
 
 class PersistDataService extends ConfigurableService
@@ -134,7 +134,7 @@ class PersistDataService extends ConfigurableService
             return $exporter;
         }
 
-        return new taoQtiTest_models_classes_export_TestExport22();
+        return new TestPackageExport();
     }
 
     private function getFileSystemManager(): FileSystemService
