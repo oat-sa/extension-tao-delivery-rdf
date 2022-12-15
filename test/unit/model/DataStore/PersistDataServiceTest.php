@@ -28,7 +28,6 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\helpers\FileHelperService;
 use oat\taoDeliveryRdf\model\DataStore\PersistDataService;
-use taoQtiTest_models_classes_export_TestExport22;
 
 class PersistDataServiceTest extends TestCase
 {
@@ -36,17 +35,20 @@ class PersistDataServiceTest extends TestCase
 
     private FileSystemService $filesystemService;
     private FileHelperService $filesystemHelper;
-    private taoQtiTest_models_classes_export_TestExport22 $exporterHelper;
+    private $exporterHelper;
     private FileSystem $fileSystem;
     private PersistDataService $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->exporterHelper = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['export'])
+            ->setMockClassName('tao_models_classes_export_ExportHandler')
+            ->getMock();
 
         $this->filesystemService = $this->createMock(FileSystemService::class);
         $this->filesystemHelper = $this->createMock(FileHelperService::class);
-        $this->exporterHelper = $this->createMock(taoQtiTest_models_classes_export_TestExport22::class);
         $this->fileSystem = $this->createMock(FileSystem::class);
 
         $serviceLocator = $this->getServiceManagerMock([
@@ -66,7 +68,9 @@ class PersistDataServiceTest extends TestCase
      */
     public function testPersist($params): void
     {
-        $this->filesystemHelper->expects($this->once())->method('createTempDir')
+        $this->filesystemHelper
+            ->expects($this->once())
+            ->method('createTempDir')
             ->willReturn('bogusTestDirLocation');
 
         $this->exporterHelper->expects($this->once())->method('export')->willReturn(true);
