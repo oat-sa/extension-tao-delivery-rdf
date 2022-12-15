@@ -28,6 +28,7 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\helpers\FileHelperService;
 use oat\taoDeliveryRdf\model\DataStore\PersistDataService;
+use tao_models_classes_export_ExportHandler;
 
 class PersistDataServiceTest extends TestCase
 {
@@ -35,18 +36,14 @@ class PersistDataServiceTest extends TestCase
 
     private FileSystemService $filesystemService;
     private FileHelperService $filesystemHelper;
-    private $exporterHelper;
+    private tao_models_classes_export_ExportHandler $exporterHelper;
     private FileSystem $fileSystem;
     private PersistDataService $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->exporterHelper = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['export'])
-            ->setMockClassName('tao_models_classes_export_ExportHandler')
-            ->getMock();
-
+        $this->exporterHelper = $this->createMock(tao_models_classes_export_ExportHandler::class);
         $this->filesystemService = $this->createMock(FileSystemService::class);
         $this->filesystemHelper = $this->createMock(FileHelperService::class);
         $this->fileSystem = $this->createMock(FileSystem::class);
