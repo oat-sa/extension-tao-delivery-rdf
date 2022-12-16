@@ -22,24 +22,23 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\test\unit\model\DataStore;
 
-use oat\generis\test\TestCase;
+use PHPUnit\Framework\TestCase;
 use oat\taoDeliveryRdf\model\DataStore\ProcessDataService;
-use PHPUnit\Framework\MockObject\MockObject;
 use ZipArchive;
 
 class ProcessDataServiceTest extends TestCase
 {
-    /** @var MockObject|ZipArchive */
-    private $zipArchive;
-
-    /** @var ProcessDataService */
-    private $subject;
+    private ZipArchiveForUnitTest $zipArchive;
+    private ProcessDataService $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->zipArchive = $this->createMock(ZipArchive::class);
+        //Need to remove all methods because of PHPUnit 8.5 doesn`t handles return union types used in PHP8
+        $this->zipArchive = $this->getMockBuilder(ZipArchiveForUnitTest::class)
+            ->onlyMethods(['open', 'close', 'addFromString'])
+            ->getMock();
 
         $this->subject = new ProcessDataService(
             [ProcessDataService::OPTION_ZIP_ARCHIVE_SERVICE => $this->zipArchive]
@@ -60,3 +59,25 @@ class ProcessDataServiceTest extends TestCase
         $this->subject->process($zipFile, $metaData);
     }
 }
+
+/**
+ * Class needed to override methods form ZipArchive needed for this test.
+ * Method open() in ZipArchive has UnionType return bool|int and therefore cant be mocked by PHPUnit in version lower
+ * than 9 (currently 8.5 is installed)
+ */
+// @codingStandardsIgnoreStart
+class ZipArchiveForUnitTest extends ZipArchive
+{
+    public function open($filename, $flags = null)
+    {
+    }
+
+    public function close()
+    {
+    }
+
+    public function addFromString($name, $content, $flags = 8192)
+    {
+    }
+}
+// @codingStandardsIgnoreEnd

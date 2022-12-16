@@ -22,40 +22,33 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\test\unit\model\DataStore;
 
-use oat\generis\test\TestCase;
+use oat\generis\test\ServiceManagerMockTrait;
+use PHPUnit\Framework\TestCase;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\helpers\FileHelperService;
 use oat\taoDeliveryRdf\model\DataStore\PersistDataService;
-use PHPUnit\Framework\MockObject\MockObject;
-use taoQtiTest_models_classes_export_TestExport22;
+use tao_models_classes_export_ExportHandler;
 
 class PersistDataServiceTest extends TestCase
 {
-    /** @var FileSystemService|MockObject */
-    private $filesystemService;
+    use ServiceManagerMockTrait;
 
-    /** @var FileHelperService|MockObject */
-    private $filesystemHelper;
-    /** @var MockObject|taoQtiTest_models_classes_export_TestExport22 */
-    private $exporterHelper;
-
-    /** @var FileSystem|MockObject */
-    private $fileSystem;
-
-    /** @var PersistDataService */
-    private $subject;
+    private FileSystemService $filesystemService;
+    private FileHelperService $filesystemHelper;
+    private tao_models_classes_export_ExportHandler $exporterHelper;
+    private FileSystem $fileSystem;
+    private PersistDataService $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
-
+        $this->exporterHelper = $this->createMock(tao_models_classes_export_ExportHandler::class);
         $this->filesystemService = $this->createMock(FileSystemService::class);
         $this->filesystemHelper = $this->createMock(FileHelperService::class);
-        $this->exporterHelper = $this->createMock(taoQtiTest_models_classes_export_TestExport22::class);
         $this->fileSystem = $this->createMock(FileSystem::class);
 
-        $serviceLocator = $this->getServiceLocatorMock([
+        $serviceLocator = $this->getServiceManagerMock([
             FileSystemService::SERVICE_ID => $this->filesystemService,
             FileHelperService::class => $this->filesystemHelper,
         ]);
@@ -69,11 +62,12 @@ class PersistDataServiceTest extends TestCase
 
     /**
      * @dataProvider provideDataForPersist
-     *
      */
     public function testPersist($params): void
     {
-        $this->filesystemHelper->expects($this->once())->method('createTempDir')
+        $this->filesystemHelper
+            ->expects($this->once())
+            ->method('createTempDir')
             ->willReturn('bogusTestDirLocation');
 
         $this->exporterHelper->expects($this->once())->method('export')->willReturn(true);
