@@ -122,12 +122,15 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             $this->setData('exec', count($execs));
         }
 
-        // define the groups related to the current delivery
-        $property = $this->getProperty(GroupAssignment::PROPERTY_GROUP_DELIVERY);
-        $tree = \tao_helpers_form_GenerisTreeForm::buildReverseTree($delivery, $property);
-        $tree->setTitle(__('Assigned to'));
-        $tree->setTemplate(Template::getTemplate('widgets/assignGroup.tpl'));
-        $this->setData('groupTree', $tree->render());
+        $assignmentService = $this->getServiceLocator()->get(AssignmentService::SERVICE_ID);
+        if (get_class($assignmentService) == GroupAssignment::class) {
+            // define the groups related to the current delivery
+            $property = $this->getProperty(GroupAssignment::PROPERTY_GROUP_DELIVERY);
+            $tree = \tao_helpers_form_GenerisTreeForm::buildReverseTree($delivery, $property);
+            $tree->setTitle(__('Assigned to'));
+            $tree->setTemplate(Template::getTemplate('widgets/assignGroup.tpl'));
+            $this->setData('groupTree', $tree->render());
+        }
 
         // testtaker brick
         $this->setData('assemblyUri', $deliveryUri);
@@ -137,9 +140,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $excluded = $delivery->getPropertyValues($property);
         $this->setData('ttexcluded', count($excluded));
 
-        $users = $this->getServiceLocator()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($deliveryUri);
+        $users = $assignmentService->getAssignedUsers($deliveryUri);
         $assigned = array_diff(array_unique($users), $excluded);
         $this->setData('ttassigned', count($assigned));
+
         $updatedAt = $this->getServiceLocator()->get(ResourceWatcher::SERVICE_ID)->getUpdatedAt($delivery);
         $this->setData('updatedAt', $updatedAt);
         $this->setData('formTitle', __('Properties'));
