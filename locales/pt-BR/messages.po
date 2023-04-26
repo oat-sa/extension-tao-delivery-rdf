@@ -1,0 +1,236 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-3x\n"
+"PO-Revision-Date: 2023-04-21 15:46\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: pt\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-3x\n"
+"X-Crowdin-Project-ID: 582145\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /taoDeliveryRdf/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 1475\n"
+"Language-Team: Portuguese, Brazilian\n"
+
+msgid "%s completed"
+msgstr "%s concluído"
+
+msgid "%s test-taker(s) are excluded."
+msgstr "%s test-taker(s) foram excluídos."
+
+msgid "Access deliveries as a guest"
+msgstr "Acessar entregas como convidado"
+
+msgid "An error occured during the import"
+msgstr "Ocorreu um erro ao importar"
+
+msgid "Assembly"
+msgstr "Assembleia"
+
+msgid "Assembly import"
+msgstr "Importar assembleia"
+
+msgid "Assigned test-takers"
+msgstr "Teste-takers atribuídos"
+
+msgid "Assigned to"
+msgstr "Atribuído a"
+
+msgid "Available from %s"
+msgstr "Disponível a partir de %s"
+
+msgid "Available until %s"
+msgstr "Disponível até %s"
+
+msgid "Cancel"
+msgstr "cancelar"
+
+msgid "Class successfully created."
+msgstr "Classe criada com sucesso."
+
+msgid "Continue deleting of delivery \"%s\"."
+msgstr "Continuar a excluir a entrega \"%s\"."
+
+msgid "Create a new delivery"
+msgstr "Criar uma nova entrega"
+
+msgid "Create a test"
+msgstr "Criar um teste"
+
+#, tao-public
+msgid "Delete"
+msgstr "excluir"
+
+msgid "Deleting of \"%s"
+msgstr "Apagando de \"%s"
+
+#, tao-public
+msgid "Deliveries"
+msgstr "Entregas"
+
+#, tao-public
+msgid "Deliveries library"
+msgstr "Biblioteca de entregas"
+
+msgid "Delivery \"%s\" successfully imported"
+msgstr "Entrega \"%s\" importado com sucesso"
+
+msgid "Delivery \\'%s\\' not found"
+msgstr "Entrega \\'%s\\' não encontrada"
+
+msgid "Delivery class uri provided is not a valid delivery class."
+msgstr "A aula de entrega uri fornecida não é uma aula de entrega válida."
+
+msgid "Delivery is assigned to %s test-takers."
+msgstr "Entrega atribuída para %s test-takers."
+
+msgid "Delivery is not assigned to any test-taker."
+msgstr "Entrega não atribuída a nenhum teste."
+
+msgid "Delivery saved"
+msgstr "Entrega salva"
+
+msgid "Delivery with label \"%s\" not found"
+msgstr "Entrega com rótulo \"%s\" não encontrado"
+
+msgid "Directory %s doesn\\'t exist"
+msgstr "O diretório %s não existe"
+
+msgid "Error"
+msgstr "ERRO"
+
+msgid "Excluded test-takers"
+msgstr "test-takers excluídos"
+
+msgid "Exported %1$s to %2$s"
+msgstr "%1$s exportado para %2$s"
+
+msgid "Exporting %s"
+msgstr "Exportando %s"
+
+msgid "Guest access"
+msgstr "Acesso de convidado"
+
+msgid "Import QTI test and create delivery."
+msgstr "Importar teste QTI e criar a entrega."
+
+msgid "Last updated on:"
+msgstr "Última atualização em:"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr "Gerenciar esquema"
+
+#, tao-public
+msgid "Manage tests"
+msgstr "Gerenciar testes"
+
+#, tao-public
+msgid "Move"
+msgstr "Mover-se"
+
+#, tao-public
+msgid "Move To"
+msgstr "Mover para"
+
+#, tao-public
+msgid "New class"
+msgstr "Nova classe"
+
+#, tao-public
+msgid "New delivery"
+msgstr "Nova entrega"
+
+msgid "No attempt has been started yet."
+msgstr "Nenhuma tentativa foi iniciada ainda."
+
+msgid "No information available about attempts"
+msgstr "Nenhuma informação disponível sobre tentativas"
+
+#, tao-public
+msgid "Prepare, publish deliveries sessions."
+msgstr "Prepare, publique as sessões de entregas."
+
+#, tao-public
+msgid "Properties"
+msgstr "propriedades"
+
+#, tao-public
+msgid "Publish"
+msgstr "Publicar"
+
+msgid "Publish \"%s\" to"
+msgstr "Publicar \"%s\" para"
+
+msgid "Publish the test"
+msgstr "Publicar o teste"
+
+msgid "Published on:"
+msgstr "Publicado em:"
+
+msgid "Publishing of <b>%s</b>"
+msgstr "Publicação de <b>%s</b>"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Select the test"
+msgstr "Selecione o teste"
+
+msgid "Select the test you want to publish to the test-takers"
+msgstr "Selecione o teste que você deseja publicar para os realizadores de testes"
+
+msgid "Selection saved successfully"
+msgstr "Seleção salva com sucesso"
+
+msgid "TAO Guest"
+msgstr "TAO Guest"
+
+msgid "TAO Guest Access"
+msgstr "Acesso de Convidado TAO"
+
+msgid "Test publishing failed because \"%s\" is empty."
+msgstr "Falha na publicação de teste porque \"%s\" está vazio."
+
+msgid "Test-takers"
+msgstr "Testar-tomador"
+
+#, tao-public
+msgid "Tests"
+msgstr "Testes"
+
+msgid "The test \"%s\" does not contain any items and cannot be published."
+msgstr "O teste \"%s\" não contém nenhum item e não pode ser publicado."
+
+msgid "There are currently %s attempts"
+msgstr "Existem %s tentativas no momento"
+
+msgid "There are currently no tests available to publish."
+msgstr "Atualmente, não há testes disponíveis para publicação."
+
+msgid "There is currently 1 attempt"
+msgstr "Atualmente há 1 tentativa"
+
+msgid "Unable to import Archive"
+msgstr "Não foi possível importar o arquivo"
+
+msgid "Unable to load tests"
+msgstr "Não foi possível carregar os testes"
+
+msgid "unlimited"
+msgstr "Ilimitado"
+
+msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr "Uso: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3]..."
+
+msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr "Uso: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+
