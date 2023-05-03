@@ -81,7 +81,8 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
         try {
             $testProperty = new \core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN);
             $testUri = $this->delivery->getOnePropertyValue($testProperty)->getUri();
-        } catch (\Throwable $e) {}
+        } catch (\Throwable $e) {
+        }
 
         return [
             'deliveryId' => $this->deliveryUri,

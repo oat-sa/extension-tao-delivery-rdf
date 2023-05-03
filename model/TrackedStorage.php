@@ -26,7 +26,7 @@ use oat\tao\model\service\ServiceFileStorage;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 
-            /**
+/**
  * A wrapper of the filestorage that tracks added directories
  *
  * @access public
@@ -41,7 +41,7 @@ class TrackedStorage implements ServiceFileStorage, ServiceLocatorAwareInterface
     private $ids = [];
 
     private $storage;
-    
+
     /**
      * @param boolean $public
      * @return \tao_models_classes_service_StorageDirectory

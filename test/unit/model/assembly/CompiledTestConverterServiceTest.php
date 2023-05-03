@@ -32,7 +32,7 @@ use qtism\data\QtiComponent;
 
 class CompiledTestConverterServiceTest extends TestCase
 {
-    const FILE_BASE_NAME = 'BASE_NAME.EXT';
+    public const FILE_BASE_NAME = 'BASE_NAME.EXT';
     /**
          * @var CompiledTestConverterService
          */

@@ -30,7 +30,6 @@ namespace oat\taoDeliveryRdf\view\form\export;
  */
 class ExportForm extends \tao_helpers_form_FormContainer
 {
-   
     /**
      * (non-PHPdoc)
      * @see tao_helpers_form_FormContainer::initForm()
@@ -75,7 +74,7 @@ class ExportForm extends \tao_helpers_form_FormContainer
         $instanceElt->setAttribute('checkAll', true);
         $instanceElt->setOptions($instances);
         $instanceElt->setValue(current(array_keys($instances)));
-        
+
         $this->form->addElement($instanceElt);
 
 

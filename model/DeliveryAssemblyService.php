@@ -22,7 +22,7 @@
 namespace oat\taoDeliveryRdf\model;
 
 use core_kernel_classes_Resource;
-use \core_kernel_classes_Property;
+use core_kernel_classes_Property;
 use oat\taoDeliveryRdf\model\event\DeliveryRemovedEvent;
 use tao_models_classes_service_ServiceCall;
 use oat\taoDelivery\model\RuntimeService;
@@ -37,23 +37,23 @@ use oat\tao\model\OntologyClassService;
  */
 class DeliveryAssemblyService extends OntologyClassService
 {
-    const PROPERTY_ORIGIN = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
+    public const PROPERTY_ORIGIN = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin';
 
-    const CLASS_URI = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery';
+    public const CLASS_URI = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery';
 
-    const PROPERTY_DELIVERY_TIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime';
+    public const PROPERTY_DELIVERY_TIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime';
 
-    const PROPERTY_DELIVERY_RUNTIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime';
+    public const PROPERTY_DELIVERY_RUNTIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime';
 
-    const PROPERTY_DELIVERY_DIRECTORY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationDirectory';
+    public const PROPERTY_DELIVERY_DIRECTORY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationDirectory';
 
-    const PROPERTY_DELIVERY_GUEST_ACCESS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#GuestAccess';
+    public const PROPERTY_DELIVERY_GUEST_ACCESS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#GuestAccess';
 
-    const PROPERTY_DELIVERY_DISPLAY_ORDER_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DisplayOrder';
+    public const PROPERTY_DELIVERY_DISPLAY_ORDER_PROP = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#DisplayOrder';
 
-    const PROPERTY_START = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart';
+    public const PROPERTY_START = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodStart';
 
-    const PROPERTY_END = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
+    public const PROPERTY_END = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#PeriodEnd';
 
     public const PROPERTY_ASSESSMENT_PROJECT_ID = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssessmentProjectId';
 

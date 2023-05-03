@@ -36,7 +36,6 @@ use oat\taoDeliveryRdf\view\form\export\ExportForm;
  */
 class AssemblyExporter implements \tao_models_classes_export_ExportHandler
 {
-
     /**
      * (non-PHPdoc)
      * @see tao_models_classes_export_ExportHandler::getLabel()
@@ -45,7 +44,7 @@ class AssemblyExporter implements \tao_models_classes_export_ExportHandler
     {
         return __('Assembly');
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see tao_models_classes_export_ExportHandler::getExportForm()
@@ -60,7 +59,7 @@ class AssemblyExporter implements \tao_models_classes_export_ExportHandler
         $form = new ExportForm($formData);
         return $form->getForm();
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see tao_models_classes_export_ExportHandler::export()
@@ -70,7 +69,7 @@ class AssemblyExporter implements \tao_models_classes_export_ExportHandler
         if (!isset($formValues['exportInstance']) || empty($formValues['exportInstance'])) {
             throw new \common_Exception('No instance selected');
         }
-        
+
         $delivery = new core_kernel_classes_Resource($formValues['exportInstance']);
         $path = ServiceManager::getServiceManager()->get(AssemblyExporterService::class)->exportCompiledDelivery($delivery);
 

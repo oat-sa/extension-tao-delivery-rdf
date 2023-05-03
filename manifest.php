@@ -18,7 +18,6 @@
  * Copyright (c) 2015-2021 (original work) Open Assessment Technologies SA;
  */
 
-
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\model\DataStore\ServiceProvider\DataStoreServiceProvider;

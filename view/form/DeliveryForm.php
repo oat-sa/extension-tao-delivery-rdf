@@ -42,13 +42,13 @@ class DeliveryForm extends SignedFormInstance
     protected function initForm()
     {
         parent::initForm();
-        
+
         $saveELt = tao_helpers_form_FormFactory::getElement('Save', 'Free');
         $saveELt->setValue('<button class="form-submitter btn-success small" type="button"><span class="icon-save"></span>' . __('Save') . '</button>');
         $this->form->setActions([], 'top');
         $this->form->setActions([$saveELt], 'bottom');
     }
-    
+
     protected function initElements()
     {
         parent::initElements();
@@ -61,7 +61,7 @@ class DeliveryForm extends SignedFormInstance
             ]);
             $this->form->addElement($maxExecElt);
         }
-        
+
         $periodEndElt = $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::PROPERTY_END));
         if (! is_null($periodEndElt)) {
             $periodEndElt->addValidators([
@@ -72,7 +72,7 @@ class DeliveryForm extends SignedFormInstance
             ]);
             $this->form->addElement($periodEndElt);
         }
-        
+
         $resultServerElt = $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::PROPERTY_RESULT_SERVER));
         if (! is_null($resultServerElt)) {
             $resultServerElt->addValidators([

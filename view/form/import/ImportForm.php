@@ -57,7 +57,7 @@ class ImportForm extends \tao_helpers_form_FormContainer
         $this->form->setActions([$submitElt], 'bottom');
         $this->form->setActions([], 'top');
     }
-    
+
     /**
      * overriden
      *
@@ -71,7 +71,7 @@ class ImportForm extends \tao_helpers_form_FormContainer
         $descElt = tao_helpers_form_FormFactory::getElement('rdf_desc', 'Label');
         $descElt->setValue(__('Please upload a published delivery assembly .'));
         $this->form->addElement($descElt);
-        
+
         //create file upload form box
         $fileElt = tao_helpers_form_FormFactory::getElement('source', 'AsyncFile');
         $fileElt->setDescription(__("Add the source file."));
@@ -84,10 +84,10 @@ class ImportForm extends \tao_helpers_form_FormContainer
             tao_helpers_form_FormFactory::getValidator('FileMimeType', ['mimetype' => ['application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/octet-stream'], 'extension' => ['zip']]),
             tao_helpers_form_FormFactory::getValidator('FileSize', ['max' => SystemHelper::getFileUploadLimit()])
         ]);
-        
+
         $this->form->addElement($fileElt);
         $this->form->createGroup('file', __('Upload an assembly'), ['rdf_desc', 'source']);
-        
+
         $rdfSentElt = tao_helpers_form_FormFactory::getElement('import_sent_rdf', 'Hidden');
         $rdfSentElt->setValue(1);
         $this->form->addElement($rdfSentElt);

@@ -186,7 +186,8 @@ class ImportAndCompile extends AbstractTaskAction implements JsonSerializable
             self::OPTION_CUSTOM => $customParams,
             self::OPTION_DELIVERY_LABELS => $deliveryClassLabels,
         ];
-        $taskTitle = __('Import QTI test and create delivery.');;
+        $taskTitle = __('Import QTI test and create delivery.');
+        ;
 
         return $queueDispatcher->createTask($action, $taskParameters, $taskTitle, null, true);
     }

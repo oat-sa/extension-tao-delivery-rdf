@@ -30,7 +30,7 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use RuntimeException;
-use \tao_helpers_Uri;
+use tao_helpers_Uri;
 use taoTests_models_classes_TestsService as TestsService;
 
 /**

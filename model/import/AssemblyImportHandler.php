@@ -34,7 +34,6 @@ use common_report_Report;
  */
 class AssemblyImportHandler implements \tao_models_classes_import_ImportHandler
 {
-
     /**
      * (non-PHPdoc)
      * @see tao_models_classes_import_ImportHandler::getLabel()
@@ -43,7 +42,7 @@ class AssemblyImportHandler implements \tao_models_classes_import_ImportHandler
     {
         return __('Assembly import');
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see tao_models_classes_import_ImportHandler::getForm()
@@ -60,23 +59,23 @@ class AssemblyImportHandler implements \tao_models_classes_import_ImportHandler
      */
     public function import($class, $form, $userId = null)
     {
-        
+
         $fileInfo = $form->getValue('source');
         //import for CSV
         if (isset($fileInfo)) {
             \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::MEDIUM);
-            
+
             //get the services instances we will need
             $itemService    = \taoItems_models_classes_ItemsService::singleton();
-            
+
             $uploadedFile = $fileInfo['uploaded_file'];
             $uploadedFileBaseName = basename($uploadedFile);
             // uploaded file name contains an extra prefix that we have to remove.
             $uploadedFileBaseName = preg_replace('/^([0-9a-z])+_/', '', $uploadedFileBaseName, 1);
             $uploadedFileBaseName = preg_replace('/.zip|.ZIP$/', '', $uploadedFileBaseName);
-            
+
             $validate = count($form->getValue('disable_validation')) == 0 ? true : false;
-            
+
             try {
                 $importer = new Assembler();
                 $report = $importer->importDelivery($class, $uploadedFile);
@@ -86,9 +85,9 @@ class AssemblyImportHandler implements \tao_models_classes_import_ImportHandler
                     $report->add($e);
                 }
             }
-            
+
             \tao_helpers_File::remove($uploadedFile);
-            
+
             \helpers_TimeOutHelper::reset();
         } else {
             throw new \common_exception_Error('No file provided as parameter \'source\' for Delivery Assembly import');

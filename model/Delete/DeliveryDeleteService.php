@@ -41,11 +41,11 @@ use taoTests_models_classes_TestsService as TestService;
 
 class DeliveryDeleteService extends ConfigurableService
 {
-    const SERVICE_ID = 'taoDeliveryRdf/DeliveryDelete';
+    public const SERVICE_ID = 'taoDeliveryRdf/DeliveryDelete';
 
-    const OPTION_DELETE_DELIVERY_DATA_SERVICES = 'deleteDeliveryDataServices';
+    public const OPTION_DELETE_DELIVERY_DATA_SERVICES = 'deleteDeliveryDataServices';
 
-    const OPTION_LIMIT_DELIVERY_EXECUTIONS = 'executionsLimit';
+    public const OPTION_LIMIT_DELIVERY_EXECUTIONS = 'executionsLimit';
 
     /** @var common_report_Report  */
     protected $report;
@@ -111,7 +111,7 @@ class DeliveryDeleteService extends ConfigurableService
         $extensionsManager = $this->getServiceManager()->get(ExtensionsManager::SERVICE_ID);
         if ($serviceProxy instanceof Monitoring) {
             $executions = $serviceProxy->getExecutionsByDelivery($deliveryResource);
-        } else if ($extensionsManager->isEnabled('taoResultServer')) {
+        } elseif ($extensionsManager->isEnabled('taoResultServer')) {
             $resultStorage = $this->getResultStorage($deliveryResource->getUri());
             $results       = $resultStorage->getResultByDelivery([$deliveryResource->getUri()]);
 

@@ -144,7 +144,7 @@ class jMeterCleaner extends AbstractAction
 
         foreach ($deliveries as $delivery) {
             foreach ($testTakers as $testTaker) {
-                 $this->getUserDeliveryData($testTaker, $delivery, $counted, $src);
+                $this->getUserDeliveryData($testTaker, $delivery, $counted, $src);
             }
         }
 

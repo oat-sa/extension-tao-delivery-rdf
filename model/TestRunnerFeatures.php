@@ -31,7 +31,6 @@ use oat\taoTests\models\runner\features\TestRunnerFeatureService;
  */
 class TestRunnerFeatures
 {
-
     /**
      * Set the default Test Runner Features for a newly created delivery
      * xx

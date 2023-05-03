@@ -37,7 +37,6 @@ use oat\taoDeliveryRdf\model\NoTestsException;
  */
 class WizardForm extends \tao_helpers_form_FormContainer
 {
-
     /**
      * @return mixed|void
      * @throws \common_Exception

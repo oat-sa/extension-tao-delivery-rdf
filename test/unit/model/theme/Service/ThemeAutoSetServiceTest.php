@@ -83,9 +83,9 @@ class ThemeAutoSetServiceTest extends TestCase
      * @dataProvider cannotSetThemeByDeliveryProvider
      */
     public function testCannotSetThemeByDeliveryWithOriginDeliveryId(
-        string  $expectedException,
-        string  $expectedExceptionMessage,
-        string  $deliveryUri,
+        string $expectedException,
+        string $expectedExceptionMessage,
+        string $deliveryUri,
         ?string $originDeliveryId,
         ?string $currentThemeId,
         ?string $themeId,

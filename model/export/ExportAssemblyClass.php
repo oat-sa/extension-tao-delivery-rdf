@@ -37,22 +37,22 @@ class ExportAssemblyClass extends AbstractAction
      */
     public function __invoke($params)
     {
-        
+
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
-        
+
         if (count($params) != 2) {
             return new \common_report_Report(\common_report_Report::TYPE_ERROR, __('Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY', __CLASS__));
         }
 
         $deliveryClassUri = array_shift($params);
         $deliveryClass = new \core_kernel_classes_Class($deliveryClassUri);
-        
+
         $dir = array_shift($params);
         if (!file_exists($dir) && !mkdir($dir)) {
             return new \common_report_Report(\common_report_Report::TYPE_ERROR, __('Directory %s doesn\'t exist', $dir));
         }
         $dir = rtrim($dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        
+
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Exporting %s', $deliveryClass->getLabel()));
         /** @var AssemblyExporterService $assembler */
         $assembler = $this->getServiceLocator()->get(AssemblyExporterService::class);
@@ -62,7 +62,7 @@ class ExportAssemblyClass extends AbstractAction
             \tao_helpers_File::move($tmpFile, $destFile);
             $report->add(new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Exported %1$s to %2$s', $delivery->getLabel(), $destFile)));
         }
-        
+
         return $report;
     }
 }

@@ -40,7 +40,7 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
 {
     use OntologyAwareTrait;
 
-    const BUCKET_DIRECTORY = 'deliveriesArchives';
+    public const BUCKET_DIRECTORY = 'deliveriesArchives';
 
     /** @var string */
     protected $tmpDir;

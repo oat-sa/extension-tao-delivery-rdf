@@ -44,14 +44,14 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 class AssemblyExporterService extends ConfigurableService
 {
     use LoggerAwareTrait;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          use OntologyAwareTrait;
+    use OntologyAwareTrait;
 
 
-    const SERVICE_ID = 'taoDeliveryRdf/AssemblyExporterService';
-    const OPTION_ASSEMBLY_FILES_READER = 'assembly_files_reader';
-    const OPTION_RDF_EXPORTER = 'rdf_exporter';
-    const MANIFEST_FILENAME = 'manifest.json';
-    const DELIVERY_RDF_FILENAME = 'delivery.rdf';
+    public const SERVICE_ID = 'taoDeliveryRdf/AssemblyExporterService';
+    public const OPTION_ASSEMBLY_FILES_READER = 'assembly_files_reader';
+    public const OPTION_RDF_EXPORTER = 'rdf_exporter';
+    public const MANIFEST_FILENAME = 'manifest.json';
+    public const DELIVERY_RDF_FILENAME = 'delivery.rdf';
     /**
          * @var AssemblyFilesReaderInterface
          */
