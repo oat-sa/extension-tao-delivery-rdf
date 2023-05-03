@@ -201,7 +201,7 @@ msgid "Test publishing failed because \"%s\" is empty."
 msgstr "Falha na publicação de teste porque \"%s\" está vazio."
 
 msgid "Test-takers"
-msgstr "Testar-tomador"
+msgstr "Candidato"
 
 #, tao-public
 msgid "Tests"
