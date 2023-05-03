@@ -74,11 +74,11 @@ msgstr "Apagando de \"%s"
 
 #, tao-public
 msgid "Deliveries"
-msgstr "Entregas"
+msgstr "Exames"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr "Biblioteca de entregas"
+msgstr "Biblioteca de exames"
 
 msgid "Delivery \"%s\" successfully imported"
 msgstr "Entrega \"%s\" importado com sucesso"
@@ -147,7 +147,7 @@ msgstr "Nova classe"
 
 #, tao-public
 msgid "New delivery"
-msgstr "Nova entrega"
+msgstr "Novo exame"
 
 msgid "No attempt has been started yet."
 msgstr "Nenhuma tentativa foi iniciada ainda."
@@ -180,7 +180,7 @@ msgid "Publishing of <b>%s</b>"
 msgstr "Publicação de <b>%s</b>"
 
 msgid "Save"
-msgstr "Guardar"
+msgstr "Salvar"
 
 msgid "Select the test"
 msgstr "Selecione o teste"
