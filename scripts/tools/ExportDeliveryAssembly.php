@@ -81,7 +81,8 @@ class ExportDeliveryAssembly extends ScriptAction
      */
     protected function provideDescription()
     {
-        return 'Export compiled delivery assembly package with possibility to convert compiled test file into one of supported formats.';
+        return 'Export compiled delivery assembly package with possibility to convert compiled test file into one of '
+            . 'supported formats.';
     }
 
     /**

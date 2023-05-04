@@ -66,7 +66,10 @@ class CompiledTestConverterServiceTest extends TestCase
         $this->fileMock = $this->createMock(File::class);
         $this->fileMock->method('getBasename')
             ->willReturn(self::FILE_BASE_NAME);
-        $this->object = new CompiledTestConverterService($this->compilationDataReaderMock, $this->compilationDataWriterMock);
+        $this->object = new CompiledTestConverterService(
+            $this->compilationDataReaderMock,
+            $this->compilationDataWriterMock
+        );
     }
 
     public function testConvertFileExists()

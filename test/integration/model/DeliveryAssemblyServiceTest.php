@@ -26,7 +26,9 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use Prophecy\Argument;
 use oat\generis\test\MockObject;
 
+// phpcs:disable PSR1.Files.SideEffects
 require_once dirname(__FILE__) . '/../../../../tao/includes/raw_start.php';
+// phpcs:enable PSR1.Files.SideEffects
 
 class DeliveryAssemblyServiceTest extends FileStorageTestCase
 {
@@ -97,7 +99,10 @@ class DeliveryAssemblyServiceTest extends FileStorageTestCase
         $method = $class->getMethod('getFileStorage');
         $method->setAccessible(true);
 
-        $this->assertInstanceOf(\tao_models_classes_service_FileStorage::class, $method->invokeArgs($assemblyService, []));
+        $this->assertInstanceOf(
+            \tao_models_classes_service_FileStorage::class,
+            $method->invokeArgs($assemblyService, [])
+        );
     }
 
     /**

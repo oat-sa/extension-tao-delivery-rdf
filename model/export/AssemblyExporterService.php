@@ -68,12 +68,22 @@ class AssemblyExporterService extends ConfigurableService
     {
         parent::__construct($options);
         if (!$this->getOption(self::OPTION_ASSEMBLY_FILES_READER) instanceof AssemblyFilesReaderInterface) {
-            throw new InvalidArgumentException(sprintf('%s option value must be an instance of %s', self::OPTION_ASSEMBLY_FILES_READER, AssemblyFilesReaderInterface::class));
+            throw new InvalidArgumentException(
+                sprintf(
+                    '%s option value must be an instance of %s',
+                    self::OPTION_ASSEMBLY_FILES_READER,
+                    AssemblyFilesReaderInterface::class
+                )
+            );
         }
 
         $this->rdfExporter = $this->getOption(self::OPTION_RDF_EXPORTER);
         if (!$this->rdfExporter instanceof tao_models_classes_export_RdfExporter) {
-            throw new InvalidArgumentException('%s option value must be an instance of %s', self::OPTION_RDF_EXPORTER, tao_models_classes_export_RdfExporter::class);
+            throw new InvalidArgumentException(
+                '%s option value must be an instance of %s',
+                self::OPTION_RDF_EXPORTER,
+                tao_models_classes_export_RdfExporter::class
+            );
         }
     }
 
@@ -86,7 +96,8 @@ class AssemblyExporterService extends ConfigurableService
      * @param core_kernel_classes_Resource $compiledDelivery
      * @param string $outputTestFormat Format compiled test file in output assembly package.
      *
-     * @return string The path to the compiled delivery on the local file system OR the 'taoDelivery' shared file system, depending on whether $fsExportPath is set.
+     * @return string The path to the compiled delivery on the local file system OR the 'taoDelivery' shared file
+     *                system, depending on whether $fsExportPath is set.
      *
      * @throws common_Exception
      * @throws core_kernel_classes_EmptyProperty
@@ -133,15 +144,20 @@ class AssemblyExporterService extends ConfigurableService
      * @throws common_Exception
      * @throws core_kernel_classes_EmptyProperty
      */
-    protected function doExportCompiledDelivery($path, core_kernel_classes_Resource $compiledDelivery, ZipArchive $zipArchive)
-    {
+    protected function doExportCompiledDelivery(
+        $path,
+        core_kernel_classes_Resource $compiledDelivery,
+        ZipArchive $zipArchive
+    ) {
         $taoDeliveryVersion = common_ext_ExtensionsManager::singleton()->getInstalledVersion('taoDelivery');
         $data = [
             'dir' => [],
             'label' => $compiledDelivery->getLabel(),
             'version' => $taoDeliveryVersion
         ];
-        $directories = $compiledDelivery->getPropertyValues($this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY));
+        $directories = $compiledDelivery->getPropertyValues(
+            $this->getProperty(DeliveryAssemblyService::PROPERTY_DELIVERY_DIRECTORY)
+        );
         foreach ($directories as $id) {
             $directory = $this->getServiceLocator()->get(ServiceFileStorage::SERVICE_ID)->getDirectoryById($id);
             foreach ($this->getAssemblyFilesReader()->getFiles($directory) as $filePath => $fileStream) {

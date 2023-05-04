@@ -76,7 +76,9 @@ class RegisterDeliveryArchive extends AbstractAction
 
         /** @var DeliveryDeleteService $deliveryDeleteService */
         $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
-        $deleteServices = $deliveryDeleteService->getOption(DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES);
+        $deleteServices = $deliveryDeleteService->getOption(
+            DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES
+        );
         $deleteServices[] = DeliveryArchiveService::SERVICE_ID;
         $deliveryDeleteService->setOption(DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES, $deleteServices);
 

@@ -41,11 +41,15 @@ class DeliveryAssemblyService extends OntologyClassService
 
     public const CLASS_URI = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery';
 
+    // phpcs:disable Generic.Files.LineLength
     public const PROPERTY_DELIVERY_TIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationTime';
+    // phpcs:enable Generic.Files.LineLength
 
     public const PROPERTY_DELIVERY_RUNTIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime';
 
+    // phpcs:disable Generic.Files.LineLength
     public const PROPERTY_DELIVERY_DIRECTORY = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryCompilationDirectory';
+    // phpcs:enable Generic.Files.LineLength
 
     public const PROPERTY_DELIVERY_GUEST_ACCESS = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#GuestAccess';
 
@@ -80,7 +84,9 @@ class DeliveryAssemblyService extends OntologyClassService
     protected function getFileStorage()
     {
         if (!$this->storageService) {
-            $this->storageService = $this->getServiceManager()->get(\tao_models_classes_service_FileStorage::SERVICE_ID);
+            $this->storageService = $this
+                ->getServiceManager()
+                ->get(\tao_models_classes_service_FileStorage::SERVICE_ID);
         }
         return $this->storageService;
     }
@@ -93,8 +99,11 @@ class DeliveryAssemblyService extends OntologyClassService
      * @param array $properties
      * @return \core_kernel_classes_Resource
      */
-    public function createAssemblyFromServiceCall(core_kernel_classes_Class $deliveryClass, tao_models_classes_service_ServiceCall $serviceCall, $properties = [])
-    {
+    public function createAssemblyFromServiceCall(
+        core_kernel_classes_Class $deliveryClass,
+        tao_models_classes_service_ServiceCall $serviceCall,
+        $properties = []
+    ) {
         throw new \common_exception_Error("Call to deprecated " . __FUNCTION__);
     }
 
@@ -150,7 +159,9 @@ class DeliveryAssemblyService extends OntologyClassService
         $deliveryAssignement = $this->getServiceManager()->get(GroupAssignment::SERVICE_ID);
         $deliveryAssignement->onDelete($assembly);
         /** @var core_kernel_classes_Resource $runtimeResource */
-        $runtimeResource = $assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_RUNTIME));
+        $runtimeResource = $assembly->getUniquePropertyValue(
+            new core_kernel_classes_Property(self::PROPERTY_DELIVERY_RUNTIME)
+        );
         if ($runtimeResource instanceof core_kernel_classes_Resource) {
             return $runtimeResource->delete();
         }
@@ -167,7 +178,9 @@ class DeliveryAssemblyService extends OntologyClassService
     {
         $success = true;
         $deleted = 0;
-        $directories = $assembly->getPropertyValues(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_DIRECTORY));
+        $directories = $assembly->getPropertyValues(
+            new core_kernel_classes_Property(self::PROPERTY_DELIVERY_DIRECTORY)
+        );
 
         foreach ($directories as $directory) {
             $instances = $this->getRootClass()->getInstances(true, [self::PROPERTY_DELIVERY_DIRECTORY => $directory]);
@@ -200,7 +213,9 @@ class DeliveryAssemblyService extends OntologyClassService
      */
     public function getCompilationDate(core_kernel_classes_Resource $assembly)
     {
-        return (string)$assembly->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_DELIVERY_TIME));
+        return (string)$assembly->getUniquePropertyValue(
+            new core_kernel_classes_Property(self::PROPERTY_DELIVERY_TIME)
+        );
     }
 
     /**

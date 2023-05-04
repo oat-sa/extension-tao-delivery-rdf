@@ -72,21 +72,37 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
     {
         $assignments = [];
 
-        $displayAttempts = ($this->hasOption(self::DISPLAY_ATTEMPTS_OPTION)) ? $this->getOption(self::DISPLAY_ATTEMPTS_OPTION) : true;
+        $displayAttempts = ($this->hasOption(self::DISPLAY_ATTEMPTS_OPTION))
+            ? $this->getOption(self::DISPLAY_ATTEMPTS_OPTION)
+            : true;
 
-        $displayDates = ($this->hasOption(self::DISPLAY_DATES_OPTION)) ? $this->getOption(self::DISPLAY_DATES_OPTION) : true;
+        $displayDates = ($this->hasOption(self::DISPLAY_DATES_OPTION))
+            ? $this->getOption(self::DISPLAY_DATES_OPTION)
+            : true;
 
         if ($this->isDeliveryGuestUser($user)) {
             foreach ($this->getGuestAccessDeliveries() as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
                 $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
-                $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts, $displayDates);
+                $assignments[] = $this->getAssignmentFactory(
+                    $delivery,
+                    $user,
+                    $startable,
+                    $displayAttempts,
+                    $displayDates
+                );
             }
         } else {
             foreach ($this->getDeliveryIdsByUser($user) as $id) {
                 $delivery = new \core_kernel_classes_Resource($id);
                 $startable = $this->verifyTime($delivery) && $this->verifyToken($delivery, $user);
-                $assignments[] = $this->getAssignmentFactory($delivery, $user, $startable, $displayAttempts, $displayDates);
+                $assignments[] = $this->getAssignmentFactory(
+                    $delivery,
+                    $user,
+                    $startable,
+                    $displayAttempts,
+                    $displayDates
+                );
             }
         }
         return $assignments;
@@ -150,7 +166,11 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
         $deliveryUris = [];
         // check if really available
         foreach (GroupsService::singleton()->getGroups($user) as $group) {
-            foreach ($group->getPropertyValues(new \core_kernel_classes_Property(self::PROPERTY_GROUP_DELIVERY)) as $deliveryUri) {
+            $groupDeliveryUris = $group->getPropertyValues(
+                new \core_kernel_classes_Property(self::PROPERTY_GROUP_DELIVERY)
+            );
+
+            foreach ($groupDeliveryUris as $deliveryUri) {
                 $candidate = new core_kernel_classes_Resource($deliveryUri);
                 if (!$this->isUserExcluded($candidate, $user) && $candidate->exists()) {
                     $deliveryUris[$candidate->getUri()] = $candidate->getUri();
@@ -170,7 +190,10 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     protected function isUserExcluded(\core_kernel_classes_Resource $delivery, User $user)
     {
-        $excludedUsers = $delivery->getPropertyValues(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS));
+        $excludedUsers = $delivery->getPropertyValues(
+            new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS)
+        );
+
         return in_array($user->getIdentifier(), $excludedUsers);
     }
 
@@ -185,7 +208,9 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
 
         return $class->searchInstances(
             [
+                // phpcs:disable Generic.Files.LineLength
                 DeliveryContainerService::PROPERTY_ACCESS_SETTINGS => DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS
+                // phpcs:enable Generic.Files.LineLength
             ],
             ['recursive' => true]
         );
@@ -234,7 +259,8 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
             ], [
                 'like' => false, 'recursive' => true
             ]);
-            $returnValue = count(array_intersect($userGroups, $deliveryGroups)) > 0 && !$this->isUserExcluded($delivery, $user);
+            $returnValue = count(array_intersect($userGroups, $deliveryGroups)) > 0
+                && !$this->isUserExcluded($delivery, $user);
         }
 
         return $returnValue;
@@ -255,7 +281,9 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
             new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_ACCESS_SETTINGS),
         ]);
         $propAccessSettings = current($properties[DeliveryContainerService::PROPERTY_ACCESS_SETTINGS ]);
-        $accessSetting = (!(is_object($propAccessSettings)) or ($propAccessSettings == "")) ? null : $propAccessSettings->getUri();
+        $accessSetting = (!(is_object($propAccessSettings)) or ($propAccessSettings == ""))
+            ? null
+            : $propAccessSettings->getUri();
 
         if (!is_null($accessSetting)) {
             $returnValue = ($accessSetting === DeliveryAssemblyService::PROPERTY_DELIVERY_GUEST_ACCESS);
@@ -271,7 +299,9 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      */
     protected function verifyToken(core_kernel_classes_Resource $delivery, User $user)
     {
-        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_MAX_EXEC));
+        $propMaxExec = $delivery->getOnePropertyValue(
+            new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_MAX_EXEC)
+        );
         $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
 
         //check Tokens
@@ -351,8 +381,13 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
      * @param bool $displayAttempts
      * @return AssignmentFactory
      */
-    protected function getAssignmentFactory(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true, $displayDates = true)
-    {
+    protected function getAssignmentFactory(
+        \core_kernel_classes_Resource $delivery,
+        User $user,
+        $startable,
+        $displayAttempts = true,
+        $displayDates = true
+    ) {
         $factory = new AssignmentFactory($delivery, $user, $startable, $displayAttempts, $displayDates);
         $factory->setServiceLocator($this->getServiceLocator());
         return $factory;

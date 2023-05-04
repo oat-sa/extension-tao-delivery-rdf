@@ -30,7 +30,8 @@ use oat\oatbox\extension\script\ScriptAction;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 /**
- * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\tools\CleanUp' -d <delivery_to_keep_0>,<delivery_to_keep_1>
+ * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\tools\CleanUp'
+ * -d <delivery_to_keep_0>,<delivery_to_keep_1>
  *
  * Class CleanUp
  *
@@ -61,7 +62,8 @@ final class CleanUp extends ScriptAction
                 'prefix'      => 'd',
                 'longPrefix'  => self::OPTION_DELIVERIES,
                 'required'    => true,
-                'description' => 'A comma-separated list of Deliveries to keep on the instance, all the other Deliveries will be removed.',
+                'description' => 'A comma-separated list of Deliveries to keep on the instance, all the other '
+                    . 'Deliveries will be removed.',
             ],
         ];
     }

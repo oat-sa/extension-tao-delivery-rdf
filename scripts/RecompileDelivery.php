@@ -29,9 +29,11 @@ use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\oatbox\action\ResolutionException;
 
-//Load extension to define necessary constants.
+// Load extension to define necessary constants.
+// phpcs:disable PSR1.Files.SideEffects
 \common_ext_ExtensionsManager::singleton()->getExtensionById('taoTests');
 \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
+// phpcs:enable PSR1.Files.SideEffects
 
 /**
  * Class RecompileDelivery
@@ -47,7 +49,8 @@ use oat\oatbox\action\ResolutionException;
  *
  * - Recompile delivery by identifier
  * ```
- * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\RecompileDelivery' compile 'http://sample/first.rdf#i1464967192451980'
+ * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\RecompileDelivery' compile
+ * 'http://sample/first.rdf#i1464967192451980'
  * ```
  */
 class RecompileDelivery extends AbstractAction
@@ -128,7 +131,9 @@ class RecompileDelivery extends AbstractAction
     {
         $deliveryIds = array_slice($this->params, 1);
 
-        $deliveryClass = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery');
+        $deliveryClass = new \core_kernel_classes_Class(
+            'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery'
+        );
 
         $this->report = new Report(
             Report::TYPE_INFO,
@@ -172,7 +177,9 @@ class RecompileDelivery extends AbstractAction
      */
     private function listAction()
     {
-        $deliveryClass = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery');
+        $deliveryClass = new \core_kernel_classes_Class(
+            'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDelivery'
+        );
         $deliveries = $deliveryClass->getInstances(true);
         $result = [];
         foreach ($deliveries as $delivery) {
@@ -220,7 +227,9 @@ class RecompileDelivery extends AbstractAction
      */
     private function compileDelivery(\core_kernel_classes_Resource $delivery)
     {
-        $testProperty = new \core_kernel_classes_Property('http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin');
+        $testProperty = new \core_kernel_classes_Property(
+            'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryOrigin'
+        );
         $classProperty = new \core_kernel_classes_Property(OntologyRdf::RDF_TYPE);
         $test = $delivery->getOnePropertyValue($testProperty);
         $destinationClass = new \core_kernel_classes_Class($delivery->getOnePropertyValue($classProperty)->getUri());

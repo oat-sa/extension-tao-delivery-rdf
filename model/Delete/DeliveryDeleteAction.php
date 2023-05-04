@@ -27,7 +27,9 @@ use oat\oatbox\extension\AbstractAction;
 
 /**
  * Usage example:
- * sudo -u www-data php index.php '\oat\taoDeliveryRdf\model\Delete\DeliveryDeleteAction' 'http://tao.local/tao.rdf#i5ec66a0a167263604f8a6c91908fa8ab3'
+ * sudo -u www-data php index.php '\oat\taoDeliveryRdf\model\Delete\DeliveryDeleteAction'
+ * 'http://tao.local/tao.rdf#i5ec66a0a167263604f8a6c91908fa8ab3'
+ *
  * Class DeliveryDeleteAction
  * @package oat\taoDeliveryRdf\model\Delete
  */
@@ -41,8 +43,11 @@ class DeliveryDeleteAction extends AbstractAction
     public function __invoke($params)
     {
         if (!isset($params[0])) {
-            throw new \common_exception_MissingParameter('Missing `deliveryId` as a first parameter in ' . static::class);
+            throw new \common_exception_MissingParameter(
+                'Missing `deliveryId` as a first parameter in ' . static::class
+            );
         }
+
         $task = $this->propagate(new DeliveryDeleteTask());
         return $task(['deliveryId' => $params[0]]);
     }

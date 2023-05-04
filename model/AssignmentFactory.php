@@ -49,8 +49,13 @@ class AssignmentFactory implements ServiceLocatorAwareInterface
 
     private $displayDates;
 
-    public function __construct(\core_kernel_classes_Resource $delivery, User $user, $startable, $displayAttempts = true, $displayDates = true)
-    {
+    public function __construct(
+        \core_kernel_classes_Resource $delivery,
+        User $user,
+        $startable,
+        $displayAttempts = true,
+        $displayDates = true
+    ) {
         $this->delivery = $delivery;
         $this->user = $user;
         $this->startable = $startable;
@@ -102,13 +107,17 @@ class AssignmentFactory implements ServiceLocatorAwareInterface
 
     public function getStartTime()
     {
-        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_START));
+        $prop = $this->delivery->getOnePropertyValue(
+            new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_START)
+        );
         return is_null($prop) ? null : (string)$prop;
     }
 
     public function getDeliveryOrder()
     {
-        $prop = $this->delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DISPLAY_ORDER_PROP));
+        $prop = $this->delivery->getOnePropertyValue(
+            new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_DELIVERY_DISPLAY_ORDER_PROP)
+        );
         return is_null($prop) ? 0 : intval((string)$prop);
     }
 

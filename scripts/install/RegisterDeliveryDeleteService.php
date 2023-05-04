@@ -58,12 +58,25 @@ class RegisterDeliveryDeleteService extends ScriptAction
         try {
             /** @var DeliveryDeleteService $deliveryDeleteService */
             $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
-            $report->add(new Report(Report::TYPE_INFO, "'DeliveryDeleteService' service found. Configuration will be replaced."));
+            $report->add(
+                new Report(
+                    Report::TYPE_INFO,
+                    "'DeliveryDeleteService' service found. Configuration will be replaced."
+                )
+            );
 
             // Update service configuration.
-            $deliveryDeleteService->setOption(DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES, $this->services);
+            $deliveryDeleteService->setOption(
+                DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES,
+                $this->services
+            );
         } catch (ServiceNotFoundException $e) {
-            $report->add(new Report(Report::TYPE_INFO, "'DeliveryDeleteService' service not found. A new instance of the service will be registered."));
+            $report->add(
+                new Report(
+                    Report::TYPE_INFO,
+                    "'DeliveryDeleteService' service not found. A new instance of the service will be registered."
+                )
+            );
 
             // Register new service instance.
             $deliveryDeleteService = new DeliveryDeleteService([

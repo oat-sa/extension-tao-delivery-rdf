@@ -127,7 +127,9 @@ class ImportDeliveryAssembly extends ScriptAction
      */
     private function getImportClass()
     {
-        $classUri = $this->hasOption(self::OPTION_CLASS_URI) ? $this->getOption(self::OPTION_CLASS_URI) : DeliveryAssemblyService::CLASS_URI;
+        $classUri = $this->hasOption(self::OPTION_CLASS_URI)
+            ? $this->getOption(self::OPTION_CLASS_URI)
+            : DeliveryAssemblyService::CLASS_URI;
         $importClass = $this->getClass($classUri);
 
         if (!$importClass->exists()) {

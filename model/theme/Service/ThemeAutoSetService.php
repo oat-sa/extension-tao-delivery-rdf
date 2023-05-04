@@ -131,7 +131,8 @@ class ThemeAutoSetService
             );
         }
 
-        $themeId = $this->themeService->getFirstThemeIdByLanguage($language) ?? $this->themeService->getCurrentThemeId();
+        $themeId = $this->themeService->getFirstThemeIdByLanguage($language)
+            ?? $this->themeService->getCurrentThemeId();
 
         if ($themeId === null) {
             throw new ThemeAutoSetNotSupported(

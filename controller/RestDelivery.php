@@ -172,7 +172,10 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_SEARCH_PARAMS, $this->getRequestURI());
             }
 
-            $where = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
+            $where = json_decode(
+                html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)),
+                true
+            );
             $propertyValues = $this->getRequestParameters();
             unset($propertyValues[self::REST_DELIVERY_SEARCH_PARAMS]);
 
@@ -234,7 +237,10 @@ class RestDelivery extends \tao_actions_RestController
             if (! $this->hasRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)) {
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_SEARCH_PARAMS, $this->getRequestURI());
             }
-            $where = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
+            $where = json_decode(
+                html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)),
+                true
+            );
             $propertyValues = $this->getRequestParameters();
             unset($propertyValues[self::REST_DELIVERY_SEARCH_PARAMS]);
 
@@ -288,7 +294,13 @@ class RestDelivery extends \tao_actions_RestController
             $task->setServiceLocator($this->getServiceLocator());
             $taskParameters = ['deliveryId' => $uri];
 
-            $task = $queueDispatcher->createTask($task, $taskParameters, __('Deleting of "%s"', $delivery->getLabel()), null, true);
+            $task = $queueDispatcher->createTask(
+                $task,
+                $taskParameters,
+                __('Deleting of "%s"', $delivery->getLabel()),
+                null,
+                true
+            );
 
             $data = $this->getTaskLogReturnData(
                 $task->getId(),

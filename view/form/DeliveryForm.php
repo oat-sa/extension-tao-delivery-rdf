@@ -44,7 +44,10 @@ class DeliveryForm extends SignedFormInstance
         parent::initForm();
 
         $saveELt = tao_helpers_form_FormFactory::getElement('Save', 'Free');
-        $saveELt->setValue('<button class="form-submitter btn-success small" type="button"><span class="icon-save"></span>' . __('Save') . '</button>');
+        $saveELt->setValue(
+            '<button class="form-submitter btn-success small" type="button"><span class="icon-save"></span>'
+                . __('Save') . '</button>'
+        );
         $this->form->setActions([], 'top');
         $this->form->setActions([$saveELt], 'bottom');
     }
@@ -67,13 +70,18 @@ class DeliveryForm extends SignedFormInstance
             $periodEndElt->addValidators([
                 tao_helpers_form_FormFactory::getValidator('DateTime', [
                     'comparator' => '>=',
-                    'datetime2_ref' => $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::PROPERTY_START))
+                    'datetime2_ref' => $this->form->getElement(
+                        tao_helpers_Uri::encode(DeliveryContainerService::PROPERTY_START)
+                    ),
                 ])
             ]);
             $this->form->addElement($periodEndElt);
         }
 
-        $resultServerElt = $this->form->getElement(tao_helpers_Uri::encode(DeliveryContainerService::PROPERTY_RESULT_SERVER));
+        $resultServerElt = $this->form->getElement(
+            tao_helpers_Uri::encode(DeliveryContainerService::PROPERTY_RESULT_SERVER)
+        );
+
         if (! is_null($resultServerElt)) {
             $resultServerElt->addValidators([
                 tao_helpers_form_FormFactory::getValidator('NotEmpty')

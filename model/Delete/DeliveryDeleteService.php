@@ -63,7 +63,9 @@ class DeliveryDeleteService extends ConfigurableService
         parent::__construct($options);
 
         if (!$this->hasOption(static::OPTION_DELETE_DELIVERY_DATA_SERVICES)) {
-            throw new \common_exception_Error('Invalid Option provided: ' . static::OPTION_DELETE_DELIVERY_DATA_SERVICES);
+            throw new \common_exception_Error(
+                'Invalid Option provided: ' . static::OPTION_DELETE_DELIVERY_DATA_SERVICES
+            );
         }
     }
 
@@ -297,7 +299,11 @@ class DeliveryDeleteService extends ConfigurableService
                 $deliveryExecutionDeleteService->execute($requestDeleteExecution);
                 $this->report->add($deliveryExecutionDeleteService->getReport());
             } catch (\Exception $exception) {
-                $this->report->add(common_report_Report::createFailure('Failing deleting execution: ' . $execution->getIdentifier()));
+                $this->report->add(
+                    common_report_Report::createFailure(
+                        'Failing deleting execution: ' . $execution->getIdentifier()
+                    )
+                );
                 $this->report->add(common_report_Report::createFailure($exception->getMessage()));
             }
         }

@@ -60,7 +60,9 @@ class Updater extends \common_ext_ExtensionUpdater
     {
 
         if ($this->isBetween('0.0.0', '1.1.0')) {
-            throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
+            throw new \common_exception_NotImplemented(
+                'Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first'
+            );
         }
         $this->skip('1.1.0', '1.4.0');
 
@@ -188,8 +190,26 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('4.0.0', '4.6.0');
 
         if ($this->isVersion('4.6.0') || $this->isVersion('4.6.0.1')) {
-            AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, ['ext' => 'taoDeliveryRdf', 'mod' => 'RestDelivery']));
-            AclProxy::applyRule(new AccessRule('grant', TaoRoles::REST_PUBLISHER, ['ext' => 'taoDeliveryRdf', 'mod' => 'RestTest']));
+            AclProxy::applyRule(
+                new AccessRule(
+                    'grant',
+                    TaoRoles::REST_PUBLISHER,
+                    [
+                        'ext' => 'taoDeliveryRdf',
+                        'mod' => 'RestDelivery',
+                    ]
+                )
+            );
+            AclProxy::applyRule(
+                new AccessRule(
+                    'grant',
+                    TaoRoles::REST_PUBLISHER,
+                    [
+                        'ext' => 'taoDeliveryRdf',
+                        'mod' => 'RestTest',
+                    ]
+                )
+            );
             $this->setVersion('4.7.0');
         }
 
@@ -201,7 +221,10 @@ class Updater extends \common_ext_ExtensionUpdater
             /** @var TaskLogInterface|ConfigurableService $taskLogService */
             $taskLogService = $this->getServiceManager()->get(TaskLogInterface::SERVICE_ID);
 
-            $taskLogService->linkTaskToCategory(CompileDelivery::class, TaskLogInterface::CATEGORY_DELIVERY_COMPILATION);
+            $taskLogService->linkTaskToCategory(
+                CompileDelivery::class,
+                TaskLogInterface::CATEGORY_DELIVERY_COMPILATION
+            );
 
             $this->getServiceManager()->register(TaskLogInterface::SERVICE_ID, $taskLogService);
 
@@ -228,7 +251,10 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('6.0.0')) {
             $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
-            $eventManager->attach(DeliveryExecutionReactivated::class, [SessionStateHelper::class, 'onExecutionReactivation']);
+            $eventManager->attach(
+                DeliveryExecutionReactivated::class,
+                [SessionStateHelper::class, 'onExecutionReactivation']
+            );
             $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
             $this->setVersion('7.0.0');
         }

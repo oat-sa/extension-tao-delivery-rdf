@@ -74,7 +74,10 @@ class AssemblyImporterService extends ConfigurableService
             $deliveryUri = $this->getDeliveryUri($useOriginalUri, $tmpImportFolder);
             $delivery = $this->importDeliveryResource($deliveryClass, $deliveryUri, $tmpImportFolder);
 
-            $report = common_report_Report::createSuccess(__('Delivery "%s" successfully imported', $delivery->getUri()), $delivery);
+            $report = common_report_Report::createSuccess(
+                __('Delivery "%s" successfully imported', $delivery->getUri()),
+                $delivery
+            );
 
             return $report;
         } catch (AssemblyImportFailedException $e) {

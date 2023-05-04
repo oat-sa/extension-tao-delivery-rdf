@@ -79,7 +79,25 @@ class ContainerRuntimeTest extends TestCase
         $delivery = $class->createInstance('Fake Delivery');
 
         $serviceCall = $this->getServiceCall($ontology);
-        $serviceCallString = '{"service":"http:\/\/fakeService\/test#123","in":[{"def":"http:\/\/testcase\/test#123","const":"v1"},{"def":"http:\/\/testcase\/test#123","const":"v2"}],"out":{"def":"http:\/\/testcase\/test#123","proc":"http:\/\/testcase\/test#123"}}';
+        $serviceCallString = json_encode(
+            [
+                'service' => 'http://fakeService/test#123',
+                'in' => [
+                    [
+                            'def' => 'http://testcase/test#123',
+                            'const' => 'v1',
+                    ],
+                    [
+                        'def' => 'http://testcase/test#123',
+                        'const' => 'v2',
+                    ],
+                ],
+                'out' => [
+                    'def' => 'http://testcase/test#123',
+                    'proc' => 'http://testcase/test#123',
+                ],
+            ]
+        );
 
         $delivery->setPropertyValue(
             $ontology->getProperty(ContainerRuntime::PROPERTY_RUNTIME),

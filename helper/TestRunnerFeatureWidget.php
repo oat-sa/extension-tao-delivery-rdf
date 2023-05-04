@@ -84,7 +84,8 @@ class TestRunnerFeatureWidget extends tao_helpers_form_FormElement
             }
         }
 
-        $tpl = common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf')->getDir() . self::WIDGET_TPL ;
+        $tpl = common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf')->getDir()
+            . self::WIDGET_TPL ;
         $templateRenderer = new taoItems_models_classes_TemplateRenderer($tpl, [
             'propLabel'   => _dh($this->getDescription()),
             'choicesList' => $choicesList
