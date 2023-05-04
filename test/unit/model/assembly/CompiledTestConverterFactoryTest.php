@@ -66,20 +66,31 @@ class CompiledTestConverterFactoryTest extends TestCase
      *
      * @dataProvider dataProviderTestCreateConverterReturnsCompiledTestConverter
      */
-    public function testCreateConverterReturnsCompiledTestConverter($outputTestFormat, $expectedCompilationImplementation)
-    {
+    public function testCreateConverterReturnsCompiledTestConverter(
+        $outputTestFormat,
+        $expectedCompilationImplementation
+    ) {
         $slMock = $this->getServiceLocatorMock([
             CompilationDataService::SERVICE_ID => $this->createMock(CompilationDataService::class),
             LoggerService::SERVICE_ID => $this->createMock(LoggerService::class),
         ]);
         $this->object->setServiceLocator($slMock);
         $result = $this->object->createConverter($outputTestFormat);
-        $this->assertInstanceOf(CompiledTestConverterService::class, $result, 'Factory must create a test converter instance of required type.');
-        // Assert that correct implementation of CompilationDataService was initialized by factory based on input parameter.
+        $this->assertInstanceOf(
+            CompiledTestConverterService::class,
+            $result,
+            'Factory must create a test converter instance of required type.'
+        );
+        // Assert that correct implementation of CompilationDataService was initialized by factory based on input
+        // parameter.
         $reflectionProperty = new \ReflectionProperty(get_class($result), 'compilationDataWriter');
         $reflectionProperty->setAccessible(true);
         $outputCompilationService = $reflectionProperty->getValue($result);
-        $this->assertInstanceOf($expectedCompilationImplementation, $outputCompilationService, 'Factory must create a compiled test converter with correct "compilationDataWriter" implementation.');
+        $this->assertInstanceOf(
+            $expectedCompilationImplementation,
+            $outputCompilationService,
+            'Factory must create a compiled test converter with correct "compilationDataWriter" implementation.'
+        );
     }
 
     /**

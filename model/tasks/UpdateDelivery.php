@@ -28,7 +28,7 @@ use oat\oatbox\service\ServiceManager;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\tao\model\taskQueue\Task\TaskInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use \common_report_Report as Report;
+use common_report_Report as Report;
 
 /**
  * Class UpdateDelivery
@@ -42,8 +42,8 @@ class UpdateDelivery extends AbstractAction implements \JsonSerializable
 {
     use OntologyAwareTrait;
 
-    const OPTION_WHERE = 'where';
-    const OPTION_PARAMETERS = 'parameters';
+    public const OPTION_WHERE = 'where';
+    public const OPTION_PARAMETERS = 'parameters';
 
     /**
      * @param $params

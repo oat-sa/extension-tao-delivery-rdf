@@ -34,7 +34,6 @@ use oat\oatbox\service\ServiceManager;
  */
 class SimpleDeliveryFactory
 {
-    
     /**
      * Please use DeliveryFactory service
      * @deprecated

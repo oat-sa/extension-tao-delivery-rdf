@@ -15,7 +15,6 @@ use oat\taoDeliveryRdf\scripts\tools\SetDeliveryNamespace;
  */
 final class Version202106221057211286_taoDeliveryRdf extends AbstractMigration
 {
-
     public function getDescription(): string
     {
         return 'Register ' . DeliveryNamespaceRegistryInterface::SERVICE_ID;

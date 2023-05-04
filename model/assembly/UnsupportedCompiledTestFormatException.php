@@ -24,5 +24,4 @@ use oat\tao\model\exceptions\UserErrorException;
 
 class UnsupportedCompiledTestFormatException extends UserErrorException
 {
-
 }

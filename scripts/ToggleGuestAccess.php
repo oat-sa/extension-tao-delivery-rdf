@@ -49,8 +49,6 @@ use oat\taoDeliveryRdf\model\guest\GuestAccess;
  */
 class ToggleGuestAccess extends AbstractAction
 {
-
-
     /**
      * @var EntryPointService
      */

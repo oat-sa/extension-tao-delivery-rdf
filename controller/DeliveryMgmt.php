@@ -171,7 +171,12 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
 
         $assigned = [];
-        foreach ($this->getServiceLocator()->get(AssignmentService::SERVICE_ID)->getAssignedUsers($assembly->getUri()) as $userId) {
+        $assignedUsers = $this
+            ->getServiceLocator()
+            ->get(AssignmentService::SERVICE_ID)
+            ->getAssignedUsers($assembly->getUri());
+
+        foreach ($assignedUsers as $userId) {
             if (!array_key_exists($userId, $excluded)) {
                 $user = $this->getResource($userId);
                 $assigned[$userId] = $user->getLabel();
@@ -200,9 +205,19 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
 
         $assembly = $this->getCurrentInstance();
-        $success = $assembly->editPropertyValues($this->getProperty(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS), $jsonArray);
+        $success = $assembly->editPropertyValues(
+            $this->getProperty(DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS),
+            $jsonArray
+        );
 
-        $this->getEventManager()->trigger(new DeliveryUpdatedEvent($assembly->getUri(), [DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS => $jsonArray]));
+        $this->getEventManager()->trigger(
+            new DeliveryUpdatedEvent(
+                $assembly->getUri(),
+                [
+                    DeliveryContainerService::PROPERTY_EXCLUDED_SUBJECTS => $jsonArray,
+                ]
+            )
+        );
 
         $this->returnJson([
             'saved' => $success
@@ -224,11 +239,19 @@ class DeliveryMgmt extends \tao_actions_SaSModule
                     /** @var DeliveryFactory $deliveryFactoryResources */
                     $deliveryFactoryResources = $this->getServiceLocator()->get(DeliveryFactory::SERVICE_ID);
                     $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray($myForm->getValues());
-                    return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
+                    return $this->returnTaskJson(
+                        CompileDelivery::createTask(
+                            $test,
+                            $deliveryClass,
+                            $initialProperties
+                        )
+                    );
                 } catch (\Exception $e) {
                     return $this->returnJson([
                         'success' => false,
-                        'errorMsg' => $e instanceof \common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
+                        'errorMsg' => $e instanceof \common_exception_UserReadableException
+                            ? $e->getUserMessage()
+                            : $e->getMessage(),
                         'errorCode' => $e->getCode(),
                     ]);
                 }

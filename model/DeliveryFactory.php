@@ -94,12 +94,19 @@ class DeliveryFactory extends ConfigurableService
         // checking on properties
         foreach ($this->getOption(self::OPTION_PROPERTIES) as $deliveryProperty => $testProperty) {
             $testPropretyInstance = new \core_kernel_classes_Property($testProperty);
-            $validationValue = (string) $testPropretyInstance->getOnePropertyValue(new \core_kernel_classes_Property(ValidationRuleRegistry::PROPERTY_VALIDATION_RULE));
+            $validationValue = (string) $testPropretyInstance->getOnePropertyValue(
+                new \core_kernel_classes_Property(ValidationRuleRegistry::PROPERTY_VALIDATION_RULE)
+            );
 
             $propertyValues = $test->getPropertyValues($testPropretyInstance);
 
             if ($validationValue === 'notEmpty' && empty($propertyValues)) {
-                $report = Report::createFailure(__('Test publishing failed because "%s" is empty.', $testPropretyInstance->getLabel()));
+                $report = Report::createFailure(
+                    __(
+                        'Test publishing failed because "%s" is empty.',
+                        $testPropretyInstance->getLabel()
+                    )
+                );
 
                 return $report;
             }
@@ -118,7 +125,10 @@ class DeliveryFactory extends ConfigurableService
 
         $storage = new TrackedStorage();
         $this->propagate($storage);
-        $compiler = $this->getServiceLocator()->get(\taoTests_models_classes_TestsService::class)->getCompiler($test, $storage);
+        $compiler = $this
+            ->getServiceLocator()
+            ->get(\taoTests_models_classes_TestsService::class)
+            ->getCompiler($test, $storage);
 
         $report = $compiler->compile();
         if ($report->getType() == Report::TYPE_SUCCESS) {
@@ -131,7 +141,9 @@ class DeliveryFactory extends ConfigurableService
             ];
 
             foreach ($this->getOption(self::OPTION_PROPERTIES) as $deliveryProperty => $testProperty) {
-                $properties[$deliveryProperty] = $test->getPropertyValues(new \core_kernel_classes_Property($testProperty));
+                $properties[$deliveryProperty] = $test->getPropertyValues(
+                    new \core_kernel_classes_Property($testProperty)
+                );
             }
 
             $container = null;

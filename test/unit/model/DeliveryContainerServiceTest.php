@@ -125,7 +125,11 @@ class DeliveryContainerServiceTest extends TestCase
             ->method('getAllPlugins');
 
         $resultFromCache = $this->object->getPlugins($deliveryExecutionMock);
-        $this->assertEquals($expectedResult, $resultFromCache, 'On consecutive calls method must return the same plugins.');
+        $this->assertEquals(
+            $expectedResult,
+            $resultFromCache,
+            'On consecutive calls method must return the same plugins.'
+        );
     }
 
     /**
@@ -136,7 +140,12 @@ class DeliveryContainerServiceTest extends TestCase
      */
     public function testGetPluginsDeliveryWithFeatures($deliveryFeatures, array $expectedEnabledPlugins)
     {
-        $allPlugins = $this->getPluginsMocks(['plugin1' => true, 'plugin2' => false, 'plugin3' => true, 'plugin4' => true]);
+        $allPlugins = $this->getPluginsMocks([
+            'plugin1' => true,
+            'plugin2' => false,
+            'plugin3' => true,
+            'plugin4' => true,
+        ]);
         $expectedEnabledPlugins = $this->getPluginsMocks($expectedEnabledPlugins);
 
         $this->testPluginServiceMock->method('getAllPlugins')

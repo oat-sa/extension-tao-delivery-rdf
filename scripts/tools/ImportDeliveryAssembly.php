@@ -40,11 +40,11 @@ class ImportDeliveryAssembly extends ScriptAction
 {
     use OntologyAwareTrait;
 
-    const OPTION_ASSEMBLY_FILE = 'assembly-file';
+    public const OPTION_ASSEMBLY_FILE = 'assembly-file';
 
-    const OPTION_CLASS_URI = 'class-uri';
+    public const OPTION_CLASS_URI = 'class-uri';
 
-    const OPTION_USE_ORIGINAL_URI = 'use-original-uri';
+    public const OPTION_USE_ORIGINAL_URI = 'use-original-uri';
 
     /**
      * @var Report
@@ -127,7 +127,9 @@ class ImportDeliveryAssembly extends ScriptAction
      */
     private function getImportClass()
     {
-        $classUri = $this->hasOption(self::OPTION_CLASS_URI) ? $this->getOption(self::OPTION_CLASS_URI) : DeliveryAssemblyService::CLASS_URI;
+        $classUri = $this->hasOption(self::OPTION_CLASS_URI)
+            ? $this->getOption(self::OPTION_CLASS_URI)
+            : DeliveryAssemblyService::CLASS_URI;
         $importClass = $this->getClass($classUri);
 
         if (!$importClass->exists()) {

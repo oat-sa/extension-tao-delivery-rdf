@@ -47,7 +47,11 @@ class DeliveryDeleteTask extends AbstractAction implements \JsonSerializable
             $deleteDeliveryService->execute($request, true);
             $delivery = $request->getDeliveryResource();
             if ($deleteDeliveryService->hasDeliveryExecutions($delivery)) {
-                $queueDispatcher->createTask($this, $params, __('Continue deleting of delivery "%s".', $delivery->getLabel()));
+                $queueDispatcher->createTask(
+                    $this,
+                    $params,
+                    __('Continue deleting of delivery "%s".', $delivery->getLabel())
+                );
                 $this->logInfo('Queued task to continue delete delivery ' . $delivery->getLabel());
             }
 

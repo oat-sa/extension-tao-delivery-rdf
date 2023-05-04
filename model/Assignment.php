@@ -7,7 +7,7 @@ use oat\taoDelivery\model\Assignment as BaseAssignment;
 class Assignment extends BaseAssignment
 {
     private $displayOrder;
-    
+
     public function __construct($deliveryId, $userId, $label, $desc, $startable, $displayOrder = 0)
     {
         parent::__construct(
@@ -17,10 +17,10 @@ class Assignment extends BaseAssignment
             $desc,
             $startable
         );
-        
+
         $this->displayOrder = intval($displayOrder);
     }
-    
+
     /**
      * Get the display order.
      *

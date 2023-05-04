@@ -30,7 +30,7 @@ use oat\taoDeliveryRdf\model\DeliveryFactory;
 use oat\taoDeliveryRdf\model\tasks\CompileDelivery;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use RuntimeException;
-use \tao_helpers_Uri;
+use tao_helpers_Uri;
 use taoTests_models_classes_TestsService as TestsService;
 
 /**
@@ -78,7 +78,10 @@ class Publish extends \tao_actions_SaSModule
 
             $deliveryClass = $this->getClass($classUri);
             $deliveryFactoryResources = $this->getDeliveryFactory();
-            $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray([OntologyRdfs::RDFS_LABEL => 'new delivery']);
+            $initialProperties = $deliveryFactoryResources->getInitialPropertiesFromArray([
+                OntologyRdfs::RDFS_LABEL => 'new delivery',
+            ]);
+
             return $this->returnTaskJson(CompileDelivery::createTask($test, $deliveryClass, $initialProperties));
         } catch (Exception $e) {
             return $this->returnJson([

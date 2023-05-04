@@ -37,7 +37,6 @@ use oat\taoDeliveryRdf\model\NoTestsException;
  */
 class WizardForm extends \tao_helpers_form_FormContainer
 {
-
     /**
      * @return mixed|void
      * @throws \common_Exception
@@ -47,7 +46,10 @@ class WizardForm extends \tao_helpers_form_FormContainer
         $this->form = new \tao_helpers_form_xhtml_Form('simpleWizard');
 
         $createElt = \tao_helpers_form_FormFactory::getElement('create', 'Free');
-        $createElt->setValue('<button class="form-submitter btn-success small" type="button"><span class="icon-publish"></span> ' . __('Publish') . '</button>');
+        $createElt->setValue(
+            '<button class="form-submitter btn-success small" type="button"><span class="icon-publish"></span> '
+                . __('Publish') . '</button>'
+        );
         $this->form->setDecorators([
             'actions-bottom' => new \tao_helpers_form_xhtml_TagWrapper(['tag' => 'div', 'cssClass' => 'form-toolbar']),
         ]);

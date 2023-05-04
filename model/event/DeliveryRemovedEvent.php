@@ -26,7 +26,6 @@ use oat\oatbox\event\Event;
 
 class DeliveryRemovedEvent extends AbstractDeliveryEvent
 {
-
     /**
      * @param String $deliveryUri
      */

@@ -40,8 +40,10 @@ class CompiledTestConverterService
          * @param CompilationDataService $compilationDataReader
          * @param CompilationDataService $compilationDataWriter
          */
-    public function __construct(CompilationDataService $compilationDataReader, CompilationDataService $compilationDataWriter)
-    {
+    public function __construct(
+        CompilationDataService $compilationDataReader,
+        CompilationDataService $compilationDataWriter
+    ) {
         $this->compilationDataReader = $compilationDataReader;
         $this->compilationDataWriter = $compilationDataWriter;
     }

@@ -41,8 +41,8 @@ class RestDeliveryTest extends RestTestRunner
      */
     protected function initDeliveryGeneration()
     {
-        $qtiModel     = new \core_kernel_classes_Class(\taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI);
-        $packagePath  = __DIR__ . '/../samples/package/package-basic.zip';
+        $qtiModel = new \core_kernel_classes_Class(\taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI);
+        $packagePath = __DIR__ . '/../samples/package/package-basic.zip';
 
         $uri = '';
 

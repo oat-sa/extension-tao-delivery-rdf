@@ -22,7 +22,7 @@
 namespace oat\taoDeliveryRdf\test\integration\model;
 
 use oat\tao\test\TaoPhpUnitTestRunner;
-use \common_ext_ExtensionsManager;
+use common_ext_ExtensionsManager;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
@@ -30,7 +30,6 @@ use oat\generis\test\MockObject;
 
 class DeliveryServerServiceTest extends TaoPhpUnitTestRunner
 {
-
     /**
      * @var GroupAssignment
      */

@@ -40,7 +40,7 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
 {
     use OntologyAwareTrait;
 
-    const BUCKET_DIRECTORY = 'deliveriesArchives';
+    public const BUCKET_DIRECTORY = 'deliveriesArchives';
 
     /** @var string */
     protected $tmpDir;
@@ -85,7 +85,9 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
         $fileName = $this->getArchiveFileName($compiledDelivery);
 
         if (!$force && $this->getArchiveFileSystem()->has($fileName)) {
-            throw new DeliverArchiveExistingException('Delivery archive already created: ' . $compiledDelivery->getUri());
+            throw new DeliverArchiveExistingException(
+                'Delivery archive already created: ' . $compiledDelivery->getUri()
+            );
         }
 
         $this->generateNewTmpPath($fileName);
@@ -101,7 +103,10 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
         );
         foreach ($directories as $directoryId) {
             /** @var tao_models_classes_service_StorageDirectory $directory */
-            $directory = $this->getServiceLocator()->get(tao_models_classes_service_FileStorage::SERVICE_ID)->getDirectoryById($directoryId);
+            $directory = $this
+                ->getServiceLocator()
+                ->get(tao_models_classes_service_FileStorage::SERVICE_ID)
+                ->getDirectoryById($directoryId);
             $directories = $directory->getFlyIterator(Directory::ITERATOR_FILE | Directory::ITERATOR_RECURSIVE);
             /** @var File $item */
             foreach ($directories as $item) {
@@ -131,7 +136,9 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
         $fileName = $this->getArchiveFileName($compiledDelivery);
 
         if (!$this->getArchiveFileSystem()->has($fileName)) {
-            throw new DeliveryArchiveNotExistingException('Delivery archive not exist please generate: ' . $compiledDelivery->getUri());
+            throw new DeliveryArchiveNotExistingException(
+                'Delivery archive not exist please generate: ' . $compiledDelivery->getUri()
+            );
         }
 
         $this->generateNewTmpPath($fileName);
@@ -297,7 +304,8 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
      */
     private function generateNewTmpPath($fileName)
     {
-        $folder = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "tmp" . md5($fileName . uniqid('', true)) . DIRECTORY_SEPARATOR;
+        $folder = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "tmp"
+            . md5($fileName . uniqid('', true)) . DIRECTORY_SEPARATOR;
 
         if (!file_exists($folder)) {
             mkdir($folder);

@@ -37,7 +37,6 @@ use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\UrlEncoded
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestValidator\DeliverySearchRequestValidator;
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
