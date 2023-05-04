@@ -27,7 +27,7 @@ use oat\taoDeliveryRdf\model\Delete\DeliveryDeleteRequest;
 
 class DeliveryAssemblyWrapperService extends ConfigurableService implements DeliveryDelete
 {
-    const SERVICE_ID = 'taoDeliveryRdf/DeliveryAssemblyWrapper';
+    public const SERVICE_ID = 'taoDeliveryRdf/DeliveryAssemblyWrapper';
 
     /**
      * @inheritdoc

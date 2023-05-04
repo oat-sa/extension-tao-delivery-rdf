@@ -23,7 +23,7 @@ namespace oat\taoDeliveryRdf\model;
 
 interface DeliveryArchiveServiceInterface
 {
-    const SERVICE_ID = 'taoDeliveryRdf/DeliveryArchive';
+    public const SERVICE_ID = 'taoDeliveryRdf/DeliveryArchive';
 
     /**
      * @param string $compiledDelivery

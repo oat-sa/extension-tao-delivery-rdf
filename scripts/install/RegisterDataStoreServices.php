@@ -29,7 +29,6 @@ use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 
 class RegisterDataStoreServices extends InstallAction
 {
-
     public function __invoke($params)
     {
         $eventManager = $this->getEventManger();

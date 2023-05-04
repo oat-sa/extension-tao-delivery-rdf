@@ -83,9 +83,9 @@ class ThemeAutoSetServiceTest extends TestCase
      * @dataProvider cannotSetThemeByDeliveryProvider
      */
     public function testCannotSetThemeByDeliveryWithOriginDeliveryId(
-        string  $expectedException,
-        string  $expectedExceptionMessage,
-        string  $deliveryUri,
+        string $expectedException,
+        string $expectedExceptionMessage,
+        string $deliveryUri,
         ?string $originDeliveryId,
         ?string $currentThemeId,
         ?string $themeId,
@@ -117,7 +117,8 @@ class ThemeAutoSetServiceTest extends TestCase
             ],
             'Cannot override theme' => [
                 'expectedException' => ThemeAutoSetNotSupported::class,
-                'expectedExceptionMessage' => 'Cannot auto-set theme cause theme "myThemeId" is already set for delivery "myDeliveryUri"',
+                'expectedExceptionMessage' => 'Cannot auto-set theme cause theme "myThemeId" is already set for '
+                    . 'delivery "myDeliveryUri"',
                 'deliveryUri' => 'myDeliveryUri',
                 'originDeliveryId' => '',
                 'currentThemeId' => 'myThemeId',

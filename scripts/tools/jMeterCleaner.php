@@ -76,32 +76,77 @@ class jMeterCleaner extends AbstractAction
     {
         if (empty($this->params)) {
             $usageHelper = \common_report_Report::createInfo('USAGE: What you could do here:');
-            $usageHelper->add(\common_report_Report::createSuccess('Please, Note that sections must not intersect otherwise it will work according to priority'));
+            $usageHelper->add(
+                \common_report_Report::createSuccess(
+                    'Please, Note that sections must not intersect otherwise it will work according to priority'
+                )
+            );
 
-            $countDeliveriesForUsers = \common_report_Report::createInfo('1. Count how many deliveries has each of the user');
+            $countDeliveriesForUsers = \common_report_Report::createInfo(
+                '1. Count how many deliveries has each of the user'
+            );
             $countDeliveriesForUsers->add(\common_report_Report::createInfo('--count-deliveries-by-user'));
-            $countDeliveriesForUsers->add(\common_report_Report::createInfo('--open-out   `show all deliveries and executions id`'));
+            $countDeliveriesForUsers->add(
+                \common_report_Report::createInfo(
+                    '--open-out   `show all deliveries and executions id`'
+                )
+            );
             $usageHelper->add($countDeliveriesForUsers);
 
             $openDeliveriesForUser = \common_report_Report::createInfo('2. Detailed report about deliveries for user');
             $openDeliveriesForUser->add(\common_report_Report::createInfo('--detailed-report'));
             $openDeliveriesForUser->add(\common_report_Report::createInfo('--detailed-user=[userId]'));
-            $openDeliveriesForUser->add(\common_report_Report::createInfo('--open-out   `show all deliveries and executions id`'));
+            $openDeliveriesForUser->add(
+                \common_report_Report::createInfo(
+                    '--open-out   `show all deliveries and executions id`'
+                )
+            );
             $usageHelper->add($openDeliveriesForUser);
 
-            $cleaner = \common_report_Report::createInfo('2. Clean test data that you want (The greater the force, the greater the responsibility)');
+            $cleaner = \common_report_Report::createInfo(
+                '2. Clean test data that you want (The greater the force, the greater the responsibility)'
+            );
             $cleaner->add(\common_report_Report::createFailure('Note: everything will be deleted even user'));
             $cleaner->add(\common_report_Report::createInfo('--run-cleaner'));
-            $cleaner->add(\common_report_Report::createInfo('--clean-user=[userId] `will be deleted user, executions and states`'));
-            $cleaner->add(\common_report_Report::createInfo('--clean-user-with-his-deliveries `will be deleted user, executions, states, DELIVERIES and RESULTS`'));
-            $cleaner->add(\common_report_Report::createInfo('--clean-delivery=[deliveryId] `not required. If provided, then will be deleted only that delivery and results`'));
+            $cleaner->add(
+                \common_report_Report::createInfo(
+                    '--clean-user=[userId] `will be deleted user, executions and states`'
+                )
+            );
+            $cleaner->add(
+                \common_report_Report::createInfo(
+                    '--clean-user-with-his-deliveries `will be deleted user, executions, states, DELIVERIES and '
+                        . 'RESULTS`'
+                )
+            );
+            $cleaner->add(
+                \common_report_Report::createInfo(
+                    '--clean-delivery=[deliveryId] `not required. If provided, then will be deleted only that delivery '
+                        . 'and results`'
+                )
+            );
             $usageHelper->add($cleaner);
 
-            $executionsCleaner = \common_report_Report::createInfo('3. Delete only executions and test results (The greater the force, the greater the responsibility)');
-            $executionsCleaner->add(\common_report_Report::createFailure('Note: will be deleted results, executions and services states'));
+            $executionsCleaner = \common_report_Report::createInfo(
+                '3. Delete only executions and test results (The greater the force, the greater the responsibility)'
+            );
+            $executionsCleaner->add(
+                \common_report_Report::createFailure(
+                    'Note: will be deleted results, executions and services states'
+                )
+            );
             $executionsCleaner->add(\common_report_Report::createInfo('--run-executions-cleaner'));
-            $executionsCleaner->add(\common_report_Report::createInfo('--clean-user=[userId] `will be deleted executions, results and states`'));
-            $executionsCleaner->add(\common_report_Report::createInfo('--clean-users-whose-label-begin-with=[string] `min length 3 symbols. Will be deleted executions, results and states only for the users whose labels begin with specified string.`'));
+            $executionsCleaner->add(
+                \common_report_Report::createInfo(
+                    '--clean-user=[userId] `will be deleted executions, results and states`'
+                )
+            );
+            $executionsCleaner->add(
+                \common_report_Report::createInfo(
+                    '--clean-users-whose-label-begin-with=[string] `min length 3 symbols. Will be deleted executions, '
+                        . 'results and states only for the users whose labels begin with specified string.`'
+                )
+            );
             $usageHelper->add($executionsCleaner);
 
             $this->report->add($usageHelper);
@@ -144,7 +189,7 @@ class jMeterCleaner extends AbstractAction
 
         foreach ($deliveries as $delivery) {
             foreach ($testTakers as $testTaker) {
-                 $this->getUserDeliveryData($testTaker, $delivery, $counted, $src);
+                $this->getUserDeliveryData($testTaker, $delivery, $counted, $src);
             }
         }
 
@@ -257,7 +302,12 @@ class jMeterCleaner extends AbstractAction
         $testTaker = $this->getResourceFromParameter('--detailed-user=');
 
         if (!$testTaker) {
-            $this->report->add(\common_report_Report::createFailure('--detailed-user=[userId] is required and need to be a Resource'));
+            $this->report->add(
+                \common_report_Report::createFailure(
+                    '--detailed-user=[userId] is required and need to be a Resource'
+                )
+            );
+
             return false;
         }
 
@@ -285,23 +335,46 @@ class jMeterCleaner extends AbstractAction
 
             $testTaker = $this->getResourceFromParameter('--clean-user=');
             if (!$testTaker) {
-                $this->report->add(\common_report_Report::createFailure('--clean-user=[userId] is required and need to be a Resource'));
+                $this->report->add(
+                    \common_report_Report::createFailure(
+                        '--clean-user=[userId] is required and need to be a Resource'
+                    )
+                );
+
                 return false;
             }
 
             $delivery = $this->getResourceFromParameter('--clean-delivery=');
             if ($delivery) {
-                $this->report->add(\common_report_Report::createInfo('Deleting of the delivery data [' . $delivery->getUri() . ']'));
+                $this->report->add(
+                    \common_report_Report::createInfo(
+                        'Deleting of the delivery data [' . $delivery->getUri() . ']'
+                    )
+                );
             } elseif ($delivery === null) {
-                $this->report->add(\common_report_Report::createFailure('Delivery does not found'));
+                $this->report->add(
+                    \common_report_Report::createFailure(
+                        'Delivery does not found'
+                    )
+                );
+
                 return false;
             } else {
-                $this->report->add(\common_report_Report::createInfo('Deleting of the TestTaker data [' . $testTaker->getUri() . ']'));
+                $this->report->add(
+                    \common_report_Report::createInfo(
+                        'Deleting of the TestTaker data [' . $testTaker->getUri() . ']'
+                    )
+                );
             }
 
             $ttData = $this->getDataByTestTaker($testTaker, false);
             if (!count($ttData)) {
-                $this->report->add(\common_report_Report::createFailure('TestTaker with id [' . $testTaker->getUri() . '] has not been found'));
+                $this->report->add(
+                    \common_report_Report::createFailure(
+                        'TestTaker with id [' . $testTaker->getUri() . '] has not been found'
+                    )
+                );
+
                 return false;
             } elseif ($delivery) {
                 $hasDelivery = false;
@@ -313,7 +386,12 @@ class jMeterCleaner extends AbstractAction
                 }
 
                 if (!$hasDelivery) {
-                    $this->report->add(\common_report_Report::createFailure('Delivery with id [' . $testTaker->getUri() . '] has not been found'));
+                    $this->report->add(
+                        \common_report_Report::createFailure(
+                            'Delivery with id [' . $testTaker->getUri() . '] has not been found'
+                        )
+                    );
+
                     return false;
                 }
             }
@@ -336,17 +414,32 @@ class jMeterCleaner extends AbstractAction
             $labelBeginWith = $this->getParameterValue('--clean-users-whose-label-begin-with=');
 
             if (!$testTaker && !$labelBeginWith) {
-                $this->report->add(\common_report_Report::createFailure('You should use one of the --clean-user or --clean-users-whose-label-begin-with, not together'));
+                $this->report->add(
+                    \common_report_Report::createFailure(
+                        'You should use one of the --clean-user or --clean-users-whose-label-begin-with, not together'
+                    )
+                );
+
                 return false;
             }
 
             if ($testTaker && $labelBeginWith) {
-                $this->report->add(\common_report_Report::createFailure('You can use --clean-user or --clean-users-whose-label-begin-with, not together'));
+                $this->report->add(
+                    \common_report_Report::createFailure(
+                        'You can use --clean-user or --clean-users-whose-label-begin-with, not together'
+                    )
+                );
+
                 return false;
             }
 
             if (mb_strlen($labelBeginWith) < 3) {
-                $this->report->add(\common_report_Report::createFailure('Value of the --clean-users-whose-label-begin-with can not be less then 3 symbols'));
+                $this->report->add(
+                    \common_report_Report::createFailure(
+                        'Value of the --clean-users-whose-label-begin-with can not be less then 3 symbols'
+                    )
+                );
+
                 return false;
             }
 
@@ -367,7 +460,11 @@ class jMeterCleaner extends AbstractAction
     {
         $ttData = $this->getDataByTestTaker($testTaker, false);
         if (!count($ttData)) {
-            $this->report->add(\common_report_Report::createFailure('TestTaker with id [' . $testTaker->getUri() . '] has not been found'));
+            $this->report->add(
+                \common_report_Report::createFailure(
+                    'TestTaker with id [' . $testTaker->getUri() . '] has not been found'
+                )
+            );
             return false;
         }
 
@@ -390,7 +487,9 @@ class jMeterCleaner extends AbstractAction
         $statesRemovedReport = $this->removeServiceState($testTaker->getUri());
         $this->report->add($statesRemovedReport);
 
-        $this->report->add(\common_report_Report::createSuccess('TestTakers data about results and executions were cleaned'));
+        $this->report->add(
+            \common_report_Report::createSuccess('TestTakers data about results and executions were cleaned')
+        );
     }
 
     private function cleanExecutionsByMask($labelBeginWith = '')
@@ -485,7 +584,9 @@ class jMeterCleaner extends AbstractAction
         } elseif ($deliveryService instanceof OntologyDeliveryExecution) {
             $count = 0;
             $deliveryExecutionClass = new \core_kernel_classes_Class(OntologyDeliveryExecution::CLASS_URI);
-            $deliveryExecutions = $deliveryExecutionClass->searchInstances([OntologyDeliveryExecution::PROPERTY_SUBJECT => $userUri]);
+            $deliveryExecutions = $deliveryExecutionClass->searchInstances([
+                OntologyDeliveryExecution::PROPERTY_SUBJECT => $userUri,
+            ]);
             /** @var  \core_kernel_classes_Class $deliveryExecution */
             foreach ($deliveryExecutions as $deliveryExecution) {
                 $deliveryExecution->delete(true);
@@ -504,7 +605,9 @@ class jMeterCleaner extends AbstractAction
     {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
         // service states
-        $persistence = \common_persistence_KeyValuePersistence::getPersistence(\tao_models_classes_service_StateStorage::PERSISTENCE_ID);
+        $persistence = \common_persistence_KeyValuePersistence::getPersistence(
+            \tao_models_classes_service_StateStorage::PERSISTENCE_ID
+        );
         if ($persistence instanceof \common_persistence_AdvKeyValuePersistence) {
             $count = 0;
             foreach ($persistence->keys('tao:state:' . $userUri . '*') as $key) {

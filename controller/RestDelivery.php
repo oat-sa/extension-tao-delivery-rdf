@@ -50,18 +50,18 @@ class RestDelivery extends \tao_actions_RestController
 {
     use TaskLogActionTrait;
 
-    const REST_DELIVERY_TEST_ID        = 'test';
-    const REST_DELIVERY_SEARCH_PARAMS  = 'searchParams';
-    const REST_DELIVERY_ID             = 'delivery';
-    const REST_DELIVERY_CLASS_URI      = 'delivery-uri';
-    const REST_DELIVERY_CLASS_LABEL    = 'delivery-label';
-    const REST_DELIVERY_CLASS_PARENT   = 'delivery-parent';
-    const REST_DELIVERY_CLASS_COMMENT  = 'delivery-comment';
-    const TASK_ID_PARAM                = 'id';
+    public const REST_DELIVERY_TEST_ID        = 'test';
+    public const REST_DELIVERY_SEARCH_PARAMS  = 'searchParams';
+    public const REST_DELIVERY_ID             = 'delivery';
+    public const REST_DELIVERY_CLASS_URI      = 'delivery-uri';
+    public const REST_DELIVERY_CLASS_LABEL    = 'delivery-label';
+    public const REST_DELIVERY_CLASS_PARENT   = 'delivery-parent';
+    public const REST_DELIVERY_CLASS_COMMENT  = 'delivery-comment';
+    public const TASK_ID_PARAM                = 'id';
 
-    const CLASS_LABEL_PARAM            = 'delivery-label';
-    const CLASS_COMMENT_PARAM          = 'delivery-comment';
-    const PARENT_CLASS_URI_PARAM       = 'delivery-parent';
+    public const CLASS_LABEL_PARAM            = 'delivery-label';
+    public const CLASS_COMMENT_PARAM          = 'delivery-comment';
+    public const PARENT_CLASS_URI_PARAM       = 'delivery-parent';
 
     /**
      * @return EventManager
@@ -172,7 +172,10 @@ class RestDelivery extends \tao_actions_RestController
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_SEARCH_PARAMS, $this->getRequestURI());
             }
 
-            $where = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
+            $where = json_decode(
+                html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)),
+                true
+            );
             $propertyValues = $this->getRequestParameters();
             unset($propertyValues[self::REST_DELIVERY_SEARCH_PARAMS]);
 
@@ -192,7 +195,7 @@ class RestDelivery extends \tao_actions_RestController
             }
             $this->returnSuccess($response);
         } catch (\Exception $e) {
-                $this->returnFailure($e);
+            $this->returnFailure($e);
         }
     }
 
@@ -202,7 +205,8 @@ class RestDelivery extends \tao_actions_RestController
      * @throws BadRequestException
      * @throws FormDataBindingException
      */
-    public function updateProperties(): void {
+    public function updateProperties(): void
+    {
         if ($this->getRequestMethod() !== Request::HTTP_PATCH) {
             throw new HttpMethodNotAllowedException(null, 0, [Request::HTTP_PATCH]);
         }
@@ -233,7 +237,10 @@ class RestDelivery extends \tao_actions_RestController
             if (! $this->hasRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)) {
                 throw new \common_exception_MissingParameter(self::REST_DELIVERY_SEARCH_PARAMS, $this->getRequestURI());
             }
-            $where = json_decode(html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)), true);
+            $where = json_decode(
+                html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)),
+                true
+            );
             $propertyValues = $this->getRequestParameters();
             unset($propertyValues[self::REST_DELIVERY_SEARCH_PARAMS]);
 
@@ -287,7 +294,13 @@ class RestDelivery extends \tao_actions_RestController
             $task->setServiceLocator($this->getServiceLocator());
             $taskParameters = ['deliveryId' => $uri];
 
-            $task = $queueDispatcher->createTask($task, $taskParameters, __('Deleting of "%s"', $delivery->getLabel()), null, true);
+            $task = $queueDispatcher->createTask(
+                $task,
+                $taskParameters,
+                __('Deleting of "%s"', $delivery->getLabel()),
+                null,
+                true
+            );
 
             $data = $this->getTaskLogReturnData(
                 $task->getId(),

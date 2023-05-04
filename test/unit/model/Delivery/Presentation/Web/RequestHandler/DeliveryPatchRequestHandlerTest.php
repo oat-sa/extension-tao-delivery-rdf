@@ -123,8 +123,10 @@ class DeliveryPatchRequestHandlerTest extends TestCase
         $this->expectExceptionObject(new BadRequestException('Unsupported Media Type', 415));
     }
 
-    private function createRawRequestHandler(bool $isApplicable = false, $properties = []): DeliveryPatchRequestHandlerInterface
-    {
+    private function createRawRequestHandler(
+        bool $isApplicable = false,
+        $properties = []
+    ): DeliveryPatchRequestHandlerInterface {
         $rawRequestHandler = $this->createMock(DeliveryPatchRequestHandlerInterface::class);
 
         $rawRequestHandler

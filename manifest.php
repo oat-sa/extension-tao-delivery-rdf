@@ -18,7 +18,6 @@
  * Copyright (c) 2015-2021 (original work) Open Assessment Technologies SA;
  */
 
-
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
 use oat\taoDeliveryRdf\model\DataStore\ServiceProvider\DataStoreServiceProvider;
@@ -50,8 +49,10 @@ return [
     ],
     'install' => [
         'rdf' => [
-            __DIR__ . DIRECTORY_SEPARATOR . "install" . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR . 'taodelivery.rdf',
-            __DIR__ . DIRECTORY_SEPARATOR . "install" . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR . 'widgetdefinitions.rdf'
+            __DIR__ . DIRECTORY_SEPARATOR . "install" . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR
+                . 'taodelivery.rdf',
+            __DIR__ . DIRECTORY_SEPARATOR . "install" . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR
+                . 'widgetdefinitions.rdf',
         ],
         'php' => [
             __DIR__ . DIRECTORY_SEPARATOR . "install" . DIRECTORY_SEPARATOR . 'registerAssignment.php',

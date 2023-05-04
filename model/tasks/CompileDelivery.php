@@ -116,8 +116,11 @@ class CompileDelivery extends AbstractAction implements \JsonSerializable, TaskA
      * @param array                         $initialProperties
      * @return TaskInterface
      */
-    public static function createTask(\core_kernel_classes_Resource $test, \core_kernel_classes_Class $deliveryClass, array $initialProperties = [])
-    {
+    public static function createTask(
+        \core_kernel_classes_Resource $test,
+        \core_kernel_classes_Class $deliveryClass,
+        array $initialProperties = []
+    ) {
         $action = new self();
         /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = ServiceManager::getServiceManager()->get(QueueDispatcher::SERVICE_ID);

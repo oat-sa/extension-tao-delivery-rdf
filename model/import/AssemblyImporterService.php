@@ -47,9 +47,9 @@ class AssemblyImporterService extends ConfigurableService
     use LoggerAwareTrait;
     use OntologyAwareTrait;
 
-    const MANIFEST_FILE = 'manifest.json';
-    
-    const RDF_FILE = 'delivery.rdf';
+    public const MANIFEST_FILE = 'manifest.json';
+
+    public const RDF_FILE = 'delivery.rdf';
 
     /**
      * @param core_kernel_classes_Class $deliveryClass
@@ -74,7 +74,10 @@ class AssemblyImporterService extends ConfigurableService
             $deliveryUri = $this->getDeliveryUri($useOriginalUri, $tmpImportFolder);
             $delivery = $this->importDeliveryResource($deliveryClass, $deliveryUri, $tmpImportFolder);
 
-            $report = common_report_Report::createSuccess(__('Delivery "%s" successfully imported', $delivery->getUri()), $delivery);
+            $report = common_report_Report::createSuccess(
+                __('Delivery "%s" successfully imported', $delivery->getUri()),
+                $delivery
+            );
 
             return $report;
         } catch (AssemblyImportFailedException $e) {

@@ -42,15 +42,24 @@ class ImportAssembly extends AbstractAction
     public function __invoke($params)
     {
         if (count($params) < 1) {
-            return new \common_report_Report(\common_report_Report::TYPE_ERROR, __('Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ...', __CLASS__));
+            return new \common_report_Report(
+                \common_report_Report::TYPE_ERROR,
+                __('Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ...', __CLASS__)
+            );
         }
 
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
 
-        $deliveryClass = DeliveryAssemblyService::singleton()->getRootClass()->createSubClass('Import ' . \tao_helpers_Date::displayeDate(time()));
+        $deliveryClass = DeliveryAssemblyService::singleton()
+            ->getRootClass()
+            ->createSubClass('Import ' . \tao_helpers_Date::displayeDate(time()));
         /** @var AssemblyImporterService $importer */
         $importer = $this->getServiceLocator()->get(AssemblyImporterService::class);
-        $report = new \common_report_Report(\common_report_Report::TYPE_INFO, __('Importing %1$s files into \'%2$s\'', count($params), $deliveryClass->getLabel()));
+        $report = new \common_report_Report(
+            \common_report_Report::TYPE_INFO,
+            __('Importing %1$s files into \'%2$s\'', count($params), $deliveryClass->getLabel())
+        );
+
         while (!empty($params)) {
             $file = array_shift($params);
             $report->add($importer->importDelivery($deliveryClass, $file));

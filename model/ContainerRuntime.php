@@ -38,11 +38,11 @@ use Psr\SimpleCache\CacheInterface;
 class ContainerRuntime extends LegacyRuntime
 {
     use OntologyAwareTrait;
-    
-    const PROPERTY_RUNTIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime';
-    const PROPERTY_CONTAINER = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainer';
 
-    const CACHE_PREFIX = 'container:';
+    public const PROPERTY_RUNTIME = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryRuntime';
+    public const PROPERTY_CONTAINER = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#AssembledDeliveryContainer';
+
+    public const CACHE_PREFIX = 'container:';
 
     public function getDeliveryContainer($deliveryId)
     {
@@ -61,7 +61,7 @@ class ContainerRuntime extends LegacyRuntime
             return parent::getDeliveryContainer($deliveryId);
         }
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \oat\taoDelivery\model\RuntimeService::getRuntime()

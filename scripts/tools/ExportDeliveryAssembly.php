@@ -40,9 +40,9 @@ class ExportDeliveryAssembly extends ScriptAction
     use OntologyAwareTrait;
 
 
-    const OPTION_DELIVERY_URI = 'delivery-uri';
-    const OPTION_OUTPUT_TEST_FORMAT = 'output-test-format';
-    const OPTION_OUTPUT_FILEPATH = 'output-filepath';
+    public const OPTION_DELIVERY_URI = 'delivery-uri';
+    public const OPTION_OUTPUT_TEST_FORMAT = 'output-test-format';
+    public const OPTION_OUTPUT_FILEPATH = 'output-filepath';
     /**
          * @var Report
          */
@@ -81,7 +81,8 @@ class ExportDeliveryAssembly extends ScriptAction
      */
     protected function provideDescription()
     {
-        return 'Export compiled delivery assembly package with possibility to convert compiled test file into one of supported formats.';
+        return 'Export compiled delivery assembly package with possibility to convert compiled test file into one of '
+            . 'supported formats.';
     }
 
     /**

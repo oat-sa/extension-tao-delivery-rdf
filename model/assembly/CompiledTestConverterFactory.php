@@ -29,9 +29,9 @@ use oat\taoQtiTest\models\XmlCompilationDataService;
 
 class CompiledTestConverterFactory extends ConfigurableService
 {
-    const COMPILED_TEST_FORMAT_XML            = 'xml';
-    const COMPILED_TEST_FORMAT_PHP            = 'php';
-    const COMPILED_TEST_FORMAT_PHP_SERIALIZED = 'php_serialized';
+    public const COMPILED_TEST_FORMAT_XML            = 'xml';
+    public const COMPILED_TEST_FORMAT_PHP            = 'php';
+    public const COMPILED_TEST_FORMAT_PHP_SERIALIZED = 'php_serialized';
 
     /**
      * @param $outputTestFormat

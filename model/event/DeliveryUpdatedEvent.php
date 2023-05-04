@@ -26,7 +26,6 @@ use oat\oatbox\event\Event;
 
 class DeliveryUpdatedEvent extends AbstractDeliveryEvent
 {
-
     /**
      * @var
      */

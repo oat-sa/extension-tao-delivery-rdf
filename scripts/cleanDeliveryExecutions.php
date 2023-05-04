@@ -22,8 +22,10 @@
 
 namespace oat\taoDeliveryRdf\scripts;
 
-//Load extension to define necessary constants.
+// Load extension to define necessary constants.
+// phpcs:disable PSR1.Files.SideEffects
 \common_ext_ExtensionsManager::singleton()->getExtensionById('taoDeliveryRdf');
+// phpcs:enable PSR1.Files.SideEffects
 
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
@@ -122,7 +124,9 @@ class cleanDeliveryExecutions extends AbstractAction
     {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
         // service states
-        $persistence = \common_persistence_KeyValuePersistence::getPersistence(\tao_models_classes_service_StateStorage::PERSISTENCE_ID);
+        $persistence = \common_persistence_KeyValuePersistence::getPersistence(
+            \tao_models_classes_service_StateStorage::PERSISTENCE_ID
+        );
         if ($persistence instanceof \common_persistence_AdvKeyValuePersistence) {
             $count = 0;
             foreach ($persistence->keys('tao:state:*') as $key) {

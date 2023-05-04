@@ -35,7 +35,7 @@ final class UrlEncodedFormDeliveryPatchRequestHandler implements DeliveryPatchRe
 
     public function handle(ServerRequestInterface $request): array
     {
-        $data = preg_replace_callback('/(?:^|(?<=&))[^=[]+/', static function(array $match) {
+        $data = preg_replace_callback('/(?:^|(?<=&))[^=[]+/', static function (array $match) {
             return bin2hex(urldecode($match[0]));
         }, (string)$request->getBody());
 

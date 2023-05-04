@@ -51,7 +51,11 @@ class AssemblyFilesReaderTest extends TestCase
             ->willReturn($iterator);
         $result = $this->object->getFiles($directoryMock);
         $this->assertInstanceOf(Generator::class, $result);
-        $this->assertEquals($expectedFilesCount, count(iterator_to_array($result)), 'Number of returned files for empty directory must be 0.');
+        $this->assertEquals(
+            $expectedFilesCount,
+            count(iterator_to_array($result)),
+            'Number of returned files for empty directory must be 0.'
+        );
     }
 
     public function testGetFilesReturnsGeneratorWithFilesStreams()
@@ -65,10 +69,18 @@ class AssemblyFilesReaderTest extends TestCase
         $result = $this->object->getFiles($directoryMock);
         $this->assertInstanceOf(Generator::class, $result, 'Files reader must return an instance type of Generator.');
         $this->assertEquals($expectedFilePath1, $result->key(), 'Returned file path must be as expected.');
-        $this->assertInstanceOf(StreamInterface::class, $result->current(), 'Returned iterator value must be an instance of StreamInterface.');
+        $this->assertInstanceOf(
+            StreamInterface::class,
+            $result->current(),
+            'Returned iterator value must be an instance of StreamInterface.'
+        );
         $result->next();
         $this->assertEquals($expectedFilePath2, $result->key(), 'Returned file path must be as expected.');
-        $this->assertInstanceOf(StreamInterface::class, $result->current(), 'Returned iterator value must be an instance of StreamInterface.');
+        $this->assertInstanceOf(
+            StreamInterface::class,
+            $result->current(),
+            'Returned iterator value must be an instance of StreamInterface.'
+        );
     }
 
     public function testGetFilesConvertsCompiledTestFile()
@@ -92,7 +104,11 @@ class AssemblyFilesReaderTest extends TestCase
         $result = $this->object->getFiles($directoryMock);
         $this->assertInstanceOf(Generator::class, $result, 'Files reader must return an instance type of Generator.');
         $this->assertEquals($expectedFilePath, $result->key(), 'Returned converted file path must be as expected.');
-        $this->assertInstanceOf(StreamInterface::class, $result->current(), 'Returned iterator value must be an instance of StreamInterface.');
+        $this->assertInstanceOf(
+            StreamInterface::class,
+            $result->current(),
+            'Returned iterator value must be an instance of StreamInterface.'
+        );
     }
 
     /**

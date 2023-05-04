@@ -37,22 +37,22 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
     /**
      * The delivery theme id uri.
      */
-    const DELIVERY_THEME_ID_URI = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ThemeName';
+    public const DELIVERY_THEME_ID_URI = 'http://www.tao.lu/Ontologies/TAODelivery.rdf#ThemeName';
 
     /**
      * The default ttl of the cache persistence.
      */
-    const CACHE_PERSISTENCE_DEFAULT_TTL = null;
+    public const CACHE_PERSISTENCE_DEFAULT_TTL = null;
 
     /**
      * The cache persistence config option.
      */
-    const OPTION_CACHE_PERSISTENCE = 'cachePersistence';
+    public const OPTION_CACHE_PERSISTENCE = 'cachePersistence';
 
     /**
      * The cache persistence ttl config option.
      */
-    const OPTION_CACHE_PERSISTENCE_TTL = 'cachePersistenceTtl';
+    public const OPTION_CACHE_PERSISTENCE_TTL = 'cachePersistenceTtl';
 
     /**
      * @var common_persistence_KvDriver
@@ -130,7 +130,9 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
     public function getDeliveryIdFromSession($deliveryExecutionId)
     {
         if (PHPSession::singleton()->hasAttribute(DeliveryExecution::getDeliveryIdSessionKey($deliveryExecutionId))) {
-            return PHPSession::singleton()->getAttribute(DeliveryExecution::getDeliveryIdSessionKey($deliveryExecutionId));
+            return PHPSession::singleton()->getAttribute(
+                DeliveryExecution::getDeliveryIdSessionKey($deliveryExecutionId)
+            );
         }
 
         return false;
@@ -201,7 +203,9 @@ class DeliveryThemeDetailsProvider extends ConfigurableService implements ThemeD
     {
         try {
             if ($this->getCachePersistence() !== null) {
-                return $this->getCachePersistence()->set($this->getCacheKey($deliveryId), $themeId, $this->getCacheTtl());
+                return $this
+                    ->getCachePersistence()
+                    ->set($this->getCacheKey($deliveryId), $themeId, $this->getCacheTtl());
             }
         } catch (common_exception_NotImplemented $e) {
         }

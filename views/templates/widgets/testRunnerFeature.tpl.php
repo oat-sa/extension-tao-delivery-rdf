@@ -19,9 +19,11 @@
  *
  * @author Christophe Noël <christophe@taotesting.com>
  *
+ * phpcs:disable Generic.Files.LineLength
  */
 
 ?>
+
 <?php if (count($choicesList) > 0) : ?>
     <span class='form_desc'><?= $propLabel ?></span>
     <div class="form_radlst form_checklst">

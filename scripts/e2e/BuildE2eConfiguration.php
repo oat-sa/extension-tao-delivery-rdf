@@ -17,6 +17,7 @@
  *
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
+
 declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\scripts\e2e;
@@ -126,7 +127,8 @@ class BuildE2eConfiguration extends AbstractAction
         $password = Uuid::uuid4()->toString();
         $login = $this->createLabel('E2ETestTaker');
 
-        $testTakerResource = $this->getTestTakerService()->createFromArray([
+        $testTakerResource = $this->getTestTakerService()->createFromArray(
+            [
                 GenerisRdf::PROPERTY_USER_LOGIN => $login,
                 GenerisRdf::PROPERTY_USER_PASSWORD => $password,
             ]

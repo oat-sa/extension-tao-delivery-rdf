@@ -69,13 +69,19 @@ class UnRegisterDeliveryArchive extends AbstractAction
 
         /** @var DeliveryDeleteService $deliveryDeleteService */
         $deliveryDeleteService = $this->getServiceLocator()->get(DeliveryDeleteService::SERVICE_ID);
-        $deleteServices = $deliveryDeleteService->getOption(DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES);
+        $deleteServices = $deliveryDeleteService->getOption(
+            DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES
+        );
+
         if (($key = array_search(DeliveryArchiveService::SERVICE_ID, $deleteServices)) !== false) {
             unset($deleteServices[$key]);
-            $deliveryDeleteService->setOption(DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES, $deleteServices);
+            $deliveryDeleteService->setOption(
+                DeliveryDeleteService::OPTION_DELETE_DELIVERY_DATA_SERVICES,
+                $deleteServices
+            );
             $this->registerService(DeliveryDeleteService::SERVICE_ID, $deliveryDeleteService);
         }
-        
+
         return new \common_report_Report(
             \common_report_Report::TYPE_SUCCESS,
             DeliveryArchiveService::BUCKET_DIRECTORY . ' unregister and event detached'
