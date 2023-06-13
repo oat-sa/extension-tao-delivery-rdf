@@ -1,54 +1,46 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: tao-3x\n"
-"PO-Revision-Date: 2023-04-21 15:46\n"
-"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
-"MIME-Version: 1.0\n"
-"Language: pt-BR\n"
-"sourceLanguage: en-US\n"
-"targetLanguage: pt-BR\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
-"X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Crowdin-Project: tao-3x\n"
-"X-Crowdin-Project-ID: 582145\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
 "X-Crowdin-Language: pt-BR\n"
-"X-Crowdin-File: /taoDeliveryRdf/locales/en-US/messages.po\n"
-"X-Crowdin-File-ID: 1475\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 789\n"
+"Project-Id-Version: tao-open-source\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Portuguese, Brazilian\n"
+"Language: pt_BR\n"
+"PO-Revision-Date: 2023-06-13 14:06\n"
 
 msgid "%s completed"
 msgstr "%s concluído"
 
 msgid "%s test-taker(s) are excluded."
-msgstr "%s test-taker(s) foram excluídos."
+msgstr ""
 
 msgid "Access deliveries as a guest"
 msgstr "Acessar entregas como convidado"
 
 msgid "An error occured during the import"
-msgstr "Ocorreu um erro ao importar"
+msgstr ""
 
 msgid "Assembly"
-msgstr "Assembleia"
+msgstr ""
 
 msgid "Assembly import"
-msgstr "Importar assembleia"
+msgstr ""
 
 msgid "Assigned test-takers"
-msgstr "Teste-takers atribuídos"
+msgstr ""
 
 msgid "Assigned to"
-msgstr "Atribuído a"
+msgstr ""
 
 msgid "Available from %s"
-msgstr "Disponível a partir de %s"
+msgstr ""
 
 msgid "Available until %s"
-msgstr "Disponível até %s"
+msgstr ""
 
 msgid "Cancel"
 msgstr "cancelar"
@@ -57,20 +49,20 @@ msgid "Class successfully created."
 msgstr "Classe criada com sucesso."
 
 msgid "Continue deleting of delivery \"%s\"."
-msgstr "Continuar a excluir a entrega \"%s\"."
+msgstr ""
 
 msgid "Create a new delivery"
-msgstr "Criar uma nova entrega"
+msgstr ""
 
 msgid "Create a test"
-msgstr "Criar um teste"
+msgstr ""
 
 #, tao-public
 msgid "Delete"
 msgstr "excluir"
 
 msgid "Deleting of \"%s"
-msgstr "Apagando de \"%s"
+msgstr ""
 
 #, tao-public
 msgid "Deliveries"
@@ -78,52 +70,55 @@ msgstr "Exames"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr "Biblioteca de exames"
+msgstr ""
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr "Entrega \"%s\" importado com sucesso"
+msgstr ""
 
 msgid "Delivery \\'%s\\' not found"
-msgstr "Entrega \\'%s\\' não encontrada"
+msgstr ""
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr "A aula de entrega uri fornecida não é uma aula de entrega válida."
+msgstr ""
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr "Entrega atribuída para %s test-takers."
+msgstr ""
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr "Entrega não atribuída a nenhum teste."
+msgstr ""
 
 msgid "Delivery saved"
-msgstr "Entrega salva"
+msgstr ""
 
 msgid "Delivery with label \"%s\" not found"
-msgstr "Entrega com rótulo \"%s\" não encontrado"
+msgstr ""
 
 msgid "Directory %s doesn\\'t exist"
-msgstr "O diretório %s não existe"
+msgstr ""
 
 msgid "Error"
 msgstr "ERRO"
 
 msgid "Excluded test-takers"
-msgstr "test-takers excluídos"
+msgstr ""
 
 msgid "Exported %1$s to %2$s"
-msgstr "%1$s exportado para %2$s"
+msgstr ""
 
 msgid "Exporting %s"
-msgstr "Exportando %s"
+msgstr ""
 
 msgid "Guest access"
 msgstr "Acesso de convidado"
 
 msgid "Import QTI test and create delivery."
-msgstr "Importar teste QTI e criar a entrega."
+msgstr ""
+
+msgid "Importing %1$s files into \\'%2$s\\'"
+msgstr ""
 
 msgid "Last updated on:"
-msgstr "Última atualização em:"
+msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
@@ -135,7 +130,7 @@ msgstr "Gerenciar testes"
 
 #, tao-public
 msgid "Move"
-msgstr "Mover-se"
+msgstr "Mover"
 
 #, tao-public
 msgid "Move To"
@@ -143,21 +138,21 @@ msgstr "Mover para"
 
 #, tao-public
 msgid "New class"
-msgstr "Nova classe"
+msgstr "Nova pasta"
 
 #, tao-public
 msgid "New delivery"
-msgstr "Novo exame"
+msgstr ""
 
 msgid "No attempt has been started yet."
-msgstr "Nenhuma tentativa foi iniciada ainda."
+msgstr ""
 
 msgid "No information available about attempts"
-msgstr "Nenhuma informação disponível sobre tentativas"
+msgstr ""
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr "Prepare, publique as sessões de entregas."
+msgstr ""
 
 #, tao-public
 msgid "Properties"
@@ -168,37 +163,37 @@ msgid "Publish"
 msgstr "Publicar"
 
 msgid "Publish \"%s\" to"
-msgstr "Publicar \"%s\" para"
+msgstr ""
 
 msgid "Publish the test"
-msgstr "Publicar o teste"
+msgstr ""
 
 msgid "Published on:"
-msgstr "Publicado em:"
+msgstr ""
 
 msgid "Publishing of <b>%s</b>"
-msgstr "Publicação de <b>%s</b>"
+msgstr ""
 
 msgid "Save"
 msgstr "Salvar"
 
 msgid "Select the test"
-msgstr "Selecione o teste"
+msgstr ""
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr "Selecione o teste que você deseja publicar para os realizadores de testes"
+msgstr ""
 
 msgid "Selection saved successfully"
-msgstr "Seleção salva com sucesso"
+msgstr ""
 
 msgid "TAO Guest"
-msgstr "TAO Guest"
+msgstr ""
 
 msgid "TAO Guest Access"
 msgstr "Acesso de Convidado TAO"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr "Falha na publicação de teste porque \"%s\" está vazio."
+msgstr ""
 
 msgid "Test-takers"
 msgstr "Candidato"
@@ -208,29 +203,29 @@ msgid "Tests"
 msgstr "Testes"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr "O teste \"%s\" não contém nenhum item e não pode ser publicado."
+msgstr ""
 
 msgid "There are currently %s attempts"
-msgstr "Existem %s tentativas no momento"
+msgstr ""
 
 msgid "There are currently no tests available to publish."
-msgstr "Atualmente, não há testes disponíveis para publicação."
+msgstr ""
 
 msgid "There is currently 1 attempt"
-msgstr "Atualmente há 1 tentativa"
+msgstr ""
 
 msgid "Unable to import Archive"
-msgstr "Não foi possível importar o arquivo"
+msgstr ""
 
 msgid "Unable to load tests"
-msgstr "Não foi possível carregar os testes"
+msgstr ""
 
 msgid "unlimited"
-msgstr "Ilimitado"
+msgstr ""
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr "Uso: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3]..."
+msgstr ""
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr "Uso: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr ""
 
