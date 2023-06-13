@@ -1,17 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint107\n"
-"PO-Revision-Date: 2020-07-17T08:37:24\n"
-"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
-"MIME-Version: 1.0\n"
-"Language: it-IT\n"
-"sourceLanguage: en-US\n"
-"targetLanguage: it-IT\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
-"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: it\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 789\n"
+"Project-Id-Version: tao-open-source\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Italian\n"
+"Language: it_IT\n"
+"PO-Revision-Date: 2023-06-13 14:06\n"
 
 msgid "%s completed"
 msgstr ""
@@ -20,7 +19,7 @@ msgid "%s test-taker(s) are excluded."
 msgstr ""
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "Somministrazioni di accesso come ospite"
 
 msgid "An error occured during the import"
 msgstr ""
@@ -38,13 +37,13 @@ msgid "Assigned to"
 msgstr ""
 
 msgid "Available from %s"
-msgstr "Disponibile dal %s"
+msgstr ""
 
 msgid "Available until %s"
 msgstr ""
 
 msgid "Cancel"
-msgstr ""
+msgstr "Cancella"
 
 msgid "Class successfully created."
 msgstr ""
@@ -76,7 +75,7 @@ msgstr ""
 msgid "Delivery \"%s\" successfully imported"
 msgstr ""
 
-msgid "Delivery \'%s\' not found"
+msgid "Delivery \\'%s\\' not found"
 msgstr ""
 
 msgid "Delivery class uri provided is not a valid delivery class."
@@ -94,7 +93,7 @@ msgstr ""
 msgid "Delivery with label \"%s\" not found"
 msgstr ""
 
-msgid "Directory %s doesn\'t exist"
+msgid "Directory %s doesn\\'t exist"
 msgstr ""
 
 msgid "Error"
@@ -110,12 +109,12 @@ msgid "Exporting %s"
 msgstr ""
 
 msgid "Guest access"
-msgstr ""
+msgstr "Accesso ospite"
 
 msgid "Import QTI test and create delivery."
 msgstr ""
 
-msgid "Importing %1$s files into \'%2$s\"
+msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr ""
 
 msgid "Last updated on:"
@@ -127,11 +126,11 @@ msgstr ""
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "Gestisci i test"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Sposta"
 
 #, tao-public
 msgid "Move To"
@@ -139,7 +138,7 @@ msgstr ""
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Nuova classe"
 
 #, tao-public
 msgid "New delivery"
@@ -161,7 +160,7 @@ msgstr ""
 
 #, tao-public
 msgid "Publish"
-msgstr ""
+msgstr "Pubblica"
 
 msgid "Publish \"%s\" to"
 msgstr ""
@@ -191,17 +190,17 @@ msgid "TAO Guest"
 msgstr ""
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "Accesso ospite TAO"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr ""
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Partecipanti al test"
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "Test"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
 msgstr ""
@@ -222,7 +221,7 @@ msgid "Unable to load tests"
 msgstr ""
 
 msgid "unlimited"
-msgstr "illimitati"
+msgstr ""
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr ""
