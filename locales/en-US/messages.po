@@ -229,4 +229,3 @@ msgstr ""
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 msgstr ""
-
