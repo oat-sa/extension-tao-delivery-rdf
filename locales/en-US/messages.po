@@ -113,7 +113,7 @@ msgstr ""
 msgid "Import QTI test and create delivery."
 msgstr ""
 
-msgid "Importing %1$s files into \'%2$s\"
+msgid "Importing %1$s files into \'%2$s\'"
 msgstr ""
 
 msgid "Last updated on:"
