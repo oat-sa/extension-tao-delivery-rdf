@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
-"PO-Revision-Date: 2023-06-14 09:11\n"
+"PO-Revision-Date: 2023-06-14 15:18\n"
 
 msgid "%s completed"
 msgstr ""
@@ -122,23 +122,23 @@ msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "إدارة الخطاطة"
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "إدارة الروائز"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "حرك"
 
 #, tao-public
 msgid "Move To"
-msgstr ""
+msgstr "حرك نحو"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "صنف جديد"
 
 #, tao-public
 msgid "New delivery"
