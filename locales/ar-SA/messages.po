@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
-"PO-Revision-Date: 2023-06-13 14:12\n"
+"PO-Revision-Date: 2023-06-14 09:11\n"
 
 msgid "%s completed"
 msgstr ""
@@ -43,10 +43,10 @@ msgid "Available until %s"
 msgstr ""
 
 msgid "Cancel"
-msgstr ""
+msgstr "إلغاء"
 
 msgid "Class successfully created."
-msgstr ""
+msgstr "تم إنشاء الفصل بنجاح."
 
 msgid "Continue deleting of delivery \"%s\"."
 msgstr ""
