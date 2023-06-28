@@ -26,6 +26,7 @@ use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
 use oat\tao\helpers\Template;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\resources\ResourceWatcher;
 use oat\tao\model\TaoOntology;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
@@ -53,6 +54,9 @@ use tao_helpers_form_FormContainer as FormContainer;
 class DeliveryMgmt extends \tao_actions_SaSModule
 {
     use TaskLogActionTrait;
+
+    private const FEATURE_FLAG_GROUPS_DISABLED = 'FEATURE_FLAG_GROUPS_DISABLED';
+    private const FEATURE_FLAG_TEST_TAKERS_DISABLED = 'FEATURE_FLAG_TEST_TAKERS_DISABLED';
 
     /**
      * @return EventManager
@@ -123,7 +127,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
 
         $assignmentService = $this->getServiceLocator()->get(AssignmentService::SERVICE_ID);
-        if (get_class($assignmentService) == GroupAssignment::class) {
+        if (
+            !$this->getFeatureFlagChecker()->isEnabled(self::FEATURE_FLAG_GROUPS_DISABLED)
+            && get_class($assignmentService) == GroupAssignment::class
+        ) {
             // define the groups related to the current delivery
             $property = $this->getProperty(GroupAssignment::PROPERTY_GROUP_DELIVERY);
             $tree = \tao_helpers_form_GenerisTreeForm::buildReverseTree($delivery, $property);
@@ -131,6 +138,11 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             $tree->setTemplate(Template::getTemplate('widgets/assignGroup.tpl'));
             $this->setData('groupTree', $tree->render());
         }
+
+        $this->setData(
+            'ttdisabled',
+            $this->getFeatureFlagChecker()->isEnabled(self::FEATURE_FLAG_TEST_TAKERS_DISABLED)
+        );
 
         // testtaker brick
         $this->setData('assemblyUri', $deliveryUri);
@@ -347,5 +359,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     private function getDeliveryFormFactory(): DeliveryFormFactory
     {
         return $this->getPsrContainer()->get(DeliveryFormFactory::class);
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagChecker
+    {
+        return $this->getPsrContainer()->get(FeatureFlagChecker::class);
     }
 }
