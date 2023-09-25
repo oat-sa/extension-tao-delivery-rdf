@@ -27,7 +27,7 @@ define([
     'layout/actions',
     'ui/taskQueue/taskQueue',
     'ui/taskQueueButton/standardButton'
-], function ($, _, __, filterFactory, feedback, actionManager, taskQueue, taskCreationButtonFactory) {
+], function ($, __, filterFactory, feedback, actionManager, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
     /**
