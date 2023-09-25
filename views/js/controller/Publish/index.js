@@ -18,7 +18,6 @@
  */
 define([
     'jquery',
-    'lodash',
     'i18n',
     'util/url',
     'layout/actions',
@@ -77,7 +76,7 @@ define([
             .on('finished', function (result, button) {
                 if (result.task
                     && result.task.report
-                    && _.isArray(result.task.report.children)
+                    && Array.isArray(result.task.report.children)
                     && result.task.report.children.length
                     && result.task.report.children[0]) {
                     if (result.task.report.children[0].data
