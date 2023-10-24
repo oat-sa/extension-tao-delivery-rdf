@@ -75,7 +75,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         return $report;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return self::class;
     }
