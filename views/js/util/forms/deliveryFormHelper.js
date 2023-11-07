@@ -21,14 +21,13 @@
  */
 define([
     'jquery',
-    'lodash',
     'i18n',
     'ui/filter',
     'ui/feedback',
     'layout/actions',
     'ui/taskQueue/taskQueue',
     'ui/taskQueueButton/standardButton'
-], function ($, _, __, filterFactory, feedback, actionManager, taskQueue, taskCreationButtonFactory) {
+], function ($, __, filterFactory, feedback, actionManager, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
     /**
@@ -123,7 +122,7 @@ define([
                 if (result
                     && result.task
                     && result.task.report
-                    && _.isArray(result.task.report.children)
+                    && Array.isArray(result.task.report.children)
                     && result.task.report.children.length
                     && result.task.report.children[0]) {
                     if(result.task.report.children[0].data
