@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
-"PO-Revision-Date: 2023-06-13 14:12\n"
+"PO-Revision-Date: 2023-12-04 16:25\n"
 
 msgid "%s completed"
 msgstr ""
@@ -97,7 +97,7 @@ msgid "Directory %s doesn\\'t exist"
 msgstr ""
 
 msgid "Error"
-msgstr ""
+msgstr "Errore"
 
 msgid "Excluded test-takers"
 msgstr ""
