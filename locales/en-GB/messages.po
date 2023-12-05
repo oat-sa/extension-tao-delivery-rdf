@@ -3,13 +3,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
-"X-Crowdin-Language: it\n"
+"X-Crowdin-Language: en-GB\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 797\n"
 "Project-Id-Version: tao-open-source\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Language-Team: Italian\n"
-"Language: it_IT\n"
+"Language-Team: English, United Kingdom\n"
+"Language: en_GB\n"
 "PO-Revision-Date: 2023-06-13 14:12\n"
 
 msgid "%s completed"
@@ -19,7 +19,7 @@ msgid "%s test-taker(s) are excluded."
 msgstr ""
 
 msgid "Access deliveries as a guest"
-msgstr "Somministrazioni di accesso come ospite"
+msgstr ""
 
 msgid "An error occured during the import"
 msgstr ""
@@ -43,7 +43,7 @@ msgid "Available until %s"
 msgstr ""
 
 msgid "Cancel"
-msgstr "Cancella"
+msgstr ""
 
 msgid "Class successfully created."
 msgstr ""
@@ -109,7 +109,7 @@ msgid "Exporting %s"
 msgstr ""
 
 msgid "Guest access"
-msgstr "Accesso ospite"
+msgstr ""
 
 msgid "Import QTI test and create delivery."
 msgstr ""
@@ -126,11 +126,11 @@ msgstr ""
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Gestisci i test"
+msgstr ""
 
 #, tao-public
 msgid "Move"
-msgstr "Sposta"
+msgstr ""
 
 #, tao-public
 msgid "Move To"
@@ -138,7 +138,7 @@ msgstr ""
 
 #, tao-public
 msgid "New class"
-msgstr "Nuova classe"
+msgstr ""
 
 #, tao-public
 msgid "New delivery"
@@ -160,7 +160,7 @@ msgstr ""
 
 #, tao-public
 msgid "Publish"
-msgstr "Pubblica"
+msgstr ""
 
 msgid "Publish \"%s\" to"
 msgstr ""
@@ -190,17 +190,17 @@ msgid "TAO Guest"
 msgstr ""
 
 msgid "TAO Guest Access"
-msgstr "Accesso ospite TAO"
+msgstr ""
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr ""
 
 msgid "Test-takers"
-msgstr "Partecipanti al test"
+msgstr ""
 
 #, tao-public
 msgid "Tests"
-msgstr "Test"
+msgstr ""
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
 msgstr ""

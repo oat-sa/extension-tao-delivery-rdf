@@ -1,47 +1,46 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint107\n"
-"PO-Revision-Date: 2020-07-17T08:37:24\n"
-"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
-"MIME-Version: 1.0\n"
-"Language: lt-LT\n"
-"sourceLanguage: en-US\n"
-"targetLanguage: lt-LT\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
-"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && (n%100>19 || n%100<11) ? 0 : (n%10>=2 && n%10<=9) && (n%100>19 || n%100<11) ? 1 : n%1!=0 ? 2: 3);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: lt\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 797\n"
+"Project-Id-Version: tao-open-source\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Lithuanian\n"
+"Language: lt_LT\n"
+"PO-Revision-Date: 2023-12-05 09:23\n"
 
 msgid "%s completed"
 msgstr "%s atlikta"
 
 msgid "%s test-taker(s) are excluded."
-msgstr "Neįtraukti %s testo laikytojas(–ai)."
+msgstr ""
 
 msgid "Access deliveries as a guest"
-msgstr "Gauti pateiktis, kaip svečias"
+msgstr "Prisijungti prie testų kaip svečiui"
 
 msgid "An error occured during the import"
-msgstr "Įvyko klaida importuojant"
+msgstr ""
 
 msgid "Assembly"
-msgstr "Surinkimas"
+msgstr ""
 
 msgid "Assembly import"
-msgstr "Surinkimo importavimas"
+msgstr ""
 
 msgid "Assigned test-takers"
-msgstr "Paskirti testo laikytojai."
+msgstr ""
 
 msgid "Assigned to"
-msgstr "Priskirtas"
+msgstr ""
 
 msgid "Available from %s"
-msgstr "Galima nuo %s"
+msgstr ""
 
 msgid "Available until %s"
-msgstr "Galima iki %s"
+msgstr ""
 
 msgid "Cancel"
 msgstr "Atšaukti"
@@ -53,10 +52,10 @@ msgid "Continue deleting of delivery \"%s\"."
 msgstr ""
 
 msgid "Create a new delivery"
-msgstr "Sukurti naują pateiktį"
+msgstr ""
 
 msgid "Create a test"
-msgstr "Sukurti testą"
+msgstr ""
 
 #, tao-public
 msgid "Delete"
@@ -71,51 +70,51 @@ msgstr "Pateiktys"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr "Pateikčių biblioteka"
+msgstr ""
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr "Pateiktis \"%s\" sėkmingai importuota"
+msgstr ""
 
-msgid "Delivery \'%s\' not found"
+msgid "Delivery \\'%s\\' not found"
 msgstr ""
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr "Šios pateikties klasės uri nėra teisinga pateikties klasė."
+msgstr ""
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr "Pateiktis yra paskirta %s testo laikytojams."
+msgstr ""
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr "Pateiktis nėra paskirtam jokiam testo laikytojui."
+msgstr ""
 
 msgid "Delivery saved"
-msgstr "Pateiktis išsaugota"
+msgstr ""
 
 msgid "Delivery with label \"%s\" not found"
-msgstr "Pateiktis su pavadinimu \"%s\" nerasta"
+msgstr ""
 
-msgid "Directory %s doesn\'t exist"
+msgid "Directory %s doesn\\'t exist"
 msgstr ""
 
 msgid "Error"
-msgstr "Klaida"
+msgstr ""
 
 msgid "Excluded test-takers"
-msgstr "Neįtraukti testo laikytojai."
+msgstr ""
 
 msgid "Exported %1$s to %2$s"
-msgstr "Eksportuoti %1$s į %2$s"
+msgstr ""
 
 msgid "Exporting %s"
-msgstr "Eksportuojama %s"
+msgstr ""
 
 msgid "Guest access"
-msgstr "Svečio prieiga"
+msgstr "Svečio prisijungimas"
 
 msgid "Import QTI test and create delivery."
 msgstr ""
 
-msgid "Importing %1$s files into \'%2$s\"
+msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr ""
 
 msgid "Last updated on:"
@@ -143,31 +142,31 @@ msgstr "Nauja klasė"
 
 #, tao-public
 msgid "New delivery"
-msgstr "Nauja pateiktis"
+msgstr ""
 
 msgid "No attempt has been started yet."
-msgstr "Laikymas nebuvo pradėtas."
+msgstr ""
 
 msgid "No information available about attempts"
 msgstr ""
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr "Paruošk, paskelbk pateikčių sesijas."
+msgstr ""
 
 #, tao-public
 msgid "Properties"
-msgstr "Savybės"
+msgstr ""
 
 #, tao-public
 msgid "Publish"
 msgstr "Paskelbti"
 
 msgid "Publish \"%s\" to"
-msgstr "Paskelbti \"%s\" į"
+msgstr ""
 
 msgid "Publish the test"
-msgstr "Paskelbti testą"
+msgstr ""
 
 msgid "Published on:"
 msgstr ""
@@ -179,22 +178,22 @@ msgid "Save"
 msgstr "Išsaugoti"
 
 msgid "Select the test"
-msgstr "Pasirinkti testą"
+msgstr ""
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr "Pasirink testą, kurį norite paskelbti testo laikytojams."
+msgstr ""
 
 msgid "Selection saved successfully"
-msgstr "Pasirinkimas sėkmingai išsaugotas"
+msgstr ""
 
 msgid "TAO Guest"
-msgstr "TAO Svečias"
+msgstr ""
 
 msgid "TAO Guest Access"
-msgstr "TAO Svečio Prieiga"
+msgstr "TAO Svečio prisijungimas"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr "Testo paskelbimas nepavyko, nes \"%s\" yra tuščias."
+msgstr ""
 
 msgid "Test-takers"
 msgstr "Testo laikytojai"
@@ -207,26 +206,26 @@ msgid "The test \"%s\" does not contain any items and cannot be published."
 msgstr ""
 
 msgid "There are currently %s attempts"
-msgstr "Šiuo metu yra %s bandymai"
+msgstr ""
 
 msgid "There are currently no tests available to publish."
-msgstr "Šiuo metu nėra jokių galimų testų paskelbimui."
+msgstr ""
 
 msgid "There is currently 1 attempt"
-msgstr "Šiuo metu yra 1 bandymas"
+msgstr ""
 
 msgid "Unable to import Archive"
-msgstr "Nepavyko importuoti Archyvo"
+msgstr ""
 
 msgid "Unable to load tests"
-msgstr "Nepavyko įkelti testų"
+msgstr ""
 
 msgid "unlimited"
-msgstr "neribota"
+msgstr ""
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr "Naudojimas: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr ""
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr "Naudojimas: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr ""
 
