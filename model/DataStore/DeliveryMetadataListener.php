@@ -38,7 +38,7 @@ class DeliveryMetadataListener extends ConfigurableService
 
     public const SERVICE_ID = 'taoDeliveryRdf/DeliveryMetadataListener';
 
-    public const OPTION_MAX_TRIES = 'max_tries';
+    public const FILE_SYSTEM_ID = 'dataStore';
 
     public function whenDeliveryIsPublished(Event $event): void
     {
@@ -49,12 +49,20 @@ class DeliveryMetadataListener extends ConfigurableService
         try {
             $this->logDebug(sprintf('Processing MetaData event for %s', get_class($event)));
             $this->checkEventType($event);
-            $params['deliveryId'] = $event->getDeliveryUri();
-            $params[self::OPTION_MAX_TRIES] = $this->getOption(self::OPTION_MAX_TRIES, 10);
-            $this->triggerSyncTask($params);
+            $this->triggerSyncTask([
+                MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME => $event->getDeliveryUri(),
+                MetaDataDeliverySyncTask::INCLUDE_METADATA_PARAM_NAME => true,
+                MetaDataDeliverySyncTask::MAX_TRIES_PARAM_NAME => $this->getOption('max_tries', 10),
+                MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME => self::FILE_SYSTEM_ID,
+                MetaDataDeliverySyncTask::IS_REMOVE_PARAM_NAME => false,
+            ]);
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
         } catch (Throwable $exception) {
-            $this->logError(sprintf('Error processing event %s: %s', get_class($event), $exception->getMessage()));
+            $this->logError(sprintf(
+                'Error processing event %s: %s',
+                get_class($event),
+                $exception->getMessage()
+            ));
         }
     }
 
@@ -72,7 +80,11 @@ class DeliveryMetadataListener extends ConfigurableService
     private function checkEventType(Event $event): void
     {
         if (!$event instanceof AbstractDeliveryEvent) {
-            throw new RuntimeException($event);
+            throw new RuntimeException(sprintf(
+                "Wrong event type. Required instance of %s, %s given",
+                AbstractDeliveryEvent::class,
+                get_class($event)
+            ));
         }
     }
 
@@ -83,7 +95,10 @@ class DeliveryMetadataListener extends ConfigurableService
         $queueDispatcher->createTask(
             new MetaDataDeliverySyncTask(),
             $params,
-            __('Continue try to sync metadata of delivery "%s".', $params['deliveryId'])
+            __(
+                'Syncing data of a delivery "%s".',
+                $params[MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME]
+            )
         );
     }
 

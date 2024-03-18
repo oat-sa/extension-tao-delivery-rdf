@@ -44,6 +44,13 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
 {
     use OntologyAwareTrait;
 
+    public const INCLUDE_METADATA_PARAM_NAME = 'includeMetadata';
+    public const DELIVERY_OR_TEST_ID_PARAM_NAME = 'deliveryOrTestId';
+    public const FILE_SYSTEM_ID_PARAM_NAME = 'fileSystemId';
+    public const TEST_URI_PARAM_NAME = 'testUri';
+    public const MAX_TRIES_PARAM_NAME = 'maxTries';
+    public const IS_REMOVE_PARAM_NAME = 'isRemove';
+
     /**
      * @throws InvalidServiceManagerException
      * @throws common_exception_Error
@@ -51,23 +58,34 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
      */
     public function __invoke($params)
     {
-        $params = $this->prepareData($params);
+        if ($params[self::INCLUDE_METADATA_PARAM_NAME]) {
+            $params = $this->prepareData($params);
+        }
+
         $report = new Report(Report::TYPE_SUCCESS);
 
-        if ($params['count'] < $params[DeliveryMetadataListener::OPTION_MAX_TRIES]) {
+        $params['count'] = $params['count'] ?? 0;
+        if ($params['count'] < $params[self::MAX_TRIES_PARAM_NAME]) {
             $params['count']++;
             try {
-                $this->getPersistDataService()->persist($params);
-                $report->setMessage('Success MetaData syncing for delivery: ' . $params['deliveryId']);
+                if ($params[self::IS_REMOVE_PARAM_NAME]) {
+                    $this->getPersistDataService()->remove($params);
+                } else {
+                    $this->getPersistDataService()->persist($params);
+                }
+                $report->setMessage(sprintf(
+                    'Success MetaData syncing for delivery: %s',
+                    $params[self::DELIVERY_OR_TEST_ID_PARAM_NAME])
+                );
             } catch (Throwable $exception) {
                 $this->logError(sprintf(
                     'Failing MetaData syncing for delivery: %s with message: %s',
-                    $params['deliveryId'],
+                    $params[self::DELIVERY_OR_TEST_ID_PARAM_NAME],
                     $exception->getMessage()
                 ));
 
                 $report->setType(Report::TYPE_ERROR);
-                $report->setMessage('Failing MetaData syncing for delivery: ' . $params['deliveryId']);
+                $report->setMessage($exception->getMessage());
                 $this->requeueTask($params);
             }
         }
@@ -99,7 +117,11 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         $queueDispatcher->createTask(
             $this,
             $params,
-            __('DataStore sync retry for delivery "%s".', $params['deliveryId'])
+            __(
+                'DataStore sync retry number "%s" for test of delivery with id: "%s".',
+                $params['count'],
+                $params[self::DELIVERY_OR_TEST_ID_PARAM_NAME]
+            )
         );
     }
 
@@ -114,11 +136,10 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
      */
     private function prepareData($params)
     {
-        $params['count'] = $params['count'] ?? 0;
         if (!isset($params['deliveryMetaData'], $params['testMetaData'], $params['testUri'], $params['itemMetaData'])) {
             $compiler = $this->getMetaDataCompiler();
             //DeliveryMetaData
-            $deliveryResource = $this->getResource($params['deliveryId']);
+            $deliveryResource = $this->getResource($params[self::DELIVERY_OR_TEST_ID_PARAM_NAME]);
             $params['deliveryMetaData'] = $this->getResourceJsonMetadataCompiler()->compile($deliveryResource);
             //test MetaData
             $test = $this->getTest($deliveryResource);

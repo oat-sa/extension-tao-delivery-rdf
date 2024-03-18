@@ -36,7 +36,6 @@ use Throwable;
 
 class PersistDataService extends ConfigurableService
 {
-    private const DATA_STORE = 'dataStore';
     private const PACKAGE_FILENAME = 'QTIPackage';
     private const ZIP_EXTENSION = '.zip';
     public const  OPTION_EXPORTER_SERVICE = 'exporter_service';
@@ -49,22 +48,46 @@ class PersistDataService extends ConfigurableService
      */
     public function persist(array $params): void
     {
-        $this->persistArchive($params['deliveryId'], $params);
+        $this->persistArchive($params[MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME], $params);
+    }
+
+    /**
+     * @throws common_exception_NotFound
+     * @throws common_exception_Error
+     */
+    public function remove(array $params): void
+    {
+        $this->removeArchive(
+            $params[MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME],
+            $params[MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME],
+        );
     }
 
     /**
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function getDataStoreFilesystem(): FileSystem
+    private function getDataStoreFilesystem(string $fileSystemId): FileSystem
     {
-        return $this->getFileSystemManager()->getFileSystem(self::DATA_STORE);
+        return $this->getFileSystemManager()->getFileSystem($fileSystemId);
     }
 
-
-    private function getFolderName(string $deliveryId): string
+    private function getFolderName(string $deliveryOrTestId): string
     {
-        return tao_helpers_Uri::encode($deliveryId);
+        return tao_helpers_Uri::encode($deliveryOrTestId);
+    }
+
+    /**
+     * @throws common_exception_Error
+     * @throws common_exception_NotFound
+     */
+    private function removeArchive(string $deliveryOrTestId, string $fileSystemId): void
+    {
+        $zipFileName = $this->getZipFileName($deliveryOrTestId);
+
+        if ($this->getDataStoreFilesystem($fileSystemId)->has($zipFileName)) {
+            $this->getDataStoreFilesystem($fileSystemId)->deleteDir($this->getZipFileDirectory($deliveryOrTestId));
+        }
     }
 
     /**
@@ -73,7 +96,7 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function persistArchive(string $deliveryId, array $params): void
+    private function persistArchive(string $deliveryOrTestId, array $params): void
     {
         /** @var FileHelperService $tempDir */
         $tempDir = $this->getServiceLocator()->get(FileHelperService::class);
@@ -89,7 +112,7 @@ class PersistDataService extends ConfigurableService
                 $folder
             );
 
-            $this->moveExportedZipTest($folder, $deliveryId, $params);
+            $this->moveExportedZipTest($folder, $deliveryOrTestId, $params);
         } finally {
             $tempDir->removeDirectory($folder);
         }
@@ -99,25 +122,30 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function moveExportedZipTest(string $folder, string $deliveryId, array $params): void
+    private function moveExportedZipTest(string $folder, string $deliveryOrTestId, array $params): void
     {
         $zipFiles = glob(
             sprintf('%s%s*%s', $folder, self::PACKAGE_FILENAME, self::ZIP_EXTENSION)
         );
 
+        $fileSystemId = $params[MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME];
+
         if (!empty($zipFiles)) {
             foreach ($zipFiles as $zipFile) {
-                $zipFileName = $this->getZipFileName($deliveryId);
-                $this->getProcessDataService()->process($zipFile, $params);
+                $zipFileName = $this->getZipFileName($deliveryOrTestId);
+                if ($params[MetaDataDeliverySyncTask::INCLUDE_METADATA_PARAM_NAME]) {
+                    $this->getProcessDataService()->process($zipFile, $params);
+                }
+
                 $contents = file_get_contents($zipFile);
 
-                if ($this->getDataStoreFilesystem()->has($zipFileName)) {
-                    $this->getDataStoreFilesystem()->update(
+                if ($this->getDataStoreFilesystem($fileSystemId)->has($zipFileName)) {
+                    $this->getDataStoreFilesystem($fileSystemId)->update(
                         $zipFileName,
                         $contents
                     );
                 } else {
-                    $this->getDataStoreFilesystem()->write(
+                    $this->getDataStoreFilesystem($fileSystemId)->write(
                         $zipFileName,
                         $contents
                     );
@@ -147,14 +175,23 @@ class PersistDataService extends ConfigurableService
         return $this->getServiceLocator()->get(ProcessDataService::class);
     }
 
-    private function getZipFileName(string $deliveryId): string
+    private function getZipFileName(string $deliveryOrTestId): string
     {
         return sprintf(
             '%s%s%s%s',
-            $this->getFolderName($deliveryId),
+            $this->getFolderName($deliveryOrTestId),
             DIRECTORY_SEPARATOR,
             self::PACKAGE_FILENAME,
             self::ZIP_EXTENSION
+        );
+    }
+
+    private function getZipFileDirectory(string $deliveryOrTestId): string
+    {
+        return sprintf(
+            '%s%s',
+            $this->getFolderName($deliveryOrTestId),
+            DIRECTORY_SEPARATOR,
         );
     }
 }
