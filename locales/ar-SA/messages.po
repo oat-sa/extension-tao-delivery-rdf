@@ -1,0 +1,231 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: ar\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 797\n"
+"Project-Id-Version: tao-open-source\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Arabic\n"
+"Language: ar_SA\n"
+"PO-Revision-Date: 2023-12-04 16:25\n"
+
+msgid "%s completed"
+msgstr "%s مكتمل"
+
+msgid "%s test-taker(s) are excluded."
+msgstr "يتم استبعاد %s من الخاضعين للاختبار."
+
+msgid "Access deliveries as a guest"
+msgstr "الوصول إلى عمليات التسليم كمدعو"
+
+msgid "An error occured during the import"
+msgstr "حدث خطأ خلال الاستيراد"
+
+msgid "Assembly"
+msgstr "تجميع"
+
+msgid "Assembly import"
+msgstr "استيراد التجميع"
+
+msgid "Assigned test-takers"
+msgstr "الممتحنون المعينون"
+
+msgid "Assigned to"
+msgstr "تم تعيينه إلى"
+
+msgid "Available from %s"
+msgstr "متاح من %s"
+
+msgid "Available until %s"
+msgstr "متاح حتى %s"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "Class successfully created."
+msgstr "تم إنشاء الفصل بنجاح."
+
+msgid "Continue deleting of delivery \"%s\"."
+msgstr "استمر في حذف التوصيل \"%s\"."
+
+msgid "Create a new delivery"
+msgstr "قم بإنشاء توصيل جديد"
+
+msgid "Create a test"
+msgstr "بناء رائز"
+
+#, tao-public
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Deleting of \"%s"
+msgstr "جاري حذف \"%s\""
+
+#, tao-public
+msgid "Deliveries"
+msgstr "عمليات التسليم"
+
+#, tao-public
+msgid "Deliveries library"
+msgstr "مكتبة عمليات التوصيل"
+
+msgid "Delivery \"%s\" successfully imported"
+msgstr "تم استيراد التوصيل \"%s\" بنجاح"
+
+msgid "Delivery \\'%s\\' not found"
+msgstr "لم يتم العثور على التوصيل \\'%s\\'"
+
+msgid "Delivery class uri provided is not a valid delivery class."
+msgstr "فئة التوصيل المقدمة ليست فئة توصيل صالحة."
+
+msgid "Delivery is assigned to %s test-takers."
+msgstr "يتم تعيين التوصيل إلى %s من الخاضعين للاختبار."
+
+msgid "Delivery is not assigned to any test-taker."
+msgstr "لا يتم تعيين التوصيل لأي اختبار."
+
+msgid "Delivery saved"
+msgstr "تم حفظ التوصيل"
+
+msgid "Delivery with label \"%s\" not found"
+msgstr "لم يتم العثور على التوصيل المسمى \"%s\""
+
+msgid "Directory %s doesn\\'t exist"
+msgstr "المجلد %s غير موجود"
+
+msgid "Error"
+msgstr "خطأ"
+
+msgid "Excluded test-takers"
+msgstr "المستبعدون من الخاضعين للاختبار"
+
+msgid "Exported %1$s to %2$s"
+msgstr "تم تصدير %1$s إلى %2$s"
+
+msgid "Exporting %s"
+msgstr "جارى تصدير %s"
+
+msgid "Guest access"
+msgstr "مدخل للمدعويين"
+
+msgid "Import QTI test and create delivery."
+msgstr "استيراد اختبار QTI وإنشاء التوصيل."
+
+msgid "Importing %1$s files into \\'%2$s\\'"
+msgstr "استيراد ملفات %1$s إلى \\'%2$s\\'"
+
+msgid "Last updated on:"
+msgstr "آخر تحديث في:"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr "إدارة الخطاطة"
+
+#, tao-public
+msgid "Manage tests"
+msgstr "إدارة الروائز"
+
+#, tao-public
+msgid "Move"
+msgstr "حرك"
+
+#, tao-public
+msgid "Move To"
+msgstr "حرك نحو"
+
+#, tao-public
+msgid "New class"
+msgstr "صنف جديد"
+
+#, tao-public
+msgid "New delivery"
+msgstr "توصيل جديد"
+
+msgid "No attempt has been started yet."
+msgstr "لم تبدأ أي محاولة بعد."
+
+msgid "No information available about attempts"
+msgstr "لا توجد معلومات متاحة عن المحاولات"
+
+#, tao-public
+msgid "Prepare, publish deliveries sessions."
+msgstr "إعداد جلسات التوصيل ونشرها."
+
+#, tao-public
+msgid "Properties"
+msgstr "خصائص"
+
+#, tao-public
+msgid "Publish"
+msgstr "نشر"
+
+msgid "Publish \"%s\" to"
+msgstr "نشر \"%s\" إلى"
+
+msgid "Publish the test"
+msgstr "انشر الاختبار"
+
+msgid "Published on:"
+msgstr "تم النشر في:"
+
+msgid "Publishing of <b>%s</b>"
+msgstr "جاري نشر <b>%s</b>"
+
+msgid "Save"
+msgstr "حفظ"
+
+msgid "Select the test"
+msgstr "اختر الرائز"
+
+msgid "Select the test you want to publish to the test-takers"
+msgstr "اختر الاختبار الذي تريد نشره للممتحنين"
+
+msgid "Selection saved successfully"
+msgstr "تم حفظ الاختيار بنجاح"
+
+msgid "TAO Guest"
+msgstr "ضيف TAO"
+
+msgid "TAO Guest Access"
+msgstr "وصول مدعو TAO"
+
+msgid "Test publishing failed because \"%s\" is empty."
+msgstr "فشل نشر الاختبار لأن \"%s\" فارغ."
+
+msgid "Test-takers"
+msgstr "الخاضعون للاختبار"
+
+#, tao-public
+msgid "Tests"
+msgstr "روائز"
+
+msgid "The test \"%s\" does not contain any items and cannot be published."
+msgstr "لا يحتوي الاختبار \"%s\" على أي بنود ولا يمكن نشره."
+
+msgid "There are currently %s attempts"
+msgstr "هناك حاليا %s من المحاولات"
+
+msgid "There are currently no tests available to publish."
+msgstr "لا توجد حاليا اختبارات متاحة للنشر."
+
+msgid "There is currently 1 attempt"
+msgstr "هناك حاليا محاولة واحدة"
+
+msgid "Unable to import Archive"
+msgstr "غير قادر على استيراد الأرشيف"
+
+msgid "Unable to load tests"
+msgstr "غير قادر على تحميل الاختبارات"
+
+msgid "unlimited"
+msgstr "لا محدود"
+
+msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr "الاستعمال: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+
+msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr "الاستعمال: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+
