@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
-"PO-Revision-Date: 2023-06-13 14:12\n"
+"PO-Revision-Date: 2024-03-18 17:53\n"
 
 msgid "%s completed"
 msgstr "%s effectué"
@@ -200,7 +200,7 @@ msgstr "Participants"
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "Tests"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
 msgstr ""
