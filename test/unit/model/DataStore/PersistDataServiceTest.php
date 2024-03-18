@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\test\unit\model\DataStore;
 
 use oat\generis\test\ServiceManagerMockTrait;
+use oat\taoDeliveryRdf\model\DataStore\MetaDataDeliverySyncTask;
 use PHPUnit\Framework\TestCase;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
@@ -80,12 +81,13 @@ class PersistDataServiceTest extends TestCase
         return [
             [
                 [
-                    'deliveryId' => 'bogus',
+                    MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME => 'bogus',
                     'testUri' => 'testBogus',
                     'deliveryMetaData' => [],
                     'testMetaData' => [],
                     'itemMetaData' => [],
-
+                    MetaDataDeliverySyncTask::IS_REMOVE_PARAM_NAME => false,
+                    MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME => 'dataStore',
                 ], ''
             ]
         ];

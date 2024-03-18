@@ -31,6 +31,7 @@ use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
 use oat\tao\model\taskQueue\QueueDispatcher;
+use oat\taoDeliveryRdf\model\DataStore\DeliveryMetadataListener;
 use oat\taoDeliveryRdf\model\DataStore\MetaDataDeliverySyncTask;
 use oat\taoDeliveryRdf\model\DataStore\PersistDataService;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
@@ -118,8 +119,11 @@ class MetaDataDeliverySyncTaskTest extends TestCase
         );
 
         $param = [
-            'deliveryId' => $mockDelivery->getUri(),
-            'max_tries' => 1,
+            MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME => $mockDelivery->getUri(),
+            MetaDataDeliverySyncTask::MAX_TRIES_PARAM_NAME => 1,
+            MetaDataDeliverySyncTask::INCLUDE_METADATA_PARAM_NAME => true,
+            MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME => DeliveryMetadataListener::FILE_SYSTEM_ID,
+            MetaDataDeliverySyncTask::IS_REMOVE_PARAM_NAME => false,
             'count' => 0
         ];
         $subject = $this->subject;
