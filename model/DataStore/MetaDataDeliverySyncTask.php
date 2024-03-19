@@ -75,8 +75,8 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
                 }
                 $report->setMessage(sprintf(
                     'Success MetaData syncing for delivery: %s',
-                    $params[self::DELIVERY_OR_TEST_ID_PARAM_NAME])
-                );
+                    $params[self::DELIVERY_OR_TEST_ID_PARAM_NAME]
+                ));
             } catch (Throwable $exception) {
                 $this->logError(sprintf(
                     'Failing MetaData syncing for delivery: %s with message: %s',
