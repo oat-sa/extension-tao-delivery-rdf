@@ -178,9 +178,8 @@ class PersistDataService extends ConfigurableService
     private function getZipFileName(string $deliveryOrTestId): string
     {
         return sprintf(
-            '%s%s%s%s',
-            $this->getFolderName($deliveryOrTestId),
-            DIRECTORY_SEPARATOR,
+            '%s%s%s',
+            $this->getZipFileDirectory($deliveryOrTestId),
             self::PACKAGE_FILENAME,
             self::ZIP_EXTENSION
         );
