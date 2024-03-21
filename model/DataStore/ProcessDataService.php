@@ -27,9 +27,12 @@ use ZipArchive;
 
 class ProcessDataService extends ConfigurableService
 {
-    private const DELIVERY_META_DATA_JSON = 'deliveryMetaData.json';
-    private const TEST_META_DATA_JSON = 'testMetaData.json';
-    private const ITEM_META_DATA_JSON = 'itemMetaData.json';
+    private const METADATA_MAP = [
+        'deliveryMetaData',
+        'testMetaData',
+        'itemMetaData',
+    ];
+
     public const  OPTION_ZIP_ARCHIVE_SERVICE = 'zipArchive';
 
     public function process(string $zipFile, array $metaData): void
@@ -38,9 +41,11 @@ class ProcessDataService extends ConfigurableService
 
         $zipArchive->open($zipFile);
 
-        $this->saveMetaData($zipArchive, self::DELIVERY_META_DATA_JSON, json_encode($metaData['deliveryMetaData']));
-        $this->saveMetaData($zipArchive, self::TEST_META_DATA_JSON, json_encode($metaData['testMetaData']));
-        $this->saveMetaData($zipArchive, self::ITEM_META_DATA_JSON, json_encode($metaData['itemMetaData']));
+        foreach (self::METADATA_MAP as $metadataName) {
+            if (!empty($metaData[$metadataName])) {
+                $this->saveMetaData($zipArchive, $metadataName . '.json', json_encode($metaData[$metadataName]));
+            }
+        }
 
         $zipArchive->close();
     }
