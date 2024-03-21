@@ -121,7 +121,7 @@ class MetaDataDeliverySyncTaskTest extends TestCase
         $param = [
             MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME => $mockDelivery->getUri(),
             MetaDataDeliverySyncTask::MAX_TRIES_PARAM_NAME => 1,
-            MetaDataDeliverySyncTask::INCLUDE_METADATA_PARAM_NAME => true,
+            MetaDataDeliverySyncTask::INCLUDE_DELIVERY_METADATA_PARAM_NAME => true,
             MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME => DeliveryMetadataListener::FILE_SYSTEM_ID,
             MetaDataDeliverySyncTask::IS_REMOVE_PARAM_NAME => false,
             'count' => 0

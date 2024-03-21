@@ -44,7 +44,7 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
 {
     use OntologyAwareTrait;
 
-    public const INCLUDE_METADATA_PARAM_NAME = 'includeMetadata';
+    public const INCLUDE_DELIVERY_METADATA_PARAM_NAME = 'includeMetadata';
     public const DELIVERY_OR_TEST_ID_PARAM_NAME = 'deliveryOrTestId';
     public const FILE_SYSTEM_ID_PARAM_NAME = 'fileSystemId';
     public const TEST_URI_PARAM_NAME = 'testUri';
@@ -58,8 +58,8 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
      */
     public function __invoke($params)
     {
-        if ($params[self::INCLUDE_METADATA_PARAM_NAME]) {
-            $params = $this->prepareData($params);
+        if (!$params[self::IS_REMOVE_PARAM_NAME]) {
+            $params = $this->prepareMetaData($params);
         }
 
         $report = new Report(Report::TYPE_SUCCESS);
@@ -130,24 +130,20 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         return $this->getServiceLocator()->get(PersistDataService::class);
     }
 
-    /**
-     * @throws common_exception_Error
-     * @throws core_kernel_persistence_Exception
-     */
-    private function prepareData($params)
+    private function prepareMetaData($params)
     {
-        if (!isset($params['deliveryMetaData'], $params['testMetaData'], $params['testUri'], $params['itemMetaData'])) {
-            $compiler = $this->getMetaDataCompiler();
+        $compiler = $this->getMetaDataCompiler();
+        if ($params[self::INCLUDE_DELIVERY_METADATA_PARAM_NAME]) {
             //DeliveryMetaData
             $deliveryResource = $this->getResource($params[self::DELIVERY_OR_TEST_ID_PARAM_NAME]);
             $params['deliveryMetaData'] = $this->getResourceJsonMetadataCompiler()->compile($deliveryResource);
-            //test MetaData
-            $test = $this->getTest($deliveryResource);
-            $params['testUri'] = $this->getTestUri($deliveryResource);
-            $params['testMetaData'] = $compiler->compile($test);
-            //Item MetaData
-            $params['itemMetaData'] = $this->getItemMetaData($test, $compiler);
+            $params[self::TEST_URI_PARAM_NAME] = $this->getTestUri($deliveryResource);
         }
+        //test MetaData
+        $test = $this->getResource($params[self::TEST_URI_PARAM_NAME]);
+        $params['testMetaData'] = $compiler->compile($test);
+        //Item MetaData
+        $params['itemMetaData'] = $this->getItemMetaData($test, $compiler);
 
         return $params;
     }

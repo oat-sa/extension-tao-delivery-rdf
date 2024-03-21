@@ -51,7 +51,7 @@ class DeliveryMetadataListener extends ConfigurableService
             $this->checkEventType($event);
             $this->triggerSyncTask([
                 MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME => $event->getDeliveryUri(),
-                MetaDataDeliverySyncTask::INCLUDE_METADATA_PARAM_NAME => true,
+                MetaDataDeliverySyncTask::INCLUDE_DELIVERY_METADATA_PARAM_NAME => true,
                 MetaDataDeliverySyncTask::MAX_TRIES_PARAM_NAME => $this->getOption('max_tries', 10),
                 MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME => self::FILE_SYSTEM_ID,
                 MetaDataDeliverySyncTask::IS_REMOVE_PARAM_NAME => false,

@@ -133,9 +133,7 @@ class PersistDataService extends ConfigurableService
         if (!empty($zipFiles)) {
             foreach ($zipFiles as $zipFile) {
                 $zipFileName = $this->getZipFileName($deliveryOrTestId);
-                if ($params[MetaDataDeliverySyncTask::INCLUDE_METADATA_PARAM_NAME]) {
-                    $this->getProcessDataService()->process($zipFile, $params);
-                }
+                $this->getProcessDataService()->process($zipFile, $params);
 
                 $contents = file_get_contents($zipFile);
 
