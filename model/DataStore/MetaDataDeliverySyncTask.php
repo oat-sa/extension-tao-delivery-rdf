@@ -50,7 +50,8 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
     public const TEST_URI_PARAM_NAME = 'testUri';
     public const MAX_TRIES_PARAM_NAME = 'maxTries';
     public const IS_REMOVE_PARAM_NAME = 'isRemove';
-    public const FIRST_TENANT_ID = 'firstTenantId';
+    public const TENANT_ID_PARAM_NAME = 'tenantId';
+    public const FIRST_TENANT_ID_PARAM_NAME = 'firstTenantId';
 
     /**
      * @throws InvalidServiceManagerException
@@ -139,11 +140,12 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
             $deliveryResource = $this->getResource($params[self::DELIVERY_OR_TEST_ID_PARAM_NAME]);
             $params['deliveryMetaData'] = $this->getResourceJsonMetadataCompiler()->compile($deliveryResource);
             $params[self::TEST_URI_PARAM_NAME] = $this->getTestUri($deliveryResource);
+            $params[self::TENANT_ID_PARAM_NAME] = $params['deliveryMetaData']['tenant-id'] ?? null;
         }
         //test MetaData
         $test = $this->getResource($params[self::TEST_URI_PARAM_NAME]);
         $params['testMetaData'] = $compiler->compile($test);
-        $params['testMetaData']['first-tenant-id'] = $params[self::FIRST_TENANT_ID] ?? null;
+        $params['testMetaData']['first-tenant-id'] = $params[self::FIRST_TENANT_ID_PARAM_NAME] ?? null;
 
         //Item MetaData
         $params['itemMetaData'] = $this->getItemMetaData($test, $compiler);

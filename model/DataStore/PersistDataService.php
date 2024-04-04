@@ -60,6 +60,7 @@ class PersistDataService extends ConfigurableService
         $this->removeArchive(
             $params[MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME],
             $params[MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME],
+            $this->getTenantId($params),
         );
     }
 
@@ -81,12 +82,14 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function removeArchive(string $deliveryOrTestId, string $fileSystemId): void
+    private function removeArchive(string $deliveryOrTestId, string $fileSystemId, string $tenantId): void
     {
-        $zipFileName = $this->getZipFileName($deliveryOrTestId);
+        $zipFileName = $this->getZipFileName($deliveryOrTestId, $tenantId);
 
         if ($this->getDataStoreFilesystem($fileSystemId)->has($zipFileName)) {
-            $this->getDataStoreFilesystem($fileSystemId)->deleteDir($this->getZipFileDirectory($deliveryOrTestId));
+            $this->getDataStoreFilesystem($fileSystemId)->deleteDir(
+                $this->getZipFileDirectory($deliveryOrTestId, $tenantId)
+            );
         }
     }
 
@@ -132,7 +135,7 @@ class PersistDataService extends ConfigurableService
 
         if (!empty($zipFiles)) {
             foreach ($zipFiles as $zipFile) {
-                $zipFileName = $this->getZipFileName($deliveryOrTestId);
+                $zipFileName = $this->getZipFileName($deliveryOrTestId, $this->getTenantId($params));
                 $this->getProcessDataService()->process($zipFile, $params);
 
                 $contents = file_get_contents($zipFile);
@@ -150,6 +153,19 @@ class PersistDataService extends ConfigurableService
                 }
             }
         }
+    }
+
+    private function getTenantId(array $params): string
+    {
+        if (!empty($params[MetaDataDeliverySyncTask::TENANT_ID_PARAM_NAME])) {
+            return $params[MetaDataDeliverySyncTask::TENANT_ID_PARAM_NAME];
+        }
+
+        if (!empty($params[MetaDataDeliverySyncTask::FIRST_TENANT_ID_PARAM_NAME])) {
+            return $params[MetaDataDeliverySyncTask::FIRST_TENANT_ID_PARAM_NAME];
+        }
+
+        return "";
     }
 
     private function getTestExporter(): ExporterInterface
@@ -173,21 +189,22 @@ class PersistDataService extends ConfigurableService
         return $this->getServiceLocator()->get(ProcessDataService::class);
     }
 
-    private function getZipFileName(string $deliveryOrTestId): string
+    private function getZipFileName(string $deliveryOrTestId, string $tenantId): string
     {
         return sprintf(
             '%s%s%s',
-            $this->getZipFileDirectory($deliveryOrTestId),
+            $this->getZipFileDirectory($deliveryOrTestId, $tenantId),
             self::PACKAGE_FILENAME,
             self::ZIP_EXTENSION
         );
     }
 
-    private function getZipFileDirectory(string $deliveryOrTestId): string
+    private function getZipFileDirectory(string $deliveryOrTestId, string $tenantId): string
     {
         return sprintf(
-            '%s%s',
+            '%s-%s%s',
             $this->getFolderName($deliveryOrTestId),
+            $tenantId,
             DIRECTORY_SEPARATOR,
         );
     }
