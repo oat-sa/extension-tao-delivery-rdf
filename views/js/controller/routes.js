@@ -34,6 +34,11 @@ define(function(){
             'actions' : {
                 'index' : 'controller/Publish/index'
             }
+        },
+        'Usage': {
+            'actions' : {
+                'index' : 'controller/Usage/index'
+            }
         }
     };
 });
