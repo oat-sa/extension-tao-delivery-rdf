@@ -28,8 +28,8 @@ use oat\tao\model\datatable\implementation\DatatableRequest;
  * Class Usage
  * @package oat\taoDeliveryRdf\controller
  */
-class Usage extends \tao_actions_CommonModule {
-
+class Usage extends \tao_actions_CommonModule
+{
     public function index()
     {
         $this->setView('Usage/index.tpl');
