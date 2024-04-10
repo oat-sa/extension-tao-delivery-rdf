@@ -1,47 +1,46 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint107\n"
-"PO-Revision-Date: 2020-07-17T08:37:23\n"
-"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
-"MIME-Version: 1.0\n"
-"Language: fr-FR\n"
-"sourceLanguage: en-US\n"
-"targetLanguage: fr-FR\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
-"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 797\n"
+"Project-Id-Version: tao-open-source\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"PO-Revision-Date: 2023-06-13 14:12\n"
 
 msgid "%s completed"
-msgstr "%s complété"
+msgstr "%s effectué"
 
 msgid "%s test-taker(s) are excluded."
-msgstr "%s participants sont exclus."
+msgstr ""
 
 msgid "Access deliveries as a guest"
-msgstr "Accéder aux passations en tant qu'invité"
+msgstr "Accès invité pour les passations"
 
 msgid "An error occured during the import"
-msgstr "Une erreur s'est produite au cours de l'importation."
+msgstr ""
 
 msgid "Assembly"
-msgstr "Assemblée"
+msgstr ""
 
 msgid "Assembly import"
-msgstr "Import de l'assemblée"
+msgstr ""
 
 msgid "Assigned test-takers"
-msgstr "Participants assignés"
+msgstr ""
 
 msgid "Assigned to"
-msgstr "Assigné à "
+msgstr ""
 
 msgid "Available from %s"
-msgstr "Disponible depuis %s"
+msgstr ""
 
 msgid "Available until %s"
-msgstr "Disponible jusqu'à %s"
+msgstr ""
 
 msgid "Cancel"
 msgstr "Annuler"
@@ -53,17 +52,17 @@ msgid "Continue deleting of delivery \"%s\"."
 msgstr ""
 
 msgid "Create a new delivery"
-msgstr "Créer une nouvelle passation"
+msgstr ""
 
 msgid "Create a test"
-msgstr "Créer un test"
+msgstr ""
 
 #, tao-public
 msgid "Delete"
 msgstr "Supprimer"
 
 msgid "Deleting of \"%s"
-msgstr "Suppression de \"%s"
+msgstr ""
 
 #, tao-public
 msgid "Deliveries"
@@ -71,51 +70,51 @@ msgstr "Passations"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr "Bibliothèque de passations"
+msgstr ""
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr "Passation \"%s\" importée avec succès"
+msgstr ""
 
-msgid "Delivery \'%s\' not found"
+msgid "Delivery \\'%s\\' not found"
 msgstr ""
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr "L'URI de classe de passations fourni n'est pas une classe de passations valide."
+msgstr ""
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr "La passation est assignée à %s participants."
+msgstr ""
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr "La passation n'est pas assignée à un participant."
+msgstr ""
 
 msgid "Delivery saved"
-msgstr "Passation enregistrée."
+msgstr ""
 
 msgid "Delivery with label \"%s\" not found"
-msgstr "Passation de test avec l'étiquette \"%s\" non trouvée"
+msgstr ""
 
-msgid "Directory %s doesn\'t exist"
+msgid "Directory %s doesn\\'t exist"
 msgstr ""
 
 msgid "Error"
-msgstr "Erreur"
+msgstr ""
 
 msgid "Excluded test-takers"
-msgstr "Participants exclus"
+msgstr ""
 
 msgid "Exported %1$s to %2$s"
-msgstr "Exporter %1$s vers %2$s"
+msgstr ""
 
 msgid "Exporting %s"
-msgstr "Exportation de %s"
+msgstr ""
 
 msgid "Guest access"
-msgstr "Accès visiteur"
+msgstr "Accès invité"
 
 msgid "Import QTI test and create delivery."
 msgstr ""
 
-msgid "Importing %1$s files into \'%2$s\"
+msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr ""
 
 msgid "Last updated on:"
@@ -127,7 +126,7 @@ msgstr "Gérer le schéma"
 
 #, tao-public
 msgid "Manage tests"
-msgstr "Gérer les tests"
+msgstr "Gestion des tests"
 
 #, tao-public
 msgid "Move"
@@ -143,90 +142,90 @@ msgstr "Nouvelle classe"
 
 #, tao-public
 msgid "New delivery"
-msgstr "Nouvelle passation"
+msgstr ""
 
 msgid "No attempt has been started yet."
-msgstr "Aucune tentative n'a déjà commencé."
+msgstr ""
 
 msgid "No information available about attempts"
 msgstr ""
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr "Préparer et publier des passations."
+msgstr ""
 
 #, tao-public
 msgid "Properties"
-msgstr "Propriétés"
+msgstr ""
 
 #, tao-public
 msgid "Publish"
 msgstr "Publier"
 
 msgid "Publish \"%s\" to"
-msgstr "Publier \"%s\" vers"
+msgstr ""
 
 msgid "Publish the test"
-msgstr "Publier le test"
+msgstr ""
 
 msgid "Published on:"
 msgstr ""
 
 msgid "Publishing of <b>%s</b>"
-msgstr "Publication de <b>%s</b>"
+msgstr ""
 
 msgid "Save"
 msgstr "Enregistrer"
 
 msgid "Select the test"
-msgstr "Sélectionner le test"
+msgstr ""
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr "Sélectionnez le test que vous voulez publier aux participants"
+msgstr ""
 
 msgid "Selection saved successfully"
-msgstr "Sélection enregistrée avec succès"
+msgstr ""
 
 msgid "TAO Guest"
-msgstr "Invité TAO"
+msgstr ""
 
 msgid "TAO Guest Access"
-msgstr "Accès invité TAO"
+msgstr "Accès invité pour TAO"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr "La publication du test a échoué parce que \"%s\" est vide."
+msgstr ""
 
 msgid "Test-takers"
 msgstr "Participants"
 
 #, tao-public
 msgid "Tests"
-msgstr "Tests"
+msgstr ""
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
 msgstr ""
 
 msgid "There are currently %s attempts"
-msgstr "Il y a actuellement %s tentatives"
+msgstr ""
 
 msgid "There are currently no tests available to publish."
-msgstr "Il n'y a actuellement aucun test disponible pour publication."
+msgstr ""
 
 msgid "There is currently 1 attempt"
-msgstr "Il y a actuellement une tentative."
+msgstr ""
 
 msgid "Unable to import Archive"
-msgstr "Échec de l'import de l'archive"
+msgstr ""
 
 msgid "Unable to load tests"
-msgstr "Impossible de charger les tests"
+msgstr ""
 
 msgid "unlimited"
-msgstr "illimité"
+msgstr ""
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr "Utilisation : %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr ""
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr "Utilisation : %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr ""
 

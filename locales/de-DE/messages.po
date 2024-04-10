@@ -1,17 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint107\n"
-"PO-Revision-Date: 2020-07-17T08:37:23\n"
-"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
-"MIME-Version: 1.0\n"
-"Language: de-DE\n"
-"sourceLanguage: en-US\n"
-"targetLanguage: de-DE\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
-"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 797\n"
+"Project-Id-Version: tao-open-source\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"PO-Revision-Date: 2023-06-13 14:12\n"
 
 msgid "%s completed"
 msgstr ""
@@ -20,7 +19,7 @@ msgid "%s test-taker(s) are excluded."
 msgstr ""
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "auf Bereitstellungen als Gast zugreifen"
 
 msgid "An error occured during the import"
 msgstr ""
@@ -44,7 +43,7 @@ msgid "Available until %s"
 msgstr ""
 
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 msgid "Class successfully created."
 msgstr ""
@@ -76,7 +75,7 @@ msgstr ""
 msgid "Delivery \"%s\" successfully imported"
 msgstr ""
 
-msgid "Delivery \'%s\' not found"
+msgid "Delivery \\'%s\\' not found"
 msgstr ""
 
 msgid "Delivery class uri provided is not a valid delivery class."
@@ -94,7 +93,7 @@ msgstr ""
 msgid "Delivery with label \"%s\" not found"
 msgstr ""
 
-msgid "Directory %s doesn\'t exist"
+msgid "Directory %s doesn\\'t exist"
 msgstr ""
 
 msgid "Error"
@@ -110,12 +109,12 @@ msgid "Exporting %s"
 msgstr ""
 
 msgid "Guest access"
-msgstr ""
+msgstr "Gastzugang"
 
 msgid "Import QTI test and create delivery."
 msgstr ""
 
-msgid "Importing %1$s files into \'%2$s\"
+msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr ""
 
 msgid "Last updated on:"
@@ -127,11 +126,11 @@ msgstr ""
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "Tests verwalten"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Verschieben"
 
 #, tao-public
 msgid "Move To"
@@ -139,7 +138,7 @@ msgstr ""
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Neue Klasse"
 
 #, tao-public
 msgid "New delivery"
@@ -161,7 +160,7 @@ msgstr ""
 
 #, tao-public
 msgid "Publish"
-msgstr ""
+msgstr "Veröffentlichen"
 
 msgid "Publish \"%s\" to"
 msgstr ""
@@ -191,13 +190,13 @@ msgid "TAO Guest"
 msgstr ""
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "TAO Gastzugang"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr ""
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Testteilnehmer"
 
 #, tao-public
 msgid "Tests"

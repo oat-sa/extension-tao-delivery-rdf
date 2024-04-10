@@ -1,47 +1,46 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2021.10\n"
-"PO-Revision-Date: 2021-10-22T09:39:50\n"
-"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
-"MIME-Version: 1.0\n"
-"Language: nb-NO\n"
-"sourceLanguage: en-US\n"
-"targetLanguage: nb-NO\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
-"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: nb\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 797\n"
+"Project-Id-Version: tao-open-source\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Norwegian Bokmal\n"
+"Language: nb_NO\n"
+"PO-Revision-Date: 2023-06-13 14:12\n"
 
 msgid "%s completed"
-msgstr "%s fullført"
+msgstr ""
 
 msgid "%s test-taker(s) are excluded."
-msgstr "%s elev(er) er ekskludert."
+msgstr ""
 
 msgid "Access deliveries as a guest"
-msgstr "Få tilgang til besvrelser som gjest"
+msgstr "Få tilgang til besvarelser som gjest"
 
 msgid "An error occured during the import"
-msgstr "Det oppstod en feil under importen"
+msgstr ""
 
 msgid "Assembly"
-msgstr "Samling"
+msgstr ""
 
 msgid "Assembly import"
-msgstr "Import"
+msgstr ""
 
 msgid "Assigned test-takers"
-msgstr "Påmeldte elever"
+msgstr ""
 
 msgid "Assigned to"
-msgstr "Påmeldt"
+msgstr ""
 
 msgid "Available from %s"
-msgstr "Tilgjengelig fra %s"
+msgstr ""
 
 msgid "Available until %s"
-msgstr "Tilgjengelig til %s"
+msgstr ""
 
 msgid "Cancel"
 msgstr "Avbryt"
@@ -50,82 +49,76 @@ msgid "Class successfully created."
 msgstr "Mappen ble opprettet."
 
 msgid "Continue deleting of delivery \"%s\"."
-msgstr "Fortsett å slette besvarele \"%s\"."
-
-msgid "Continue try to sync metadata of delivery \"%s\"."
-msgstr "Prøv å synkronisere metadata for oppgavesett \"%s\"."
+msgstr ""
 
 msgid "Create a new delivery"
-msgstr "Opprett et nytt oppgavesett"
+msgstr ""
 
 msgid "Create a test"
-msgstr "Opprett en prøve"
-
-msgid "DataStore sync retry for delivery \"%s\"."
-msgstr "Prøver ny DataStore-synkronisering for levering \"%s\"."
+msgstr ""
 
 #, tao-public
 msgid "Delete"
 msgstr "Slett"
 
 msgid "Deleting of \"%s"
-msgstr "Sletter \"%s"
+msgstr ""
 
 #, tao-public
 msgid "Deliveries"
-msgstr "Publiserte"
+msgstr ""
 
 #, tao-public
 msgid "Deliveries library"
-msgstr "Samling av oppgavesett"
+msgstr ""
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr "Oppgavesett \"%s\" er importert"
+msgstr ""
 
-msgid "Delivery \'%s\' not found"
-msgstr "Oppgavesett \'%s\' ble ikke funnet"
+msgid "Delivery \\'%s\\' not found"
+msgstr ""
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr "Gitt oppgavesettmappe uri er ikke en gyldig mappe."
+msgstr ""
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr "Oppgavesettet tildeles %s elever."
+msgstr ""
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr "Oppgavesettet er ikke koblet til noen elever."
+msgstr ""
 
 msgid "Delivery saved"
-msgstr "Oppgavesettet er lagret"
+msgstr ""
 
 msgid "Delivery with label \"%s\" not found"
-msgstr "Oppgavesett merket \"%s\" ble ikke funnet"
+msgstr ""
 
-msgid "Directory %s doesn\'t exist"
-msgstr "Katalogen %s eksisterer ikke"
+msgid "Directory %s doesn\\'t exist"
+msgstr ""
 
 msgid "Error"
 msgstr "Feil"
 
 msgid "Excluded test-takers"
-msgstr "Ekskluderte elever"
+msgstr ""
 
 msgid "Exported %1$s to %2$s"
-msgstr "Eksporterte %1$s til %2$s"
+msgstr ""
 
 msgid "Exporting %s"
-msgstr "Eksporterer %s"
+msgstr ""
 
 msgid "Guest access"
 msgstr "Gjestetilgang"
 
 msgid "Import QTI test and create delivery."
-msgstr "Importer QTI-prøven og opprett et oppgavesett."
+msgstr ""
 
-msgid "Importing %1$s files into \'%2$s\"
-msgstr "Importerer %1$s filer til \'%2$s\"
+msgid "Importing %1$s files into \\'%2$s\\'"
+msgstr ""
 
 msgid "Last updated on:"
-msgstr "Sist oppdatert på:"
+msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
@@ -149,58 +142,58 @@ msgstr "Ny mappe"
 
 #, tao-public
 msgid "New delivery"
-msgstr "Ny publisering"
+msgstr ""
 
 msgid "No attempt has been started yet."
-msgstr "Har ikke startet prøven ennå."
+msgstr ""
 
 msgid "No information available about attempts"
-msgstr "Ingen informasjon tilgjengelig om prøvestart"
+msgstr ""
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr "Forbered og publiser oppgavesettet."
+msgstr ""
 
 #, tao-public
 msgid "Properties"
-msgstr "Egenskaper"
+msgstr ""
 
 #, tao-public
 msgid "Publish"
 msgstr "Publiser"
 
 msgid "Publish \"%s\" to"
-msgstr "Publiser \"%s\" til"
+msgstr ""
 
 msgid "Publish the test"
-msgstr "Publiser oppgavesettet"
+msgstr ""
 
 msgid "Published on:"
-msgstr "Publisert på:"
+msgstr ""
 
 msgid "Publishing of <b>%s</b>"
-msgstr "Publishing of <b>%s</b>"
+msgstr ""
 
 msgid "Save"
 msgstr "Lagre"
 
 msgid "Select the test"
-msgstr "Velg prøve"
+msgstr ""
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr "Velg prøven du vil publisere til elevene"
+msgstr ""
 
 msgid "Selection saved successfully"
-msgstr "Utvalget ble lagret"
+msgstr ""
 
 msgid "TAO Guest"
-msgstr "TAO gjest"
+msgstr ""
 
 msgid "TAO Guest Access"
 msgstr "TAO Gjestetilgang"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr "Publisering av prøven mislyktes fordi \"%s\" er tom."
+msgstr ""
 
 msgid "Test-takers"
 msgstr "Elever"
@@ -210,29 +203,29 @@ msgid "Tests"
 msgstr "Oppgavesett"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr "Prøven \"%s\" inneholder ingen oppgaver og kan ikke publiseres."
+msgstr ""
 
 msgid "There are currently %s attempts"
-msgstr "Det er for øyeblikket %s forsøk"
+msgstr ""
 
 msgid "There are currently no tests available to publish."
-msgstr "Det er foreløpig ingen prøver tilgjengelig for publisering."
+msgstr ""
 
 msgid "There is currently 1 attempt"
-msgstr "Det er for øyeblikket 1 forsøk"
+msgstr ""
 
 msgid "Unable to import Archive"
-msgstr "Kan ikke importere arkiv"
+msgstr ""
 
 msgid "Unable to load tests"
-msgstr "Kan ikke laste inn oppgavesett"
+msgstr ""
 
 msgid "unlimited"
-msgstr "ubegrenset"
+msgstr ""
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr "Bruk: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr ""
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr "Bruk: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr ""
 
