@@ -26,9 +26,12 @@ use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
 use oat\tao\helpers\Template;
+use oat\tao\model\accessControl\RoleBasedContextRestrictAccess;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\resources\ResourceWatcher;
 use oat\tao\model\TaoOntology;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
+use oat\taoDacSimple\model\PermissionProvider;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\Form\DeliveryFormFactory;
@@ -53,6 +56,9 @@ use tao_helpers_form_FormContainer as FormContainer;
 class DeliveryMgmt extends \tao_actions_SaSModule
 {
     use TaskLogActionTrait;
+
+    private const FEATURE_FLAG_GROUPS_DISABLED = 'FEATURE_FLAG_GROUPS_DISABLED';
+    private const FEATURE_FLAG_TEST_TAKERS_DISABLED = 'FEATURE_FLAG_TEST_TAKERS_DISABLED';
 
     /**
      * @return EventManager
@@ -123,7 +129,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         }
 
         $assignmentService = $this->getServiceLocator()->get(AssignmentService::SERVICE_ID);
-        if (get_class($assignmentService) == GroupAssignment::class) {
+        if (!$this->isUserRestricted() && get_class($assignmentService) == GroupAssignment::class) {
             // define the groups related to the current delivery
             $property = $this->getProperty(GroupAssignment::PROPERTY_GROUP_DELIVERY);
             $tree = \tao_helpers_form_GenerisTreeForm::buildReverseTree($delivery, $property);
@@ -131,6 +137,11 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             $tree->setTemplate(Template::getTemplate('widgets/assignGroup.tpl'));
             $this->setData('groupTree', $tree->render());
         }
+
+        $this->setData(
+            'ttdisabled',
+            $this->isUserRestricted()
+        );
 
         // testtaker brick
         $this->setData('assemblyUri', $deliveryUri);
@@ -334,6 +345,15 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         return parent::getTreeOptionsFromRequest($options);
     }
 
+    private function isUserRestricted()
+    {
+        return $this->getRoleBasedContextRestrictAccess()
+            ->isRestricted(
+                $this->getUserRoles(),
+                'ltiAuthoringLaunchRestrictRoles'
+            );
+    }
+
     protected function getExtraValidationRules(): array
     {
         return $this->getValidatorFactory()->createMultiple();
@@ -347,5 +367,9 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     private function getDeliveryFormFactory(): DeliveryFormFactory
     {
         return $this->getPsrContainer()->get(DeliveryFormFactory::class);
+    }
+    private function getRoleBasedContextRestrictAccess(): RoleBasedContextRestrictAccess
+    {
+        return $this->getPsrContainer()->get(RoleBasedContextRestrictAccess::class);
     }
 }
