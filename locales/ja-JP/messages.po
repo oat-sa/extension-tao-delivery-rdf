@@ -1,26 +1,25 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2022.09\n"
-"PO-Revision-Date: 2022-08-12T16:45:56\n"
-"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
-"MIME-Version: 1.0\n"
-"Language: ja-JP\n"
-"sourceLanguage: en-US\n"
-"targetLanguage: ja-JP\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
-"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 797\n"
+"Project-Id-Version: tao-open-source\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Japanese\n"
+"Language: ja_JP\n"
+"PO-Revision-Date: 2023-12-04 16:25\n"
 
 msgid "%s completed"
-msgstr ""
+msgstr "%s 完了"
 
 msgid "%s test-taker(s) are excluded."
 msgstr ""
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "ゲストとしてデリバリにアクセス"
 
 msgid "An error occured during the import"
 msgstr ""
@@ -35,7 +34,7 @@ msgid "Assigned test-takers"
 msgstr ""
 
 msgid "Assigned to"
-msgstr "アサイン"
+msgstr ""
 
 msgid "Available from %s"
 msgstr ""
@@ -44,24 +43,18 @@ msgid "Available until %s"
 msgstr ""
 
 msgid "Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 msgid "Class successfully created."
-msgstr ""
+msgstr "クラスが作成されました。"
 
 msgid "Continue deleting of delivery \"%s\"."
 msgstr ""
 
-msgid "Continue try to sync metadata of delivery \"%s\"."
+msgid "Create a new delivery"
 msgstr ""
 
-msgid "Create a new delivery"
-msgstr "新規デリバリ作成"
-
 msgid "Create a test"
-msgstr "テスト作成"
-
-msgid "DataStore sync retry for delivery \"%s\"."
 msgstr ""
 
 #, tao-public
@@ -82,14 +75,14 @@ msgstr ""
 msgid "Delivery \"%s\" successfully imported"
 msgstr ""
 
-msgid "Delivery \'%s\' not found"
+msgid "Delivery \\'%s\\' not found"
 msgstr ""
 
 msgid "Delivery class uri provided is not a valid delivery class."
 msgstr ""
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr " %s 名の受験者に割り当てられました"
+msgstr ""
 
 msgid "Delivery is not assigned to any test-taker."
 msgstr ""
@@ -100,14 +93,14 @@ msgstr ""
 msgid "Delivery with label \"%s\" not found"
 msgstr ""
 
-msgid "Directory %s doesn\'t exist"
+msgid "Directory %s doesn\\'t exist"
 msgstr ""
 
 msgid "Error"
 msgstr "エラー"
 
 msgid "Excluded test-takers"
-msgstr "除外された受験生"
+msgstr ""
 
 msgid "Exported %1$s to %2$s"
 msgstr ""
@@ -121,41 +114,41 @@ msgstr "ゲストアクセス"
 msgid "Import QTI test and create delivery."
 msgstr ""
 
-msgid "Importing %1$s files into \'%2$s\"
+msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr ""
 
 msgid "Last updated on:"
-msgstr "最終更新日："
+msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "スキーム管理"
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "テスト管理"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "移動"
 
 #, tao-public
 msgid "Move To"
-msgstr ""
+msgstr "移動"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "新規クラス"
 
 #, tao-public
 msgid "New delivery"
-msgstr "新規デリバリ"
+msgstr ""
 
 msgid "No attempt has been started yet."
 msgstr ""
 
 msgid "No information available about attempts"
-msgstr "実施に関する情報はありません（未実施）"
+msgstr ""
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
@@ -163,11 +156,11 @@ msgstr ""
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "プロパティ"
 
 #, tao-public
 msgid "Publish"
-msgstr ""
+msgstr "公開"
 
 msgid "Publish \"%s\" to"
 msgstr ""
@@ -176,7 +169,7 @@ msgid "Publish the test"
 msgstr ""
 
 msgid "Published on:"
-msgstr "作成日："
+msgstr ""
 
 msgid "Publishing of <b>%s</b>"
 msgstr ""
@@ -185,7 +178,7 @@ msgid "Save"
 msgstr "保存"
 
 msgid "Select the test"
-msgstr "テスト選択"
+msgstr ""
 
 msgid "Select the test you want to publish to the test-takers"
 msgstr ""
@@ -197,7 +190,7 @@ msgid "TAO Guest"
 msgstr ""
 
 msgid "TAO Guest Access"
-msgstr "ゲストアクセス"
+msgstr "TAOゲストアクセス"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr ""
@@ -207,10 +200,10 @@ msgstr "受験者"
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "テスト"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr "テスト \"%s\" にはアイテムが含まれておらず、公開できません。"
+msgstr ""
 
 msgid "There are currently %s attempts"
 msgstr ""
