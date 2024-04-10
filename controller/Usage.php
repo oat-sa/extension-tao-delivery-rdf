@@ -21,19 +21,19 @@
  */
 
 namespace oat\taoDeliveryRdf\controller;
+
 use oat\tao\model\datatable\implementation\DatatableRequest;
 
 /**
  * Class Usage
  * @package oat\taoDeliveryRdf\controller
  */
-class Usage extends \tao_actions_CommonModule
-{
+class Usage extends \tao_actions_CommonModule {
 
     public function index()
-        {
-            $this->setView('Usage/index.tpl');
-        }
+    {
+        $this->setView('Usage/index.tpl');
+    }
 
     public function getSessionsDataMock()
     {
@@ -100,7 +100,7 @@ class Usage extends \tao_actions_CommonModule
     }
     public function getTestsDataMock()
     {
-    $mock = '{
+        $mock = '{
                "success": true,
                "page": 1,
                "total": 1,
@@ -169,6 +169,6 @@ class Usage extends \tao_actions_CommonModule
                  }
                ]
              }';
-     $this->returnJson(json_decode($mock));
+        $this->returnJson(json_decode($mock));
     }
 }
