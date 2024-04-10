@@ -46,10 +46,6 @@ define([
         return Math.min(Math.floor(availableHeight / lineHeight), 25);
     }
 
-    function viewResult() {
-        console.log('res')
-    }
-
     return {
 
         start : function start() {
@@ -99,13 +95,13 @@ define([
 
             $usageTestsContainer
                 .datatable({
-                    url: url.route('data', 'ResultsMonitoring', 'taoOutcomeUi'), //todo: find normal url
+                    url: url.route('getTestsDataMock', 'Usage', 'taoDeliveryRdf'),
                     filter: true,
                     labels: {
                         filter: __('Search by results')
                     },
                     model: [{
-                        id: 'testLabel',
+                        id: 'label',
                         label: __('Label'),
                         sortable: true
                     }, {
@@ -113,44 +109,45 @@ define([
                         label: __('Location'),
                         sortable: true,
                     }, {
-                        id: 'last-modified',
+                        id: 'publicationTime',
                         label: __('Last modified on'),
                         sortable: true
-                    }],
+                    }
+                    ],
                     paginationStrategyTop: 'none',
                     paginationStrategyBottom: 'simple',
                     rows: getNumRows(),
-                    sortby: 'result_id',
+                    sortby: 'label',
                     sortorder: 'desc',
                     actions : {
-                        'view' : {
-                            id: 'view',
+                        view : {
+                            id: 'link',
                             label: __('View'),
-                            action: viewResult
+                            action: () => {} //todo: do something
                         }
                     }
                 });
 
             $usageSessionsContainer
                 .datatable({
-                    url: url.route('data', 'ResultsMonitoring', 'taoOutcomeUi'), //todo: find normal url
+                    url: url.route('getSessionsDataMock', 'Usage', 'taoDeliveryRdf'),
                     filter: true,
                     labels: {
                         filter: __('Search by results')
                     },
                     model: [{
-                        id: 'sessionLabel',
+                        id: 'label',
                         label: __('Name'),
                         sortable: true
                     }, {
-                        id: 'last-published',
+                        id: 'publicationTime',
                         label: __('Last published on'),
                         sortable: true,
                     }],
                     paginationStrategyTop: 'none',
                     paginationStrategyBottom: 'simple',
                     rows: getNumRows(),
-                    sortby: 'result_id',
+                    sortby: 'label',
                     sortorder: 'desc',
                 });
         }

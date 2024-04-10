@@ -13,11 +13,22 @@
 /// along with this program; if not, write to the Free Software
 /// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-/// Copyright (c) 2019 (original work) Open Assessment Technologies SA;
+/// Copyright (c) 2024 (original work) Open Assessment Technologies SA;
 @import "inc/bootstrap";
 
 .usage-tabs-container {
   width: 100%;
+
+  .tab-container {
+    position: relative;
+    padding-top: 1.25rem;
+  }
+
+  .tab-selector {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+  }
 }
 
 .usage-tests-container,
@@ -37,6 +48,13 @@
     }
     .actions {
       white-space: nowrap;
+
+      [class^=btn-] {
+        border: 1px solid #222222;
+        background-color: transparent;
+        color: #222222;
+        text-shadow: none;
+     }
     }
   }
 }
