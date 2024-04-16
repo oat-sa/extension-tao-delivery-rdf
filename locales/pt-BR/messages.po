@@ -1,24 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: tao-3x\n"
-"PO-Revision-Date: 2023-04-21 15:46\n"
-"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
-"MIME-Version: 1.0\n"
-"Language: pt-BR\n"
-"sourceLanguage: en-US\n"
-"targetLanguage: pt-BR\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
-"X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Crowdin-Project: tao-3x\n"
-"X-Crowdin-Project-ID: 582145\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
 "X-Crowdin-Language: pt-BR\n"
-"X-Crowdin-File: /taoDeliveryRdf/locales/en-US/messages.po\n"
-"X-Crowdin-File-ID: 1475\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 797\n"
+"Project-Id-Version: tao-open-source\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Portuguese, Brazilian\n"
+"Language: pt_BR\n"
+"PO-Revision-Date: 2023-12-04 16:25\n"
 
 msgid "%s completed"
 msgstr "%s concluído"
@@ -122,6 +114,9 @@ msgstr "Acesso de convidado"
 msgid "Import QTI test and create delivery."
 msgstr "Importar teste QTI e criar a entrega."
 
+msgid "Importing %1$s files into \\'%2$s\\'"
+msgstr ""
+
 msgid "Last updated on:"
 msgstr "Última atualização em:"
 
@@ -135,7 +130,7 @@ msgstr "Gerenciar testes"
 
 #, tao-public
 msgid "Move"
-msgstr "Mover-se"
+msgstr "Mover"
 
 #, tao-public
 msgid "Move To"
@@ -143,7 +138,7 @@ msgstr "Mover para"
 
 #, tao-public
 msgid "New class"
-msgstr "Nova classe"
+msgstr "Nova pasta"
 
 #, tao-public
 msgid "New delivery"
@@ -192,7 +187,7 @@ msgid "Selection saved successfully"
 msgstr "Seleção salva com sucesso"
 
 msgid "TAO Guest"
-msgstr "TAO Guest"
+msgstr ""
 
 msgid "TAO Guest Access"
 msgstr "Acesso de Convidado TAO"
