@@ -1,0 +1,231 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: he\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 797\n"
+"Project-Id-Version: tao-open-source\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Hebrew\n"
+"Language: he_IL\n"
+"PO-Revision-Date: 2023-12-04 16:25\n"
+
+msgid "%s completed"
+msgstr ""
+
+msgid "%s test-taker(s) are excluded."
+msgstr ""
+
+msgid "Access deliveries as a guest"
+msgstr ""
+
+msgid "An error occured during the import"
+msgstr ""
+
+msgid "Assembly"
+msgstr ""
+
+msgid "Assembly import"
+msgstr ""
+
+msgid "Assigned test-takers"
+msgstr ""
+
+msgid "Assigned to"
+msgstr ""
+
+msgid "Available from %s"
+msgstr ""
+
+msgid "Available until %s"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Class successfully created."
+msgstr ""
+
+msgid "Continue deleting of delivery \"%s\"."
+msgstr ""
+
+msgid "Create a new delivery"
+msgstr ""
+
+msgid "Create a test"
+msgstr ""
+
+#, tao-public
+msgid "Delete"
+msgstr ""
+
+msgid "Deleting of \"%s"
+msgstr ""
+
+#, tao-public
+msgid "Deliveries"
+msgstr ""
+
+#, tao-public
+msgid "Deliveries library"
+msgstr ""
+
+msgid "Delivery \"%s\" successfully imported"
+msgstr ""
+
+msgid "Delivery \\'%s\\' not found"
+msgstr ""
+
+msgid "Delivery class uri provided is not a valid delivery class."
+msgstr ""
+
+msgid "Delivery is assigned to %s test-takers."
+msgstr ""
+
+msgid "Delivery is not assigned to any test-taker."
+msgstr ""
+
+msgid "Delivery saved"
+msgstr ""
+
+msgid "Delivery with label \"%s\" not found"
+msgstr ""
+
+msgid "Directory %s doesn\\'t exist"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Excluded test-takers"
+msgstr ""
+
+msgid "Exported %1$s to %2$s"
+msgstr ""
+
+msgid "Exporting %s"
+msgstr ""
+
+msgid "Guest access"
+msgstr ""
+
+msgid "Import QTI test and create delivery."
+msgstr ""
+
+msgid "Importing %1$s files into \\'%2$s\\'"
+msgstr ""
+
+msgid "Last updated on:"
+msgstr ""
+
+#, tao-public
+msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Manage tests"
+msgstr ""
+
+#, tao-public
+msgid "Move"
+msgstr ""
+
+#, tao-public
+msgid "Move To"
+msgstr ""
+
+#, tao-public
+msgid "New class"
+msgstr ""
+
+#, tao-public
+msgid "New delivery"
+msgstr ""
+
+msgid "No attempt has been started yet."
+msgstr ""
+
+msgid "No information available about attempts"
+msgstr ""
+
+#, tao-public
+msgid "Prepare, publish deliveries sessions."
+msgstr ""
+
+#, tao-public
+msgid "Properties"
+msgstr ""
+
+#, tao-public
+msgid "Publish"
+msgstr ""
+
+msgid "Publish \"%s\" to"
+msgstr ""
+
+msgid "Publish the test"
+msgstr ""
+
+msgid "Published on:"
+msgstr ""
+
+msgid "Publishing of <b>%s</b>"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Select the test"
+msgstr ""
+
+msgid "Select the test you want to publish to the test-takers"
+msgstr ""
+
+msgid "Selection saved successfully"
+msgstr ""
+
+msgid "TAO Guest"
+msgstr ""
+
+msgid "TAO Guest Access"
+msgstr ""
+
+msgid "Test publishing failed because \"%s\" is empty."
+msgstr ""
+
+msgid "Test-takers"
+msgstr ""
+
+#, tao-public
+msgid "Tests"
+msgstr ""
+
+msgid "The test \"%s\" does not contain any items and cannot be published."
+msgstr ""
+
+msgid "There are currently %s attempts"
+msgstr ""
+
+msgid "There are currently no tests available to publish."
+msgstr ""
+
+msgid "There is currently 1 attempt"
+msgstr ""
+
+msgid "Unable to import Archive"
+msgstr ""
+
+msgid "Unable to load tests"
+msgstr ""
+
+msgid "unlimited"
+msgstr ""
+
+msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr ""
+
+msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr ""
+
