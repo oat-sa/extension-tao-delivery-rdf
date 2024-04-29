@@ -84,11 +84,11 @@ class PersistDataService extends ConfigurableService
      */
     private function removeArchive(string $deliveryOrTestId, string $fileSystemId, string $tenantId): void
     {
-        $zipFileName = $this->getZipFileName($deliveryOrTestId, $tenantId);
+        $directoryPath =  $this->getZipFileDirectory($deliveryOrTestId, $tenantId);
 
-        if ($this->getDataStoreFilesystem($fileSystemId)->has($zipFileName)) {
+        if ($this->getDataStoreFilesystem($fileSystemId)->has($directoryPath)) {
             $this->getDataStoreFilesystem($fileSystemId)->deleteDir(
-                $this->getZipFileDirectory($deliveryOrTestId, $tenantId)
+                $directoryPath
             );
         }
     }
