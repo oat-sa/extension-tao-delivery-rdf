@@ -84,12 +84,16 @@ class PersistDataService extends ConfigurableService
      */
     private function removeArchive(string $deliveryOrTestId, string $fileSystemId, string $tenantId): void
     {
-        $directoryPath =  $this->getZipFileDirectory($deliveryOrTestId, $tenantId);
+        // There is a bug for gcp storage adapter - when deleting a dir with only one file exception is thrown
+        // This is why the file itself is removed first
+        $zipFileName = $this->getZipFileName($deliveryOrTestId, $tenantId);
+        if ($this->getDataStoreFilesystem($fileSystemId)->has($zipFileName)) {
+            $this->getDataStoreFilesystem($fileSystemId)->delete($zipFileName);
+        }
 
+        $directoryPath = $this->getZipFileDirectory($deliveryOrTestId, $tenantId);
         if ($this->getDataStoreFilesystem($fileSystemId)->has($directoryPath)) {
-            $this->getDataStoreFilesystem($fileSystemId)->deleteDir(
-                $directoryPath
-            );
+            $this->getDataStoreFilesystem($fileSystemId)->deleteDir($directoryPath);
         }
     }
 
