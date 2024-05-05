@@ -123,7 +123,7 @@ class MetaDataDeliverySyncTaskTest extends TestCase
             MetaDataDeliverySyncTask::MAX_TRIES_PARAM_NAME => 1,
             MetaDataDeliverySyncTask::INCLUDE_DELIVERY_METADATA_PARAM_NAME => true,
             MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME => DeliveryMetadataListener::FILE_SYSTEM_ID,
-            MetaDataDeliverySyncTask::IS_REMOVE_PARAM_NAME => false,
+            MetaDataDeliverySyncTask::IS_DELETE_PARAM_NAME => false,
             'count' => 0
         ];
         $subject = $this->subject;

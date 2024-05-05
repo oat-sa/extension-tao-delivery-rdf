@@ -33,12 +33,20 @@ use tao_helpers_Uri;
 use tao_models_classes_export_ExportHandler as ExporterInterface;
 use oat\taoQtiTest\models\export\Formats\Package2p2\TestPackageExport;
 use Throwable;
+use ZipArchive;
 
 class PersistDataService extends ConfigurableService
 {
+    public const  OPTION_EXPORTER_SERVICE = 'exporter_service';
+    public const  OPTION_ZIP_ARCHIVE_SERVICE = 'zipArchive';
+
     private const PACKAGE_FILENAME = 'QTIPackage';
     private const ZIP_EXTENSION = '.zip';
-    public const  OPTION_EXPORTER_SERVICE = 'exporter_service';
+    private const METADATA_MAP = [
+        'deliveryMetaData',
+        'testMetaData',
+        'itemMetaData',
+    ];
 
     /**
      * @throws Throwable
@@ -48,7 +56,7 @@ class PersistDataService extends ConfigurableService
      */
     public function persist(array $params): void
     {
-        $this->persistArchive($params[MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME], $params);
+        $this->persistArchive($params[ProcessDataService::PARAM_RESOURCE_ID], $params);
     }
 
     /**
@@ -58,8 +66,8 @@ class PersistDataService extends ConfigurableService
     public function remove(array $params): void
     {
         $this->removeArchive(
-            $params[MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME],
-            $params[MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME],
+            $params[ProcessDataService::PARAM_RESOURCE_ID],
+            $params[ProcessDataService::PARAM_FILE_SYSTEM_ID],
             $this->getTenantId($params),
         );
     }
@@ -135,12 +143,12 @@ class PersistDataService extends ConfigurableService
             sprintf('%s%s*%s', $folder, self::PACKAGE_FILENAME, self::ZIP_EXTENSION)
         );
 
-        $fileSystemId = $params[MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME];
+        $fileSystemId = $params[ProcessDataService::PARAM_FILE_SYSTEM_ID];
 
         if (!empty($zipFiles)) {
             foreach ($zipFiles as $zipFile) {
                 $zipFileName = $this->getZipFileName($deliveryOrTestId, $this->getTenantId($params));
-                $this->getProcessDataService()->process($zipFile, $params);
+                $this->addMetadataToZipFile($zipFile, $params);
 
                 $contents = file_get_contents($zipFile);
 
@@ -161,12 +169,12 @@ class PersistDataService extends ConfigurableService
 
     private function getTenantId(array $params): string
     {
-        if (!empty($params[MetaDataDeliverySyncTask::TENANT_ID_PARAM_NAME])) {
-            return $params[MetaDataDeliverySyncTask::TENANT_ID_PARAM_NAME];
+        if (!empty($params[ProcessDataService::PARAM_TENANT_ID])) {
+            return $params[ProcessDataService::PARAM_TENANT_ID];
         }
 
-        if (!empty($params[MetaDataDeliverySyncTask::FIRST_TENANT_ID_PARAM_NAME])) {
-            return $params[MetaDataDeliverySyncTask::FIRST_TENANT_ID_PARAM_NAME];
+        if (!empty($params[ProcessDataService::PARAM_FIRST_TENANT_ID])) {
+            return $params[ProcessDataService::PARAM_FIRST_TENANT_ID];
         }
 
         return "";
@@ -188,11 +196,6 @@ class PersistDataService extends ConfigurableService
         return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
     }
 
-    private function getProcessDataService(): ProcessDataService
-    {
-        return $this->getServiceLocator()->get(ProcessDataService::class);
-    }
-
     private function getZipFileName(string $deliveryOrTestId, string $tenantId): string
     {
         return sprintf(
@@ -211,5 +214,32 @@ class PersistDataService extends ConfigurableService
             $tenantId,
             DIRECTORY_SEPARATOR,
         );
+    }
+
+    private function addMetadataToZipFile(string $zipFile, array $metaData): void
+    {
+        $zipArchive = $this->getZipArchive();
+
+        $zipArchive->open($zipFile);
+
+        foreach (self::METADATA_MAP as $metadataName) {
+            if (!empty($metaData[$metadataName])) {
+                $this->saveMetaData($zipArchive, $metadataName . '.json', json_encode($metaData[$metadataName]));
+            }
+        }
+
+        $zipArchive->close();
+    }
+
+    private function saveMetaData(ZipArchive $zipFile, string $fileNameToAdd, string $content): void
+    {
+        $zipFile->addFromString($fileNameToAdd, $content);
+    }
+
+    private function getZipArchive(): ZipArchive
+    {
+        $zipArchive = $this->getOption(self::OPTION_ZIP_ARCHIVE_SERVICE);
+
+        return $zipArchive ?? new ZipArchive();
     }
 }

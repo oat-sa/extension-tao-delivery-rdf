@@ -23,35 +23,20 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\DataStore;
 
 use common_exception_Error;
-use core_kernel_classes_Resource;
 use core_kernel_persistence_Exception;
 use JsonSerializable;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\reporting\Report;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
-use oat\tao\model\featureFlag\FeatureFlagChecker;
-use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
-use oat\tao\model\metadata\compiler\AdvancedJsonResourceMetadataCompiler;
-use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
-use oat\tao\model\metadata\compiler\ResourceMetadataCompilerInterface;
 use oat\tao\model\taskQueue\QueueDispatcher;
-use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use taoQtiTest_models_classes_QtiTestService;
 use Throwable;
 
 class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializable
 {
     use OntologyAwareTrait;
 
-    public const INCLUDE_DELIVERY_METADATA_PARAM_NAME = 'includeMetadata';
-    public const DELIVERY_OR_TEST_ID_PARAM_NAME = 'deliveryOrTestId';
-    public const FILE_SYSTEM_ID_PARAM_NAME = 'fileSystemId';
-    public const TEST_URI_PARAM_NAME = 'testUri';
     public const MAX_TRIES_PARAM_NAME = 'maxTries';
-    public const IS_REMOVE_PARAM_NAME = 'isRemove';
-    public const TENANT_ID_PARAM_NAME = 'tenantId';
-    public const FIRST_TENANT_ID_PARAM_NAME = 'firstTenantId';
 
     /**
      * @throws InvalidServiceManagerException
@@ -60,29 +45,23 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
      */
     public function __invoke($params)
     {
-        if (!$params[self::IS_REMOVE_PARAM_NAME]) {
-            $params = $this->prepareMetaData($params);
-        }
+        $params = $this->getProcessDataService()->prepareMetaData($params);
 
         $report = new Report(Report::TYPE_SUCCESS);
 
-        $params['count'] = $params['count'] ?? 0;
-        if ($params['count'] < $params[self::MAX_TRIES_PARAM_NAME]) {
-            $params['count']++;
+        $params[ProcessDataService::PARAM_COUNT] = $params[ProcessDataService::PARAM_COUNT] ?? 0;
+        if ($params[ProcessDataService::PARAM_COUNT] < $params[self::MAX_TRIES_PARAM_NAME]) {
+            $params[ProcessDataService::PARAM_COUNT]++;
             try {
-                if ($params[self::IS_REMOVE_PARAM_NAME]) {
-                    $this->getPersistDataService()->remove($params);
-                } else {
-                    $this->getPersistDataService()->persist($params);
-                }
+                $this->getPersistDataService()->persist($params);
                 $report->setMessage(sprintf(
                     'Success MetaData syncing for delivery: %s',
-                    $params[self::DELIVERY_OR_TEST_ID_PARAM_NAME]
+                    $params[ProcessDataService::PARAM_RESOURCE_ID]
                 ));
             } catch (Throwable $exception) {
                 $this->logError(sprintf(
                     'Failing MetaData syncing for delivery: %s with message: %s',
-                    $params[self::DELIVERY_OR_TEST_ID_PARAM_NAME],
+                    $params[ProcessDataService::PARAM_RESOURCE_ID],
                     $exception->getMessage()
                 ));
 
@@ -121,8 +100,8 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
             $params,
             __(
                 'DataStore sync retry number "%s" for test of delivery with id: "%s".',
-                $params['count'],
-                $params[self::DELIVERY_OR_TEST_ID_PARAM_NAME]
+                $params[ProcessDataService::PARAM_COUNT],
+                $params[ProcessDataService::PARAM_RESOURCE_ID]
             )
         );
     }
@@ -132,83 +111,8 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
         return $this->getServiceLocator()->get(PersistDataService::class);
     }
 
-    private function prepareMetaData($params)
+    private function getProcessDataService(): ProcessDataService
     {
-        $compiler = $this->getMetaDataCompiler();
-        if ($params[self::INCLUDE_DELIVERY_METADATA_PARAM_NAME]) {
-            //DeliveryMetaData
-            $deliveryResource = $this->getResource($params[self::DELIVERY_OR_TEST_ID_PARAM_NAME]);
-            $params['deliveryMetaData'] = $this->getResourceJsonMetadataCompiler()->compile($deliveryResource);
-            $params[self::TEST_URI_PARAM_NAME] = $this->getTestUri($deliveryResource);
-            $params[self::TENANT_ID_PARAM_NAME] = $params['deliveryMetaData']['tenant-id'] ?? null;
-        }
-        //test MetaData
-        $test = $this->getResource($params[self::TEST_URI_PARAM_NAME]);
-        $params['testMetaData'] = $compiler->compile($test);
-        $params['testMetaData']['first-tenant-id'] = $params[self::FIRST_TENANT_ID_PARAM_NAME] ?? null;
-
-        //Item MetaData
-        $params['itemMetaData'] = $this->getItemMetaData($test, $compiler);
-
-        return $params;
-    }
-
-    private function getItemMetaData(
-        core_kernel_classes_Resource $test,
-        ResourceMetadataCompilerInterface $compiler
-    ): array {
-        /** @var taoQtiTest_models_classes_QtiTestService $testService */
-        $testService = $this->getServiceLocator()->get(taoQtiTest_models_classes_QtiTestService::class);
-        $items = $testService->getItems($test);
-        $itemMetaData = [];
-        foreach ($items as $item) {
-            $itemMetaData[] = $compiler->compile($item);
-        }
-
-        return $itemMetaData;
-    }
-
-    /**
-     * @throws common_exception_Error
-     * @throws core_kernel_persistence_Exception
-     */
-    private function getTest(core_kernel_classes_Resource $deliveryResource): core_kernel_classes_Resource
-    {
-        $testUri = $this->getTestUri($deliveryResource);
-
-        return $this->getResource($testUri);
-    }
-
-    /**
-     * @throws core_kernel_persistence_Exception
-     */
-    private function getTestUri(core_kernel_classes_Resource $deliveryResource): ?string
-    {
-        $testProperty = $this->getProperty(DeliveryAssemblyService::PROPERTY_ORIGIN);
-        $test = $deliveryResource->getOnePropertyValue($testProperty);
-
-        return $test ? $test->getUri() : null;
-    }
-
-    private function getMetaDataCompiler(): ResourceMetadataCompilerInterface
-    {
-        return $this->getFeatureFlagChecker()->isEnabled('FEATURE_FLAG_DATA_STORE_METADATA_V2')
-            ? $this->getJsonMetadataCompiler()
-            : $this->getResourceJsonMetadataCompiler();
-    }
-
-    private function getJsonMetadataCompiler(): ResourceMetadataCompilerInterface
-    {
-        return $this->getServiceManager()->getContainer()->get(AdvancedJsonResourceMetadataCompiler::class);
-    }
-
-    private function getResourceJsonMetadataCompiler(): ResourceMetadataCompilerInterface
-    {
-        return $this->getServiceManager()->getContainer()->get(ResourceJsonMetadataCompiler::SERVICE_ID);
-    }
-
-    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
-    {
-        return $this->getServiceManager()->getContainer()->get(FeatureFlagChecker::class);
+        return $this->getServiceLocator()->get(ProcessDataService::class);
     }
 }

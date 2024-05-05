@@ -86,7 +86,7 @@ class PersistDataServiceTest extends TestCase
                     'deliveryMetaData' => [],
                     'testMetaData' => [],
                     'itemMetaData' => [],
-                    MetaDataDeliverySyncTask::IS_REMOVE_PARAM_NAME => false,
+                    MetaDataDeliverySyncTask::IS_DELETE_PARAM_NAME => false,
                     MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME => 'dataStore',
                 ], ''
             ]

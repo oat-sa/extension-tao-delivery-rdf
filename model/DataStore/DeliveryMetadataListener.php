@@ -50,11 +50,10 @@ class DeliveryMetadataListener extends ConfigurableService
             $this->logDebug(sprintf('Processing MetaData event for %s', get_class($event)));
             $this->checkEventType($event);
             $this->triggerSyncTask([
-                MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME => $event->getDeliveryUri(),
-                MetaDataDeliverySyncTask::INCLUDE_DELIVERY_METADATA_PARAM_NAME => true,
+                ProcessDataService::PARAM_RESOURCE_ID => $event->getDeliveryUri(),
+                ProcessDataService::PARAM_INCLUDE_DELIVERY_METADATA => true,
                 MetaDataDeliverySyncTask::MAX_TRIES_PARAM_NAME => $this->getOption('max_tries', 10),
-                MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME => self::FILE_SYSTEM_ID,
-                MetaDataDeliverySyncTask::IS_REMOVE_PARAM_NAME => false,
+                ProcessDataService::PARAM_FILE_SYSTEM_ID => self::FILE_SYSTEM_ID,
             ]);
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
         } catch (Throwable $exception) {
@@ -97,7 +96,7 @@ class DeliveryMetadataListener extends ConfigurableService
             $params,
             __(
                 'Syncing data of a delivery "%s".',
-                $params[MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME]
+                $params[ProcessDataService::PARAM_RESOURCE_ID]
             )
         );
     }
