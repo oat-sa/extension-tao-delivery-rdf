@@ -36,8 +36,6 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
 {
     use OntologyAwareTrait;
 
-    public const MAX_TRIES_PARAM_NAME = 'maxTries';
-
     /**
      * @throws InvalidServiceManagerException
      * @throws common_exception_Error
@@ -45,29 +43,29 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
      */
     public function __invoke($params)
     {
-        $params = $this->getProcessDataService()->prepareMetaData($params);
-
         $report = new Report(Report::TYPE_SUCCESS);
+        /** @var ResourceTransferDTO $resourceTransferDTO */
+        $resourceTransferDTO = $params[0];
+        $tryNumber = $params[1];
 
-        $params[ProcessDataService::PARAM_COUNT] = $params[ProcessDataService::PARAM_COUNT] ?? 0;
-        if ($params[ProcessDataService::PARAM_COUNT] < $params[self::MAX_TRIES_PARAM_NAME]) {
-            $params[ProcessDataService::PARAM_COUNT]++;
+        if ($tryNumber < $resourceTransferDTO->getMaxTries()) {
+            $tryNumber++;
             try {
                 $this->getPersistDataService()->persist($params);
                 $report->setMessage(sprintf(
                     'Success MetaData syncing for delivery: %s',
-                    $params[ProcessDataService::PARAM_RESOURCE_ID]
+                    $resourceTransferDTO->getResourceId()
                 ));
             } catch (Throwable $exception) {
                 $this->logError(sprintf(
                     'Failing MetaData syncing for delivery: %s with message: %s',
-                    $params[ProcessDataService::PARAM_RESOURCE_ID],
+                    $resourceTransferDTO->getResourceId(),
                     $exception->getMessage()
                 ));
 
                 $report->setType(Report::TYPE_ERROR);
                 $report->setMessage($exception->getMessage());
-                $this->requeueTask($params);
+                $this->requeueTask($resourceTransferDTO, $tryNumber);
             }
         }
 
@@ -91,17 +89,16 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
      * @param $params
      * @throws InvalidServiceManagerException
      */
-    private function requeueTask($params): void
+    private function requeueTask(ResourceTransferDTO $resourceTransferDTO, int $tryNumber): void
     {
-        /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = $this->getQueueDispatcher();
         $queueDispatcher->createTask(
             $this,
-            $params,
+            [$resourceTransferDTO, $tryNumber],
             __(
                 'DataStore sync retry number "%s" for test of delivery with id: "%s".',
-                $params[ProcessDataService::PARAM_COUNT],
-                $params[ProcessDataService::PARAM_RESOURCE_ID]
+                $tryNumber,
+                $resourceTransferDTO->getResourceId()
             )
         );
     }
@@ -109,10 +106,5 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
     private function getPersistDataService(): PersistDataService
     {
         return $this->getServiceLocator()->get(PersistDataService::class);
-    }
-
-    private function getProcessDataService(): ProcessDataService
-    {
-        return $this->getServiceLocator()->get(ProcessDataService::class);
     }
 }

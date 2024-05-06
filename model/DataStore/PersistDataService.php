@@ -42,11 +42,6 @@ class PersistDataService extends ConfigurableService
 
     private const PACKAGE_FILENAME = 'QTIPackage';
     private const ZIP_EXTENSION = '.zip';
-    private const METADATA_MAP = [
-        'deliveryMetaData',
-        'testMetaData',
-        'itemMetaData',
-    ];
 
     /**
      * @throws Throwable
@@ -54,21 +49,21 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    public function persist(array $params): void
+    public function persist(ResourceTransferDTO $resourceTransferDTO): void
     {
-        $this->persistArchive($params[ProcessDataService::PARAM_RESOURCE_ID], $params);
+        $this->persistArchive($resourceTransferDTO->getResourceId(), $resourceTransferDTO);
     }
 
     /**
      * @throws common_exception_NotFound
      * @throws common_exception_Error
      */
-    public function remove(array $params): void
+    public function remove(ResourceTransferDTO $resourceTransferDTO): void
     {
         $this->removeArchive(
-            $params[ProcessDataService::PARAM_RESOURCE_ID],
-            $params[ProcessDataService::PARAM_FILE_SYSTEM_ID],
-            $this->getTenantId($params),
+            $resourceTransferDTO->getResourceId(),
+            $resourceTransferDTO->getFileSystemId(),
+            $this->getTenantId($resourceTransferDTO),
         );
     }
 
@@ -111,7 +106,7 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function persistArchive(string $deliveryOrTestId, array $params): void
+    private function persistArchive(string $deliveryOrTestId, ResourceTransferDTO $resourceTransferDTO): void
     {
         /** @var FileHelperService $tempDir */
         $tempDir = $this->getServiceLocator()->get(FileHelperService::class);
@@ -121,13 +116,13 @@ class PersistDataService extends ConfigurableService
             $this->getTestExporter()->export(
                 [
                     'filename' => self::PACKAGE_FILENAME,
-                    'instances' => $params['testUri'],
-                    'uri' => $params['testUri']
+                    'instances' => $resourceTransferDTO->getTestUri(),
+                    'uri' => $resourceTransferDTO->getTestUri()
                 ],
                 $folder
             );
 
-            $this->moveExportedZipTest($folder, $deliveryOrTestId, $params);
+            $this->moveExportedZipTest($folder, $deliveryOrTestId, $resourceTransferDTO);
         } finally {
             $tempDir->removeDirectory($folder);
         }
@@ -137,18 +132,18 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function moveExportedZipTest(string $folder, string $deliveryOrTestId, array $params): void
+    private function moveExportedZipTest(string $folder, string $deliveryOrTestId, ResourceTransferDTO $resourceTransferDTO): void
     {
         $zipFiles = glob(
             sprintf('%s%s*%s', $folder, self::PACKAGE_FILENAME, self::ZIP_EXTENSION)
         );
 
-        $fileSystemId = $params[ProcessDataService::PARAM_FILE_SYSTEM_ID];
+        $fileSystemId = $resourceTransferDTO->getFileSystemId();
 
         if (!empty($zipFiles)) {
             foreach ($zipFiles as $zipFile) {
-                $zipFileName = $this->getZipFileName($deliveryOrTestId, $this->getTenantId($params));
-                $this->addMetadataToZipFile($zipFile, $params);
+                $zipFileName = $this->getZipFileName($deliveryOrTestId, $this->getTenantId($resourceTransferDTO));
+                $this->addMetadataToZipFile($zipFile, $resourceTransferDTO);
 
                 $contents = file_get_contents($zipFile);
 
@@ -167,14 +162,14 @@ class PersistDataService extends ConfigurableService
         }
     }
 
-    private function getTenantId(array $params): string
+    private function getTenantId(ResourceTransferDTO $resourceTransferDTO): string
     {
-        if (!empty($params[ProcessDataService::PARAM_TENANT_ID])) {
-            return $params[ProcessDataService::PARAM_TENANT_ID];
+        if (!empty($resourceTransferDTO->getTenantId())) {
+            return $resourceTransferDTO->getTenantId();
         }
 
-        if (!empty($params[ProcessDataService::PARAM_FIRST_TENANT_ID])) {
-            return $params[ProcessDataService::PARAM_FIRST_TENANT_ID];
+        if (!empty($resourceTransferDTO->getFirstTenantId())) {
+            return $resourceTransferDTO->getFirstTenantId();
         }
 
         return "";
@@ -216,15 +211,15 @@ class PersistDataService extends ConfigurableService
         );
     }
 
-    private function addMetadataToZipFile(string $zipFile, array $metaData): void
+    private function addMetadataToZipFile(string $zipFile, ResourceTransferDTO $resourceTransferDTO): void
     {
         $zipArchive = $this->getZipArchive();
 
         $zipArchive->open($zipFile);
 
-        foreach (self::METADATA_MAP as $metadataName) {
-            if (!empty($metaData[$metadataName])) {
-                $this->saveMetaData($zipArchive, $metadataName . '.json', json_encode($metaData[$metadataName]));
+        foreach ($resourceTransferDTO->getMetadata() as $metadataName => $metadata) {
+            if (!empty($metadata)) {
+                $this->saveMetaData($zipArchive, $metadataName . '.json', json_encode($metadata));
             }
         }
 

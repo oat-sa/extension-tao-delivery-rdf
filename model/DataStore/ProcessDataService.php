@@ -38,34 +38,60 @@ class ProcessDataService extends ConfigurableService
 {
     use OntologyAwareTrait;
 
-    public const PARAM_INCLUDE_DELIVERY_METADATA = 'includeMetadata';
-    public const PARAM_RESOURCE_ID = 'resourceId';
-    public const PARAM_FILE_SYSTEM_ID = 'fileSystemId';
-    public const PARAM_TEST_URI = 'testUri';
-    public const PARAM_IS_DELETE = 'isDeleted';
-    public const PARAM_TENANT_ID = 'tenantId';
-    public const PARAM_FIRST_TENANT_ID = 'firstTenantId';
-    public const PARAM_COUNT = 'count';
+//    public const PARAM_INCLUDE_DELIVERY_METADATA = 'includeMetadata';
+//    public const PARAM_RESOURCE_ID = 'resourceId';
+//    public const PARAM_FILE_SYSTEM_ID = 'fileSystemId';
+//    public const PARAM_TEST_URI = 'testUri';
+//    public const PARAM_IS_DELETE = 'isDeleted';
+//    public const PARAM_TENANT_ID = 'tenantId';
+//    public const PARAM_FIRST_TENANT_ID = 'firstTenantId';
+//    public const PARAM_COUNT = 'count';
 
-    public function prepareMetaData($params)
-    {
+    public function prepareMetaData(
+        string  $resourceId,
+        int     $maxTries,
+        bool    $includeDeliveryMetaData,
+        string  $fileSystemId,
+        bool $isDelete = false,
+        ?string $firstTenantId = null
+    ): ResourceTransferDTO {
         $compiler = $this->getMetaDataCompiler();
-        if ($params[self::PARAM_INCLUDE_DELIVERY_METADATA]) {
-            //DeliveryMetaData
-            $deliveryResource = $this->getResource($params[self::PARAM_RESOURCE_ID]);
-            $params['deliveryMetaData'] = $this->getResourceJsonMetadataCompiler()->compile($deliveryResource);
-            $params[self::PARAM_TEST_URI] = $this->getTestUri($deliveryResource);
-            $params[self::PARAM_TENANT_ID] = $params['deliveryMetaData']['tenant-id'] ?? null;
+        $testUri = $resourceId;
+        $deliveryMetaData = [];
+        $testMetaData = [];
+        $itemMetaData = [];
+        $tenantId = null;
+
+        if (!$isDelete) {
+            if ($includeDeliveryMetaData) {
+                //DeliveryMetaData
+                $deliveryResource = $this->getResource($resourceId);
+                $deliveryMetaData = $this->getResourceJsonMetadataCompiler()->compile($deliveryResource);
+                $tenantId = $deliveryMetaData['tenant-id'] ?? null;
+                $testUri = $this->getTestUri($deliveryResource);
+            }
+
+            //test MetaData
+            $test = $this->getResource($resourceId);
+            $testMetaData = $compiler->compile($test);
+            $testMetaData['first-tenant-id'] = $firstTenantId;
+
+            //Item MetaData
+            $itemMetaData = $this->getItemMetaData($test, $compiler);
         }
-        //test MetaData
-        $test = $this->getResource($params[self::PARAM_TEST_URI]);
-        $params['testMetaData'] = $compiler->compile($test);
-        $params['testMetaData']['first-tenant-id'] = $params[self::PARAM_FIRST_TENANT_ID] ?? null;
 
-        //Item MetaData
-        $params['itemMetaData'] = $this->getItemMetaData($test, $compiler);
-
-        return $params;
+        return new ResourceTransferDTO(
+            $resourceId,
+            $fileSystemId,
+            $testUri,
+            $isDelete,
+            $tenantId,
+            $firstTenantId,
+            $maxTries,
+            $deliveryMetaData,
+            $testMetaData,
+            $itemMetaData
+        );
     }
 
     private function getItemMetaData(

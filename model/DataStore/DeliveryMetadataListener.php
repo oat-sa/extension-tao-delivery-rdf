@@ -49,12 +49,15 @@ class DeliveryMetadataListener extends ConfigurableService
         try {
             $this->logDebug(sprintf('Processing MetaData event for %s', get_class($event)));
             $this->checkEventType($event);
-            $this->triggerSyncTask([
-                ProcessDataService::PARAM_RESOURCE_ID => $event->getDeliveryUri(),
-                ProcessDataService::PARAM_INCLUDE_DELIVERY_METADATA => true,
-                MetaDataDeliverySyncTask::MAX_TRIES_PARAM_NAME => $this->getOption('max_tries', 10),
-                ProcessDataService::PARAM_FILE_SYSTEM_ID => self::FILE_SYSTEM_ID,
-            ]);
+
+            $resourceTransferDTO = $this->getProcessDataService()->prepareMetaData(
+                $event->getDeliveryUri(),
+                $this->getOption('max_tries', 10),
+                true,
+                self::FILE_SYSTEM_ID
+            );
+
+            $this->triggerSyncTask($resourceTransferDTO);
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
         } catch (Throwable $exception) {
             $this->logError(sprintf(
@@ -87,16 +90,16 @@ class DeliveryMetadataListener extends ConfigurableService
         }
     }
 
-    private function triggerSyncTask(array $params): void
+    private function triggerSyncTask(ResourceTransferDTO $resourceTransferDTO): void
     {
         /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = $this->getQueueDispatcher();
         $queueDispatcher->createTask(
             new MetaDataDeliverySyncTask(),
-            $params,
+            [$resourceTransferDTO, 0],
             __(
                 'Syncing data of a delivery "%s".',
-                $params[ProcessDataService::PARAM_RESOURCE_ID]
+                $resourceTransferDTO->getResourceId()
             )
         );
     }
@@ -104,5 +107,10 @@ class DeliveryMetadataListener extends ConfigurableService
     private function getFeatureFlag(): FeatureFlagChecker
     {
         return $this->getServiceLocator()->get(FeatureFlagChecker::class);
+    }
+
+    private function getProcessDataService(): ProcessDataService
+    {
+        return $this->getServiceLocator()->get(ProcessDataService::class);
     }
 }
