@@ -49,21 +49,21 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    public function persist(ResourceTransferDTO $resourceTransferDTO): void
+    public function persist(ResourceSyncDTO $resourceSyncDTO): void
     {
-        $this->persistArchive($resourceTransferDTO->getResourceId(), $resourceTransferDTO);
+        $this->persistArchive($resourceSyncDTO);
     }
 
     /**
      * @throws common_exception_NotFound
      * @throws common_exception_Error
      */
-    public function remove(ResourceTransferDTO $resourceTransferDTO): void
+    public function remove(ResourceSyncDTO $resourceSyncDTO): void
     {
         $this->removeArchive(
-            $resourceTransferDTO->getResourceId(),
-            $resourceTransferDTO->getFileSystemId(),
-            $this->getTenantId($resourceTransferDTO),
+            $resourceSyncDTO->getResourceId(),
+            $resourceSyncDTO->getFileSystemId(),
+            $this->getTenantId($resourceSyncDTO),
         );
     }
 
@@ -76,25 +76,25 @@ class PersistDataService extends ConfigurableService
         return $this->getFileSystemManager()->getFileSystem($fileSystemId);
     }
 
-    private function getFolderName(string $deliveryOrTestId): string
+    private function getFolderName(string $resourceId): string
     {
-        return tao_helpers_Uri::encode($deliveryOrTestId);
+        return tao_helpers_Uri::encode($resourceId);
     }
 
     /**
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function removeArchive(string $deliveryOrTestId, string $fileSystemId, string $tenantId): void
+    private function removeArchive(string $resourceId, string $fileSystemId, string $tenantId): void
     {
         // There is a bug for gcp storage adapter - when deleting a dir with only one file exception is thrown
         // This is why the file itself is removed first
-        $zipFileName = $this->getZipFileName($deliveryOrTestId, $tenantId);
+        $zipFileName = $this->getZipFileName($resourceId, $tenantId);
         if ($this->getDataStoreFilesystem($fileSystemId)->has($zipFileName)) {
             $this->getDataStoreFilesystem($fileSystemId)->delete($zipFileName);
         }
 
-        $directoryPath = $this->getZipFileDirectory($deliveryOrTestId, $tenantId);
+        $directoryPath = $this->getZipFileDirectory($resourceId, $tenantId);
         if ($this->getDataStoreFilesystem($fileSystemId)->has($directoryPath)) {
             $this->getDataStoreFilesystem($fileSystemId)->deleteDir($directoryPath);
         }
@@ -106,7 +106,7 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function persistArchive(string $deliveryOrTestId, ResourceTransferDTO $resourceTransferDTO): void
+    private function persistArchive(ResourceSyncDTO $resourceSyncDTO): void
     {
         /** @var FileHelperService $tempDir */
         $tempDir = $this->getServiceLocator()->get(FileHelperService::class);
@@ -116,13 +116,13 @@ class PersistDataService extends ConfigurableService
             $this->getTestExporter()->export(
                 [
                     'filename' => self::PACKAGE_FILENAME,
-                    'instances' => $resourceTransferDTO->getTestUri(),
-                    'uri' => $resourceTransferDTO->getTestUri()
+                    'instances' => $resourceSyncDTO->getTestUri(),
+                    'uri' => $resourceSyncDTO->getTestUri()
                 ],
                 $folder
             );
 
-            $this->moveExportedZipTest($folder, $deliveryOrTestId, $resourceTransferDTO);
+            $this->moveExportedZipTest($folder, $resourceSyncDTO->getResourceId(), $resourceSyncDTO);
         } finally {
             $tempDir->removeDirectory($folder);
         }
@@ -132,18 +132,21 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function moveExportedZipTest(string $folder, string $deliveryOrTestId, ResourceTransferDTO $resourceTransferDTO): void
-    {
+    private function moveExportedZipTest(
+        string $folder,
+        string $resourceId,
+        ResourceSyncDTO $resourceSyncDTO
+    ): void {
         $zipFiles = glob(
             sprintf('%s%s*%s', $folder, self::PACKAGE_FILENAME, self::ZIP_EXTENSION)
         );
 
-        $fileSystemId = $resourceTransferDTO->getFileSystemId();
+        $fileSystemId = $resourceSyncDTO->getFileSystemId();
 
         if (!empty($zipFiles)) {
             foreach ($zipFiles as $zipFile) {
-                $zipFileName = $this->getZipFileName($deliveryOrTestId, $this->getTenantId($resourceTransferDTO));
-                $this->addMetadataToZipFile($zipFile, $resourceTransferDTO);
+                $zipFileName = $this->getZipFileName($resourceId, $this->getTenantId($resourceSyncDTO));
+                $this->addMetadataToZipFile($zipFile, $resourceSyncDTO);
 
                 $contents = file_get_contents($zipFile);
 
@@ -162,14 +165,14 @@ class PersistDataService extends ConfigurableService
         }
     }
 
-    private function getTenantId(ResourceTransferDTO $resourceTransferDTO): string
+    private function getTenantId(ResourceSyncDTO $resourceSyncDTO): string
     {
-        if (!empty($resourceTransferDTO->getTenantId())) {
-            return $resourceTransferDTO->getTenantId();
+        if (!empty($resourceSyncDTO->getTenantId())) {
+            return $resourceSyncDTO->getTenantId();
         }
 
-        if (!empty($resourceTransferDTO->getFirstTenantId())) {
-            return $resourceTransferDTO->getFirstTenantId();
+        if (!empty($resourceSyncDTO->getFirstTenantId())) {
+            return $resourceSyncDTO->getFirstTenantId();
         }
 
         return "";
@@ -191,33 +194,33 @@ class PersistDataService extends ConfigurableService
         return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
     }
 
-    private function getZipFileName(string $deliveryOrTestId, string $tenantId): string
+    private function getZipFileName(string $resourceId, string $tenantId): string
     {
         return sprintf(
             '%s%s%s',
-            $this->getZipFileDirectory($deliveryOrTestId, $tenantId),
+            $this->getZipFileDirectory($resourceId, $tenantId),
             self::PACKAGE_FILENAME,
             self::ZIP_EXTENSION
         );
     }
 
-    private function getZipFileDirectory(string $deliveryOrTestId, string $tenantId): string
+    private function getZipFileDirectory(string $resourceId, string $tenantId): string
     {
         return sprintf(
             '%s-%s%s',
-            $this->getFolderName($deliveryOrTestId),
+            $this->getFolderName($resourceId),
             $tenantId,
             DIRECTORY_SEPARATOR,
         );
     }
 
-    private function addMetadataToZipFile(string $zipFile, ResourceTransferDTO $resourceTransferDTO): void
+    private function addMetadataToZipFile(string $zipFile, ResourceSyncDTO $resourceSyncDTO): void
     {
         $zipArchive = $this->getZipArchive();
 
         $zipArchive->open($zipFile);
 
-        foreach ($resourceTransferDTO->getMetadata() as $metadataName => $metadata) {
+        foreach ($resourceSyncDTO->getMetadata() as $metadataName => $metadata) {
             if (!empty($metadata)) {
                 $this->saveMetaData($zipArchive, $metadataName . '.json', json_encode($metadata));
             }

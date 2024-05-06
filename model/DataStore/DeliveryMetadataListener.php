@@ -38,7 +38,9 @@ class DeliveryMetadataListener extends ConfigurableService
 
     public const SERVICE_ID = 'taoDeliveryRdf/DeliveryMetadataListener';
 
-    public const FILE_SYSTEM_ID = 'dataStore';
+    private const FILE_SYSTEM_ID = 'dataStore';
+    private const MAX_TRIES_DEFAULT = 10;
+    private const MAX_TRIES_OPTION_NAME = 'max_tries';
 
     public function whenDeliveryIsPublished(Event $event): void
     {
@@ -50,14 +52,14 @@ class DeliveryMetadataListener extends ConfigurableService
             $this->logDebug(sprintf('Processing MetaData event for %s', get_class($event)));
             $this->checkEventType($event);
 
-            $resourceTransferDTO = $this->getProcessDataService()->prepareMetaData(
+            $resourceSyncDTO = $this->getPrepareDataService()->getResourceSyncData(
                 $event->getDeliveryUri(),
-                $this->getOption('max_tries', 10),
+                $this->getOption(self::MAX_TRIES_OPTION_NAME, self::MAX_TRIES_DEFAULT),
                 true,
                 self::FILE_SYSTEM_ID
             );
 
-            $this->triggerSyncTask($resourceTransferDTO);
+            $this->triggerSyncTask($resourceSyncDTO);
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
         } catch (Throwable $exception) {
             $this->logError(sprintf(
@@ -90,16 +92,16 @@ class DeliveryMetadataListener extends ConfigurableService
         }
     }
 
-    private function triggerSyncTask(ResourceTransferDTO $resourceTransferDTO): void
+    private function triggerSyncTask(ResourceSyncDTO $resourceSyncDTO): void
     {
         /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = $this->getQueueDispatcher();
         $queueDispatcher->createTask(
-            new MetaDataDeliverySyncTask(),
-            [$resourceTransferDTO, 0],
+            new DeliverySyncTask(),
+            [$resourceSyncDTO, 0],
             __(
                 'Syncing data of a delivery "%s".',
-                $resourceTransferDTO->getResourceId()
+                $resourceSyncDTO->getResourceId()
             )
         );
     }
@@ -109,8 +111,8 @@ class DeliveryMetadataListener extends ConfigurableService
         return $this->getServiceLocator()->get(FeatureFlagChecker::class);
     }
 
-    private function getProcessDataService(): ProcessDataService
+    private function getPrepareDataService(): PrepareDataService
     {
-        return $this->getServiceLocator()->get(ProcessDataService::class);
+        return $this->getServiceLocator()->get(PrepareDataService::class);
     }
 }

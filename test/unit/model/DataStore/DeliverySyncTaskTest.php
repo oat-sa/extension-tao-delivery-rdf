@@ -32,13 +32,14 @@ use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\taoDeliveryRdf\model\DataStore\DeliveryMetadataListener;
-use oat\taoDeliveryRdf\model\DataStore\MetaDataDeliverySyncTask;
+use oat\taoDeliveryRdf\model\DataStore\DeliverySyncTask;
 use oat\taoDeliveryRdf\model\DataStore\PersistDataService;
+use oat\taoDeliveryRdf\model\DataStore\ResourceSyncDTO;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use PHPUnit\Framework\MockObject\MockObject;
 use taoQtiTest_models_classes_QtiTestService;
 
-class MetaDataDeliverySyncTaskTest extends TestCase
+class DeliverySyncTaskTest extends TestCase
 {
     use OntologyMockTrait;
 
@@ -60,7 +61,7 @@ class MetaDataDeliverySyncTaskTest extends TestCase
     /** @var core_kernel_persistence_smoothsql_SmoothModel */
     private $ontology;
 
-    /** @var MetaDataDeliverySyncTask */
+    /** @var DeliverySyncTask */
     private $subject;
 
     /** @var FeatureFlagCheckerInterface|MockObject */
@@ -87,13 +88,13 @@ class MetaDataDeliverySyncTaskTest extends TestCase
             ]
         );
 
-        $this->subject = new MetaDataDeliverySyncTask();
+        $this->subject = new DeliverySyncTask();
     }
 
     public function testJsonSerialize(): void
     {
         $this->assertEquals(
-            MetaDataDeliverySyncTask::class,
+            DeliverySyncTask::class,
             $this->subject->jsonSerialize()
         );
     }
@@ -118,16 +119,8 @@ class MetaDataDeliverySyncTaskTest extends TestCase
             $mockTest
         );
 
-        $param = [
-            MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME => $mockDelivery->getUri(),
-            MetaDataDeliverySyncTask::MAX_TRIES_PARAM_NAME => 1,
-            MetaDataDeliverySyncTask::INCLUDE_DELIVERY_METADATA_PARAM_NAME => true,
-            MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME => DeliveryMetadataListener::FILE_SYSTEM_ID,
-            MetaDataDeliverySyncTask::IS_DELETE_PARAM_NAME => false,
-            'count' => 0
-        ];
         $subject = $this->subject;
-        $response = $subject($param);
+        $response = $subject([[$mockDelivery->getUri(), 'dataStore'], 0]);
         $expected = new Report(Report::TYPE_SUCCESS);
         $expected->setMessage('Success MetaData syncing for delivery: ' . $mockDelivery->getUri());
         $this->assertEquals($expected, $response);

@@ -2,24 +2,33 @@
 
 namespace oat\taoDeliveryRdf\model\DataStore;
 
-use Exception;
 use JsonSerializable;
 
-class ResourceTransferDTO implements \Serializable, JsonSerializable
+class ResourceSyncDTO implements JsonSerializable
 {
     private string $resourceId;
     private string $fileSystemId;
-    private ?string $testUri = null;
+    private ?string $testUri;
     private bool $isDeleted;
     private ?string $tenantId;
-    private ?string $firstTenantId = null;
-    private int $maxTries = 1;
-    private array $deliveryMetaData = [];
-    private array $testMetaData = [];
-    private array $itemMetaData = [];
+    private ?string $firstTenantId;
+    private int $maxTries;
+    private array $deliveryMetaData;
+    private array $testMetaData;
+    private array $itemMetaData;
 
-    public function __construct(string $resourceId, string $fileSystemId, ?string $testUri, bool $isDeleted, ?string $tenantId, ?string $firstTenantId, int $maxTries, array $deliveryMetaData, array $testMetaData, array $itemMetaData)
-    {
+    public function __construct(
+        string $resourceId,
+        string $fileSystemId,
+        ?string $testUri = null,
+        bool $isDeleted = false,
+        ?string $tenantId = null,
+        ?string $firstTenantId = null,
+        int $maxTries = 10,
+        array $deliveryMetaData = [],
+        array $testMetaData = [],
+        array $itemMetaData = []
+    ) {
         $this->resourceId = $resourceId;
         $this->fileSystemId = $fileSystemId;
         $this->testUri = $testUri;
@@ -41,22 +50,10 @@ class ResourceTransferDTO implements \Serializable, JsonSerializable
         ];
     }
 
-    public function serialize()
-    {
-        $vars = get_object_vars($this);
-        return serialize($vars);
-    }
-
-    public function unserialize($data)
-    {
-        [$this->resourceId] = unserialize($data);
-    }
-
     public function jsonSerialize()
     {
-        $t = 1;
+        return get_object_vars($this);
     }
-
 
     //------------------GENERATED---------------------
 
@@ -93,20 +90,5 @@ class ResourceTransferDTO implements \Serializable, JsonSerializable
     public function getMaxTries(): int
     {
         return $this->maxTries;
-    }
-
-    public function getDeliveryMetaData(): array
-    {
-        return $this->deliveryMetaData;
-    }
-
-    public function getTestMetaData(): array
-    {
-        return $this->testMetaData;
-    }
-
-    public function getItemMetaData(): array
-    {
-        return $this->itemMetaData;
     }
 }

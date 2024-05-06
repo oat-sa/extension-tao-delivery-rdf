@@ -23,7 +23,9 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\test\unit\model\DataStore;
 
 use oat\generis\test\ServiceManagerMockTrait;
-use oat\taoDeliveryRdf\model\DataStore\MetaDataDeliverySyncTask;
+use oat\taoDeliveryRdf\model\DataStore\DeliverySyncTask;
+use oat\taoDeliveryRdf\model\DataStore\PrepareDataService;
+use oat\taoDeliveryRdf\model\DataStore\ResourceSyncDTO;
 use PHPUnit\Framework\TestCase;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
@@ -55,16 +57,15 @@ class PersistDataServiceTest extends TestCase
         ]);
 
         $this->subject = new PersistDataService(
-            [PersistDataService::OPTION_EXPORTER_SERVICE => $this->exporterHelper]
+            [
+                PersistDataService::OPTION_EXPORTER_SERVICE => $this->exporterHelper,
+            ]
         );
 
         $this->subject->setServiceLocator($serviceLocator);
     }
 
-    /**
-     * @dataProvider provideDataForPersist
-     */
-    public function testPersist($params): void
+    public function testPersist(): void
     {
         $this->filesystemHelper
             ->expects($this->once())
@@ -73,23 +74,6 @@ class PersistDataServiceTest extends TestCase
 
         $this->exporterHelper->expects($this->once())->method('export')->willReturn(true);
 
-        $this->subject->persist($params);
-    }
-
-    public function provideDataForPersist(): array
-    {
-        return [
-            [
-                [
-                    MetaDataDeliverySyncTask::DELIVERY_OR_TEST_ID_PARAM_NAME => 'bogus',
-                    'testUri' => 'testBogus',
-                    'deliveryMetaData' => [],
-                    'testMetaData' => [],
-                    'itemMetaData' => [],
-                    MetaDataDeliverySyncTask::IS_DELETE_PARAM_NAME => false,
-                    MetaDataDeliverySyncTask::FILE_SYSTEM_ID_PARAM_NAME => 'dataStore',
-                ], ''
-            ]
-        ];
+        $this->subject->persist(new ResourceSyncDTO('bogus', 'dataStore', 'testBogus'));
     }
 }

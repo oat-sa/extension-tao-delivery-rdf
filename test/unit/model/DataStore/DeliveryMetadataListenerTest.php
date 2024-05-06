@@ -30,6 +30,8 @@ use oat\oatbox\log\LoggerService;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use oat\taoDeliveryRdf\model\DataStore\DeliveryMetadataListener;
+use oat\taoDeliveryRdf\model\DataStore\PrepareDataService;
+use oat\taoDeliveryRdf\model\DataStore\ResourceSyncDTO;
 use oat\taoDeliveryRdf\model\event\DeliveryCreatedEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -47,6 +49,9 @@ class DeliveryMetadataListenerTest extends TestCase
     /** @var FeatureFlagChecker */
     private $featureFlagChecker;
 
+    /** @var PrepareDataService */
+    private $prepareDataService;
+
     /** @var core_kernel_persistence_smoothsql_SmoothModel */
     private $ontology;
 
@@ -62,13 +67,15 @@ class DeliveryMetadataListenerTest extends TestCase
 
         $this->queueDispatcher = $this->createMock(QueueDispatcher::class);
         $this->featureFlagChecker = $this->createMock(FeatureFlagChecker::class);
+        $this->prepareDataService = $this->createMock(PrepareDataService::class);
         $this->log = $this->createMock(LoggerService::class);
         $this->ontology = $this->getOntologyMock();
 
         $this->serviceLocator = $this->getServiceLocatorMock([
             QueueDispatcher::SERVICE_ID => $this->queueDispatcher,
             FeatureFlagChecker::class => $this->featureFlagChecker,
-            LoggerService::SERVICE_ID => $this->log
+            LoggerService::SERVICE_ID => $this->log,
+            PrepareDataService::class => $this->prepareDataService,
         ]);
 
         $this->subject = new DeliveryMetadataListener();
@@ -82,9 +89,13 @@ class DeliveryMetadataListenerTest extends TestCase
         $class->createInstance('Bogus');
 
         $event = $this->createMock(DeliveryCreatedEvent::class);
-        $event->expects($this->once())->method('getDeliveryUri');
+        $event->expects($this->once())->method('getDeliveryUri')->willReturn('resource_id');
 
         $this->featureFlagChecker->method('isEnabled')->willReturn(true);
+        $this->prepareDataService
+            ->method('getResourceSyncData')
+            ->willReturn(new ResourceSyncDTO('resource_id', 'dataStore'));
+
         $this->queueDispatcher->expects($this->once())->method('createTask')->willReturn(true);
 
         $this->subject->whenDeliveryIsPublished($event);

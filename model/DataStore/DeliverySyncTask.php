@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\DataStore;
 
-use common_exception_Error;
-use core_kernel_persistence_Exception;
 use JsonSerializable;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
@@ -32,40 +30,37 @@ use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\tao\model\taskQueue\QueueDispatcher;
 use Throwable;
 
-class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializable
+class DeliverySyncTask extends AbstractAction implements JsonSerializable
 {
     use OntologyAwareTrait;
 
     /**
      * @throws InvalidServiceManagerException
-     * @throws common_exception_Error
-     * @throws core_kernel_persistence_Exception
      */
     public function __invoke($params)
     {
         $report = new Report(Report::TYPE_SUCCESS);
-        /** @var ResourceTransferDTO $resourceTransferDTO */
-        $resourceTransferDTO = $params[0];
+        $resourceSyncDTO = new ResourceSyncDTO(...$params[0]);
         $tryNumber = $params[1];
 
-        if ($tryNumber < $resourceTransferDTO->getMaxTries()) {
+        if ($tryNumber < $resourceSyncDTO->getMaxTries()) {
             $tryNumber++;
             try {
-                $this->getPersistDataService()->persist($params);
+                $this->getPersistDataService()->persist($resourceSyncDTO);
                 $report->setMessage(sprintf(
                     'Success MetaData syncing for delivery: %s',
-                    $resourceTransferDTO->getResourceId()
+                    $resourceSyncDTO->getResourceId()
                 ));
             } catch (Throwable $exception) {
                 $this->logError(sprintf(
                     'Failing MetaData syncing for delivery: %s with message: %s',
-                    $resourceTransferDTO->getResourceId(),
+                    $resourceSyncDTO->getResourceId(),
                     $exception->getMessage()
                 ));
 
                 $report->setType(Report::TYPE_ERROR);
                 $report->setMessage($exception->getMessage());
-                $this->requeueTask($resourceTransferDTO, $tryNumber);
+                $this->requeueTask($resourceSyncDTO, $tryNumber);
             }
         }
 
@@ -80,29 +75,31 @@ class MetaDataDeliverySyncTask extends AbstractAction implements JsonSerializabl
     /**
      * @throws InvalidServiceManagerException
      */
+    private function requeueTask(ResourceSyncDTO $resourceSyncDTO, int $tryNumber): void
+    {
+        $queueDispatcher = $this->getQueueDispatcher();
+        $queueDispatcher->createTask(
+            $this,
+            [$resourceSyncDTO, $tryNumber],
+            __(
+                'DataStore sync retry number "%s" for delivery with id: "%s".',
+                $tryNumber,
+                $resourceSyncDTO->getResourceId()
+            )
+        );
+    }
+
+    /**
+     * @throws InvalidServiceManagerException
+     */
     private function getQueueDispatcher(): QueueDispatcher
     {
         return $this->getServiceLocator()->get(QueueDispatcher::SERVICE_ID);
     }
 
     /**
-     * @param $params
      * @throws InvalidServiceManagerException
      */
-    private function requeueTask(ResourceTransferDTO $resourceTransferDTO, int $tryNumber): void
-    {
-        $queueDispatcher = $this->getQueueDispatcher();
-        $queueDispatcher->createTask(
-            $this,
-            [$resourceTransferDTO, $tryNumber],
-            __(
-                'DataStore sync retry number "%s" for test of delivery with id: "%s".',
-                $tryNumber,
-                $resourceTransferDTO->getResourceId()
-            )
-        );
-    }
-
     private function getPersistDataService(): PersistDataService
     {
         return $this->getServiceLocator()->get(PersistDataService::class);

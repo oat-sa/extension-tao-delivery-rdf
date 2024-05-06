@@ -34,27 +34,18 @@ use oat\tao\model\metadata\compiler\ResourceMetadataCompilerInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use taoQtiTest_models_classes_QtiTestService;
 
-class ProcessDataService extends ConfigurableService
+class PrepareDataService extends ConfigurableService
 {
     use OntologyAwareTrait;
 
-//    public const PARAM_INCLUDE_DELIVERY_METADATA = 'includeMetadata';
-//    public const PARAM_RESOURCE_ID = 'resourceId';
-//    public const PARAM_FILE_SYSTEM_ID = 'fileSystemId';
-//    public const PARAM_TEST_URI = 'testUri';
-//    public const PARAM_IS_DELETE = 'isDeleted';
-//    public const PARAM_TENANT_ID = 'tenantId';
-//    public const PARAM_FIRST_TENANT_ID = 'firstTenantId';
-//    public const PARAM_COUNT = 'count';
-
-    public function prepareMetaData(
-        string  $resourceId,
-        int     $maxTries,
-        bool    $includeDeliveryMetaData,
-        string  $fileSystemId,
+    public function getResourceSyncData(
+        string $resourceId,
+        int $maxTries,
+        bool $includeDeliveryMetaData,
+        string $fileSystemId,
         bool $isDelete = false,
         ?string $firstTenantId = null
-    ): ResourceTransferDTO {
+    ): ResourceSyncDTO {
         $compiler = $this->getMetaDataCompiler();
         $testUri = $resourceId;
         $deliveryMetaData = [];
@@ -64,23 +55,20 @@ class ProcessDataService extends ConfigurableService
 
         if (!$isDelete) {
             if ($includeDeliveryMetaData) {
-                //DeliveryMetaData
                 $deliveryResource = $this->getResource($resourceId);
                 $deliveryMetaData = $this->getResourceJsonMetadataCompiler()->compile($deliveryResource);
                 $tenantId = $deliveryMetaData['tenant-id'] ?? null;
                 $testUri = $this->getTestUri($deliveryResource);
             }
 
-            //test MetaData
             $test = $this->getResource($resourceId);
             $testMetaData = $compiler->compile($test);
             $testMetaData['first-tenant-id'] = $firstTenantId;
 
-            //Item MetaData
             $itemMetaData = $this->getItemMetaData($test, $compiler);
         }
 
-        return new ResourceTransferDTO(
+        return new ResourceSyncDTO(
             $resourceId,
             $fileSystemId,
             $testUri,
