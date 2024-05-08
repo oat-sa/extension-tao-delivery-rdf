@@ -61,7 +61,7 @@ class PrepareDataService extends ConfigurableService
                 $testUri = $this->getTestUri($deliveryResource);
             }
 
-            $test = $this->getResource($resourceId);
+            $test = $this->getResource($testUri);
             $testMetaData = $compiler->compile($test);
             $testMetaData['first-tenant-id'] = $firstTenantId;
 
