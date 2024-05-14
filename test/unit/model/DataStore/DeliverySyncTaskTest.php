@@ -31,13 +31,15 @@ use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
 use oat\tao\model\taskQueue\QueueDispatcher;
-use oat\taoDeliveryRdf\model\DataStore\MetaDataDeliverySyncTask;
+use oat\taoDeliveryRdf\model\DataStore\DeliveryMetadataListener;
+use oat\taoDeliveryRdf\model\DataStore\DeliverySyncTask;
 use oat\taoDeliveryRdf\model\DataStore\PersistDataService;
+use oat\taoDeliveryRdf\model\DataStore\ResourceSyncDTO;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use PHPUnit\Framework\MockObject\MockObject;
 use taoQtiTest_models_classes_QtiTestService;
 
-class MetaDataDeliverySyncTaskTest extends TestCase
+class DeliverySyncTaskTest extends TestCase
 {
     use OntologyMockTrait;
 
@@ -59,7 +61,7 @@ class MetaDataDeliverySyncTaskTest extends TestCase
     /** @var core_kernel_persistence_smoothsql_SmoothModel */
     private $ontology;
 
-    /** @var MetaDataDeliverySyncTask */
+    /** @var DeliverySyncTask */
     private $subject;
 
     /** @var FeatureFlagCheckerInterface|MockObject */
@@ -86,13 +88,13 @@ class MetaDataDeliverySyncTaskTest extends TestCase
             ]
         );
 
-        $this->subject = new MetaDataDeliverySyncTask();
+        $this->subject = new DeliverySyncTask();
     }
 
     public function testJsonSerialize(): void
     {
         $this->assertEquals(
-            MetaDataDeliverySyncTask::class,
+            DeliverySyncTask::class,
             $this->subject->jsonSerialize()
         );
     }
@@ -117,13 +119,8 @@ class MetaDataDeliverySyncTaskTest extends TestCase
             $mockTest
         );
 
-        $param = [
-            'deliveryId' => $mockDelivery->getUri(),
-            'max_tries' => 1,
-            'count' => 0
-        ];
         $subject = $this->subject;
-        $response = $subject($param);
+        $response = $subject([[$mockDelivery->getUri(), 'dataStore'], 0]);
         $expected = new Report(Report::TYPE_SUCCESS);
         $expected->setMessage('Success MetaData syncing for delivery: ' . $mockDelivery->getUri());
         $this->assertEquals($expected, $response);
