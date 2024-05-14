@@ -38,7 +38,9 @@ class DeliveryMetadataListener extends ConfigurableService
 
     public const SERVICE_ID = 'taoDeliveryRdf/DeliveryMetadataListener';
 
-    public const OPTION_MAX_TRIES = 'max_tries';
+    private const FILE_SYSTEM_ID = 'dataStore';
+    private const MAX_TRIES_DEFAULT = 10;
+    private const MAX_TRIES_OPTION_NAME = 'max_tries';
 
     public function whenDeliveryIsPublished(Event $event): void
     {
@@ -49,12 +51,22 @@ class DeliveryMetadataListener extends ConfigurableService
         try {
             $this->logDebug(sprintf('Processing MetaData event for %s', get_class($event)));
             $this->checkEventType($event);
-            $params['deliveryId'] = $event->getDeliveryUri();
-            $params[self::OPTION_MAX_TRIES] = $this->getOption(self::OPTION_MAX_TRIES, 10);
-            $this->triggerSyncTask($params);
+
+            $resourceSyncDTO = $this->getPrepareDataService()->getResourceSyncData(
+                $event->getDeliveryUri(),
+                $this->getOption(self::MAX_TRIES_OPTION_NAME, self::MAX_TRIES_DEFAULT),
+                true,
+                self::FILE_SYSTEM_ID
+            );
+
+            $this->triggerSyncTask($resourceSyncDTO);
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
         } catch (Throwable $exception) {
-            $this->logError(sprintf('Error processing event %s: %s', get_class($event), $exception->getMessage()));
+            $this->logError(sprintf(
+                'Error processing event %s: %s',
+                get_class($event),
+                $exception->getMessage()
+            ));
         }
     }
 
@@ -72,23 +84,35 @@ class DeliveryMetadataListener extends ConfigurableService
     private function checkEventType(Event $event): void
     {
         if (!$event instanceof AbstractDeliveryEvent) {
-            throw new RuntimeException($event);
+            throw new RuntimeException(sprintf(
+                "Wrong event type. Required instance of %s, %s given",
+                AbstractDeliveryEvent::class,
+                get_class($event)
+            ));
         }
     }
 
-    private function triggerSyncTask(array $params): void
+    private function triggerSyncTask(ResourceSyncDTO $resourceSyncDTO): void
     {
         /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = $this->getQueueDispatcher();
         $queueDispatcher->createTask(
-            new MetaDataDeliverySyncTask(),
-            $params,
-            __('Continue try to sync metadata of delivery "%s".', $params['deliveryId'])
+            new DeliverySyncTask(),
+            [$resourceSyncDTO, 0],
+            __(
+                'Syncing data of a delivery "%s".',
+                $resourceSyncDTO->getResourceId()
+            )
         );
     }
 
     private function getFeatureFlag(): FeatureFlagChecker
     {
         return $this->getServiceLocator()->get(FeatureFlagChecker::class);
+    }
+
+    private function getPrepareDataService(): PrepareDataService
+    {
+        return $this->getServiceLocator()->get(PrepareDataService::class);
     }
 }
