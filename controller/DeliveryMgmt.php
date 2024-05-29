@@ -27,6 +27,7 @@ use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
 use oat\tao\helpers\Template;
 use oat\tao\model\accessControl\RoleBasedContextRestrictAccess;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\resources\ResourceWatcher;
 use oat\tao\model\TaoOntology;
@@ -138,9 +139,13 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             $this->setData('groupTree', $tree->render());
         }
 
+        $solarDesignEnabled = $this->getFeatureFlagChecker()->isEnabled(
+            FeatureFlagCheckerInterface::FEATURE_FLAG_SOLAR_DESIGN_ENABLED
+        );
+
         $this->setData(
             'ttdisabled',
-            $this->isUserRestricted()
+            $this->isUserRestricted() || $solarDesignEnabled
         );
 
         // testtaker brick
@@ -372,4 +377,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     {
         return $this->getPsrContainer()->get(RoleBasedContextRestrictAccess::class);
     }
+
+    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
+    {
+        return $this->getServiceLocator()->get(FeatureFlagChecker::class);
+    }
+
 }
