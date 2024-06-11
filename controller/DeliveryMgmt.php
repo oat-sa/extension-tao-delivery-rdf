@@ -382,5 +382,4 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     {
         return $this->getServiceLocator()->get(FeatureFlagChecker::class);
     }
-
 }
