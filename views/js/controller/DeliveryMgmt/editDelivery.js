@@ -20,13 +20,56 @@
 define([
     'jquery',
     'util/url',
+    'services/features',
     'ui/modal',
     'css!taoDeliveryRdfCss/delivery-rdf.css'
-], function ($, urlUtil) {
+], function ($, urlUtil, features) {
     'use strict';
+
+    /**
+     * Finds property block and hides it adding .hidden class
+     * @param {string} propName 
+     */
+    function hidePropertyBlockByName(propName) {
+        const inputCssQuery = `form[action="/taoDeliveryRdf/DeliveryMgmt/editDelivery"] input[name="${propName}"]`;
+        $(inputCssQuery).closest('form > div').addClass('hidden');
+    }
 
     return {
         start(){
+
+            const featuresPath = 'taoDeliveryRdf/deliveryMgmt/';
+            if(!features.isVisible(`${featuresPath}resourceIdentifier`)) {
+                hidePropertyBlockByName('id');
+            }
+            if(!features.isVisible(`${featuresPath}maxExecutions`)) {
+                hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_Maxexec');
+            }
+            if(!features.isVisible(`${featuresPath}maxExecutions`)) {
+                hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_Maxexec');
+            }
+            if(!features.isVisible(`${featuresPath}startDate`)) {
+                hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_PeriodStart');
+            }
+            if(!features.isVisible(`${featuresPath}endDate`)) {
+                hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_PeriodEnd');
+            }
+            if(!features.isVisible(`${featuresPath}displayOrder`)) {
+                hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_DisplayOrder');
+            }
+            if(!features.isVisible(`${featuresPath}access`)) {
+                hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_AccessSettings_0');
+            }
+            if(!features.isVisible(`${featuresPath}proctoringSettings`)) {
+                hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_ProctorAccessible_0');
+            }
+            if(!features.isVisible(`${featuresPath}publicationId`)) {
+                hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_taoDeliverConnect_0_rdf_3_PublicationId');
+            }
+            if(!features.isVisible(`${featuresPath}assessmentProjectId`)) {
+                hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_AssessmentProjectId');
+            }
+                        
             $('#exclude-btn').click(function() {
                 const delivery = $(this).data('delivery');
 

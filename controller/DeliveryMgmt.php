@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2024 (original work) Open Assessment Technologies SA;
  *
  *
  */
@@ -27,6 +27,7 @@ use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
 use oat\tao\helpers\Template;
 use oat\tao\model\accessControl\RoleBasedContextRestrictAccess;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\resources\ResourceWatcher;
 use oat\tao\model\TaoOntology;
@@ -138,9 +139,13 @@ class DeliveryMgmt extends \tao_actions_SaSModule
             $this->setData('groupTree', $tree->render());
         }
 
+        $solarDesignEnabled = $this->getFeatureFlagChecker()->isEnabled(
+            FeatureFlagCheckerInterface::FEATURE_FLAG_SOLAR_DESIGN_ENABLED
+        );
+
         $this->setData(
             'ttdisabled',
-            $this->isUserRestricted()
+            $this->isUserRestricted() || $solarDesignEnabled
         );
 
         // testtaker brick
@@ -371,5 +376,10 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     private function getRoleBasedContextRestrictAccess(): RoleBasedContextRestrictAccess
     {
         return $this->getPsrContainer()->get(RoleBasedContextRestrictAccess::class);
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
+    {
+        return $this->getServiceLocator()->get(FeatureFlagChecker::class);
     }
 }
