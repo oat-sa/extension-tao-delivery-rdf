@@ -27,6 +27,7 @@ use oat\generis\model\data\Ontology;
 use oat\generis\test\OntologyMockTrait;
 use oat\generis\test\TestCase;
 use oat\oatbox\reporting\Report;
+use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\metadata\compiler\ResourceJsonMetadataCompiler;
@@ -99,6 +100,9 @@ class DeliverySyncTaskTest extends TestCase
         );
     }
 
+    /**
+     * @throws InvalidServiceManagerException
+     */
     public function testInvoke()
     {
         $this->persistDataService->method('persist');
@@ -124,5 +128,15 @@ class DeliverySyncTaskTest extends TestCase
         $expected = new Report(Report::TYPE_SUCCESS);
         $expected->setMessage('Success MetaData syncing for delivery: ' . $mockDelivery->getUri());
         $this->assertEquals($expected, $response);
+
+        try {
+            $subject = $this->subject;
+            $subject([
+                ['resourceId' => $mockDelivery->getUri(), 'fileSystemId' => 'dataStore'], // check assoc array
+                0
+            ]);
+        } catch (\Throwable $e) {
+            $this->fail(sprintf('Exception thrown during the task invoke %s', $e->getMessage()));
+        }
     }
 }
