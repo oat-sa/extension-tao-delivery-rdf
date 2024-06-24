@@ -27,11 +27,11 @@ define([
     'use strict';
 
     /**
-     * Finds property block and hides it adding .hidden class
+     * Finds property blocks starting with propName and hides it adding .hidden class
      * @param {string} propName 
      */
     function hidePropertyBlockByName(propName) {
-        const inputCssQuery = `form[action="/taoDeliveryRdf/DeliveryMgmt/editDelivery"] input[name="${propName}"]`;
+        const inputCssQuery = `form[action="/taoDeliveryRdf/DeliveryMgmt/editDelivery"] input[name^="${propName}"]`;
         $(inputCssQuery).closest('form > div').addClass('hidden');
     }
 
@@ -68,6 +68,9 @@ define([
             }
             if(!features.isVisible(`${featuresPath}assessmentProjectId`)) {
                 hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_AssessmentProjectId');
+            }
+            if(!features.isVisible(`${featuresPath}testRunnerFeatures`)) {
+                hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_DeliveryTestRunnerFeatures_');
             }
                         
             $('#exclude-btn').click(function() {
