@@ -40,7 +40,7 @@ class DeliverySyncTask extends AbstractAction implements JsonSerializable
     public function __invoke($params)
     {
         $report = new Report(Report::TYPE_SUCCESS);
-        $resourceSyncDTO = new ResourceSyncDTO(...$params[0]);
+        $resourceSyncDTO = new ResourceSyncDTO(...array_values($params[0]));
         $tryNumber = $params[1];
 
         if ($tryNumber < $resourceSyncDTO->getMaxTries()) {
