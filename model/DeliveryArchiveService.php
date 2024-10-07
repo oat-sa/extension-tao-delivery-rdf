@@ -84,7 +84,7 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
     {
         $fileName = $this->getArchiveFileName($compiledDelivery);
 
-        if (!$force && $this->getArchiveFileSystem()->has($fileName)) {
+        if (!$force && $this->getArchiveFileSystem()->fileExists($fileName)) {
             throw new DeliverArchiveExistingException(
                 'Delivery archive already created: ' . $compiledDelivery->getUri()
             );
@@ -135,7 +135,7 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
     {
         $fileName = $this->getArchiveFileName($compiledDelivery);
 
-        if (!$this->getArchiveFileSystem()->has($fileName)) {
+        if (!$this->getArchiveFileSystem()->fileExists($fileName)) {
             throw new DeliveryArchiveNotExistingException(
                 'Delivery archive not exist please generate: ' . $compiledDelivery->getUri()
             );
@@ -172,7 +172,7 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
     public function deleteArchive($compiledDelivery)
     {
         $fileName = $this->getArchiveFileName($compiledDelivery);
-        if ($this->getArchiveFileSystem()->has($fileName)) {
+        if ($this->getArchiveFileSystem()->fileExists($fileName)) {
             $this->getArchiveFileSystem()->delete($fileName);
         }
 
@@ -207,7 +207,7 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
                     $entryName = implode('/', $parts);
                     $stream = $zip->getStream($zipEntryName);
                     if (is_resource($stream)) {
-                        $fileSystem->getFileSystem($bucketDestination)->putStream($entryName, $stream);
+                        $fileSystem->getFileSystem($bucketDestination)->writeStream($entryName, $stream);
                     }
                 }
             }
@@ -229,7 +229,7 @@ class DeliveryArchiveService extends ConfigurableService implements DeliveryArch
         if (!file_exists($zipPath) || ($stream = fopen($zipPath, 'r')) === false) {
             throw new DeliveryZipException('Cannot open local tmp zip archive');
         }
-        $this->getArchiveFileSystem()->putStream($fileName, $stream);
+        $this->getArchiveFileSystem()->writeStream($fileName, $stream);
         fclose($stream);
 
         return $fileName;
