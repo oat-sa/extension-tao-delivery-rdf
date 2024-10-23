@@ -25,7 +25,7 @@ namespace oat\taoDeliveryRdf\model\DataStore;
 use common_Exception;
 use common_exception_Error;
 use common_exception_NotFound;
-use oat\oatbox\filesystem\FileSystem;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\helpers\FileHelperService;
@@ -71,7 +71,7 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function getDataStoreFilesystem(string $fileSystemId): FileSystem
+    private function getDataStoreFilesystem(string $fileSystemId): FilesystemInterface
     {
         return $this->getFileSystemManager()->getFileSystem($fileSystemId);
     }
