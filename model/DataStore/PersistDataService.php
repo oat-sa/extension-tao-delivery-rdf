@@ -124,7 +124,7 @@ class PersistDataService extends ConfigurableService
 
             $this->moveExportedZipTest($folder, $resourceSyncDTO->getResourceId(), $resourceSyncDTO);
         } finally {
-            $tempDir->removeDirectory($folder);
+            //FIXME DO not remove directory for tests $tempDir->removeDirectory($folder);
         }
     }
 
@@ -150,17 +150,10 @@ class PersistDataService extends ConfigurableService
 
                 $contents = file_get_contents($zipFile);
 
-                if ($this->getDataStoreFilesystem($fileSystemId)->has($zipFileName)) {
-                    $this->getDataStoreFilesystem($fileSystemId)->update(
-                        $zipFileName,
-                        $contents
-                    );
-                } else {
-                    $this->getDataStoreFilesystem($fileSystemId)->write(
-                        $zipFileName,
-                        $contents
-                    );
-                }
+                $this->getDataStoreFilesystem($fileSystemId)->write(
+                    $zipFileName,
+                    $contents
+                );
             }
         }
     }
