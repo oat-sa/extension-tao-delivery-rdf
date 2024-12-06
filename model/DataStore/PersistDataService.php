@@ -124,7 +124,7 @@ class PersistDataService extends ConfigurableService
 
             $this->moveExportedZipTest($folder, $resourceSyncDTO->getResourceId(), $resourceSyncDTO);
         } finally {
-            //FIXME DO not remove directory for tests $tempDir->removeDirectory($folder);
+            $tempDir->removeDirectory($folder);
         }
     }
 
