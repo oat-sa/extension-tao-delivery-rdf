@@ -25,7 +25,7 @@ namespace oat\taoDeliveryRdf\model\DataStore;
 use common_Exception;
 use common_exception_Error;
 use common_exception_NotFound;
-use oat\oatbox\filesystem\FileSystem;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\helpers\FileHelperService;
@@ -71,7 +71,7 @@ class PersistDataService extends ConfigurableService
      * @throws common_exception_Error
      * @throws common_exception_NotFound
      */
-    private function getDataStoreFilesystem(string $fileSystemId): FileSystem
+    private function getDataStoreFilesystem(string $fileSystemId): FilesystemInterface
     {
         return $this->getFileSystemManager()->getFileSystem($fileSystemId);
     }
@@ -90,13 +90,13 @@ class PersistDataService extends ConfigurableService
         // There is a bug for gcp storage adapter - when deleting a dir with only one file exception is thrown
         // This is why the file itself is removed first
         $zipFileName = $this->getZipFileName($resourceId, $tenantId);
-        if ($this->getDataStoreFilesystem($fileSystemId)->has($zipFileName)) {
+        if ($this->getDataStoreFilesystem($fileSystemId)->fileExists($zipFileName)) {
             $this->getDataStoreFilesystem($fileSystemId)->delete($zipFileName);
         }
 
         $directoryPath = $this->getZipFileDirectory($resourceId, $tenantId);
-        if ($this->getDataStoreFilesystem($fileSystemId)->has($directoryPath)) {
-            $this->getDataStoreFilesystem($fileSystemId)->deleteDir($directoryPath);
+        if ($this->getDataStoreFilesystem($fileSystemId)->directoryExists($directoryPath)) {
+            $this->getDataStoreFilesystem($fileSystemId)->deleteDirectory($directoryPath);
         }
     }
 
@@ -150,17 +150,10 @@ class PersistDataService extends ConfigurableService
 
                 $contents = file_get_contents($zipFile);
 
-                if ($this->getDataStoreFilesystem($fileSystemId)->has($zipFileName)) {
-                    $this->getDataStoreFilesystem($fileSystemId)->update(
-                        $zipFileName,
-                        $contents
-                    );
-                } else {
-                    $this->getDataStoreFilesystem($fileSystemId)->write(
-                        $zipFileName,
-                        $contents
-                    );
-                }
+                $this->getDataStoreFilesystem($fileSystemId)->write(
+                    $zipFileName,
+                    $contents
+                );
             }
         }
     }
