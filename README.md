@@ -28,3 +28,4 @@ Here you can find the environment variables including feature flags
 |----------------------------------------|-----------------------------------------------------------------------------|---------------|
 | FEATURE_FLAG_ENABLE_DATA_STORE_STORAGE | Enable `Data Store` integration                                             | -             |
 | FEATURE_FLAG_DATA_STORE_METADATA_V2    | Allows usage of the new metadata format while integration with `Data Store` | -             |
+| FEATURE_FLAG_DISABLE_DELIVERIES        | Disables delivery features in the UI                                        | -             |
