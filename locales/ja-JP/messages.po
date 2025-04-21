@@ -10,37 +10,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
-"PO-Revision-Date: 2023-12-04 16:25\n"
+"PO-Revision-Date: 2025-02-06 10:28\n"
 
 msgid "%s completed"
 msgstr "%s 完了"
 
 msgid "%s test-taker(s) are excluded."
-msgstr ""
+msgstr "%s テスト受験者は除外されました。"
 
 msgid "Access deliveries as a guest"
 msgstr "ゲストとしてデリバリにアクセス"
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "インポート中にエラーが発生しました"
 
 msgid "Assembly"
-msgstr ""
+msgstr "Assembly"
 
 msgid "Assembly import"
-msgstr ""
+msgstr "アセンブリのインポート"
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "Assigned test-takers"
 
 msgid "Assigned to"
-msgstr ""
+msgstr "割り当て先"
 
 msgid "Available from %s"
-msgstr ""
+msgstr "%sから利用可能"
 
 msgid "Available until %s"
-msgstr ""
+msgstr "%sまで利用可能"
 
 msgid "Cancel"
 msgstr "キャンセル"
@@ -49,20 +49,20 @@ msgid "Class successfully created."
 msgstr "クラスが作成されました。"
 
 msgid "Continue deleting of delivery \"%s\"."
-msgstr ""
+msgstr "\"%s\"の配送を削除し続けます。"
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "新しい配送を作成"
 
 msgid "Create a test"
-msgstr ""
+msgstr "テストを作成"
 
 #, tao-public
 msgid "Delete"
 msgstr "削除"
 
 msgid "Deleting of \"%s"
-msgstr ""
+msgstr "\"%s\" の削除"
 
 #, tao-public
 msgid "Deliveries"
@@ -70,55 +70,55 @@ msgstr "デリバリ"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "配送ライブラリ"
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr ""
+msgstr "配信 \"%s\" は正常にインポートされました"
 
 msgid "Delivery \\'%s\\' not found"
-msgstr ""
+msgstr "配送先 \\\"%s\\' が見つかりません"
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr ""
+msgstr "有効な配送クラスではありません。"
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr "配信は %s テスト受験者に割り当てられています。"
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "配信はテスト受験者に割り当てられていません。"
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "配信が保存されました"
 
 msgid "Delivery with label \"%s\" not found"
-msgstr ""
+msgstr "ラベル \"%s\" の配信が見つかりません"
 
 msgid "Directory %s doesn\\'t exist"
-msgstr ""
+msgstr "ディレクトリ %s は存在しません"
 
 msgid "Error"
 msgstr "エラー"
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "除外された受験者"
 
 msgid "Exported %1$s to %2$s"
-msgstr ""
+msgstr "%1$s を %2$sにエクスポートしました"
 
 msgid "Exporting %s"
-msgstr ""
+msgstr "%sをエクスポート中"
 
 msgid "Guest access"
 msgstr "ゲストアクセス"
 
 msgid "Import QTI test and create delivery."
-msgstr ""
+msgstr "QTIテストをインポートして納品を作成します。"
 
 msgid "Importing %1$s files into \\'%2$s\\'"
-msgstr ""
+msgstr "%1$s ファイルを \\'%2$s\\' にインポートしています"
 
 msgid "Last updated on:"
-msgstr ""
+msgstr "最終更新日時："
 
 #, tao-public
 msgid "Manage Schema"
@@ -142,17 +142,17 @@ msgstr "新規クラス"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "新しい配送"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "試行はまだ開始されていません。"
 
 msgid "No information available about attempts"
-msgstr ""
+msgstr "試行についての情報がありません"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr ""
+msgstr "配信セッションを準備、公開します。"
 
 #, tao-public
 msgid "Properties"
@@ -163,37 +163,37 @@ msgid "Publish"
 msgstr "公開"
 
 msgid "Publish \"%s\" to"
-msgstr ""
+msgstr "公開 \"%s\" へ"
 
 msgid "Publish the test"
-msgstr ""
+msgstr "テストを公開"
 
 msgid "Published on:"
-msgstr ""
+msgstr "公開日時:"
 
 msgid "Publishing of <b>%s</b>"
-msgstr ""
+msgstr "<b>%s</b> の公開"
 
 msgid "Save"
 msgstr "保存"
 
 msgid "Select the test"
-msgstr ""
+msgstr "テストを選択してください"
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr ""
+msgstr "テスト受験者に公開したいテストを選択します"
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "選択が正常に保存されました"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "TAO Guest"
 
 msgid "TAO Guest Access"
 msgstr "TAOゲストアクセス"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr ""
+msgstr "\"%s\" が空なので公開テストに失敗しました。"
 
 msgid "Test-takers"
 msgstr "受験者"
@@ -203,29 +203,29 @@ msgid "Tests"
 msgstr "テスト"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr ""
+msgstr "テスト \"%s\" にはアイテムが含まれていないため、公開できません。"
 
 msgid "There are currently %s attempts"
-msgstr ""
+msgstr "現在 %s 回試行されています"
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "公開できるテストは現在ありません。"
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "現在1回の試行があります"
 
 msgid "Unable to import Archive"
-msgstr ""
+msgstr "アーカイブをインポートできません"
 
 msgid "Unable to load tests"
-msgstr ""
+msgstr "テストを読み込むことができません"
 
 msgid "unlimited"
-msgstr ""
+msgstr "無制限の"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr ""
+msgstr "使用法: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3]..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr ""
+msgstr "使用法: %s Deliverery_CLASS_URI出力ディレクトリ"
 
