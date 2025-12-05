@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 14:12\n"
+"PO-Revision-Date: 2025-12-05 14:37\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl\n"
@@ -20,10 +20,10 @@ msgstr ""
 # http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Test Runner Feature"
-msgstr ""
+msgstr "Testrunner functie"
 
 # http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "allow a user to toggle test runner features per delivery"
-msgstr ""
+msgstr "biedt een gebruiker de mogelijkheid om per publicatie te wisselen tussen de functies van de testrunner"
 
