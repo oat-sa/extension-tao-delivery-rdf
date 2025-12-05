@@ -10,222 +10,222 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2024-12-13 15:20\n"
+"PO-Revision-Date: 2025-12-05 09:51\n"
 
 msgid "%s completed"
-msgstr ""
+msgstr "%s befejezve"
 
 msgid "%s test-taker(s) are excluded."
-msgstr ""
+msgstr "%s tesztvizsgázó(k) kizárva."
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "Hozzáférés a kiszállításokhoz vendégként"
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "Hiba történt az importálás során"
 
 msgid "Assembly"
-msgstr ""
+msgstr "Közgyűlés"
 
 msgid "Assembly import"
-msgstr ""
+msgstr "Összeállítás importálása"
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "Kijelölt tesztvizsgázók"
 
 msgid "Assigned to"
-msgstr ""
+msgstr "Hozzárendelve"
 
 msgid "Available from %s"
-msgstr ""
+msgstr "Elérhető %s-tól"
 
 msgid "Available until %s"
-msgstr ""
+msgstr "Elérhető %s-ig"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Mégsem"
 
 msgid "Class successfully created."
-msgstr ""
+msgstr "Az osztály sikeresen létrehozva."
 
 msgid "Continue deleting of delivery \"%s\"."
-msgstr ""
+msgstr "Folytassa a(z) \"%s\" kézbesítés törlését."
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "Új kézbesítés létrehozása"
 
 msgid "Create a test"
-msgstr ""
+msgstr "Teszt létrehozása"
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Töröl"
 
 msgid "Deleting of \"%s"
-msgstr ""
+msgstr "\"%störlése"
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Szállítások"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "Szállítási könyvtár"
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr ""
+msgstr "A(z) „%s” kézbesítés importálása sikeresen megtörtént."
 
 msgid "Delivery \\'%s\\' not found"
-msgstr ""
+msgstr "Szállítás \\'%s\\' nem található"
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr ""
+msgstr "A megadott kézbesítési osztály URI-ja nem érvényes kézbesítési osztály."
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr "A kézbesítés %s vizsgázóhoz van rendelve."
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "A kézbesítés nincs hozzárendelve egyetlen vizsgázóhoz sem."
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "Szállítás mentve"
 
 msgid "Delivery with label \"%s\" not found"
-msgstr ""
+msgstr "Nem található a(z) \"%s\" címkével ellátott szállítmány."
 
 msgid "Directory %s doesn\\'t exist"
-msgstr ""
+msgstr "A %s könyvtár nem létezik"
 
 msgid "Error"
-msgstr ""
+msgstr "Hiba"
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Kizárt tesztvizsgázók"
 
 msgid "Exported %1$s to %2$s"
-msgstr ""
+msgstr "%1$s exportálva %2$s-ba"
 
 msgid "Exporting %s"
-msgstr ""
+msgstr "Exportálás %s"
 
 msgid "Guest access"
-msgstr ""
+msgstr "Vendéghozzáférés"
 
 msgid "Import QTI test and create delivery."
-msgstr ""
+msgstr "QTI-teszt importálása és szállítás létrehozása."
 
 msgid "Importing %1$s files into \\'%2$s\\'"
-msgstr ""
+msgstr "%1$s fájlok importálása a \\'%2$s\\' programba"
 
 msgid "Last updated on:"
-msgstr ""
+msgstr "Utolsó frissítés:"
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "Séma kezelése"
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "Tesztek kezelése"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Mozog"
 
 #, tao-public
 msgid "Move To"
-msgstr ""
+msgstr "Áthelyezés ide"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Új osztály"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "Új szállítás"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "Még nem indult el semmilyen kísérlet."
 
 msgid "No information available about attempts"
-msgstr ""
+msgstr "Nincsenek információk a próbálkozásokról"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr ""
+msgstr "Szállítási munkamenetek előkészítése, közzététele."
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Tulajdonságok"
 
 #, tao-public
 msgid "Publish"
-msgstr ""
+msgstr "Közzététel"
 
 msgid "Publish \"%s\" to"
-msgstr ""
+msgstr "„%s” közzététele ide:"
 
 msgid "Publish the test"
-msgstr ""
+msgstr "Teszt közzététele"
 
 msgid "Published on:"
-msgstr ""
+msgstr "Megjelent:"
 
 msgid "Publishing of <b>%s</b>"
-msgstr ""
+msgstr "<b>%s</b>kiadása"
 
 msgid "Save"
-msgstr ""
+msgstr "Megtakarítás"
 
 msgid "Select the test"
-msgstr ""
+msgstr "Válassza ki a tesztet"
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr ""
+msgstr "Válaszd ki a tesztet, amelyet közzé szeretnél tenni a vizsgázók számára"
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "A kijelölés sikeresen mentve"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "TAO Vendég"
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "TAO vendéghozzáférés"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr ""
+msgstr "A tesztközzététel sikertelen, mert a(z) „%s” üres."
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Tesztelők"
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "Tesztek"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr ""
+msgstr "A(z) „%s” teszt nem tartalmaz elemeket, és nem publikálható."
 
 msgid "There are currently %s attempts"
-msgstr ""
+msgstr "Jelenleg %s próbálkozás van"
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "Jelenleg nincsenek közzétehető tesztek."
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "Jelenleg 1 próbálkozás van"
 
 msgid "Unable to import Archive"
-msgstr ""
+msgstr "Nem sikerült importálni az archívumot"
 
 msgid "Unable to load tests"
-msgstr ""
+msgstr "Nem sikerült betölteni a teszteket"
 
 msgid "unlimited"
-msgstr ""
+msgstr "korlátlan"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr ""
+msgstr "Használat: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr ""
+msgstr "Használat: %s SZÁLLÍTÁSI_CLASS_URI KIMENETI_KÖNYVTÁR"
 
