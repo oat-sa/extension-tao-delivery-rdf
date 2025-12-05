@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-13 13:01\n"
+"PO-Revision-Date: 2025-12-05 14:37\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Project-ID: 590867\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/widgetdefinitions.rdf.po\n"
-"X-Crowdin-File-ID: 739\n"
+"X-Crowdin-File-ID: 1183\n"
 "Language-Team: French\n"
 
 # http://www.tao.lu/datatypes/WidgetDefinitions.rdf#DeliveryTestRunnerFeature
