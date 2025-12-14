@@ -21,7 +21,7 @@
     "minimum-stability": "dev",
     "require": {
         "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
-        "oat-sa/generis": ">=16.0.0",
+        "oat-sa/generis": "dev-goal/remove-prophesize as 99.99",
         "oat-sa/tao-core": ">=54.26.0",
         "oat-sa/extension-tao-delivery": ">=15.0.0",
         "oat-sa/extension-tao-group": ">=7.0.0",
