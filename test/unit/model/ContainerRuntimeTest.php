@@ -20,7 +20,8 @@
 
 namespace oat\taoDeliveryRdf\test\unit\model;
 
-use oat\generis\test\TestCase;
+use oat\generis\test\ServiceManagerMockTrait;
+use PHPUnit\Framework\TestCase;
 use oat\taoDeliveryRdf\model\ContainerRuntime;
 use oat\generis\test\OntologyMockTrait;
 use oat\generis\model\data\Ontology;
@@ -32,24 +33,24 @@ use oat\oatbox\cache\SimpleCache;
 use oat\taoDelivery\model\container\delivery\DeliveryContainerRegistry;
 use oat\taoDelivery\model\container\DeliveryContainer;
 use oat\oatbox\log\LoggerService;
-use Prophecy\Argument;
 
 class ContainerRuntimeTest extends TestCase
 {
+    use ServiceManagerMockTrait;
     use OntologyMockTrait;
 
-    public function testNoRuntime()
+    public function testNoRuntime(): void
     {
         $this->expectException(common_exception_NoContent::class);
         $ontology = $this->getOntologyMock();
         $runtime = new ContainerRuntime();
-        $runtime->setServiceLocator($this->getServiceLocatorMock([
+        $runtime->setServiceLocator($this->getServiceManagerMock([
             Ontology::SERVICE_ID => $ontology
         ]));
         $runtime->getRuntime('https://IDoNotExist');
     }
 
-    public function testRuntimeResourceDeserializer()
+    public function testRuntimeResourceDeserializer(): void
     {
         $ontology = $this->getOntologyMock();
         $class = $ontology->getClass('http://fakeClass');
@@ -63,7 +64,7 @@ class ContainerRuntimeTest extends TestCase
         );
 
         $runtime = new ContainerRuntime();
-        $runtime->setServiceLocator($this->getServiceLocatorMock([
+        $runtime->setServiceLocator($this->getServiceManagerMock([
             Ontology::SERVICE_ID => $ontology
         ]));
         $runtime = $runtime->getRuntime($delivery->getUri());
@@ -72,7 +73,7 @@ class ContainerRuntimeTest extends TestCase
         $this->assertEquals($serviceCall, $runtime);
     }
 
-    public function testRuntimeStringDeserializer()
+    public function testRuntimeStringDeserializer(): void
     {
         $ontology = $this->getOntologyMock();
         $class = $ontology->getClass('http://fakeClass');
@@ -105,7 +106,7 @@ class ContainerRuntimeTest extends TestCase
         );
 
         $runtime = new ContainerRuntime();
-        $runtime->setServiceLocator($this->getServiceLocatorMock([
+        $runtime->setServiceLocator($this->getServiceManagerMock([
             Ontology::SERVICE_ID => $ontology
         ]));
         $runtime = $runtime->getRuntime($delivery->getUri());
@@ -114,24 +115,22 @@ class ContainerRuntimeTest extends TestCase
         $this->assertEquals($serviceCall, $runtime);
     }
 
-    public function testGetDeliveryContainer()
+    public function testGetDeliveryContainer(): void
     {
         $ontology = $this->getOntologyMock();
         $class = $ontology->getClass('http://fakeClass');
         $delivery = $class->createInstance('Fake Delivery');
         $delivery->setPropertyValue($ontology->getProperty(ContainerRuntime::PROPERTY_CONTAINER), 'notevenjson');
-        $simpleCache = $this->prophesize(SimpleCache::class);
-        $deliveryContainer = $this->prophesize(DeliveryContainer::class)->reveal();
-        $registry = $this->prophesize(DeliveryContainerRegistry::class);
-        $registry->fromJson('notevenjson')->willReturn($deliveryContainer);
-        $registry->setServiceLocator(Argument::any())->willReturn();
-        $registry->setLogger(Argument::any())->willReturn();
+        $simpleCache = $this->createMock(SimpleCache::class);
+        $deliveryContainer = $this->createMock(DeliveryContainer::class);
+        $registry = $this->createMock(DeliveryContainerRegistry::class);
+        $registry->method('fromJson')->with('notevenjson')->willReturn($deliveryContainer);
 
-        $serviceLocator = $this->getServiceLocatorMock([
-            LoggerService::SERVICE_ID => $this->prophesize(LoggerService::class)->reveal(),
+        $serviceLocator = $this->getServiceManagerMock([
+            LoggerService::SERVICE_ID => $this->createMock(LoggerService::class),
             Ontology::SERVICE_ID => $ontology,
-            SimpleCache::SERVICE_ID => $simpleCache->reveal(),
-            DeliveryContainerRegistry::class => $registry->reveal()
+            SimpleCache::SERVICE_ID => $simpleCache,
+            DeliveryContainerRegistry::class => $registry
         ]);
         $runtime = new ContainerRuntime();
         $runtime->setServiceLocator($serviceLocator);
