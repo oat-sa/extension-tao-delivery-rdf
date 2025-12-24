@@ -57,7 +57,7 @@ class DeliveryCreatedEvent extends AbstractDeliveryEvent implements WebhookSeria
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'delivery' => $this->delivery->getUri(),
