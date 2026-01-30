@@ -46,6 +46,7 @@ use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDelivery\model\execution\Monitoring;
+use tao_actions_form_Instance;
 use tao_helpers_form_FormContainer as FormContainer;
 
 /**
@@ -60,6 +61,15 @@ class DeliveryMgmt extends \tao_actions_SaSModule
 
     private const FEATURE_FLAG_GROUPS_DISABLED = 'FEATURE_FLAG_GROUPS_DISABLED';
     private const FEATURE_FLAG_TEST_TAKERS_DISABLED = 'FEATURE_FLAG_TEST_TAKERS_DISABLED';
+
+    private const RESTRICT_START_END_DATE = [
+        DeliveryAssemblyService::PROPERTY_START => [
+            DeliveryAssemblyService::PROPERTY_START => []
+        ],
+        DeliveryAssemblyService::PROPERTY_END => [
+            DeliveryAssemblyService::PROPERTY_START => []
+        ]
+    ];
 
     /**
      * @return EventManager
@@ -94,12 +104,23 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     public function editDelivery()
     {
         $this->defaultData();
-
         $delivery = $this->getCurrentInstance();
+
+        $taoAsATool = $this->getFeatureFlagChecker()->isEnabled(
+            FeatureFlagCheckerInterface::FEATURE_FLAG_TAO_AS_A_TOOL
+        );
+
+        $formOptions = [
+            FormContainer::CSRF_PROTECTION_OPTION => true,
+        ];
+
+        if ($taoAsATool) {
+            $formOptions[DeliveryFormFactory::RESTRICTED_PROPERTIES_OPTION] = self::RESTRICT_START_END_DATE;
+        }
 
         $formContainer = $this->getDeliveryFormFactory()->create(
             $delivery,
-            [FormContainer::CSRF_PROTECTION_OPTION => true]
+            $formOptions
         );
         $myForm = $formContainer->getForm();
         $deliveryUri = $delivery->getUri();
@@ -328,6 +349,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     {
         return parent::moveResource();
     }
+
     /**
      * overwrite the parent moveAllInstances to add the requiresRight only in Items
      * @see tao_actions_TaoModule::moveAll()
@@ -373,6 +395,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     {
         return $this->getPsrContainer()->get(DeliveryFormFactory::class);
     }
+
     private function getRoleBasedContextRestrictAccess(): RoleBasedContextRestrictAccess
     {
         return $this->getPsrContainer()->get(RoleBasedContextRestrictAccess::class);

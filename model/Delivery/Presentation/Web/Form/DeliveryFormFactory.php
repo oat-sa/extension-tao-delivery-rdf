@@ -28,12 +28,15 @@ use core_kernel_classes_Resource as KernelResource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
+use tao_actions_form_Instance;
 use tao_helpers_form_FormContainer as FormContainer;
 
 class DeliveryFormFactory
 {
+    public const RESTRICTED_PROPERTIES_OPTION = 'restrictedProperties';
     use OntologyAwareTrait;
 
     /** @var DeliveryValidatorFactory */
@@ -43,9 +46,10 @@ class DeliveryFormFactory
     private $dependsOnPropertyValidator;
 
     public function __construct(
-        DeliveryValidatorFactory $validatorFactory,
+        DeliveryValidatorFactory   $validatorFactory,
         DependsOnPropertyValidator $dependsOnPropertyValidator
-    ) {
+    )
+    {
         $this->validatorFactory = $validatorFactory;
         $this->dependsOnPropertyValidator = $dependsOnPropertyValidator;
     }
@@ -57,11 +61,14 @@ class DeliveryFormFactory
             $delivery,
             $additionalOptions + [
                 FormContainer::ADDITIONAL_VALIDATORS => $this->validatorFactory->createMultiple(),
-                FormContainer::ATTRIBUTE_VALIDATORS  => [
+                FormContainer::ATTRIBUTE_VALIDATORS => [
                     'data-depends-on-property' => [
                         $this->dependsOnPropertyValidator
                     ],
                 ],
+                isset($additionalOptions[self::RESTRICTED_PROPERTIES_OPTION])
+                    ? $additionalOptions[self::RESTRICTED_PROPERTIES_OPTION]
+                    : null
             ]
         );
     }
