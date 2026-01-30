@@ -36,8 +36,9 @@ use tao_helpers_form_FormContainer as FormContainer;
 
 class DeliveryFormFactory
 {
-    public const RESTRICTED_PROPERTIES_OPTION = 'restrictedProperties';
     use OntologyAwareTrait;
+
+    public const RESTRICTED_PROPERTIES_OPTION = 'restrictedProperties';
 
     /** @var DeliveryValidatorFactory */
     private $validatorFactory;
@@ -46,10 +47,9 @@ class DeliveryFormFactory
     private $dependsOnPropertyValidator;
 
     public function __construct(
-        DeliveryValidatorFactory   $validatorFactory,
+        DeliveryValidatorFactory $validatorFactory,
         DependsOnPropertyValidator $dependsOnPropertyValidator
-    )
-    {
+    ) {
         $this->validatorFactory = $validatorFactory;
         $this->dependsOnPropertyValidator = $dependsOnPropertyValidator;
     }
