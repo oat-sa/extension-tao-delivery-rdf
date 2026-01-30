@@ -46,7 +46,6 @@ use oat\taoDeliveryRdf\view\form\WizardForm;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDelivery\model\execution\Monitoring;
-use tao_actions_form_Instance;
 use tao_helpers_form_FormContainer as FormContainer;
 
 /**

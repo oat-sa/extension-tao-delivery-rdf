@@ -28,10 +28,8 @@ use core_kernel_classes_Resource as KernelResource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
-use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use oat\taoDeliveryRdf\view\form\DeliveryForm;
-use tao_actions_form_Instance;
 use tao_helpers_form_FormContainer as FormContainer;
 
 class DeliveryFormFactory
@@ -65,10 +63,7 @@ class DeliveryFormFactory
                     'data-depends-on-property' => [
                         $this->dependsOnPropertyValidator
                     ],
-                ],
-                isset($additionalOptions[self::RESTRICTED_PROPERTIES_OPTION])
-                    ? $additionalOptions[self::RESTRICTED_PROPERTIES_OPTION]
-                    : null
+                ]
             ]
         );
     }
