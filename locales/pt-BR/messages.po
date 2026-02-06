@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
-"PO-Revision-Date: 2023-12-04 16:25\n"
+"PO-Revision-Date: 2026-02-05 15:47\n"
 
 msgid "%s completed"
 msgstr "%s concluído"
@@ -115,7 +115,7 @@ msgid "Import QTI test and create delivery."
 msgstr "Importar teste QTI e criar a entrega."
 
 msgid "Importing %1$s files into \\'%2$s\\'"
-msgstr ""
+msgstr "Importando arquivos %1$s para \\'%2$s\\'"
 
 msgid "Last updated on:"
 msgstr "Última atualização em:"
@@ -187,7 +187,7 @@ msgid "Selection saved successfully"
 msgstr "Seleção salva com sucesso"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "TAO Guest"
 
 msgid "TAO Guest Access"
 msgstr "Acesso de Convidado TAO"
