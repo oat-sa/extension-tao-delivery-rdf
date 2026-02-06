@@ -10,222 +10,222 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
-"PO-Revision-Date: 2024-07-03 13:29\n"
+"PO-Revision-Date: 2026-02-05 15:46\n"
 
 msgid "%s completed"
-msgstr ""
+msgstr "%s finalizat"
 
 msgid "%s test-taker(s) are excluded."
-msgstr ""
+msgstr "%s este (sunt) exclus(e)."
 
 msgid "Access deliveries as a guest"
-msgstr ""
+msgstr "Accesează livrările ca vizitator"
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "A apărut o eroare în timpul importului"
 
 msgid "Assembly"
-msgstr ""
+msgstr "Adunare"
 
 msgid "Assembly import"
-msgstr ""
+msgstr "Import adunare"
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "Efecutoare de test atribuite"
 
 msgid "Assigned to"
-msgstr ""
+msgstr "Atribuit lui"
 
 msgid "Available from %s"
-msgstr ""
+msgstr "Disponibil de la %s"
 
 msgid "Available until %s"
-msgstr ""
+msgstr "Disponibil până la %s"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Anulează"
 
 msgid "Class successfully created."
-msgstr ""
+msgstr "Clasa a fost creata."
 
 msgid "Continue deleting of delivery \"%s\"."
-msgstr ""
+msgstr "Continuă ștergerea livrării \"%s\"."
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "Creați o nouă livrare"
 
 msgid "Create a test"
-msgstr ""
+msgstr "Creează un test"
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Ștergere"
 
 msgid "Deleting of \"%s"
-msgstr ""
+msgstr "Ştergerea de \"%s"
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Livrări"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "Biblioteca Livrare"
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr ""
+msgstr "Livrare \"%s\" importată cu succes"
 
 msgid "Delivery \\'%s\\' not found"
-msgstr ""
+msgstr "Livrare \\'%s\\' nu a fost găsită"
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr ""
+msgstr "Clasa uri de livrare furnizată nu este o clasă de livrare validă."
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr "Livrarea este atribuită persoanelor de test %s."
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "Livrarea nu este atribuită nici unui evaluator."
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "Livrare salvata"
 
 msgid "Delivery with label \"%s\" not found"
-msgstr ""
+msgstr "Livrarea cu eticheta \"%snu a fost găsită"
 
 msgid "Directory %s doesn\\'t exist"
-msgstr ""
+msgstr "Directorul %s nu există"
 
 msgid "Error"
-msgstr ""
+msgstr "Eroare"
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Excluderea tastatoarelor"
 
 msgid "Exported %1$s to %2$s"
-msgstr ""
+msgstr "Exportat %1$s la %2$s"
 
 msgid "Exporting %s"
-msgstr ""
+msgstr "Se exportă %s"
 
 msgid "Guest access"
-msgstr ""
+msgstr "Acces vizitatori"
 
 msgid "Import QTI test and create delivery."
-msgstr ""
+msgstr "Importați QTI test și creați livrare."
 
 msgid "Importing %1$s files into \\'%2$s\\'"
-msgstr ""
+msgstr "Importă fişierele %1$s în \\'%2$s\\'"
 
 msgid "Last updated on:"
-msgstr ""
+msgstr "Ultima actualizare la:"
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "Gestionare schemă"
 
 #, tao-public
 msgid "Manage tests"
-msgstr ""
+msgstr "Gestionează testele"
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Mutare"
 
 #, tao-public
 msgid "Move To"
-msgstr ""
+msgstr "Mutare în"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Clasa noua"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "Livrare nouă"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "Nicio încercare nu a început încă."
 
 msgid "No information available about attempts"
-msgstr ""
+msgstr "Nu sunt disponibile informaţii despre încercări"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr ""
+msgstr "Pregătește, publică sesiuni de livrare."
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Proprietăți"
 
 #, tao-public
 msgid "Publish"
-msgstr ""
+msgstr "Publică"
 
 msgid "Publish \"%s\" to"
-msgstr ""
+msgstr "Publicare \"%s\" la"
 
 msgid "Publish the test"
-msgstr ""
+msgstr "Publicați testul"
 
 msgid "Published on:"
-msgstr ""
+msgstr "Publicat pe:"
 
 msgid "Publishing of <b>%s</b>"
-msgstr ""
+msgstr "Publicarea lui <b>%s</b>"
 
 msgid "Save"
-msgstr ""
+msgstr "Salvează"
 
 msgid "Select the test"
-msgstr ""
+msgstr "Selectează testul"
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr ""
+msgstr "Selectați testul pe care doriți să îl publicați în test-takers"
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "Selecţie salvată cu succes"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "TAO Guest"
 
 msgid "TAO Guest Access"
-msgstr ""
+msgstr "Acces la vizitatori TAO"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr ""
+msgstr "Editarea a eșuat deoarece \"%s\" este gol."
 
 msgid "Test-takers"
-msgstr ""
+msgstr "Test-takeri"
 
 #, tao-public
 msgid "Tests"
-msgstr ""
+msgstr "Teste"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr ""
+msgstr "Testul \"%s\" nu conține niciun element și nu poate fi publicat."
 
 msgid "There are currently %s attempts"
-msgstr ""
+msgstr "În prezent există %s încercări"
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "În acest moment nu sunt disponibile teste pentru publicare. (Automatic Translation)"
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "În acest moment există o încercare"
 
 msgid "Unable to import Archive"
-msgstr ""
+msgstr "Imposibil de importat Arhiva"
 
 msgid "Unable to load tests"
-msgstr ""
+msgstr "Imposibil de încărcat testele"
 
 msgid "unlimited"
-msgstr ""
+msgstr "nelimitat"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr ""
+msgstr "Utilizare: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3]..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr ""
+msgstr "Utilizare: %s DELIVERY_CLASS_URI ÎNAINTE"
 

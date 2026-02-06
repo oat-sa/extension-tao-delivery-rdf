@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
-"PO-Revision-Date: 2024-03-18 18:53\n"
+"PO-Revision-Date: 2026-02-05 15:46\n"
 
 msgid "%s completed"
 msgstr "%s effectué"
@@ -22,25 +22,25 @@ msgid "Access deliveries as a guest"
 msgstr "Accès invité pour les passations"
 
 msgid "An error occured during the import"
-msgstr ""
+msgstr "Une erreur est survenue lors de l'import"
 
 msgid "Assembly"
-msgstr ""
+msgstr "Assemblage"
 
 msgid "Assembly import"
-msgstr ""
+msgstr "Import d'assemblage"
 
 msgid "Assigned test-takers"
-msgstr ""
+msgstr "Participants de test assignés"
 
 msgid "Assigned to"
-msgstr ""
+msgstr "Assigné à"
 
 msgid "Available from %s"
-msgstr ""
+msgstr "Disponible à partir de %s"
 
 msgid "Available until %s"
-msgstr ""
+msgstr "Disponible jusqu'à %s"
 
 msgid "Cancel"
 msgstr "Annuler"
@@ -49,20 +49,20 @@ msgid "Class successfully created."
 msgstr "Classe créée avec succès."
 
 msgid "Continue deleting of delivery \"%s\"."
-msgstr ""
+msgstr "Poursuivre la suppression de la livraison \"%s\"."
 
 msgid "Create a new delivery"
-msgstr ""
+msgstr "Créer une nouvelle livraison"
 
 msgid "Create a test"
-msgstr ""
+msgstr "Créer un test"
 
 #, tao-public
 msgid "Delete"
 msgstr "Supprimer"
 
 msgid "Deleting of \"%s"
-msgstr ""
+msgstr "Suppression de «%s»"
 
 #, tao-public
 msgid "Deliveries"
@@ -70,55 +70,55 @@ msgstr "Passations"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr ""
+msgstr "Librairie de livraisons"
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr ""
+msgstr "La livraison «%s» a été importée avec succès"
 
 msgid "Delivery \\'%s\\' not found"
-msgstr ""
+msgstr "La livraison \\'%s\\' est introuvable"
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr ""
+msgstr "La classe de livraison uri fournie n'est pas une classe de livraison valide."
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr ""
+msgstr "La livraison est attribuée aux personnes ayant pris le test %s."
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr ""
+msgstr "La livraison n'est attribuée à aucun preneur de test."
 
 msgid "Delivery saved"
-msgstr ""
+msgstr "Livraison enregistrée"
 
 msgid "Delivery with label \"%s\" not found"
-msgstr ""
+msgstr "La livraison avec l'étiquette \"%s\" est introuvable"
 
 msgid "Directory %s doesn\\'t exist"
-msgstr ""
+msgstr "Le répertoire %s n'existe pas"
 
 msgid "Error"
 msgstr "Erreur"
 
 msgid "Excluded test-takers"
-msgstr ""
+msgstr "Exclus de tests"
 
 msgid "Exported %1$s to %2$s"
-msgstr ""
+msgstr "%1$s exporté vers %2$s"
 
 msgid "Exporting %s"
-msgstr ""
+msgstr "Exportation de %s"
 
 msgid "Guest access"
 msgstr "Accès invité"
 
 msgid "Import QTI test and create delivery."
-msgstr ""
+msgstr "Importez le test QTI et créez la livraison."
 
 msgid "Importing %1$s files into \\'%2$s\\'"
-msgstr ""
+msgstr "Importation des fichiers %1$s dans \\'%2$s\\'"
 
 msgid "Last updated on:"
-msgstr ""
+msgstr "Dernière mise à jour le :"
 
 #, tao-public
 msgid "Manage Schema"
@@ -142,58 +142,58 @@ msgstr "Nouvelle classe"
 
 #, tao-public
 msgid "New delivery"
-msgstr ""
+msgstr "Nouvelle livraison"
 
 msgid "No attempt has been started yet."
-msgstr ""
+msgstr "Aucune tentative n'a encore été lancée."
 
 msgid "No information available about attempts"
-msgstr ""
+msgstr "Aucune information disponible sur les tentatives"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr ""
+msgstr "Préparer, publier des sessions de livraison."
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Propriétés"
 
 #, tao-public
 msgid "Publish"
 msgstr "Publier"
 
 msgid "Publish \"%s\" to"
-msgstr ""
+msgstr "Publier «%s» sur"
 
 msgid "Publish the test"
-msgstr ""
+msgstr "Publier le test"
 
 msgid "Published on:"
-msgstr ""
+msgstr "Publié le :"
 
 msgid "Publishing of <b>%s</b>"
-msgstr ""
+msgstr "Publication de <b>%s</b>"
 
 msgid "Save"
 msgstr "Enregistrer"
 
 msgid "Select the test"
-msgstr ""
+msgstr "Sélectionnez le test"
 
 msgid "Select the test you want to publish to the test-takers"
-msgstr ""
+msgstr "Sélectionnez le test que vous souhaitez publier aux participants du test"
 
 msgid "Selection saved successfully"
-msgstr ""
+msgstr "Sélection enregistrée avec succès"
 
 msgid "TAO Guest"
-msgstr ""
+msgstr "TAO Guest"
 
 msgid "TAO Guest Access"
 msgstr "Accès invité pour TAO"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr ""
+msgstr "Le test de publication a échoué car «%s» est vide."
 
 msgid "Test-takers"
 msgstr "Participants"
@@ -203,29 +203,29 @@ msgid "Tests"
 msgstr "Tests"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr ""
+msgstr "Le test «%s» ne contient aucun élément et ne peut pas être publié."
 
 msgid "There are currently %s attempts"
-msgstr ""
+msgstr "Il y a actuellement %s tentatives"
 
 msgid "There are currently no tests available to publish."
-msgstr ""
+msgstr "Il n'y a actuellement aucun test disponible à publier."
 
 msgid "There is currently 1 attempt"
-msgstr ""
+msgstr "Il y a actuellement 1 tentative"
 
 msgid "Unable to import Archive"
-msgstr ""
+msgstr "Impossible d'importer l'archive"
 
 msgid "Unable to load tests"
-msgstr ""
+msgstr "Impossible de charger les tests"
 
 msgid "unlimited"
-msgstr ""
+msgstr "illimité"
 
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
-msgstr ""
+msgstr "Utilisation : %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3]..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
-msgstr ""
+msgstr "Utilisation : %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 
