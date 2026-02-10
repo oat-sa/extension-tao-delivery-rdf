@@ -105,15 +105,13 @@ class DeliveryMgmt extends \tao_actions_SaSModule
         $this->defaultData();
         $delivery = $this->getCurrentInstance();
 
-        $taoAsATool = $this->getFeatureFlagChecker()->isEnabled(
-            FeatureFlagCheckerInterface::FEATURE_FLAG_TAO_AS_A_TOOL
-        );
+        $taoAdvanceOnly = $this->getFeatureFlagChecker()->isEnabled('FEATURE_FLAG_TAO_ADVANCE_ONLY');
 
         $formOptions = [
             FormContainer::CSRF_PROTECTION_OPTION => true,
         ];
 
-        if ($taoAsATool) {
+        if ($taoAdvanceOnly) {
             $formOptions[DeliveryFormFactory::RESTRICTED_PROPERTIES_OPTION] = self::RESTRICT_START_END_DATE;
         }
 
