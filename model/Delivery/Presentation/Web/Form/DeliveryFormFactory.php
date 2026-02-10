@@ -36,6 +36,8 @@ class DeliveryFormFactory
 {
     use OntologyAwareTrait;
 
+    public const RESTRICTED_PROPERTIES_OPTION = 'restrictedProperties';
+
     /** @var DeliveryValidatorFactory */
     private $validatorFactory;
 
@@ -57,11 +59,11 @@ class DeliveryFormFactory
             $delivery,
             $additionalOptions + [
                 FormContainer::ADDITIONAL_VALIDATORS => $this->validatorFactory->createMultiple(),
-                FormContainer::ATTRIBUTE_VALIDATORS  => [
+                FormContainer::ATTRIBUTE_VALIDATORS => [
                     'data-depends-on-property' => [
                         $this->dependsOnPropertyValidator
                     ],
-                ],
+                ]
             ]
         );
     }

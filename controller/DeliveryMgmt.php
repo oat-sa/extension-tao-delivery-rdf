@@ -61,6 +61,15 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     private const FEATURE_FLAG_GROUPS_DISABLED = 'FEATURE_FLAG_GROUPS_DISABLED';
     private const FEATURE_FLAG_TEST_TAKERS_DISABLED = 'FEATURE_FLAG_TEST_TAKERS_DISABLED';
 
+    private const RESTRICT_START_END_DATE = [
+        DeliveryAssemblyService::PROPERTY_START => [
+            DeliveryAssemblyService::PROPERTY_START => []
+        ],
+        DeliveryAssemblyService::PROPERTY_END => [
+            DeliveryAssemblyService::PROPERTY_START => []
+        ]
+    ];
+
     /**
      * @return EventManager
      */
@@ -94,12 +103,21 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     public function editDelivery()
     {
         $this->defaultData();
-
         $delivery = $this->getCurrentInstance();
+
+        $taoAdvanceOnly = $this->getFeatureFlagChecker()->isEnabled('FEATURE_FLAG_TAO_ADVANCE_ONLY');
+
+        $formOptions = [
+            FormContainer::CSRF_PROTECTION_OPTION => true,
+        ];
+
+        if ($taoAdvanceOnly) {
+            $formOptions[DeliveryFormFactory::RESTRICTED_PROPERTIES_OPTION] = self::RESTRICT_START_END_DATE;
+        }
 
         $formContainer = $this->getDeliveryFormFactory()->create(
             $delivery,
-            [FormContainer::CSRF_PROTECTION_OPTION => true]
+            $formOptions
         );
         $myForm = $formContainer->getForm();
         $deliveryUri = $delivery->getUri();
@@ -328,6 +346,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     {
         return parent::moveResource();
     }
+
     /**
      * overwrite the parent moveAllInstances to add the requiresRight only in Items
      * @see tao_actions_TaoModule::moveAll()
@@ -373,6 +392,7 @@ class DeliveryMgmt extends \tao_actions_SaSModule
     {
         return $this->getPsrContainer()->get(DeliveryFormFactory::class);
     }
+
     private function getRoleBasedContextRestrictAccess(): RoleBasedContextRestrictAccess
     {
         return $this->getPsrContainer()->get(RoleBasedContextRestrictAccess::class);
