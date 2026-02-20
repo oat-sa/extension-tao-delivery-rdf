@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
-"PO-Revision-Date: 2025-02-06 10:28\n"
+"PO-Revision-Date: 2026-02-05 15:46\n"
 
 msgid "%s completed"
 msgstr "%s 完了"
@@ -163,7 +163,7 @@ msgid "Publish"
 msgstr "公開"
 
 msgid "Publish \"%s\" to"
-msgstr "公開 \"%s\" へ"
+msgstr "公開： \"%s\""
 
 msgid "Publish the test"
 msgstr "テストを公開"
