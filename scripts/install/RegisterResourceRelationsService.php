@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 31 Milk St # 960789 Boston, MA 02196 USA.
  *
  * Copyright (c) 2026 (original work) Open Assessment Technologies SA;
  */
@@ -24,14 +24,19 @@ namespace oat\taoDeliveryRdf\scripts\install;
 
 use oat\oatbox\extension\InstallAction;
 use oat\tao\model\resources\relation\service\ResourceRelationServiceProxy;
-use oat\taoDeliveryRdf\model\Resource\Service\DeliveryRdfRelationService;
+use oat\taoDeliveryRdf\model\Resource\Service\DeliveryRelationService;
+use oat\taoDeliveryRdf\model\Resource\Service\TestRelationService;
 
-class RegisterDeliveryRdfRelationsService extends InstallAction
+class RegisterResourceRelationsService extends InstallAction
 {
+    private const TEST_DELIVERY_TYPE = 'test_delivery';
+    private const DELIVERY_TEST_TYPE = 'delivery_test';
+
     public function __invoke($params): void
     {
         $resourceRelationService = $this->getServiceManager()->get(ResourceRelationServiceProxy::SERVICE_ID);
-        $resourceRelationService->addService('delivery_rdf', DeliveryRdfRelationService::class);
+        $resourceRelationService->addService(self::TEST_DELIVERY_TYPE, TestRelationService::class);
+        $resourceRelationService->addService(self::DELIVERY_TEST_TYPE, DeliveryRelationService::class);
 
         $this->getServiceManager()->register(ResourceRelationServiceProxy::SERVICE_ID, $resourceRelationService);
     }

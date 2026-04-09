@@ -13,9 +13,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 31 Milk St # 960789 Boston, MA 02196 USA.
  *
- * Copyright (c) 2022 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2022-2026 (original work) Open Assessment Technologies SA;
  *
  * @author Sergei Mikhailov <sergei.mikhailov@taotesting.com>
  */
@@ -35,7 +35,8 @@ use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliverySe
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\JsonDeliveryPatchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\UrlEncodedFormDeliveryPatchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestValidator\DeliverySearchRequestValidator;
-use oat\taoDeliveryRdf\model\Resource\Service\DeliveryRdfRelationService;
+use oat\taoDeliveryRdf\model\Resource\Service\DeliveryRelationService;
+use oat\taoDeliveryRdf\model\Resource\Service\TestRelationService;
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
@@ -118,6 +119,9 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
             ]);
 
         $services
-            ->set(DeliveryRdfRelationService::class, DeliveryRdfRelationService::class);
+            ->set(TestRelationService::class, TestRelationService::class);
+
+        $services
+            ->set(DeliveryRelationService::class, DeliveryRelationService::class);
     }
 }

@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 31 Milk St # 960789 Boston, MA 02196 USA.
  *
  * Copyright (c) 2026 (original work) Open Assessment Technologies SA;
  */
@@ -31,61 +31,43 @@ use oat\tao\model\resources\relation\ResourceRelationCollection;
 use oat\tao\model\resources\relation\service\ResourceRelationServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
-class DeliveryRdfRelationService extends ConfigurableService implements ResourceRelationServiceInterface
+class DeliveryRelationService extends ConfigurableService implements ResourceRelationServiceInterface
 {
     use OntologyAwareTrait;
 
-    private const RELATION_TYPE = 'delivery';
+    private const RELATION_TYPE = 'test';
 
     public function findRelations(FindAllQuery $query): ResourceRelationCollection
     {
-        $testUri = $query->getSourceId();
+        $deliveryUri = $query->getSourceId();
 
-        if (!$testUri) {
+        if (!$deliveryUri) {
             return new ResourceRelationCollection(...[]);
         }
 
-        $relations = [];
+        $delivery = $this->getResource($deliveryUri);
 
-        foreach ($this->getDeliveries($query) as $delivery) {
-            if (!$delivery instanceof core_kernel_classes_Resource) {
-                continue;
-            }
-
-            if ($this->resolveOriginUri($delivery) !== $testUri) {
-                continue;
-            }
-
-            $relations[] = new ResourceRelation(
-                self::RELATION_TYPE,
-                $delivery->getUri(),
-                $delivery->getLabel()
-            );
+        if (!$delivery instanceof core_kernel_classes_Resource) {
+            return new ResourceRelationCollection(...[]);
         }
 
-        return new ResourceRelationCollection(...$relations);
-    }
-
-    private function getDeliveries(FindAllQuery $query): iterable
-    {
-        if ($query->getClassId()) {
-            return $this->getClass($query->getClassId())->getInstances(true);
-        }
-
-        return $this->getDeliveryAssemblyService()->getAllAssemblies();
-    }
-
-    private function resolveOriginUri(core_kernel_classes_Resource $delivery): ?string
-    {
         try {
             $origin = $this->getDeliveryAssemblyService()->getOrigin($delivery);
         } catch (\Throwable $exception) {
-            return null;
+            return new ResourceRelationCollection(...[]);
         }
 
-        return $origin instanceof core_kernel_classes_Resource
-            ? $origin->getUri()
-            : null;
+        if (!$origin instanceof core_kernel_classes_Resource) {
+            return new ResourceRelationCollection(...[]);
+        }
+
+        return new ResourceRelationCollection(
+            new ResourceRelation(
+                self::RELATION_TYPE,
+                $origin->getUri(),
+                $origin->getLabel()
+            )
+        );
     }
 
     private function getDeliveryAssemblyService(): DeliveryAssemblyService
