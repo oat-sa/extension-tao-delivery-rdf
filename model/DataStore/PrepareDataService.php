@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoDeliveryRdf\model\DataStore;
 
 use core_kernel_classes_Resource;
+use core_kernel_persistence_Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
@@ -60,13 +61,11 @@ class PrepareDataService extends ConfigurableService
                 $testUri = $this->getTestUri($deliveryResource);
             }
 
-            if ($testUri !== null) {
-                $test = $this->getResource($testUri);
-                $testMetaData = $compiler->compile($test);
-                $testMetaData['first-tenant-id'] = $firstTenantId;
+            $test = $this->getResource($testUri);
+            $testMetaData = $compiler->compile($test);
+            $testMetaData['first-tenant-id'] = $firstTenantId;
 
-                $itemMetaData = $this->getItemMetaData($test, $compiler);
-            }
+            $itemMetaData = $this->getItemMetaData($test, $compiler);
         }
 
         return new ResourceSyncDTO(
@@ -98,19 +97,15 @@ class PrepareDataService extends ConfigurableService
         return $itemMetaData;
     }
 
+    /**
+     * @throws core_kernel_persistence_Exception
+     */
     private function getTestUri(core_kernel_classes_Resource $deliveryResource): ?string
     {
-        try {
-            $test = $this->getServiceLocator()
-                ->get(DeliveryAssemblyService::class)
-                ->getOrigin($deliveryResource);
-        } catch (\Throwable $exception) {
-            return null;
-        }
+        $testProperty = $this->getProperty(DeliveryAssemblyService::PROPERTY_ORIGIN);
+        $test = $deliveryResource->getOnePropertyValue($testProperty);
 
-        return $test instanceof core_kernel_classes_Resource
-            ? $test->getUri()
-            : null;
+        return $test ? $test->getUri() : null;
     }
 
     private function getMetaDataCompiler(): ResourceMetadataCompilerInterface
