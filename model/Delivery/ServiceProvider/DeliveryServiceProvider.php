@@ -35,6 +35,7 @@ use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliverySe
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\JsonDeliveryPatchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\UrlEncodedFormDeliveryPatchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestValidator\DeliverySearchRequestValidator;
+use oat\taoDeliveryRdf\model\Resource\Service\DeliveryRdfRelationService;
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
@@ -115,5 +116,8 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
                 service(DeliveryFormFactory::class),
                 service(EventManager::class),
             ]);
+
+        $services
+            ->set(DeliveryRdfRelationService::class, DeliveryRdfRelationService::class);
     }
 }

@@ -25,6 +25,7 @@ use oat\taoDeliveryRdf\model\Delivery\ServiceProvider\DeliveryServiceProvider;
 use oat\taoDeliveryRdf\model\theme\ServiceProvider\ThemeServiceProvider;
 use oat\taoDeliveryRdf\scripts\e2e\BuildE2eConfiguration;
 use oat\taoDeliveryRdf\scripts\install\RegisterDataStoreServices;
+use oat\taoDeliveryRdf\scripts\install\RegisterDeliveryRdfRelationsService;
 use oat\taoDeliveryRdf\scripts\RegisterEvents;
 use oat\taoDeliveryRdf\scripts\install\OverrideRuntime;
 use oat\taoDeliveryRdf\scripts\install\RegisterDeliveryAssemblyWrapperService;
@@ -64,6 +65,7 @@ return [
             RegisterDeliveryAssemblyWrapperService::class,
             RegisterFileSystem::class,
             RegisterDataStoreServices::class,
+            RegisterDeliveryRdfRelationsService::class,
             SetDeliveryNamespace::class,
         ]
     ],
