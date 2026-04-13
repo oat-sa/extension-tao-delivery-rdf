@@ -13,9 +13,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 31 Milk St # 960789 Boston, MA 02196 USA.
  *
- * Copyright (c) 2022 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2022-2026 (original work) Open Assessment Technologies SA;
  *
  * @author Sergei Mikhailov <sergei.mikhailov@taotesting.com>
  */
@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\Delivery\ServiceProvider;
 
+use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\oatbox\event\EventManager;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
@@ -35,6 +36,9 @@ use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\DeliverySe
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\JsonDeliveryPatchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\UrlEncodedFormDeliveryPatchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestValidator\DeliverySearchRequestValidator;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoDeliveryRdf\model\Usage\DeliveryUsageService;
+use oat\taoDeliveryRdf\model\Usage\TestUsageService;
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
@@ -114,6 +118,22 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
                 service(DeliveryRepository::class),
                 service(DeliveryFormFactory::class),
                 service(EventManager::class),
+            ]);
+
+        $services
+            ->set(TestUsageService::class, TestUsageService::class)
+            ->public()
+            ->args([
+                service(DeliveryAssemblyService::class),
+                service(Ontology::SERVICE_ID)
+            ]);
+
+        $services
+            ->set(DeliveryUsageService::class, DeliveryUsageService::class)
+            ->public()
+            ->args([
+                service(DeliveryAssemblyService::class),
+                service(Ontology::SERVICE_ID)
             ]);
     }
 }
