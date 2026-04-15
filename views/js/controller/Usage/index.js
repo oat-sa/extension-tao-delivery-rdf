@@ -30,18 +30,24 @@ define([
 
     function getNumRows() {
         const $upperElem = $('.content-container h2');
-        const topSpace = $upperElem.offset().top
-            + $upperElem.height()
-            + parseInt($upperElem.css('margin-bottom'), 10)
+        const topOffset = $upperElem.length > 0 && $upperElem.offset() ? $upperElem.offset().top : 0;
+        const upperHeight = $upperElem.length > 0 ? ($upperElem.height() || 0) : 0;
+        const marginBottom = $upperElem.length > 0 ? (parseInt($upperElem.css('margin-bottom'), 10) || 0) : 0;
+        const footerHeight = $('footer.dark-bar').outerHeight() || 0;
+        const topSpace = topOffset
+            + upperHeight
+            + marginBottom
             + lineHeight
             + searchPagination;
-        const availableHeight = $(window).height() - topSpace - $('footer.dark-bar').outerHeight();
+        const availableHeight = $(window).height() - topSpace - footerHeight;
 
         if (!window.MSInputMethodContext && !document.documentMode && !window.StyleMedia) {
             return 25;
         }
 
-        return Math.min(Math.floor(availableHeight / lineHeight), 25);
+        const computedRows = availableHeight > 0 ? Math.floor(availableHeight / lineHeight) : 1;
+
+        return Math.max(1, Math.min(computedRows, 25));
     }
 
     function getColumns(mode) {
@@ -85,6 +91,11 @@ define([
             const $grid = $('.usage-grid');
             const mode = $grid.data('mode');
             const uri = $grid.data('uri');
+
+            if (typeof uri !== 'string' || uri.trim() === '' || (mode !== 'delivery' && mode !== 'test')) {
+                return;
+            }
+
             const dataUrl = mode === 'delivery'
                 ? url.route('getDeliverySourceTestData', 'Usage', 'taoDeliveryRdf', { uri: uri })
                 : url.route('getTestDeliveriesUsageData', 'Usage', 'taoDeliveryRdf', { uri: uri });
@@ -113,7 +124,15 @@ define([
                                 uri: targetUri
                             };
 
-                        window.open(url.build(urlInfo.path, pathParams), '_blank');
+                        const openedWindow = window.open(
+                            url.build(urlInfo.path, pathParams),
+                            '_blank',
+                            'noopener,noreferrer'
+                        );
+
+                        if (openedWindow) {
+                            openedWindow.opener = null;
+                        }
                     }
                 }
             ];
