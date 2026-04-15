@@ -55,16 +55,18 @@ class TestUsageService
             }
 
             $publicationTime = $this->getPublicationTime($delivery);
+            $classPath = $this->resolveClassPath($delivery);
+            $formattedPublicationTime = $this->formatPublicationTime($publicationTime);
 
             $row = [
                 'id' => $delivery->getUri(),
                 '_id' => $delivery->getUri(),
                 'deliveryId' => $delivery->getUri(),
                 'label' => $delivery->getLabel(),
-                'location' => $this->resolveClassPath($delivery),
-                'classPath' => $this->resolveClassPath($delivery),
-                'publicationTime' => $this->formatPublicationTime($publicationTime),
-                'publicationDate' => $this->formatPublicationTime($publicationTime),
+                'location' => $classPath,
+                'classPath' => $classPath,
+                'publicationTime' => $formattedPublicationTime,
+                'publicationDate' => $formattedPublicationTime,
             ];
 
             if ($filter !== '' && mb_strpos(mb_strtolower((string) $row['label']), $filter) === false) {
@@ -120,11 +122,17 @@ class TestUsageService
 
     private function getRequiredUri(array $params): string
     {
-        if (empty($params['uri'])) {
+        if (!array_key_exists('uri', $params)) {
             throw new \common_exception_BadRequest('Missing resource id (uri)', 400);
         }
 
-        return tao_helpers_Uri::decode((string) $params['uri']);
+        $decodedUri = trim(tao_helpers_Uri::decode((string) $params['uri']));
+
+        if ($decodedUri === '') {
+            throw new \common_exception_BadRequest('Missing resource id (uri)', 400);
+        }
+
+        return $decodedUri;
     }
 
     private function normalizeSortBy(string $sortBy): string
