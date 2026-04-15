@@ -19,19 +19,19 @@
                     />
                 </trees>
                 <actions>
-                    <action id="delivery-class-properties" name="Properties" url="/taoDeliveryRdf/DeliveryMgmt/editClassLabel" group="content" context="class">
+                    <action id="delivery-class-properties" name="Properties" url="/taoDeliveryRdf/DeliveryMgmt/editClassLabel" group="content" context="class" weight="1">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="delivery-class-schema" name="Manage Schema" url="/tao/PropertiesAuthoring/index" group="content" context="class">
+                    <action id="delivery-class-schema" name="Manage Schema" url="/tao/PropertiesAuthoring/index" group="content" context="class" weight="8">
                         <icon id="icon-property-add" />
                     </action>
-                    <action id="delivery-properties" name="Properties"  url="/taoDeliveryRdf/DeliveryMgmt/editDelivery" group="content" context="instance">
+                    <action id="delivery-properties" name="Properties"  url="/taoDeliveryRdf/DeliveryMgmt/editDelivery" group="content" context="instance" weight="1">
                         <icon id="icon-edit"/>
                     </action>
                     <action id="delivery-usage" name="Usage" url="/taoDeliveryRdf/Usage/delivery" group="content" context="instance" weight="6">
                         <icon id="icon-filebox"/>
                     </action>
-                    <action id="delivery-class-new" name="New class" url="/taoDeliveryRdf/DeliveryMgmt/addSubClass" context="resource" group="tree" binding="subClass" weight="9">
+                    <action id="delivery-class-new" name="New class" url="/taoDeliveryRdf/DeliveryMgmt/addSubClass" context="resource" group="tree" binding="subClass" weight="10">
                         <icon id="icon-folder-open"/>
                     </action>
                     <action id="delivery-delete" name="Delete" url="/taoDeliveryRdf/DeliveryMgmt/delete" context="resource" group="tree" binding="removeNode" weight="-1">
@@ -61,7 +61,7 @@
         <sections>
             <section id="manage_tests" name="Manage tests" url="/taoTests/Tests/index">
                 <actions allowClassActions="true">
-                    <action id="test-publish" name="Publish" url="/taoDeliveryRdf/Publish/index" context="instance" group="tree">
+                    <action id="test-publish" name="Publish" url="/taoDeliveryRdf/Publish/index" context="instance" group="tree" weight="7">
                         <icon id="icon-delivery"/>
                     </action>
                     <action id="test-usage-deliveries" name="Usage" url="/taoDeliveryRdf/Usage/test" context="instance" group="content" weight="6">
