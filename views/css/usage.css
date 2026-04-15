@@ -1,0 +1,27 @@
+.usage-data-container {
+    width: 100%;
+}
+
+.usage-data-container .usage-grid {
+    display: block;
+    width: 100%;
+}
+
+.usage-data-container .usage-grid .datatable-wrapper {
+    display: block;
+}
+
+.usage-data-container .usage-grid table.datatable .actions {
+    white-space: nowrap;
+}
+
+.usage-data-container .usage-grid table.datatable .actions [class^="btn-"] {
+    border: 1px solid #222;
+    background-color: transparent;
+    color: #222;
+    text-shadow: none;
+}
+
+.usage-data-container .results-list .grid-row.pagination {
+    width: 100%;
+}

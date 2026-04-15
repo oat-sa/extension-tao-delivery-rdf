@@ -13,9 +13,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 31 Milk St # 960789 Boston, MA 02196 USA.
  *
- * Copyright (c) 2016 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2016-2026 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
 
@@ -115,6 +115,29 @@ class DeliveryAssemblyService extends OntologyClassService
     public function getAllAssemblies()
     {
         return $this->getRootClass()->getInstances(true);
+    }
+
+    /**
+     * Returns assemblies linked to the provided origin test URI.
+     *
+     * @param string $testUri
+     * @param array<string, mixed> $options
+     * @return core_kernel_classes_Resource[]
+     */
+    public function findAssembliesByOrigin(string $testUri, array $options = []): array
+    {
+        $searchOptions = array_merge(
+            [
+                'recursive' => true,
+                'like' => false,
+            ],
+            $options
+        );
+
+        return $this->getRootClass()->searchInstances(
+            [self::PROPERTY_ORIGIN => $testUri],
+            $searchOptions
+        );
     }
 
     /**
