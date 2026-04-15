@@ -86,6 +86,58 @@ class TestUsageServiceTest extends TestCase
         $this->assertSame('http://tao.local/delivery-2', $result['data'][1]['deliveryId']);
     }
 
+    public function testThrowsBadRequestWhenUriMissing(): void
+    {
+        $deliveryAssemblyService = $this->createMock(DeliveryAssemblyService::class);
+        $ontology = $this->createMock(Ontology::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getQueryParams')->willReturn([]);
+
+        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+
+        $this->expectException(\common_exception_BadRequest::class);
+        $service->getDeliveriesWhereTestUsed($request);
+    }
+
+    public function testUsesFallbackValuesWhenCompilationDateAndClassLookupFail(): void
+    {
+        $deliveryAssemblyService = $this->createMock(DeliveryAssemblyService::class);
+        $ontology = $this->createMock(Ontology::class);
+
+        $delivery = $this->createDelivery('http://tao.local/delivery-3', 'Delivery 3', ['http://class/missing']);
+
+        $deliveryAssemblyService
+            ->method('findAssembliesByOrigin')
+            ->with(self::TEST_URI)
+            ->willReturn([$delivery]);
+
+        $deliveryAssemblyService
+            ->method('getCompilationDate')
+            ->with($delivery)
+            ->willThrowException(new \RuntimeException('Missing compilation date'));
+
+        $ontology
+            ->method('getClass')
+            ->with('http://class/missing')
+            ->willThrowException(new \RuntimeException('Missing class'));
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getQueryParams')->willReturn([
+            'uri' => tao_helpers_Uri::encode(self::TEST_URI),
+            'rows' => 25,
+            'page' => 1,
+        ]);
+
+        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $result = $service->getDeliveriesWhereTestUsed($request);
+
+        $this->assertSame(1, $result['totalResults']);
+        $this->assertCount(1, $result['data']);
+        $this->assertSame('', $result['data'][0]['classPath']);
+        $this->assertSame('', $result['data'][0]['publicationTime']);
+        $this->assertSame('', $result['data'][0]['publicationDate']);
+    }
+
     private function createDelivery(string $uri, string $label, array $parents): core_kernel_classes_Resource
     {
         $delivery = $this->createMock(core_kernel_classes_Resource::class);
@@ -95,5 +147,4 @@ class TestUsageServiceTest extends TestCase
 
         return $delivery;
     }
-
 }

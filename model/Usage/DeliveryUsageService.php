@@ -66,7 +66,7 @@ class DeliveryUsageService
                     $rowsData[] = $row;
                 }
             }
-        } catch (\Throwable) {
+        } catch (\Exception) {
             $rowsData = [];
         }
 
@@ -100,7 +100,7 @@ class DeliveryUsageService
         foreach ($classIds as $classId) {
             try {
                 $labels[] = $this->ontology->getClass($classId)->getLabel();
-            } catch (\Throwable) {
+            } catch (\Exception) {
                 continue;
             }
         }
@@ -110,11 +110,17 @@ class DeliveryUsageService
 
     private function getRequiredUri(array $params): string
     {
-        if (empty($params['uri'])) {
+        if (!array_key_exists('uri', $params)) {
             throw new \common_exception_BadRequest('Missing resource id (uri)', 400);
         }
 
-        return tao_helpers_Uri::decode((string) $params['uri']);
+        $decodedUri = trim(tao_helpers_Uri::decode((string) $params['uri']));
+
+        if ($decodedUri === '') {
+            throw new \common_exception_BadRequest('Missing resource id (uri)', 400);
+        }
+
+        return $decodedUri;
     }
 
     private function normalizeSortBy(string $sortBy): string

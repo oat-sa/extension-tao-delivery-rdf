@@ -38,7 +38,7 @@ class Usage extends tao_actions_CommonModule
 
     public function test(): void
     {
-        $uri = tao_helpers_Uri::decode((string) $this->getRequestParameter('uri'));
+        $uri = $this->getRequiredUri();
         $resource = $this->getExistingResource($uri);
 
         $this->setData('mode', 'test');
@@ -49,7 +49,7 @@ class Usage extends tao_actions_CommonModule
 
     public function delivery(): void
     {
-        $uri = tao_helpers_Uri::decode((string) $this->getRequestParameter('uri'));
+        $uri = $this->getRequiredUri();
         $resource = $this->getExistingResource($uri);
 
         $this->setData('mode', 'delivery');
@@ -100,5 +100,16 @@ class Usage extends tao_actions_CommonModule
         }
 
         return $resource;
+    }
+
+    private function getRequiredUri(): string
+    {
+        $decodedUri = trim(tao_helpers_Uri::decode((string) $this->getRequestParameter('uri')));
+
+        if ($decodedUri === '') {
+            throw new \common_exception_BadRequest('Missing resource id (uri)', 400);
+        }
+
+        return $decodedUri;
     }
 }

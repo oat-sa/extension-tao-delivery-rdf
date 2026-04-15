@@ -76,6 +76,19 @@ class DeliveryUsageServiceTest extends TestCase
         $this->assertSame([], $result['data']);
     }
 
+    public function testThrowsBadRequestWhenUriMissing(): void
+    {
+        $deliveryAssemblyService = $this->createMock(DeliveryAssemblyService::class);
+        $ontology = $this->createMock(Ontology::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getQueryParams')->willReturn([]);
+
+        $service = new DeliveryUsageService($deliveryAssemblyService, $ontology);
+
+        $this->expectException(\common_exception_BadRequest::class);
+        $service->getSourceTestByDelivery($request);
+    }
+
     private function createResource(string $uri, string $label): core_kernel_classes_Resource
     {
         $resource = $this->createMock(core_kernel_classes_Resource::class);

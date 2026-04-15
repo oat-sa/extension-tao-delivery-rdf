@@ -9,7 +9,7 @@ $title = $mode === 'delivery' ? __('Delivery source test usage') : __('Test deli
 <link rel="stylesheet" type="text/css" href="<?= Template::css('usage.css') ?>"/>
 
 <div class="usage-data-container">
-    <h2><?= $title ?></h2>
+    <h2><?= _dh($title) ?></h2>
     <div class="data-container-wrapper flex-container-full">
         <div class="grid-row">
             <div class="col-12">
