@@ -137,7 +137,9 @@ class TestUsageService
 
     private function normalizeSortBy(string $sortBy): string
     {
-        return in_array($sortBy, ['label', 'publicationTime'], true) ? $sortBy : 'publicationTime';
+        return in_array($sortBy, ['label', 'location', 'publicationTime'], true)
+            ? $sortBy
+            : 'publicationTime';
     }
 
     private function normalizeSortOrder(string $sortOrder): string
