@@ -28,6 +28,9 @@
                     <action id="delivery-properties" name="Properties"  url="/taoDeliveryRdf/DeliveryMgmt/editDelivery" group="content" context="instance" weight="1">
                         <icon id="icon-edit"/>
                     </action>
+                    <action id="delivery-usage" name="Usage" url="/taoDeliveryRdf/Usage/delivery" group="content" context="instance" weight="6">
+                        <icon id="icon-filebox"/>
+                    </action>
                     <action id="delivery-class-new" name="New class" url="/taoDeliveryRdf/DeliveryMgmt/addSubClass" context="resource" group="tree" binding="subClass" weight="10">
                         <icon id="icon-folder-open"/>
                     </action>
@@ -60,6 +63,9 @@
                 <actions allowClassActions="true">
                     <action id="test-publish" name="Publish" url="/taoDeliveryRdf/Publish/index" context="instance" group="tree" weight="7">
                         <icon id="icon-delivery"/>
+                    </action>
+                    <action id="test-usage-deliveries" name="Usage" url="/taoDeliveryRdf/Usage/test" context="instance" group="content" weight="6">
+                        <icon id="icon-filebox"/>
                     </action>
                 </actions>
             </section>
