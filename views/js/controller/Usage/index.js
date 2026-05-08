@@ -75,7 +75,7 @@ define([
             {
                 id: 'location',
                 label: __('Location'),
-                sortable: false
+                sortable: true
             },
             {
                 id: 'publicationTime',
