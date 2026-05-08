@@ -42,7 +42,7 @@ class TestUsageService
     {
         $params = $request->getQueryParams();
         $testUri = $this->getRequiredUri($params);
-        $filter = mb_strtolower(trim((string) ($params['filterquery'] ?? '')));
+        $filter = mb_strtolower(trim((string) ($params['filterquery'] ?? $params['filterQuery'] ?? '')));
         $sortBy = $this->normalizeSortBy((string) ($params['sortby'] ?? $params['sortBy'] ?? 'publicationTime'));
         $sortOrder = $this->normalizeSortOrder((string) ($params['sortorder'] ?? $params['sortOrder'] ?? 'desc'));
         $rows = $this->getRows($params);

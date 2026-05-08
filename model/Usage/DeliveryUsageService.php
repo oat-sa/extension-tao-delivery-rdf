@@ -42,7 +42,7 @@ class DeliveryUsageService
     {
         $params = $request->getQueryParams();
         $deliveryUri = $this->getRequiredUri($params);
-        $filter = mb_strtolower(trim((string) ($params['filterquery'] ?? '')));
+        $filter = mb_strtolower(trim((string) ($params['filterquery'] ?? $params['filterQuery'] ?? '')));
         $rows = $this->getRows($params);
         $page = $this->getPage($params);
         $sortBy = $this->normalizeSortBy((string) ($params['sortby'] ?? $params['sortBy'] ?? 'label'));
