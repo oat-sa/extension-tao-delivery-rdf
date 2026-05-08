@@ -28,7 +28,7 @@
                     <action id="delivery-properties" name="Properties"  url="/taoDeliveryRdf/DeliveryMgmt/editDelivery" group="content" context="instance" weight="1">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="delivery-usage" name="Usage" url="/taoDeliveryRdf/Usage/delivery" group="content" context="instance" weight="6">
+                    <action id="delivery-usage" name="Usage" url="/taoDeliveryRdf/Usage/delivery" group="content" context="instance" weight="7">
                         <icon id="icon-filebox"/>
                     </action>
                     <action id="delivery-class-new" name="New class" url="/taoDeliveryRdf/DeliveryMgmt/addSubClass" context="resource" group="tree" binding="subClass" weight="10">
