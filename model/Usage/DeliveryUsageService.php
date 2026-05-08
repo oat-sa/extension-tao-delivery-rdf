@@ -42,11 +42,11 @@ class DeliveryUsageService
     {
         $params = $request->getQueryParams();
         $deliveryUri = $this->getRequiredUri($params);
-        $filter = mb_strtolower(trim((string) ($params['filterquery'] ?? '')));
+        $filter = mb_strtolower(trim((string) ($params['filterquery'] ?? $params['filterQuery'] ?? '')));
         $rows = $this->getRows($params);
         $page = $this->getPage($params);
-        $sortBy = $this->normalizeSortBy((string) ($params['sortby'] ?? 'label'));
-        $sortOrder = $this->normalizeSortOrder((string) ($params['sortorder'] ?? 'asc'));
+        $sortBy = $this->normalizeSortBy((string) ($params['sortby'] ?? $params['sortBy'] ?? 'label'));
+        $sortOrder = $this->normalizeSortOrder((string) ($params['sortorder'] ?? $params['sortOrder'] ?? 'asc'));
 
         $rowsData = [];
         try {
@@ -125,12 +125,24 @@ class DeliveryUsageService
 
     private function normalizeSortBy(string $sortBy): string
     {
-        return in_array($sortBy, ['label', 'location'], true) ? $sortBy : 'label';
+        $normalized = strtolower(trim($sortBy));
+
+        return in_array($normalized, ['label', 'location'], true) ? $normalized : 'label';
     }
 
     private function normalizeSortOrder(string $sortOrder): string
     {
-        return strtolower($sortOrder) === 'desc' ? 'desc' : 'asc';
+        $normalized = strtolower(trim($sortOrder));
+
+        if (in_array($normalized, ['desc', '-1', 'descending'], true)) {
+            return 'desc';
+        }
+
+        if (in_array($normalized, ['asc', '1', 'ascending'], true)) {
+            return 'asc';
+        }
+
+        return 'asc';
     }
 
     private function getRows(array $params): int
