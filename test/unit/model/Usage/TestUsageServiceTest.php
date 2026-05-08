@@ -228,8 +228,8 @@ class TestUsageServiceTest extends TestCase
         $deliveryAssemblyService
             ->method('getCompilationDate')
             ->willReturnMap([
-                [$deliveryOne, '2026-04-10 15:01:00'],
-                [$deliveryTwo, '2026-04-09 15:01:00'],
+                [$deliveryOne, '1775833260000'],
+                [$deliveryTwo, '1775746860000'],
             ]);
 
         $classA = $this->createMock(\core_kernel_classes_Class::class);
