@@ -80,8 +80,10 @@ class TestUsageService
 
         usort($rowsData, function (array $left, array $right) use ($sortBy, $sortOrder): int {
             if ($sortBy === 'publicationTime') {
-                $leftValue = (int) ($left['publicationTimestamp'] ?? $this->toUnixTimestamp((string) ($left[$sortBy] ?? '')));
-                $rightValue = (int) ($right['publicationTimestamp'] ?? $this->toUnixTimestamp((string) ($right[$sortBy] ?? '')));
+                $leftFallbackValue = $this->toUnixTimestamp((string) ($left[$sortBy] ?? ''));
+                $rightFallbackValue = $this->toUnixTimestamp((string) ($right[$sortBy] ?? ''));
+                $leftValue = (int) ($left['publicationTimestamp'] ?? $leftFallbackValue);
+                $rightValue = (int) ($right['publicationTimestamp'] ?? $rightFallbackValue);
                 $result = $leftValue <=> $rightValue;
             } else {
                 $leftValue = (string) ($left[$sortBy] ?? '');
