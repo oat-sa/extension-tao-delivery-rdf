@@ -34,22 +34,22 @@
                     <action id="delivery-class-new" name="New class" url="/taoDeliveryRdf/DeliveryMgmt/addSubClass" context="resource" group="tree" binding="subClass" weight="10">
                         <icon id="icon-folder-open"/>
                     </action>
-                    <action id="delivery-delete" name="Delete" url="/taoDeliveryRdf/DeliveryMgmt/delete" context="resource" group="tree" binding="removeNode" weight="-1">
+                    <action id="delivery-delete" name="Delete" url="/taoDeliveryRdf/DeliveryMgmt/delete" context="resource" group="tree" binding="removeNode" weight="9">
                         <icon id="icon-bin"/>
                     </action>
-                    <action id="delivery-delete-all" name="Delete" url="/taoDeliveryRdf/DeliveryMgmt/deleteAll" context="resource" multiple="true" group="tree" binding="removeNodes" weight="-2">
+                    <action id="delivery-delete-all" name="Delete" url="/taoDeliveryRdf/DeliveryMgmt/deleteAll" context="resource" multiple="true" group="tree" binding="removeNodes" weight="9">
                         <icon id="icon-bin"/>
                     </action>
                     <action id="delivery-move" name="Move" url="/taoDeliveryRdf/DeliveryMgmt/moveInstance" context="instance" group="none" binding="moveNode">
                         <icon id="icon-move-item"/>
                     </action>
-                    <action id="delivery-move-to" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveResource" context="resource" group="tree" binding="moveTo" weight="8">
+                    <action id="delivery-move-to" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveResource" context="resource" group="tree" binding="moveTo" weight="4">
                         <icon id="icon-move-item"/>
                     </action>
-                    <action id="delivery-move-all" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveAll" context="resource" multiple="true" group="tree" binding="moveTo" weight="8">
+                    <action id="delivery-move-all" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveAll" context="resource" multiple="true" group="tree" binding="moveTo" weight="4">
                         <icon id="icon-move-item"/>
                     </action>
-                    <action id="delivery-new" name="New delivery" url="/taoDeliveryRdf/DeliveryMgmt/wizard" context="resource" group="tree" weight="10">
+                    <action id="delivery-new" name="New delivery" url="/taoDeliveryRdf/DeliveryMgmt/wizard" context="resource" group="tree" weight="1">
                         <icon id="icon-delivery"/>
                     </action>
 
