@@ -189,7 +189,7 @@ class TestUsageService
         if ($timestamp === 0) {
             return $value;
         }
-        
+
         return tao_helpers_Date::displayeDate($value);
     }
 
