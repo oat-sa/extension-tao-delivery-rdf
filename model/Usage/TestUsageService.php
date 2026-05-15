@@ -190,7 +190,7 @@ class TestUsageService
             return $value;
         }
 
-        return tao_helpers_Date::displayeDate($value);
+        return tao_helpers_Date::displayeDate($timestamp);
     }
 
     private function toUnixTimestamp(string $value): int

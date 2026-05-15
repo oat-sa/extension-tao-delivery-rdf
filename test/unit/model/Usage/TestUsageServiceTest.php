@@ -28,6 +28,7 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use tao_helpers_Date;
 use tao_helpers_Uri;
 
 class TestUsageServiceTest extends TestCase
@@ -82,7 +83,10 @@ class TestUsageServiceTest extends TestCase
         $this->assertSame('http://tao.local/delivery-1', $result['data'][0]['deliveryId']);
         $this->assertSame('Delivery 1', $result['data'][0]['label']);
         $this->assertSame('Folder A', $result['data'][0]['classPath']);
-        $this->assertSame('04/09/2026 - 00:00', $result['data'][0]['publicationTime']);
+        $this->assertSame(
+            tao_helpers_Date::displayeDate(strtotime('2026-04-09')),
+            $result['data'][0]['publicationTime']
+        );
         $this->assertSame('http://tao.local/delivery-2', $result['data'][1]['deliveryId']);
     }
 
