@@ -79,13 +79,25 @@ define([
             },
             {
                 id: 'publicationTime',
-                label: __('Last modified on'),
+                label: __('Published on'),
                 sortable: true
             }
         ];
     }
 
+    function getModeSettings(mode) {
+        return {
+            filter: mode !== 'delivery',
+            paginationStrategyTop: 'none',
+            paginationStrategyBottom: mode === 'delivery' ? 'none' : 'simple',
+            sortby: mode === 'delivery' ? 'label' : 'publicationTime',
+            sortorder: mode === 'delivery' ? 'asc' : 'desc'
+        };
+    }
+
     return {
+        getModeSettings: getModeSettings,
+        getColumns: getColumns,
         start: function start() {
             const urlInfo = url.parse(window.location);
             const $grid = $('.usage-grid');
@@ -137,21 +149,16 @@ define([
                 }
             ];
 
-            $grid.datatable({
+            $grid.datatable(Object.assign({
                 url: dataUrl,
-                filter: true,
                 labels: {
                     filter: mode === 'delivery' ? __('Search Tests') : __('Search Deliveries'),
                     title: mode === 'delivery' ? __('Search Tests') : __('Search Deliveries')
                 },
                 model: getColumns(mode),
-                paginationStrategyTop: 'none',
-                paginationStrategyBottom: 'simple',
                 rows: getNumRows(),
-                sortby: mode === 'delivery' ? 'label' : 'publicationTime',
-                sortorder: mode === 'delivery' ? 'asc' : 'desc',
                 actions: actions
-            });
+            }, getModeSettings(mode)));
         }
     };
 });

@@ -28,6 +28,7 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use tao_helpers_Date;
 use tao_helpers_Uri;
 
 class TestUsageServiceTest extends TestCase
@@ -82,7 +83,10 @@ class TestUsageServiceTest extends TestCase
         $this->assertSame('http://tao.local/delivery-1', $result['data'][0]['deliveryId']);
         $this->assertSame('Delivery 1', $result['data'][0]['label']);
         $this->assertSame('Folder A', $result['data'][0]['classPath']);
-        $this->assertSame('04/09/2026 - 00:00', $result['data'][0]['publicationTime']);
+        $this->assertSame(
+            tao_helpers_Date::displayeDate(strtotime('2026-04-09')),
+            $result['data'][0]['publicationTime']
+        );
         $this->assertSame('http://tao.local/delivery-2', $result['data'][1]['deliveryId']);
     }
 
@@ -250,6 +254,103 @@ class TestUsageServiceTest extends TestCase
 
         $this->assertSame('http://tao.local/delivery-1', $result['data'][0]['deliveryId']);
         $this->assertSame('http://tao.local/delivery-2', $result['data'][1]['deliveryId']);
+    }
+
+    public function testFiltersDeliveriesByLabel(): void
+    {
+        $deliveryAssemblyService = $this->createMock(DeliveryAssemblyService::class);
+        $ontology = $this->createMock(Ontology::class);
+
+        $deliveryOne = $this->createDelivery('http://tao.local/delivery-1', 'Alpha Delivery', []);
+        $deliveryTwo = $this->createDelivery('http://tao.local/delivery-2', 'Beta Delivery', []);
+
+        $deliveryAssemblyService
+            ->method('findAssembliesByOrigin')
+            ->with(self::TEST_URI)
+            ->willReturn([$deliveryOne, $deliveryTwo]);
+
+        $deliveryAssemblyService
+            ->method('getCompilationDate')
+            ->willReturn('2026-04-09');
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getQueryParams')->willReturn([
+            'uri' => tao_helpers_Uri::encode(self::TEST_URI),
+            'rows' => 25,
+            'page' => 1,
+            'filterquery' => 'alpha',
+        ]);
+
+        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $result = $service->getDeliveriesWhereTestUsed($request);
+
+        $this->assertSame(1, $result['totalResults']);
+        $this->assertCount(1, $result['data']);
+        $this->assertSame('http://tao.local/delivery-1', $result['data'][0]['deliveryId']);
+    }
+
+    public function testSupportsCamelCaseFilterQueryParam(): void
+    {
+        $deliveryAssemblyService = $this->createMock(DeliveryAssemblyService::class);
+        $ontology = $this->createMock(Ontology::class);
+
+        $deliveryOne = $this->createDelivery('http://tao.local/delivery-1', 'Alpha Delivery', []);
+        $deliveryTwo = $this->createDelivery('http://tao.local/delivery-2', 'Beta Delivery', []);
+
+        $deliveryAssemblyService
+            ->method('findAssembliesByOrigin')
+            ->with(self::TEST_URI)
+            ->willReturn([$deliveryOne, $deliveryTwo]);
+
+        $deliveryAssemblyService
+            ->method('getCompilationDate')
+            ->willReturn('2026-04-09');
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getQueryParams')->willReturn([
+            'uri' => tao_helpers_Uri::encode(self::TEST_URI),
+            'rows' => 25,
+            'page' => 1,
+            'filterQuery' => 'beta',
+        ]);
+
+        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $result = $service->getDeliveriesWhereTestUsed($request);
+
+        $this->assertSame(1, $result['totalResults']);
+        $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
+    }
+
+    public function testFiltersReturnsNoMatch(): void
+    {
+        $deliveryAssemblyService = $this->createMock(DeliveryAssemblyService::class);
+        $ontology = $this->createMock(Ontology::class);
+
+        $deliveryOne = $this->createDelivery('http://tao.local/delivery-1', 'Alpha Delivery', []);
+        $deliveryTwo = $this->createDelivery('http://tao.local/delivery-2', 'Beta Delivery', []);
+
+        $deliveryAssemblyService
+            ->method('findAssembliesByOrigin')
+            ->with(self::TEST_URI)
+            ->willReturn([$deliveryOne, $deliveryTwo]);
+
+        $deliveryAssemblyService
+            ->method('getCompilationDate')
+            ->willReturn('2026-04-09');
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getQueryParams')->willReturn([
+            'uri' => tao_helpers_Uri::encode(self::TEST_URI),
+            'rows' => 25,
+            'page' => 1,
+            'filterquery' => 'no-match',
+        ]);
+
+        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $result = $service->getDeliveriesWhereTestUsed($request);
+
+        $this->assertSame(0, $result['totalResults']);
+        $this->assertSame([], $result['data']);
     }
 
     public function testThrowsBadRequestWhenUriMissing(): void
