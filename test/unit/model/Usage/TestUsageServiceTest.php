@@ -317,6 +317,38 @@ class TestUsageServiceTest extends TestCase
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
     }
 
+    public function testFiltersReturnsNoMatch(): void
+    {
+        $deliveryAssemblyService = $this->createMock(DeliveryAssemblyService::class);
+        $ontology = $this->createMock(Ontology::class);
+
+        $deliveryOne = $this->createDelivery('http://tao.local/delivery-1', 'Alpha Delivery', []);
+        $deliveryTwo = $this->createDelivery('http://tao.local/delivery-2', 'Beta Delivery', []);
+
+        $deliveryAssemblyService
+            ->method('findAssembliesByOrigin')
+            ->with(self::TEST_URI)
+            ->willReturn([$deliveryOne, $deliveryTwo]);
+
+        $deliveryAssemblyService
+            ->method('getCompilationDate')
+            ->willReturn('2026-04-09');
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getQueryParams')->willReturn([
+            'uri' => tao_helpers_Uri::encode(self::TEST_URI),
+            'rows' => 25,
+            'page' => 1,
+            'filterquery' => 'no-match',
+        ]);
+
+        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $result = $service->getDeliveriesWhereTestUsed($request);
+
+        $this->assertSame(0, $result['totalResults']);
+        $this->assertSame([], $result['data']);
+    }
+
     public function testThrowsBadRequestWhenUriMissing(): void
     {
         $deliveryAssemblyService = $this->createMock(DeliveryAssemblyService::class);

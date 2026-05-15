@@ -65,4 +65,26 @@ define([
         assert.strictEqual(testColumns.length, 3, 'Test usage has three columns');
         assert.strictEqual(testColumns[1].sortable, true, 'Test location is sortable');
     });
+
+    QUnit.test('unsupported mode falls back to test settings and columns', function (assert) {
+        assert.expect(2);
+
+        const testSettings = usageController.getModeSettings('test');
+        const unsupportedSettings = usageController.getModeSettings('unsupported');
+
+        assert.deepEqual(
+            unsupportedSettings,
+            testSettings,
+            'Unknown mode uses the same datatable settings as test mode'
+        );
+
+        const testColumns = usageController.getColumns('test');
+        const unsupportedColumns = usageController.getColumns('unsupported');
+
+        assert.deepEqual(
+            unsupportedColumns,
+            testColumns,
+            'Unknown mode uses the same column model as test mode'
+        );
+    });
 });
