@@ -26,6 +26,7 @@ use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use Psr\Http\Message\ServerRequestInterface;
+use tao_helpers_Date;
 use tao_helpers_Uri;
 
 class TestUsageService
@@ -188,8 +189,8 @@ class TestUsageService
         if ($timestamp === 0) {
             return $value;
         }
-
-        return date('m/d/Y - H:i', $timestamp);
+        
+        return tao_helpers_Date::displayeDate($value);
     }
 
     private function toUnixTimestamp(string $value): int
