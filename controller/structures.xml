@@ -31,13 +31,13 @@
                     <action id="delivery-usage" name="Usage" url="/taoDeliveryRdf/Usage/delivery" group="content" context="instance" weight="7">
                         <icon id="icon-filebox"/>
                     </action>
-                    <action id="delivery-class-new" name="New class" url="/taoDeliveryRdf/DeliveryMgmt/addSubClass" context="resource" group="tree" binding="subClass" weight="10">
+                    <action id="delivery-class-new" name="New class" url="/taoDeliveryRdf/DeliveryMgmt/addSubClass" context="resource" group="tree" binding="subClass" weight="1">
                         <icon id="icon-folder-open"/>
                     </action>
-                    <action id="delivery-delete" name="Delete" url="/taoDeliveryRdf/DeliveryMgmt/delete" context="resource" group="tree" binding="removeNode" weight="9">
+                    <action id="delivery-delete" name="Delete" url="/taoDeliveryRdf/DeliveryMgmt/delete" context="resource" group="tree" binding="removeNode" weight="2">
                         <icon id="icon-bin"/>
                     </action>
-                    <action id="delivery-delete-all" name="Delete" url="/taoDeliveryRdf/DeliveryMgmt/deleteAll" context="resource" multiple="true" group="tree" binding="removeNodes" weight="9">
+                    <action id="delivery-delete-all" name="Delete" url="/taoDeliveryRdf/DeliveryMgmt/deleteAll" context="resource" multiple="true" group="tree" binding="removeNodes" weight="3">
                         <icon id="icon-bin"/>
                     </action>
                     <action id="delivery-move" name="Move" url="/taoDeliveryRdf/DeliveryMgmt/moveInstance" context="instance" group="none" binding="moveNode">
@@ -46,10 +46,10 @@
                     <action id="delivery-move-to" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveResource" context="resource" group="tree" binding="moveTo" weight="4">
                         <icon id="icon-move-item"/>
                     </action>
-                    <action id="delivery-move-all" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveAll" context="resource" multiple="true" group="tree" binding="moveTo" weight="4">
+                    <action id="delivery-move-all" name="Move To" url="/taoDeliveryRdf/DeliveryMgmt/moveAll" context="resource" multiple="true" group="tree" binding="moveTo" weight="5">
                         <icon id="icon-move-item"/>
                     </action>
-                    <action id="delivery-new" name="New delivery" url="/taoDeliveryRdf/DeliveryMgmt/wizard" context="resource" group="tree" weight="1">
+                    <action id="delivery-new" name="New delivery" url="/taoDeliveryRdf/DeliveryMgmt/wizard" context="resource" group="tree" weight="7">
                         <icon id="icon-delivery"/>
                     </action>
 
@@ -61,7 +61,7 @@
         <sections>
             <section id="manage_tests" name="Manage tests" url="/taoTests/Tests/index">
                 <actions allowClassActions="true">
-                    <action id="test-publish" name="Publish" url="/taoDeliveryRdf/Publish/index" context="instance" group="tree" weight="7">
+                    <action id="test-publish" name="Publish" url="/taoDeliveryRdf/Publish/index" context="instance" group="tree" weight="15">
                         <icon id="icon-delivery"/>
                     </action>
                     <action id="test-usage-deliveries" name="Usage" url="/taoDeliveryRdf/Usage/test" context="instance" group="content" weight="6">
