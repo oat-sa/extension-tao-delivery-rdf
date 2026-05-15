@@ -25,3 +25,13 @@
 .usage-data-container .results-list .grid-row.pagination {
     width: 100%;
 }
+
+.section-container .content-block .usage-data-container .usage-grid .datatable-wrapper .filter .icon-find {
+    padding: 0 !important;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.section-container .content-block .usage-data-container .usage-grid .datatable-wrapper .filter .icon-find:before {
+    color: #333;
+}
