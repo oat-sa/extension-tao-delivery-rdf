@@ -1,16 +1,24 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2026-07-03 11:37\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ja\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 797\n"
-"Project-Id-Version: tao-open-source\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Japanese\n"
-"Language: ja_JP\n"
-"PO-Revision-Date: 2026-02-05 15:46\n"
 
 msgid "%s completed"
 msgstr "%s 完了"
@@ -90,6 +98,9 @@ msgstr "配信はテスト受験者に割り当てられていません。"
 msgid "Delivery saved"
 msgstr "配信が保存されました"
 
+msgid "Delivery source test usage"
+msgstr "配信元テストの使用法"
+
 msgid "Delivery with label \"%s\" not found"
 msgstr "ラベル \"%s\" の配信が見つかりません"
 
@@ -117,8 +128,14 @@ msgstr "QTIテストをインポートして納品を作成します。"
 msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr "%1$s ファイルを \\'%2$s\\' にインポートしています"
 
+msgid "Label"
+msgstr "ラベル"
+
 msgid "Last updated on:"
 msgstr "最終更新日時："
+
+msgid "Location"
+msgstr "場所"
 
 #, tao-public
 msgid "Manage Schema"
@@ -168,6 +185,9 @@ msgstr "公開： \"%s\""
 msgid "Publish the test"
 msgstr "テストを公開"
 
+msgid "Published on"
+msgstr "公開日時"
+
 msgid "Published on:"
 msgstr "公開日時:"
 
@@ -176,6 +196,12 @@ msgstr "<b>%s</b> の公開"
 
 msgid "Save"
 msgstr "保存"
+
+msgid "Search Deliveries"
+msgstr "配送の検索"
+
+msgid "Search Tests"
+msgstr "テストを検索"
 
 msgid "Select the test"
 msgstr "テストを選択してください"
@@ -191,6 +217,9 @@ msgstr "TAO Guest"
 
 msgid "TAO Guest Access"
 msgstr "TAOゲストアクセス"
+
+msgid "Test delivery usage"
+msgstr "テスト配信の使用法"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr "\"%s\" が空なので公開テストに失敗しました。"
@@ -223,9 +252,16 @@ msgstr "テストを読み込むことができません"
 msgid "unlimited"
 msgstr "無制限の"
 
+#, tao-public
+msgid "Usage"
+msgstr "使用状況"
+
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr "使用法: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3]..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 msgstr "使用法: %s Deliverery_CLASS_URI出力ディレクトリ"
+
+msgid "View"
+msgstr "ビュー"
 

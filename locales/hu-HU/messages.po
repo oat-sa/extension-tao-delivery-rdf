@@ -1,16 +1,24 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2026-07-03 11:37\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: hu\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
 "X-Crowdin-Language: hu\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 797\n"
-"Project-Id-Version: tao-open-source\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Hungarian\n"
-"Language: hu_HU\n"
-"PO-Revision-Date: 2025-12-05 09:51\n"
 
 msgid "%s completed"
 msgstr "%s befejezve"
@@ -90,6 +98,9 @@ msgstr "A kézbesítés nincs hozzárendelve egyetlen vizsgázóhoz sem."
 msgid "Delivery saved"
 msgstr "Szállítás mentve"
 
+msgid "Delivery source test usage"
+msgstr "Kézbesítési forrás tesztelési használata"
+
 msgid "Delivery with label \"%s\" not found"
 msgstr "Nem található a(z) \"%s\" címkével ellátott szállítmány."
 
@@ -117,8 +128,14 @@ msgstr "QTI-teszt importálása és szállítás létrehozása."
 msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr "%1$s fájlok importálása a \\'%2$s\\' programba"
 
+msgid "Label"
+msgstr "Címke"
+
 msgid "Last updated on:"
 msgstr "Utolsó frissítés:"
+
+msgid "Location"
+msgstr "Elhelyezkedés"
 
 #, tao-public
 msgid "Manage Schema"
@@ -168,6 +185,9 @@ msgstr "„%s” közzététele ide:"
 msgid "Publish the test"
 msgstr "Teszt közzététele"
 
+msgid "Published on"
+msgstr "Közzétéve:"
+
 msgid "Published on:"
 msgstr "Megjelent:"
 
@@ -176,6 +196,12 @@ msgstr "<b>%s</b>kiadása"
 
 msgid "Save"
 msgstr "Megtakarítás"
+
+msgid "Search Deliveries"
+msgstr "Szállítások keresése"
+
+msgid "Search Tests"
+msgstr "Keresési tesztek"
 
 msgid "Select the test"
 msgstr "Válassza ki a tesztet"
@@ -191,6 +217,9 @@ msgstr "TAO Vendég"
 
 msgid "TAO Guest Access"
 msgstr "TAO vendéghozzáférés"
+
+msgid "Test delivery usage"
+msgstr "Tesztkézbesítési használat"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr "A tesztközzététel sikertelen, mert a(z) „%s” üres."
@@ -223,9 +252,16 @@ msgstr "Nem sikerült betölteni a teszteket"
 msgid "unlimited"
 msgstr "korlátlan"
 
+#, tao-public
+msgid "Usage"
+msgstr "Használat"
+
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr "Használat: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 msgstr "Használat: %s SZÁLLÍTÁSI_CLASS_URI KIMENETI_KÖNYVTÁR"
+
+msgid "View"
+msgstr "Kilátás"
 
