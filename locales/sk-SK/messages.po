@@ -1,16 +1,24 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2026-07-03 11:37\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: sk\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 3;\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
 "X-Crowdin-Language: sk\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 797\n"
-"Project-Id-Version: tao-open-source\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Slovak\n"
-"Language: sk_SK\n"
-"PO-Revision-Date: 2025-12-04 11:26\n"
 
 msgid "%s completed"
 msgstr "%s dokončené"
@@ -19,13 +27,13 @@ msgid "%s test-taker(s) are excluded."
 msgstr "%s účastníkov testu je vylúčených."
 
 msgid "Access deliveries as a guest"
-msgstr "Prístup k donáškam ako hosť"
+msgstr "Zobraziť dodávky ako hosť"
 
 msgid "An error occured during the import"
 msgstr "Počas importu sa vyskytla chyba"
 
 msgid "Assembly"
-msgstr "Zhromaždenie"
+msgstr "Zostavenie"
 
 msgid "Assembly import"
 msgstr "Import zostavy"
@@ -34,25 +42,25 @@ msgid "Assigned test-takers"
 msgstr "Pridelení účastníci testu"
 
 msgid "Assigned to"
-msgstr "Pridelené komu"
+msgstr "Priradené k"
 
 msgid "Available from %s"
 msgstr "Dostupné od %s"
 
 msgid "Available until %s"
-msgstr "K dispozícii do %s"
+msgstr "Dostupné do %s"
 
 msgid "Cancel"
 msgstr "Zrušiť"
 
 msgid "Class successfully created."
-msgstr "Trieda bola úspešne vytvorená."
+msgstr "Priečinok bol úspešne vytvorený."
 
 msgid "Continue deleting of delivery \"%s\"."
-msgstr "Pokračovať v mazaní doručenia „%s“."
+msgstr "Pokračovať vo vymazaní dodávky „%s“."
 
 msgid "Create a new delivery"
-msgstr "Vytvoriť novú doručovaciu službu"
+msgstr "Vytvoriť novú dodávku"
 
 msgid "Create a test"
 msgstr "Vytvoriť test"
@@ -62,7 +70,7 @@ msgid "Delete"
 msgstr "Odstrániť"
 
 msgid "Deleting of \"%s"
-msgstr "Odstránenie položky „%s“"
+msgstr "Odstránenie „%s“"
 
 #, tao-public
 msgid "Deliveries"
@@ -70,25 +78,28 @@ msgstr "Dodávky"
 
 #, tao-public
 msgid "Deliveries library"
-msgstr "Knižnica dodávok"
+msgstr "Knižnica Dodávok"
 
 msgid "Delivery \"%s\" successfully imported"
-msgstr "Doručenie „%s“ bolo úspešne importované"
+msgstr "Dodávka „%s“ bola úspešne importovaná"
 
 msgid "Delivery \\'%s\\' not found"
-msgstr "Doručenie \\'%s\\' sa nenašlo"
+msgstr "Dodávka \\'%s\\' sa nenašla"
 
 msgid "Delivery class uri provided is not a valid delivery class."
-msgstr "Zadaný identifikátor URI triedy doručenia nie je platnou triedou doručenia."
+msgstr "Zadaná URI triedy dodávky nie je platná."
 
 msgid "Delivery is assigned to %s test-takers."
-msgstr "Doručenie je pridelené %s účastníkom testu."
+msgstr "Dodávka je pridelená %s účastníkom testu."
 
 msgid "Delivery is not assigned to any test-taker."
-msgstr "Doručenie nie je pridelené žiadnemu účastníkovi testu."
+msgstr "Dodávka nie je pridelená žiadnemu účastníkovi testu."
 
 msgid "Delivery saved"
-msgstr "Doručenie uložené"
+msgstr "Dodávka bola uložená"
+
+msgid "Delivery source test usage"
+msgstr "Testovacie využitie zdroja doručenia"
 
 msgid "Delivery with label \"%s\" not found"
 msgstr "Dodávka so štítkom „%s“ sa nenašla"
@@ -103,22 +114,28 @@ msgid "Excluded test-takers"
 msgstr "Vylúčení účastníci testu"
 
 msgid "Exported %1$s to %2$s"
-msgstr "Exportované z %1$s do %2$s"
+msgstr "Exportované %1$s do %2$s"
 
 msgid "Exporting %s"
-msgstr "Export %s"
+msgstr "Prebieha exportovanie %s"
 
 msgid "Guest access"
 msgstr "Prístup pre hostí"
 
 msgid "Import QTI test and create delivery."
-msgstr "Importovať test QTI a vytvoriť doručenie."
+msgstr "Importovať test QTI a vytvoriť dodávku."
 
 msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr "Import %1$s súborov do \\'%2$s\\'"
 
+msgid "Label"
+msgstr "Štítok"
+
 msgid "Last updated on:"
 msgstr "Naposledy aktualizované:"
+
+msgid "Location"
+msgstr "Poloha"
 
 #, tao-public
 msgid "Manage Schema"
@@ -138,44 +155,53 @@ msgstr "Presunúť do"
 
 #, tao-public
 msgid "New class"
-msgstr "Nová trieda"
+msgstr "Nový priečinok"
 
 #, tao-public
 msgid "New delivery"
 msgstr "Nová dodávka"
 
 msgid "No attempt has been started yet."
-msgstr "Zatiaľ nebol začatý žiadny pokus."
+msgstr "Zatiaľ nebol spustený žiadny pokus."
 
 msgid "No information available about attempts"
 msgstr "Nie sú k dispozícii žiadne informácie o pokusoch"
 
 #, tao-public
 msgid "Prepare, publish deliveries sessions."
-msgstr "Pripravovať a publikovať relácie dodávok."
+msgstr "Pripravovať a zverejniť záznamy testových dodávok."
 
 #, tao-public
 msgid "Properties"
-msgstr "Nehnuteľnosti"
+msgstr "Vlastnosti"
 
 #, tao-public
 msgid "Publish"
-msgstr "Publikovať"
+msgstr "Zverejniť"
 
 msgid "Publish \"%s\" to"
-msgstr "Publikovať „%s“ do"
+msgstr "Zverejniť „%s“ do"
 
 msgid "Publish the test"
-msgstr "Publikovať test"
+msgstr "Zverejniť test"
+
+msgid "Published on"
+msgstr "Publikované dňa"
 
 msgid "Published on:"
-msgstr "Publikované dňa:"
+msgstr "Zverejnené: "
 
 msgid "Publishing of <b>%s</b>"
-msgstr "Vydávanie <b>%s</b>"
+msgstr "Zverejnenie <b>%s</b>"
 
 msgid "Save"
 msgstr "Uložiť"
+
+msgid "Search Deliveries"
+msgstr "Vyhľadávanie dodávok"
+
+msgid "Search Tests"
+msgstr "Vyhľadávať testy"
 
 msgid "Select the test"
 msgstr "Vyberte test"
@@ -187,13 +213,16 @@ msgid "Selection saved successfully"
 msgstr "Výber bol úspešne uložený"
 
 msgid "TAO Guest"
-msgstr "Hosť TAO"
+msgstr "Hosť PET"
 
 msgid "TAO Guest Access"
-msgstr "TAO Prístup pre hostí"
+msgstr "Prístup pre hostí v PET"
+
+msgid "Test delivery usage"
+msgstr "Využitie testovacích doručení"
 
 msgid "Test publishing failed because \"%s\" is empty."
-msgstr "Testovacie publikovanie zlyhalo, pretože „%s“ je prázdne."
+msgstr "Zverejnenie testu sa nepodarilo, pretože „%s“ je prázdne."
 
 msgid "Test-takers"
 msgstr "Účastníci testov"
@@ -203,13 +232,13 @@ msgid "Tests"
 msgstr "Testy"
 
 msgid "The test \"%s\" does not contain any items and cannot be published."
-msgstr "Test „%s“ neobsahuje žiadne položky a nemožno ho publikovať."
+msgstr "Test „%s“ neobsahuje žiadne položky a nemožno ho zverejniť."
 
 msgid "There are currently %s attempts"
-msgstr "Momentálne je %s pokusov"
+msgstr "V súčasnosti je zaznamenaných %s pokusov"
 
 msgid "There are currently no tests available to publish."
-msgstr "Momentálne nie sú k dispozícii žiadne testy na publikovanie."
+msgstr "Momentálne nie sú k dispozícii žiadne testy na zverejnenie."
 
 msgid "There is currently 1 attempt"
 msgstr "Momentálne je k dispozícii 1 pokus"
@@ -223,9 +252,16 @@ msgstr "Nepodarilo sa načítať testy"
 msgid "unlimited"
 msgstr "neobmedzený"
 
+#, tao-public
+msgid "Usage"
+msgstr "Použitie"
+
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr "Použitie: %s SÚBOR_ZOSTAVY [SÚBOR_ZOSTAVY_2] [SÚBOR_ZOSTAVY_3] ..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 msgstr "Použitie: %s TRIEDA_DODÁVKY_URI_VÝSTUPNÝ_ADRESÁR"
+
+msgid "View"
+msgstr "Zobraziť"
 
