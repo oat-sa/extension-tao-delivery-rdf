@@ -25,6 +25,7 @@ namespace oat\taoDeliveryRdf\test\unit\model\Usage;
 use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\tao\helpers\dateFormatter\DateFormatterInterface;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -34,6 +35,42 @@ use tao_helpers_Uri;
 class TestUsageServiceTest extends TestCase
 {
     private const TEST_URI = 'http://tao.local/test';
+
+    public static function setUpBeforeClass(): void
+    {
+        // ponytail: bypass tao extension bootstrap; only publicationTimestamp is asserted
+        $formatter = new class implements DateFormatterInterface {
+            public function format($timestamp, $format, \DateTimeZone $timeZone = null): string
+            {
+                $timeZone ??= new \DateTimeZone('UTC');
+
+                return (new \DateTimeImmutable('@' . (int) $timestamp))
+                    ->setTimezone($timeZone)
+                    ->format('d/m/Y H:i:s');
+            }
+
+            public function getFormat($format): string
+            {
+                return 'd/m/Y H:i:s';
+            }
+
+            public function getJavascriptFormat($format): string
+            {
+                return 'DD/MM/YYYY HH:mm:ss';
+            }
+        };
+
+        $property = new \ReflectionProperty(tao_helpers_Date::class, 'service');
+        $property->setAccessible(true);
+        $property->setValue(null, $formatter);
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        $property = new \ReflectionProperty(tao_helpers_Date::class, 'service');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+    }
 
     public function testReturnsDeliveriesForProvidedTest(): void
     {
@@ -83,10 +120,7 @@ class TestUsageServiceTest extends TestCase
         $this->assertSame('http://tao.local/delivery-1', $result['data'][0]['deliveryId']);
         $this->assertSame('Delivery 1', $result['data'][0]['label']);
         $this->assertSame('Folder A', $result['data'][0]['classPath']);
-        $this->assertSame(
-            tao_helpers_Date::displayeDate(strtotime('2026-04-09')),
-            $result['data'][0]['publicationTime']
-        );
+        $this->assertSame(strtotime('2026-04-09'), $result['data'][0]['publicationTimestamp']);
         $this->assertSame('http://tao.local/delivery-2', $result['data'][1]['deliveryId']);
     }
 
