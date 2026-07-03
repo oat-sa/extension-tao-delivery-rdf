@@ -1,0 +1,267 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2026-07-03 11:37\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: nl_BE\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: nl-BE\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 797\n"
+"Language-Team: Dutch, Belgium\n"
+
+msgid "%s completed"
+msgstr ""
+
+msgid "%s test-taker(s) are excluded."
+msgstr "%s test-taker(s) zijn uitgesloten."
+
+msgid "Access deliveries as a guest"
+msgstr "Krijg toegang tot uitgaven als gast"
+
+msgid "An error occured during the import"
+msgstr "Er deed zich een four voor tijdens het importeren"
+
+msgid "Assembly"
+msgstr "Assemblage"
+
+msgid "Assembly import"
+msgstr "Groep importeren"
+
+msgid "Assigned test-takers"
+msgstr "Toegewezen test-takers"
+
+msgid "Assigned to"
+msgstr "Toegewezen aan"
+
+msgid "Available from %s"
+msgstr "Beschikbaar van %s"
+
+msgid "Available until %s"
+msgstr "Beschikbaar tot %s"
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Class successfully created."
+msgstr ""
+
+msgid "Continue deleting of delivery \"%s\"."
+msgstr "Ga door met het verwijderen van bezorg\"%s\"."
+
+msgid "Create a new delivery"
+msgstr "Maak een nieuwe levering aan"
+
+msgid "Create a test"
+msgstr "Maak een test"
+
+#, tao-public
+msgid "Delete"
+msgstr ""
+
+msgid "Deleting of \"%s"
+msgstr "Verwijderen van \"%s"
+
+#, tao-public
+msgid "Deliveries"
+msgstr ""
+
+#, tao-public
+msgid "Deliveries library"
+msgstr "Bibliotheek afleveren"
+
+msgid "Delivery \"%s\" successfully imported"
+msgstr "Levering \"%s\" succesvol geïmporteerd"
+
+msgid "Delivery \\'%s\\' not found"
+msgstr "Levering \\'%s\\' niet gevonden"
+
+msgid "Delivery class uri provided is not a valid delivery class."
+msgstr "Leverings-klasse uri is geen geldige verzendklas."
+
+msgid "Delivery is assigned to %s test-takers."
+msgstr "Levering is toegewezen aan %s test-takers."
+
+msgid "Delivery is not assigned to any test-taker."
+msgstr "Levering is niet toegewezen aan een test-taker."
+
+msgid "Delivery saved"
+msgstr "Levering opgeslagen"
+
+msgid "Delivery source test usage"
+msgstr ""
+
+msgid "Delivery with label \"%s\" not found"
+msgstr "Levering met label \"%s\" niet gevonden"
+
+msgid "Directory %s doesn\\'t exist"
+msgstr "Map %s bestaat niet"
+
+msgid "Error"
+msgstr "Foutmelding"
+
+msgid "Excluded test-takers"
+msgstr "Uitgesloten test-takers"
+
+msgid "Exported %1$s to %2$s"
+msgstr "%1$s geëxporteerd naar %2$s"
+
+msgid "Exporting %s"
+msgstr "Exporteren %s"
+
+msgid "Guest access"
+msgstr "Gast toegang"
+
+msgid "Import QTI test and create delivery."
+msgstr "Importeer QTI test en maak levering."
+
+msgid "Importing %1$s files into \\'%2$s\\'"
+msgstr "Importeren van %1$s bestanden naar \\'%2$s\\'"
+
+msgid "Label"
+msgstr ""
+
+msgid "Last updated on:"
+msgstr "Laatst bijgewerkt op:"
+
+msgid "Location"
+msgstr "Locatie"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Manage tests"
+msgstr ""
+
+#, tao-public
+msgid "Move"
+msgstr ""
+
+#, tao-public
+msgid "Move To"
+msgstr ""
+
+#, tao-public
+msgid "New class"
+msgstr ""
+
+#, tao-public
+msgid "New delivery"
+msgstr "Nieuwe levering"
+
+msgid "No attempt has been started yet."
+msgstr "Er is nog geen poging gedaan."
+
+msgid "No information available about attempts"
+msgstr "Geen informatie beschikbaar over pogingen"
+
+#, tao-public
+msgid "Prepare, publish deliveries sessions."
+msgstr "Voorbereiding, publicatie van leveringen sessies."
+
+#, tao-public
+msgid "Properties"
+msgstr ""
+
+#, tao-public
+msgid "Publish"
+msgstr "Uitgeven"
+
+msgid "Publish \"%s\" to"
+msgstr "Publiceer \"%s\" naar"
+
+msgid "Publish the test"
+msgstr "Publiceer de test"
+
+msgid "Published on"
+msgstr ""
+
+msgid "Published on:"
+msgstr "Gepubliceerd op:"
+
+msgid "Publishing of <b>%s</b>"
+msgstr "Publicatie van <b>%s</b>"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Search Deliveries"
+msgstr ""
+
+msgid "Search Tests"
+msgstr "Tests zoeken"
+
+msgid "Select the test"
+msgstr "Selecteer de test"
+
+msgid "Select the test you want to publish to the test-takers"
+msgstr "Selecteer de test die u wilt publiceren naar de test-takers"
+
+msgid "Selection saved successfully"
+msgstr "Selectie succesvol opgeslagen"
+
+msgid "TAO Guest"
+msgstr "TAO Guest"
+
+msgid "TAO Guest Access"
+msgstr "TAO gasttoegang"
+
+msgid "Test delivery usage"
+msgstr ""
+
+msgid "Test publishing failed because \"%s\" is empty."
+msgstr "Test publiceren mislukt omdat \"%s\" leeg is."
+
+msgid "Test-takers"
+msgstr "Kandidaten"
+
+#, tao-public
+msgid "Tests"
+msgstr "Toetsen"
+
+msgid "The test \"%s\" does not contain any items and cannot be published."
+msgstr "De test \"%s\" bevat geen items en kan niet worden gepubliceerd."
+
+msgid "There are currently %s attempts"
+msgstr "Er zijn momenteel %s pogingen"
+
+msgid "There are currently no tests available to publish."
+msgstr "Er zijn momenteel geen tests beschikbaar om te publiceren."
+
+msgid "There is currently 1 attempt"
+msgstr "Er is momenteel 1 poging"
+
+msgid "Unable to import Archive"
+msgstr "Kan het archief niet importeren"
+
+msgid "Unable to load tests"
+msgstr "Kan testen niet laden"
+
+msgid "unlimited"
+msgstr "onbeperkt"
+
+#, tao-public
+msgid "Usage"
+msgstr "Gebruik"
+
+msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
+msgstr "Gebruik: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3]..."
+
+msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr "Gebruik: %s VERLIVERY_CLASS_URI UITPUT_DIRECTORY"
+
+msgid "View"
+msgstr ""
+
