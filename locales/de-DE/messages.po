@@ -1,16 +1,24 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2026-07-03 11:37\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: de\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
 "X-Crowdin-Language: de\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 797\n"
-"Project-Id-Version: tao-open-source\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: German\n"
-"Language: de_DE\n"
-"PO-Revision-Date: 2023-12-04 16:25\n"
 
 msgid "%s completed"
 msgstr "%s abgeschlossen"
@@ -90,6 +98,9 @@ msgstr "Die Auslieferung ist keinem Prüfungsteilnehmer zugewiesen."
 msgid "Delivery saved"
 msgstr "Auslieferung gespeichert"
 
+msgid "Delivery source test usage"
+msgstr "Lieferquell-Testnutzung"
+
 msgid "Delivery with label \"%s\" not found"
 msgstr "Auslieferung mit Bezeichnung \"%s\" nicht gefunden"
 
@@ -117,8 +128,14 @@ msgstr "QTI-Test importieren und Auslieferung erstellen."
 msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr "%1$s Dateien in \\'%2$s\\' importieren"
 
+msgid "Label"
+msgstr "Beschriftung"
+
 msgid "Last updated on:"
 msgstr "Zuletzt aktualisiert am:"
+
+msgid "Location"
+msgstr "Standort"
 
 #, tao-public
 msgid "Manage Schema"
@@ -168,6 +185,9 @@ msgstr "\"%s\" veröffentlichen nach"
 msgid "Publish the test"
 msgstr "Den Test veröffentlichen"
 
+msgid "Published on"
+msgstr "Veröffentlicht am"
+
 msgid "Published on:"
 msgstr "Veröffentlicht am:"
 
@@ -176,6 +196,12 @@ msgstr "Veröffentlichung von <b>%s</b>"
 
 msgid "Save"
 msgstr "Speichern"
+
+msgid "Search Deliveries"
+msgstr "Lieferungen durchsuchen"
+
+msgid "Search Tests"
+msgstr "Tests durchsuchen"
 
 msgid "Select the test"
 msgstr "Den Test auswählen"
@@ -191,6 +217,9 @@ msgstr "TAO Gast"
 
 msgid "TAO Guest Access"
 msgstr "TAO Gastzugang"
+
+msgid "Test delivery usage"
+msgstr "Testen der Zustellung"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr "Die Veröffentlichung des Tests ist fehlgeschlagen, da \"%s\" leer ist."
@@ -223,9 +252,16 @@ msgstr "Tests können nicht geladen werden."
 msgid "unlimited"
 msgstr "Unbegrenzt"
 
+#, tao-public
+msgid "Usage"
+msgstr "Auslastung"
+
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr "Verwendung: %s ASSEMBLY_DATEI [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 msgstr "Verwendung: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+
+msgid "View"
+msgstr "Ansicht"
 
