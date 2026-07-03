@@ -1,16 +1,24 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2026-07-03 11:37\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ro\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
 "X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 797\n"
-"Project-Id-Version: tao-open-source\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Romanian\n"
-"Language: ro_RO\n"
-"PO-Revision-Date: 2026-02-05 15:46\n"
 
 msgid "%s completed"
 msgstr "%s finalizat"
@@ -90,6 +98,9 @@ msgstr "Livrarea nu este atribuită nici unui evaluator."
 msgid "Delivery saved"
 msgstr "Livrare salvata"
 
+msgid "Delivery source test usage"
+msgstr "Utilizare test sursă de livrare"
+
 msgid "Delivery with label \"%s\" not found"
 msgstr "Livrarea cu eticheta \"%snu a fost găsită"
 
@@ -117,8 +128,14 @@ msgstr "Importați QTI test și creați livrare."
 msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr "Importă fişierele %1$s în \\'%2$s\\'"
 
+msgid "Label"
+msgstr "Etichetă"
+
 msgid "Last updated on:"
 msgstr "Ultima actualizare la:"
+
+msgid "Location"
+msgstr "Locaţie"
 
 #, tao-public
 msgid "Manage Schema"
@@ -168,6 +185,9 @@ msgstr "Publicare \"%s\" la"
 msgid "Publish the test"
 msgstr "Publicați testul"
 
+msgid "Published on"
+msgstr "Publicat pe"
+
 msgid "Published on:"
 msgstr "Publicat pe:"
 
@@ -176,6 +196,12 @@ msgstr "Publicarea lui <b>%s</b>"
 
 msgid "Save"
 msgstr "Salvează"
+
+msgid "Search Deliveries"
+msgstr "Cauta Livrari"
+
+msgid "Search Tests"
+msgstr "Caută teste"
 
 msgid "Select the test"
 msgstr "Selectează testul"
@@ -191,6 +217,9 @@ msgstr "TAO Guest"
 
 msgid "TAO Guest Access"
 msgstr "Acces la vizitatori TAO"
+
+msgid "Test delivery usage"
+msgstr "Testează utilizarea livrării"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr "Editarea a eșuat deoarece \"%s\" este gol."
@@ -223,9 +252,16 @@ msgstr "Imposibil de încărcat testele"
 msgid "unlimited"
 msgstr "nelimitat"
 
+#, tao-public
+msgid "Usage"
+msgstr "Utilizare"
+
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr "Utilizare: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3]..."
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
 msgstr "Utilizare: %s DELIVERY_CLASS_URI ÎNAINTE"
+
+msgid "View"
+msgstr "Vizualizare"
 
