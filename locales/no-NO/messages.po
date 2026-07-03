@@ -1,16 +1,24 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2026-07-03 11:37\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: no\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
 "X-Crowdin-Language: no\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-delivery-rdf] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 797\n"
-"Project-Id-Version: tao-open-source\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Norwegian\n"
-"Language: no_NO\n"
-"PO-Revision-Date: 2023-06-13 14:12\n"
 
 msgid "%s completed"
 msgstr ""
@@ -90,6 +98,9 @@ msgstr ""
 msgid "Delivery saved"
 msgstr ""
 
+msgid "Delivery source test usage"
+msgstr "Leveres kildetest bruk"
+
 msgid "Delivery with label \"%s\" not found"
 msgstr ""
 
@@ -117,8 +128,14 @@ msgstr ""
 msgid "Importing %1$s files into \\'%2$s\\'"
 msgstr ""
 
+msgid "Label"
+msgstr ""
+
 msgid "Last updated on:"
 msgstr ""
+
+msgid "Location"
+msgstr "Sted"
 
 #, tao-public
 msgid "Manage Schema"
@@ -168,6 +185,9 @@ msgstr ""
 msgid "Publish the test"
 msgstr ""
 
+msgid "Published on"
+msgstr "Publisert den"
+
 msgid "Published on:"
 msgstr ""
 
@@ -176,6 +196,12 @@ msgstr ""
 
 msgid "Save"
 msgstr ""
+
+msgid "Search Deliveries"
+msgstr "Søk leveranser"
+
+msgid "Search Tests"
+msgstr "Søk i tester"
 
 msgid "Select the test"
 msgstr ""
@@ -191,6 +217,9 @@ msgstr ""
 
 msgid "TAO Guest Access"
 msgstr ""
+
+msgid "Test delivery usage"
+msgstr "Bruk av testlevering"
 
 msgid "Test publishing failed because \"%s\" is empty."
 msgstr ""
@@ -223,9 +252,16 @@ msgstr ""
 msgid "unlimited"
 msgstr ""
 
+#, tao-public
+msgid "Usage"
+msgstr "Bruk"
+
 msgid "Usage: %s ASSEMBLY_FILE [ASSEMBLY_FILE_2] [ASSEMBLY_FILE_3] ..."
 msgstr ""
 
 msgid "Usage: %s DELIVERY_CLASS_URI OUTPUT_DIRECTORY"
+msgstr ""
+
+msgid "View"
 msgstr ""
 
