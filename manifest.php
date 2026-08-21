@@ -20,6 +20,7 @@
 
 use oat\taoDeliveryRdf\install\RegisterDeliveryContainerService;
 use oat\taoDeliveryRdf\install\RegisterDeliveryFactoryService;
+use oat\taoDeliveryRdf\install\RegisterSectionVisibilityService;
 use oat\taoDeliveryRdf\model\DataStore\ServiceProvider\DataStoreServiceProvider;
 use oat\taoDeliveryRdf\model\Delivery\ServiceProvider\DeliveryServiceProvider;
 use oat\taoDeliveryRdf\model\theme\ServiceProvider\ThemeServiceProvider;
@@ -65,6 +66,7 @@ return [
             RegisterFileSystem::class,
             RegisterDataStoreServices::class,
             SetDeliveryNamespace::class,
+            RegisterSectionVisibilityService::class,
         ]
     ],
     'update' => Updater::class,
