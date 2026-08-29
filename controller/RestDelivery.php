@@ -338,10 +338,21 @@ class RestDelivery extends \tao_actions_RestController
                 }
             }
 
-            $service = DeliveryAssemblyService::singleton();
-
             /** @var kernelResource[] $deliveries */
-            $deliveries = $service->getAllAssemblies();
+            $deliveries = [];
+
+            if ($this->hasRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)) {
+                $where = json_decode(
+                    html_entity_decode($this->getRequestParameter(self::REST_DELIVERY_SEARCH_PARAMS)),
+                    true
+                );
+                $deliveryModelClass = $this->getDeliveryRootClass();
+                $deliveries = $deliveryModelClass->searchInstances($where, ['like' => false, 'recursive' => true]);
+            } else {
+                $service = DeliveryAssemblyService::singleton();
+                $deliveries = $service->getAllAssemblies();    
+            }
+
             $overallCount = count($deliveries);
             if ($offset || $limit) {
                 if ($overallCount <= $offset) {
