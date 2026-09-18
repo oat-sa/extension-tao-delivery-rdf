@@ -32,6 +32,7 @@ module.exports = function(grunt) {
                     extension : 'taoDeliveryRdf',
                     outputDir : 'loader',
                     paths: require('./paths.json'),
+                    babelPreTransform: { enabled: true },
                     bundles : [{
                         name : 'taoDeliveryRdf',
                         default : true,
