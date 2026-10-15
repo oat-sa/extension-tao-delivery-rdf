@@ -37,6 +37,8 @@ use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\JsonDelive
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\UrlEncodedFormDeliveryPatchRequestHandler;
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestValidator\DeliverySearchRequestValidator;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoDeliveryRdf\model\Usage\DefaultDeliveryUsageFilter;
+use oat\taoDeliveryRdf\model\Usage\DeliveryUsageFilterInterface;
 use oat\taoDeliveryRdf\model\Usage\DeliveryUsageService;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
@@ -121,11 +123,16 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
             ]);
 
         $services
+            ->set(DeliveryUsageFilterInterface::class, DefaultDeliveryUsageFilter::class)
+            ->public();
+
+        $services
             ->set(TestUsageService::class, TestUsageService::class)
             ->public()
             ->args([
                 service(DeliveryAssemblyService::class),
-                service(Ontology::SERVICE_ID)
+                service(Ontology::SERVICE_ID),
+                service(DeliveryUsageFilterInterface::class),
             ]);
 
         $services
