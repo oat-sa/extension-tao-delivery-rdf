@@ -160,17 +160,15 @@ define([
                 actions: actions
             }, getModeSettings(mode));
 
-            const gridConfigEvent = new CustomEvent('tao-delivery-rdf-usage-grid-config', {
-                detail: {
-                    config: datatableConfig,
-                    mode: mode,
-                    uri: uri,
-                    $grid: $grid
-                }
-            });
-            document.dispatchEvent(gridConfigEvent);
+            const gridConfigDetail = {
+                config: datatableConfig,
+                mode: mode,
+                uri: uri,
+                $grid: $grid
+            };
+            $(document).trigger('tao-delivery-rdf-usage-grid-config', [gridConfigDetail]);
 
-            $grid.datatable(gridConfigEvent.detail.config);
+            $grid.datatable(datatableConfig);
         }
     };
 });

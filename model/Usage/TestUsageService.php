@@ -52,7 +52,8 @@ class TestUsageService
         $page = $this->getPage($params);
 
         $extensionEnabled = $this->usageRowActionsProvider->isExtensionEnabled();
-        $currentUserId = common_session_SessionManager::getSession()->getUser()->getIdentifier();
+        $sessionUser = common_session_SessionManager::getSession()->getUser();
+        $currentUserId = $sessionUser !== null ? (string) $sessionUser->getIdentifier() : '';
 
         $rowsData = [];
         foreach ($this->deliveryAssemblyService->findAssembliesByOrigin($testUri) as $delivery) {

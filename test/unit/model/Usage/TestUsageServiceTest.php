@@ -518,4 +518,10 @@ class TestUsageServiceTest extends TestCase
 
         return $delivery;
     }
+    protected function tearDown(): void
+    {
+        \common_session_SessionManager::endSession();
+        parent::tearDown();
+    }
+
 }
