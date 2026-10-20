@@ -24,9 +24,11 @@ namespace oat\taoDeliveryRdf\test\unit\model\Usage;
 
 use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
+use oat\oatbox\user\BasicUser;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\tao\helpers\dateFormatter\DateFormatterInterface;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
+use oat\taoDeliveryRdf\model\Usage\UsageRowActionsProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use tao_helpers_Date;
@@ -40,7 +42,7 @@ class TestUsageServiceTest extends TestCase
     {
         // ponytail: bypass tao extension bootstrap; only publicationTimestamp is asserted
         $formatter = new class implements DateFormatterInterface {
-            public function format($timestamp, $format, \DateTimeZone $timeZone = null): string
+            public function format($timestamp, $format, ?\DateTimeZone $timeZone = null): string
             {
                 $timeZone ??= new \DateTimeZone('UTC');
 
@@ -111,7 +113,7 @@ class TestUsageServiceTest extends TestCase
             'sortorder' => 'asc',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
 
         $result = $service->getDeliveriesWhereTestUsed($request);
 
@@ -160,7 +162,7 @@ class TestUsageServiceTest extends TestCase
             'sortorder' => 'asc',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
@@ -206,7 +208,7 @@ class TestUsageServiceTest extends TestCase
             'sortorder' => 'desc',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
@@ -243,7 +245,7 @@ class TestUsageServiceTest extends TestCase
             'sortOrder' => '-1',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
@@ -283,7 +285,7 @@ class TestUsageServiceTest extends TestCase
             'sortorder' => 'desc',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame('http://tao.local/delivery-1', $result['data'][0]['deliveryId']);
@@ -315,7 +317,7 @@ class TestUsageServiceTest extends TestCase
             'filterquery' => 'alpha',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame(1, $result['totalResults']);
@@ -348,7 +350,7 @@ class TestUsageServiceTest extends TestCase
             'filterQuery' => 'beta',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame(1, $result['totalResults']);
@@ -380,7 +382,7 @@ class TestUsageServiceTest extends TestCase
             'filterquery' => 'no-match',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame(0, $result['totalResults']);
@@ -394,7 +396,7 @@ class TestUsageServiceTest extends TestCase
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getQueryParams')->willReturn([]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
 
         $this->expectException(\common_exception_BadRequest::class);
         $service->getDeliveriesWhereTestUsed($request);
@@ -429,7 +431,7 @@ class TestUsageServiceTest extends TestCase
             'page' => 1,
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame(1, $result['totalResults']);
@@ -437,6 +439,74 @@ class TestUsageServiceTest extends TestCase
         $this->assertSame('', $result['data'][0]['classPath']);
         $this->assertSame('', $result['data'][0]['publicationTime']);
         $this->assertSame('', $result['data'][0]['publicationDate']);
+    }
+
+    protected function setUp(): void
+    {
+        \common_session_SessionManager::startSession(
+            new \common_session_BasicSession(new BasicUser('http://tao.local/user#test-user', [], 'test-user'))
+        );
+    }
+
+    public function testGetDeliveriesWhereTestUsedEnrichesRowsViaProvider(): void
+    {
+        $deliveryAssemblyService = $this->createMock(DeliveryAssemblyService::class);
+        $delivery = $this->createDelivery('http://tao.local/delivery-1', 'Delivery 1', []);
+
+        $deliveryAssemblyService
+            ->method('findAssembliesByOrigin')
+            ->with(self::TEST_URI)
+            ->willReturn([$delivery]);
+
+        $deliveryAssemblyService
+            ->method('getCompilationDate')
+            ->willReturn('2026-04-09');
+
+        $provider = $this->createMock(UsageRowActionsProvider::class);
+        $provider->method('isExtensionEnabled')->willReturn(false);
+        $provider
+            ->expects($this->once())
+            ->method('enrichDeliveryUsageRow')
+            ->with(
+                $this->isType('array'),
+                $delivery,
+                self::TEST_URI,
+                'http://tao.local/user#test-user'
+            )
+            ->willReturnCallback(static function (array $row): array {
+                $row['usagePreviewEnabled'] = false;
+
+                return $row;
+            });
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getQueryParams')->willReturn([
+            'uri' => tao_helpers_Uri::encode(self::TEST_URI),
+            'rows' => 25,
+            'page' => 1,
+        ]);
+
+        $service = new TestUsageService(
+            $deliveryAssemblyService,
+            $this->createMock(Ontology::class),
+            $provider,
+        );
+
+        $result = $service->getDeliveriesWhereTestUsed($request);
+
+        $this->assertFalse($result['usagePreviewEnabled']);
+        $this->assertCount(1, $result['data']);
+    }
+
+    private function createProvider(): UsageRowActionsProvider
+    {
+        $provider = $this->createMock(UsageRowActionsProvider::class);
+        $provider->method('isExtensionEnabled')->willReturn(true);
+        $provider->method('enrichDeliveryUsageRow')->willReturnCallback(
+            static fn (array $row): array => $row + ['usagePreviewEnabled' => true]
+        );
+
+        return $provider;
     }
 
     private function createDelivery(string $uri, string $label, array $parents): core_kernel_classes_Resource

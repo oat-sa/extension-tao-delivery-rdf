@@ -149,7 +149,7 @@ define([
                 }
             ];
 
-            $grid.datatable(Object.assign({
+            const datatableConfig = Object.assign({
                 url: dataUrl,
                 labels: {
                     filter: mode === 'delivery' ? __('Search Tests') : __('Search Deliveries'),
@@ -158,7 +158,19 @@ define([
                 model: getColumns(mode),
                 rows: getNumRows(),
                 actions: actions
-            }, getModeSettings(mode)));
+            }, getModeSettings(mode));
+
+            const gridConfigEvent = new CustomEvent('tao-delivery-rdf-usage-grid-config', {
+                detail: {
+                    config: datatableConfig,
+                    mode: mode,
+                    uri: uri,
+                    $grid: $grid
+                }
+            });
+            document.dispatchEvent(gridConfigEvent);
+
+            $grid.datatable(gridConfigEvent.detail.config);
         }
     };
 });

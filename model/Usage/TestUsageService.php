@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\Usage;
 
+use common_session_SessionManager;
 use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
@@ -35,7 +36,8 @@ class TestUsageService
 
     public function __construct(
         private DeliveryAssemblyService $deliveryAssemblyService,
-        private Ontology $ontology
+        private Ontology $ontology,
+        private UsageRowActionsProvider $usageRowActionsProvider,
     ) {
     }
 
@@ -48,6 +50,9 @@ class TestUsageService
         $sortOrder = $this->normalizeSortOrder((string) ($params['sortorder'] ?? $params['sortOrder'] ?? 'desc'));
         $rows = $this->getRows($params);
         $page = $this->getPage($params);
+
+        $extensionEnabled = $this->usageRowActionsProvider->isExtensionEnabled();
+        $currentUserId = common_session_SessionManager::getSession()->getUser()->getIdentifier();
 
         $rowsData = [];
         foreach ($this->deliveryAssemblyService->findAssembliesByOrigin($testUri) as $delivery) {
@@ -71,6 +76,13 @@ class TestUsageService
                 'publicationDate' => $formattedPublicationTime,
                 'publicationTimestamp' => $publicationTimestamp,
             ];
+
+            $row = $this->usageRowActionsProvider->enrichDeliveryUsageRow(
+                $row,
+                $delivery,
+                $testUri,
+                $currentUserId
+            );
 
             if ($filter !== '' && mb_strpos(mb_strtolower((string) $row['label']), $filter) === false) {
                 continue;
@@ -106,6 +118,7 @@ class TestUsageService
             'total' => $rows > 0 ? (int) ceil($totalResults / $rows) : 0,
             'totalCount' => $totalResults,
             'records' => count($pagedData),
+            'usagePreviewEnabled' => $extensionEnabled,
         ];
     }
 
