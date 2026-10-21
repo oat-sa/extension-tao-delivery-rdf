@@ -67,7 +67,11 @@ class Usage extends tao_actions_CommonModule
 
     public function getTestDeliveriesUsageData(): void
     {
-        $this->formatResponse($this->getTestUsageService()->getDeliveriesWhereTestUsed($this->getPsrRequest(), $this->getCurrentUserId()));
+        $response = $this->getTestUsageService()->getDeliveriesWhereTestUsed(
+            $this->getPsrRequest(),
+            $this->getCurrentUserId()
+        );
+        $this->formatResponse($response);
     }
 
     public function getDeliverySourceTestData(): void

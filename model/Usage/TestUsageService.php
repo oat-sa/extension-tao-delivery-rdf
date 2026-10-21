@@ -43,8 +43,7 @@ class TestUsageService
     public function getDeliveriesWhereTestUsed(
         ServerRequestInterface $request,
         string $currentUserId,
-    ): array
-    {
+    ): array {
         $params = $request->getQueryParams();
         $testUri = $this->getRequiredUri($params);
         $filter = mb_strtolower(trim((string) ($params['filterquery'] ?? $params['filterQuery'] ?? '')));

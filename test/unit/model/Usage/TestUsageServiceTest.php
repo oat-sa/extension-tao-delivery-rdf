@@ -519,5 +519,4 @@ class TestUsageServiceTest extends TestCase
         \common_session_SessionManager::endSession();
         parent::tearDown();
     }
-
 }
