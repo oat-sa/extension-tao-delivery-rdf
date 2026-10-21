@@ -24,6 +24,10 @@ namespace oat\taoDeliveryRdf\model\Usage;
 
 use core_kernel_classes_Resource;
 
+/**
+ * Default binding: no extension is installed, so rows are returned untouched and the
+ * usage grid renders exactly as it did without the extension point.
+ */
 final class NullUsageRowActionsProvider implements UsageRowActionsProvider
 {
     public function isExtensionEnabled(): bool

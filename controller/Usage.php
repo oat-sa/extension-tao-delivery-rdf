@@ -67,7 +67,7 @@ class Usage extends tao_actions_CommonModule
 
     public function getTestDeliveriesUsageData(): void
     {
-        $this->formatResponse($this->getTestUsageService()->getDeliveriesWhereTestUsed($this->getPsrRequest()));
+        $this->formatResponse($this->getTestUsageService()->getDeliveriesWhereTestUsed($this->getPsrRequest(), $this->getCurrentUserId()));
     }
 
     public function getDeliverySourceTestData(): void
@@ -96,6 +96,13 @@ class Usage extends tao_actions_CommonModule
     private function getTestUsageService(): TestUsageService
     {
         return $this->getServiceManager()->getContainer()->get(TestUsageService::class);
+    }
+
+    private function getCurrentUserId(): string
+    {
+        $user = \common_session_SessionManager::getSession()->getUser();
+
+        return $user !== null ? (string) $user->getIdentifier() : '';
     }
 
     private function getDeliveryUsageService(): DeliveryUsageService

@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoDeliveryRdf\model\Usage;
 
-use common_session_SessionManager;
 use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
@@ -41,7 +40,10 @@ class TestUsageService
     ) {
     }
 
-    public function getDeliveriesWhereTestUsed(ServerRequestInterface $request): array
+    public function getDeliveriesWhereTestUsed(
+        ServerRequestInterface $request,
+        string $currentUserId,
+    ): array
     {
         $params = $request->getQueryParams();
         $testUri = $this->getRequiredUri($params);
@@ -52,8 +54,6 @@ class TestUsageService
         $page = $this->getPage($params);
 
         $extensionEnabled = $this->usageRowActionsProvider->isExtensionEnabled();
-        $sessionUser = common_session_SessionManager::getSession()->getUser();
-        $currentUserId = $sessionUser !== null ? (string) $sessionUser->getIdentifier() : '';
 
         $rowsData = [];
         foreach ($this->deliveryAssemblyService->findAssembliesByOrigin($testUri) as $delivery) {

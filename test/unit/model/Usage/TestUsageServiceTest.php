@@ -24,7 +24,6 @@ namespace oat\taoDeliveryRdf\test\unit\model\Usage;
 
 use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
-use oat\oatbox\user\BasicUser;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\tao\helpers\dateFormatter\DateFormatterInterface;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
@@ -37,6 +36,7 @@ use tao_helpers_Uri;
 class TestUsageServiceTest extends TestCase
 {
     private const TEST_URI = 'http://tao.local/test';
+    private const CURRENT_USER_ID = 'http://tao.local/user#test-user';
 
     public static function setUpBeforeClass(): void
     {
@@ -115,7 +115,7 @@ class TestUsageServiceTest extends TestCase
 
         $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
 
-        $result = $service->getDeliveriesWhereTestUsed($request);
+        $result = $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
 
         $this->assertSame(2, $result['totalResults']);
         $this->assertCount(2, $result['data']);
@@ -163,7 +163,7 @@ class TestUsageServiceTest extends TestCase
         ]);
 
         $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
-        $result = $service->getDeliveriesWhereTestUsed($request);
+        $result = $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
 
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
         $this->assertSame('http://tao.local/delivery-1', $result['data'][1]['deliveryId']);
@@ -209,7 +209,7 @@ class TestUsageServiceTest extends TestCase
         ]);
 
         $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
-        $result = $service->getDeliveriesWhereTestUsed($request);
+        $result = $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
 
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
         $this->assertSame('http://tao.local/delivery-1', $result['data'][1]['deliveryId']);
@@ -246,7 +246,7 @@ class TestUsageServiceTest extends TestCase
         ]);
 
         $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
-        $result = $service->getDeliveriesWhereTestUsed($request);
+        $result = $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
 
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
         $this->assertSame('http://tao.local/delivery-1', $result['data'][1]['deliveryId']);
@@ -286,7 +286,7 @@ class TestUsageServiceTest extends TestCase
         ]);
 
         $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
-        $result = $service->getDeliveriesWhereTestUsed($request);
+        $result = $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
 
         $this->assertSame('http://tao.local/delivery-1', $result['data'][0]['deliveryId']);
         $this->assertSame('http://tao.local/delivery-2', $result['data'][1]['deliveryId']);
@@ -318,7 +318,7 @@ class TestUsageServiceTest extends TestCase
         ]);
 
         $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
-        $result = $service->getDeliveriesWhereTestUsed($request);
+        $result = $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
 
         $this->assertSame(1, $result['totalResults']);
         $this->assertCount(1, $result['data']);
@@ -351,7 +351,7 @@ class TestUsageServiceTest extends TestCase
         ]);
 
         $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
-        $result = $service->getDeliveriesWhereTestUsed($request);
+        $result = $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
 
         $this->assertSame(1, $result['totalResults']);
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
@@ -383,7 +383,7 @@ class TestUsageServiceTest extends TestCase
         ]);
 
         $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
-        $result = $service->getDeliveriesWhereTestUsed($request);
+        $result = $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
 
         $this->assertSame(0, $result['totalResults']);
         $this->assertSame([], $result['data']);
@@ -399,7 +399,7 @@ class TestUsageServiceTest extends TestCase
         $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
 
         $this->expectException(\common_exception_BadRequest::class);
-        $service->getDeliveriesWhereTestUsed($request);
+        $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
     }
 
     public function testUsesFallbackValuesWhenCompilationDateAndClassLookupFail(): void
@@ -432,20 +432,13 @@ class TestUsageServiceTest extends TestCase
         ]);
 
         $service = new TestUsageService($deliveryAssemblyService, $ontology, $this->createProvider());
-        $result = $service->getDeliveriesWhereTestUsed($request);
+        $result = $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
 
         $this->assertSame(1, $result['totalResults']);
         $this->assertCount(1, $result['data']);
         $this->assertSame('', $result['data'][0]['classPath']);
         $this->assertSame('', $result['data'][0]['publicationTime']);
         $this->assertSame('', $result['data'][0]['publicationDate']);
-    }
-
-    protected function setUp(): void
-    {
-        \common_session_SessionManager::startSession(
-            new \common_session_BasicSession(new BasicUser('http://tao.local/user#test-user', [], 'test-user'))
-        );
     }
 
     public function testGetDeliveriesWhereTestUsedEnrichesRowsViaProvider(): void
@@ -492,10 +485,13 @@ class TestUsageServiceTest extends TestCase
             $provider,
         );
 
-        $result = $service->getDeliveriesWhereTestUsed($request);
+        $result = $service->getDeliveriesWhereTestUsed($request, self::CURRENT_USER_ID);
 
         $this->assertFalse($result['usagePreviewEnabled']);
         $this->assertCount(1, $result['data']);
+        $this->assertSame('http://tao.local/delivery-1', $result['data'][0]['deliveryId']);
+        $this->assertSame('Delivery 1', $result['data'][0]['label']);
+        $this->assertFalse($result['data'][0]['usagePreviewEnabled']);
     }
 
     private function createProvider(): UsageRowActionsProvider
