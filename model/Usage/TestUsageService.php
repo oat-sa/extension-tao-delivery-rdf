@@ -35,12 +35,15 @@ class TestUsageService
 
     public function __construct(
         private DeliveryAssemblyService $deliveryAssemblyService,
-        private Ontology $ontology
+        private Ontology $ontology,
+        private UsageRowActionsProvider $usageRowActionsProvider,
     ) {
     }
 
-    public function getDeliveriesWhereTestUsed(ServerRequestInterface $request): array
-    {
+    public function getDeliveriesWhereTestUsed(
+        ServerRequestInterface $request,
+        string $currentUserId,
+    ): array {
         $params = $request->getQueryParams();
         $testUri = $this->getRequiredUri($params);
         $filter = mb_strtolower(trim((string) ($params['filterquery'] ?? $params['filterQuery'] ?? '')));
@@ -48,6 +51,8 @@ class TestUsageService
         $sortOrder = $this->normalizeSortOrder((string) ($params['sortorder'] ?? $params['sortOrder'] ?? 'desc'));
         $rows = $this->getRows($params);
         $page = $this->getPage($params);
+
+        $extensionEnabled = $this->usageRowActionsProvider->isExtensionEnabled();
 
         $rowsData = [];
         foreach ($this->deliveryAssemblyService->findAssembliesByOrigin($testUri) as $delivery) {
@@ -71,6 +76,13 @@ class TestUsageService
                 'publicationDate' => $formattedPublicationTime,
                 'publicationTimestamp' => $publicationTimestamp,
             ];
+
+            $row = $this->usageRowActionsProvider->enrichDeliveryUsageRow(
+                $row,
+                $delivery,
+                $testUri,
+                $currentUserId
+            );
 
             if ($filter !== '' && mb_strpos(mb_strtolower((string) $row['label']), $filter) === false) {
                 continue;
@@ -106,6 +118,7 @@ class TestUsageService
             'total' => $rows > 0 ? (int) ceil($totalResults / $rows) : 0,
             'totalCount' => $totalResults,
             'records' => count($pagedData),
+            'usagePreviewEnabled' => $extensionEnabled,
         ];
     }
 

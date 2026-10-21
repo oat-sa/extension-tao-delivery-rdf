@@ -38,7 +38,9 @@ use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestHandler\UrlEncoded
 use oat\taoDeliveryRdf\model\Delivery\Presentation\Web\RequestValidator\DeliverySearchRequestValidator;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\Usage\DeliveryUsageService;
+use oat\taoDeliveryRdf\model\Usage\NullUsageRowActionsProvider;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
+use oat\taoDeliveryRdf\model\Usage\UsageRowActionsProvider;
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
@@ -121,11 +123,19 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
             ]);
 
         $services
+            ->set(NullUsageRowActionsProvider::class, NullUsageRowActionsProvider::class);
+
+        $services
+            ->set(UsageRowActionsProvider::class, NullUsageRowActionsProvider::class)
+            ->public();
+
+        $services
             ->set(TestUsageService::class, TestUsageService::class)
             ->public()
             ->args([
                 service(DeliveryAssemblyService::class),
-                service(Ontology::SERVICE_ID)
+                service(Ontology::SERVICE_ID),
+                service(UsageRowActionsProvider::class),
             ]);
 
         $services
