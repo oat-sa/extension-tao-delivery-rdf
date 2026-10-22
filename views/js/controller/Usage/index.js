@@ -73,9 +73,9 @@ define([
                 sortable: true
             },
             {
-                id: 'location',
-                label: __('Location'),
-                sortable: true
+                id: 'deliveryId',
+                label: __('DeliveryId'),
+                sortable: false
             },
             {
                 id: 'publicationTime',
@@ -148,6 +148,40 @@ define([
                     }
                 }
             ];
+
+            if (mode === 'test') {
+                const previewRoute = (action, assemblyUri) => {
+                    window.location.href = url.route(action, 'TestUsagePreview', 'taoDeliverConnect', {
+                        uri: assemblyUri,
+                        testUri: uri
+                    });
+                };
+
+                actions.push(
+                    {
+                        id: 'delivery-preview-action',
+                        title: __('Delivery Preview'),
+                        label: __('Delivery Preview'),
+                        disabled: function disabled() {
+                            return !this.remotePreviewAvailable;
+                        },
+                        action: function action(targetUri, row) {
+                            previewRoute('launchDelivery', (row && row.assemblyUri) || targetUri);
+                        }
+                    },
+                    {
+                        id: 'grading-preview-action',
+                        title: __('Grading Preview'),
+                        label: __('Grading Preview'),
+                        disabled: function disabled() {
+                            return !this.remotePreviewAvailable;
+                        },
+                        action: function action(targetUri, row) {
+                            previewRoute('launchGrading', (row && row.assemblyUri) || targetUri);
+                        }
+                    }
+                );
+            }
 
             $grid.datatable(Object.assign({
                 url: dataUrl,

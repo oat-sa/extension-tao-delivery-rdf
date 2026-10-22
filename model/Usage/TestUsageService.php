@@ -35,11 +35,12 @@ class TestUsageService
 
     public function __construct(
         private DeliveryAssemblyService $deliveryAssemblyService,
-        private Ontology $ontology
+        private Ontology $ontology,
+        private TestUsageRowEnricher $rowEnricher = new NullTestUsageRowEnricher(),
     ) {
     }
 
-    public function getDeliveriesWhereTestUsed(ServerRequestInterface $request): array
+    public function getDeliveriesWhereTestUsed(ServerRequestInterface $request, string $currentUserId = ''): array
     {
         $params = $request->getQueryParams();
         $testUri = $this->getRequiredUri($params);
@@ -64,6 +65,7 @@ class TestUsageService
                 'id' => $delivery->getUri(),
                 '_id' => $delivery->getUri(),
                 'deliveryId' => $delivery->getUri(),
+                'assemblyUri' => $delivery->getUri(),
                 'label' => $delivery->getLabel(),
                 'location' => $classPath,
                 'classPath' => $classPath,
@@ -71,6 +73,10 @@ class TestUsageService
                 'publicationDate' => $formattedPublicationTime,
                 'publicationTimestamp' => $publicationTimestamp,
             ];
+
+            if ($currentUserId !== '') {
+                $row = $this->rowEnricher->enrichDeliveryRow($row, $delivery, $testUri, $currentUserId);
+            }
 
             if ($filter !== '' && mb_strpos(mb_strtolower((string) $row['label']), $filter) === false) {
                 continue;

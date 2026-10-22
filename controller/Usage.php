@@ -27,6 +27,7 @@ use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
 use GuzzleHttp\Psr7\Response;
 use oat\tao\model\http\formatter\ResponseFormatter;
+use common_session_SessionManager;
 use oat\taoDeliveryRdf\model\Usage\DeliveryUsageService;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
 use tao_actions_CommonModule;
@@ -60,7 +61,15 @@ class Usage extends tao_actions_CommonModule
 
     public function getTestDeliveriesUsageData(): void
     {
-        $this->formatResponse($this->getTestUsageService()->getDeliveriesWhereTestUsed($this->getPsrRequest()));
+        $userId = '';
+        $session = common_session_SessionManager::getSession();
+        if ($session !== null && $session->getUser() !== null) {
+            $userId = (string) $session->getUser()->getIdentifier();
+        }
+
+        $this->formatResponse(
+            $this->getTestUsageService()->getDeliveriesWhereTestUsed($this->getPsrRequest(), $userId)
+        );
     }
 
     public function getDeliverySourceTestData(): void

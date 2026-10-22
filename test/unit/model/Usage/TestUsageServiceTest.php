@@ -26,6 +26,7 @@ use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\tao\helpers\dateFormatter\DateFormatterInterface;
+use oat\taoDeliveryRdf\model\Usage\NullTestUsageRowEnricher;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -111,7 +112,7 @@ class TestUsageServiceTest extends TestCase
             'sortorder' => 'asc',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, new NullTestUsageRowEnricher());
 
         $result = $service->getDeliveriesWhereTestUsed($request);
 
@@ -160,7 +161,7 @@ class TestUsageServiceTest extends TestCase
             'sortorder' => 'asc',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, new NullTestUsageRowEnricher());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
@@ -206,7 +207,7 @@ class TestUsageServiceTest extends TestCase
             'sortorder' => 'desc',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, new NullTestUsageRowEnricher());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
@@ -243,7 +244,7 @@ class TestUsageServiceTest extends TestCase
             'sortOrder' => '-1',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, new NullTestUsageRowEnricher());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame('http://tao.local/delivery-2', $result['data'][0]['deliveryId']);
@@ -283,7 +284,7 @@ class TestUsageServiceTest extends TestCase
             'sortorder' => 'desc',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, new NullTestUsageRowEnricher());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame('http://tao.local/delivery-1', $result['data'][0]['deliveryId']);
@@ -315,7 +316,7 @@ class TestUsageServiceTest extends TestCase
             'filterquery' => 'alpha',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, new NullTestUsageRowEnricher());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame(1, $result['totalResults']);
@@ -348,7 +349,7 @@ class TestUsageServiceTest extends TestCase
             'filterQuery' => 'beta',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, new NullTestUsageRowEnricher());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame(1, $result['totalResults']);
@@ -380,7 +381,7 @@ class TestUsageServiceTest extends TestCase
             'filterquery' => 'no-match',
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, new NullTestUsageRowEnricher());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame(0, $result['totalResults']);
@@ -394,7 +395,7 @@ class TestUsageServiceTest extends TestCase
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getQueryParams')->willReturn([]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, new NullTestUsageRowEnricher());
 
         $this->expectException(\common_exception_BadRequest::class);
         $service->getDeliveriesWhereTestUsed($request);
@@ -429,7 +430,7 @@ class TestUsageServiceTest extends TestCase
             'page' => 1,
         ]);
 
-        $service = new TestUsageService($deliveryAssemblyService, $ontology);
+        $service = new TestUsageService($deliveryAssemblyService, $ontology, new NullTestUsageRowEnricher());
         $result = $service->getDeliveriesWhereTestUsed($request);
 
         $this->assertSame(1, $result['totalResults']);
