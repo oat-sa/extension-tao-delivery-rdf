@@ -61,10 +61,10 @@ class DeliveryForm extends SignedFormInstance
             if ($originTestUri) {
                 $goToTestElt = tao_helpers_form_FormFactory::getElement('go-to-test', 'Free');
                 $goToTestElt->setValue(
-                    '<button class="go-to-test btn-info small" type="button" data-test-uri="'
+                    '<button class="go-to-test btn-info btn-secondary small" type="button" data-test-uri="'
                         . htmlspecialchars((string) $originTestUri, ENT_QUOTES, 'UTF-8')
                         . '"><span class="icon-test"></span>'
-                        . htmlspecialchars(__('Go to test'), ENT_QUOTES, 'UTF-8')
+                        . htmlspecialchars(__('View Source Test'), ENT_QUOTES, 'UTF-8')
                         . '</button>'
                 );
                 $actions[] = $goToTestElt;
