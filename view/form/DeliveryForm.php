@@ -21,10 +21,12 @@
 
 namespace oat\taoDeliveryRdf\view\form;
 
-use oat\tao\model\controller\SignedFormInstance;
-use oat\taoDeliveryRdf\model\DeliveryContainerService;
+use core_kernel_classes_Property;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\controller\SignedFormInstance;
 use oat\tao\model\theme\ThemeService;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\theme\DeliveryThemeDetailsProvider;
 use tao_helpers_form_FormFactory;
 use tao_helpers_Uri;
@@ -48,8 +50,29 @@ class DeliveryForm extends SignedFormInstance
             '<button class="form-submitter btn-success small" type="button"><span class="icon-save"></span>'
                 . __('Save') . '</button>'
         );
+
+        $actions = [$saveELt];
+        if ($this->getInstance()) {
+            $originTestUris = $this->getInstance()->getPropertyValues(
+                new core_kernel_classes_Property(DeliveryAssemblyService::PROPERTY_ORIGIN)
+            );
+            $originTestUri = current($originTestUris);
+
+            if ($originTestUri) {
+                $goToTestElt = tao_helpers_form_FormFactory::getElement('go-to-test', 'Free');
+                $goToTestElt->setValue(
+                    '<button class="go-to-test btn-info btn-secondary small" type="button" data-test-uri="'
+                        . htmlspecialchars((string) $originTestUri, ENT_QUOTES, 'UTF-8')
+                        . '"><span class="icon-test"></span>'
+                        . htmlspecialchars(__('View Source Test'), ENT_QUOTES, 'UTF-8')
+                        . '</button>'
+                );
+                $actions[] = $goToTestElt;
+            }
+        }
+
         $this->form->setActions([], 'top');
-        $this->form->setActions([$saveELt], 'bottom');
+        $this->form->setActions($actions, 'bottom');
     }
 
     protected function initElements()

@@ -20,9 +20,10 @@ define([
     'jquery',
     'i18n',
     'util/url',
+    'taoDeliveryRdf/util/openTest',
     'ui/datatable',
     'layout/actions/binder'
-], function ($, __, url) {
+], function ($, __, url, openTest) {
     'use strict';
 
     const lineHeight = 30;
@@ -121,20 +122,17 @@ define([
                         return !this.id;
                     },
                     action: function action(targetUri) {
+                        if (mode === 'delivery') {
+                            openTest(targetUri);
+                            return;
+                        }
 
-                        const pathParams = mode === 'delivery'
-                            ? {
-                                ext: 'taoTests',
-                                section: 'manage_tests',
-                                structure: 'tests',
-                                uri: targetUri
-                            }
-                            : {
-                                ext: 'taoDeliveryRdf',
-                                section: 'manage_delivery_assembly',
-                                structure: 'delivery',
-                                uri: targetUri
-                            };
+                        const pathParams = {
+                            ext: 'taoDeliveryRdf',
+                            section: 'manage_delivery_assembly',
+                            structure: 'delivery',
+                            uri: targetUri
+                        };
 
                         const openedWindow = window.open(
                             url.build(urlInfo.path, pathParams),
