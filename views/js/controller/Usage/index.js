@@ -50,9 +50,12 @@ define([
         return Math.max(1, Math.min(computedRows, 25));
     }
 
-    function getColumns(mode) {
+    function getColumns(mode, options) {
+        const settings = options || {};
+        const hideLocation = Boolean(settings.hideLocation);
+
         if (mode === 'delivery') {
-            return [
+            const columns = [
                 {
                     id: 'label',
                     label: __('Label'),
@@ -64,9 +67,11 @@ define([
                     sortable: false
                 }
             ];
+
+            return hideLocation ? columns.filter(column => column.id !== 'location') : columns;
         }
 
-        return [
+        const columns = [
             {
                 id: 'label',
                 label: __('Label'),
@@ -83,6 +88,8 @@ define([
                 sortable: true
             }
         ];
+
+        return hideLocation ? columns.filter(column => column.id !== 'location') : columns;
     }
 
     function getModeSettings(mode) {
@@ -103,6 +110,7 @@ define([
             const $grid = $('.usage-grid');
             const mode = $grid.data('mode');
             const uri = $grid.data('uri');
+            const extensionEnabled = $grid.data('row-actions-extension-enabled');
 
             if (typeof uri !== 'string' || uri.trim() === '' || (mode !== 'delivery' && mode !== 'test')) {
                 return;
@@ -155,7 +163,7 @@ define([
                     filter: mode === 'delivery' ? __('Search Tests') : __('Search Deliveries'),
                     title: mode === 'delivery' ? __('Search Tests') : __('Search Deliveries')
                 },
-                model: getColumns(mode),
+                model: getColumns(mode, { hideLocation: Boolean(extensionEnabled) }),
                 rows: getNumRows(),
                 actions: actions
             }, getModeSettings(mode));
