@@ -7,9 +7,6 @@ $title = $mode === 'delivery' ? __('Delivery source test usage') : __('Test deli
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?= Template::css('usage.css') ?>"/>
-<?php if (!empty(get_data('rowActionsExtensionEnabled'))): ?>
-<link rel="stylesheet" type="text/css" href="<?= Template::css('usage-preview-grid.css', 'taoDeliverConnect') ?>"/>
-<?php endif; ?>
 
 <div class="usage-data-container">
     <h2><?= _dh($title) ?></h2>
