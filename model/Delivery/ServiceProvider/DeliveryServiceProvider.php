@@ -40,7 +40,9 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\Usage\DefaultDeliveryUsageFilter;
 use oat\taoDeliveryRdf\model\Usage\DeliveryUsageFilterInterface;
 use oat\taoDeliveryRdf\model\Usage\DeliveryUsageService;
+use oat\taoDeliveryRdf\model\Usage\NullUsageRowActionsProvider;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
+use oat\taoDeliveryRdf\model\Usage\UsageRowActionsProvider;
 use oat\taoDeliveryRdf\model\validation\DeliveryValidatorFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
@@ -123,6 +125,13 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
             ]);
 
         $services
+            ->set(NullUsageRowActionsProvider::class, NullUsageRowActionsProvider::class);
+
+        $services
+            ->set(UsageRowActionsProvider::class, NullUsageRowActionsProvider::class)
+            ->public();
+
+        $services
             ->set(DeliveryUsageFilterInterface::class, DefaultDeliveryUsageFilter::class)
             ->public();
 
@@ -132,6 +141,7 @@ class DeliveryServiceProvider implements ContainerServiceProviderInterface
             ->args([
                 service(DeliveryAssemblyService::class),
                 service(Ontology::SERVICE_ID),
+                service(UsageRowActionsProvider::class),
                 service(DeliveryUsageFilterInterface::class),
             ]);
 
