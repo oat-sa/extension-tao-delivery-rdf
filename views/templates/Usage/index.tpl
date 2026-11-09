@@ -18,6 +18,7 @@ $title = $mode === 'delivery' ? __('Delivery source test usage') : __('Test deli
                     data-mode="<?= _dh((string) get_data('mode')) ?>"
                     data-uri="<?= _dh((string) get_data('uri')) ?>"
                     data-label="<?= _dh((string) get_data('label')) ?>"
+                    data-row-actions-extension-enabled="<?= !empty(get_data('rowActionsExtensionEnabled')) ? '1' : '0' ?>"
                 ></div>
             </div>
         </div>

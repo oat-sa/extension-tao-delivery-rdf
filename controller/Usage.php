@@ -29,6 +29,7 @@ use GuzzleHttp\Psr7\Response;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\taoDeliveryRdf\model\Usage\DeliveryUsageService;
 use oat\taoDeliveryRdf\model\Usage\TestUsageService;
+use oat\taoDeliveryRdf\model\Usage\UsageRowActionsProvider;
 use tao_actions_CommonModule;
 use tao_helpers_Uri;
 
@@ -41,10 +42,7 @@ class Usage extends tao_actions_CommonModule
         $uri = $this->getRequiredUri();
         $resource = $this->getExistingResource($uri);
 
-        $this->setData('mode', 'test');
-        $this->setData('uri', $uri);
-        $this->setData('label', $resource->getLabel());
-        $this->setView('Usage/index.tpl');
+        $this->renderUsageView('test', $uri, $resource);
     }
 
     public function delivery(): void
@@ -52,15 +50,28 @@ class Usage extends tao_actions_CommonModule
         $uri = $this->getRequiredUri();
         $resource = $this->getExistingResource($uri);
 
-        $this->setData('mode', 'delivery');
+        $this->renderUsageView('delivery', $uri, $resource);
+    }
+
+    private function renderUsageView(string $mode, string $uri, core_kernel_classes_Resource $resource): void
+    {
+        $this->setData('mode', $mode);
         $this->setData('uri', $uri);
         $this->setData('label', $resource->getLabel());
+        $this->setData(
+            'rowActionsExtensionEnabled',
+            $this->getUsageRowActionsProvider()->isExtensionEnabled()
+        );
         $this->setView('Usage/index.tpl');
     }
 
     public function getTestDeliveriesUsageData(): void
     {
-        $this->formatResponse($this->getTestUsageService()->getDeliveriesWhereTestUsed($this->getPsrRequest()));
+        $response = $this->getTestUsageService()->getDeliveriesWhereTestUsed(
+            $this->getPsrRequest(),
+            $this->getCurrentUserId()
+        );
+        $this->formatResponse($response);
     }
 
     public function getDeliverySourceTestData(): void
@@ -81,9 +92,21 @@ class Usage extends tao_actions_CommonModule
         );
     }
 
+    private function getUsageRowActionsProvider(): UsageRowActionsProvider
+    {
+        return $this->getServiceManager()->getContainer()->get(UsageRowActionsProvider::class);
+    }
+
     private function getTestUsageService(): TestUsageService
     {
         return $this->getServiceManager()->getContainer()->get(TestUsageService::class);
+    }
+
+    private function getCurrentUserId(): string
+    {
+        $user = \common_session_SessionManager::getSession()->getUser();
+
+        return $user !== null ? (string) $user->getIdentifier() : '';
     }
 
     private function getDeliveryUsageService(): DeliveryUsageService
