@@ -21,14 +21,15 @@ define([
     'jquery',
     'util/url',
     'services/features',
+    'taoDeliveryRdf/util/openTest',
     'ui/modal',
     'css!taoDeliveryRdfCss/delivery-rdf.css'
-], function ($, urlUtil, features) {
+], function ($, urlUtil, features, openTest) {
     'use strict';
 
     /**
      * Finds property blocks starting with propName and hides it adding .hidden class
-     * @param {string} propName 
+     * @param {string} propName
      */
     function hidePropertyBlockByName(propName) {
         const inputCssQuery = `form[action="/taoDeliveryRdf/DeliveryMgmt/editDelivery"] input[name^="${propName}"]`;
@@ -37,6 +38,10 @@ define([
 
     return {
         start(){
+
+            $('.go-to-test').off('click.deliveryTest').on('click.deliveryTest', function () {
+                openTest($(this).data('test-uri'));
+            });
 
             const featuresPath = 'taoDeliveryRdf/deliveryMgmt/';
             if(!features.isVisible(`${featuresPath}resourceIdentifier`)) {
@@ -72,7 +77,7 @@ define([
             if(!features.isVisible(`${featuresPath}testRunnerFeatures`)) {
                 hidePropertyBlockByName('http_2_www_0_tao_0_lu_1_Ontologies_1_TAODelivery_0_rdf_3_DeliveryTestRunnerFeatures_');
             }
-                        
+
             $('#exclude-btn').click(function() {
                 const delivery = $(this).data('delivery');
 

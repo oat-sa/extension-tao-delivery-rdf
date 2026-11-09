@@ -37,6 +37,7 @@ class TestUsageService
         private DeliveryAssemblyService $deliveryAssemblyService,
         private Ontology $ontology,
         private UsageRowActionsProvider $usageRowActionsProvider,
+        private mixed $usageFilter = null,
     ) {
     }
 
@@ -84,7 +85,7 @@ class TestUsageService
                 $currentUserId
             );
 
-            if ($filter !== '' && mb_strpos(mb_strtolower((string) $row['label']), $filter) === false) {
+            if ($filter !== '' && !$this->matchesDelivery($delivery, $filter)) {
                 continue;
             }
 
@@ -120,6 +121,25 @@ class TestUsageService
             'records' => count($pagedData),
             'usagePreviewEnabled' => $extensionEnabled,
         ];
+    }
+
+    private function matchesDelivery(core_kernel_classes_Resource $delivery, string $filter): bool
+    {
+        $normalizedFilter = mb_strtolower(trim($filter));
+        if ($normalizedFilter === '') {
+            return true;
+        }
+
+        $usageFilter = $this->usageFilter;
+        if (is_object($usageFilter) && method_exists($usageFilter, 'matches')) {
+            return (bool) $usageFilter->matches($delivery, $normalizedFilter);
+        }
+
+        if (is_callable($usageFilter)) {
+            return (bool) $usageFilter($delivery, $normalizedFilter);
+        }
+
+        return (new DefaultDeliveryUsageFilter())->matches($delivery, $normalizedFilter);
     }
 
     private function resolveClassPath(core_kernel_classes_Resource $resource): string
