@@ -657,6 +657,11 @@ paths:
           description: Start from delivery number
           schema:
             type: integer
+        - name: searchParams
+          in: query
+          description: A valid json with search params for finding deliveries
+          schema:
+            type: string
       responses:
         200:
           description: Successful response
