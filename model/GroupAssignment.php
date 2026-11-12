@@ -131,7 +131,7 @@ class GroupAssignment extends ConfigurableService implements AssignmentService
 
         $users = [];
         foreach ($groups as $group) {
-            foreach (GroupsService::singleton()->getUsers($group) as $user) {
+            foreach (GroupsService::singleton()->getUsers($group->getUri()) as $user) {
                 $users[] = $user->getUri();
             }
         }
